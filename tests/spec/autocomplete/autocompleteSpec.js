@@ -5,11 +5,16 @@ describe("Autocomplete Plugin", function () {
       M.Autocomplete.init(
         document.querySelectorAll('input.autocomplete'),
         {
-        data: {
-          "Apple": null,
-          "Microsoft": null,
-          "Google": 'http://placehold.it/250x250'
-        }
+        data: [
+          {id: 12, text: "Apple"},
+          {id: 13, text: "Microsoft"},
+          {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+        ]
+        // {
+        //   "Apple": null,
+        //   "Microsoft": null,
+        //   "Google": 'http://placehold.it/250x250'
+        // }
       });
       done();
     }, 400);
@@ -32,11 +37,11 @@ describe("Autocomplete Plugin", function () {
         M.Autocomplete.init(normal, { "hi": null });
         M.Autocomplete.init(normal, { "hi": null });
         M.Autocomplete.init(normal, {
-          data: {
-            "Apple": null,
-            "Microsoft": null,
-            "Google": 'http://placehold.it/250x250'
-          }
+          data: [
+            {id: 12, text: "Apple"},
+            {id: 13, text: "Microsoft"},
+            {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+          ]
         });
 
         let autocompleteEl = normal.parentNode.querySelectorAll('.autocomplete-content');
@@ -48,10 +53,10 @@ describe("Autocomplete Plugin", function () {
 
     it("should limit results if option is set", function (done) {
       let limited = document.querySelector('#limited-autocomplete');
-      let data = {};
+      let data = [];
       for (let i = 100; i >= 0; i--) {
         let randString = 'a' + Math.random().toString(36).substring(2);
-        data[randString] = null;
+        data.push({id: randString});
       }
 
       let limitedInstance = M.Autocomplete.getInstance(limited);
@@ -101,7 +106,7 @@ describe("Autocomplete Plugin", function () {
     it("should select option on click", function(done) {
       let normal = document.querySelector('#normal-autocomplete');
 
-      M.Autocomplete.init(normal, { data: { 'Value A': null }, minLength: 0 });
+      M.Autocomplete.init(normal, { data: [{id: 'Value A'}], minLength: 0 });
 
       openDropdownAndSelectFirstOption(normal, () => {
         expect(normal.value).toEqual('Value A', 'Value should equal chosen option.');
@@ -112,8 +117,8 @@ describe("Autocomplete Plugin", function () {
     it("should select proper options on both autocompletes", function(done) {
       let normal = document.querySelector('#normal-autocomplete');
       let limited = document.querySelector('#limited-autocomplete');
-      M.Autocomplete.init(normal, { data: { 'Value A': null }, minLength: 0 });
-      M.Autocomplete.init(limited, { data: { 'Value B': null }, minLength: 0 });
+      M.Autocomplete.init(normal, { data: [{id: 'Value A'}], minLength: 0 });
+      M.Autocomplete.init(limited, { data: [{id: 'Value B'}],  minLength: 0 });
 
       openDropdownAndSelectFirstOption(normal, () => {
         openDropdownAndSelectFirstOption(limited, () => {

@@ -2,7 +2,7 @@
   'use strict';
 
   let _defaults = {
-    data: {}, // Autocomplete data set
+    data: [], // Autocomplete data set
     limit: Infinity, // Limit of results the autocomplete shows
     onAutocomplete: null, // Callback for when autocompleted
     dropdownOptions: {
@@ -42,7 +42,7 @@
       return super.init(this, els, options);
     }
     static getInstance(el) {
-      let domElem = !!el.jquery ? el[0] : el;
+      let domElem = el.jquery ? el[0] : el;
       return domElem.M_Autocomplete;
     }
     destroy() {
@@ -72,7 +72,6 @@
         this._handleContainerMousedownAndTouchstartBound
       );
       this.container.addEventListener('mouseup', this._handleContainerMouseupAndTouchendBound);
-
       if (typeof window.ontouchstart !== 'undefined') {
         this.container.addEventListener(
           'touchstart',
@@ -117,17 +116,19 @@
         this.options.dropdownOptions
       );
       let userOnItemClick = dropdownOptions.onItemClick;
-      // Ensuring the selectOption call when user passes custom onItemClick function to dropdown
-      dropdownOptions.onItemClick = (el) => {
-        this.selectOption($(el));
+      // Ensuring the select Option call when user passes custom onItemClick function to dropdown
+      dropdownOptions.onItemClick = (li) => {
+        const entryID = li.getAttribute('data-id');
+        this.selectOption(entryID);
         // Handle user declared onItemClick if needed
-        if (userOnItemClick && typeof userOnItemClick === 'function') {
+        if (userOnItemClick && typeof userOnItemClick === 'function')
           userOnItemClick.call(this.dropdown, this.el);
-        }
       };
       this.dropdown = M.Dropdown.init(this.el, dropdownOptions);
       // Sketchy removal of dropdown click handler
       this.el.removeEventListener('click', this.dropdown._handleClickBound);
+      // Set Value if already set in HTML
+      if (this.el.value) this.selectOption(this.el.value);
     }
     _removeDropdown() {
       this.container.parentNode.removeChild(this.container);
@@ -139,20 +140,14 @@
       }
     }
     _handleInputKeyupAndFocus(e) {
-      if (e.type === 'keyup') {
-        Autocomplete._keydown = false;
-      }
+      if (e.type === 'keyup') Autocomplete._keydown = false;
       this.count = 0;
       let val = this.el.value.toLowerCase();
       // Don't capture enter or arrow key usage.
-      if (e.keyCode === 13 || e.keyCode === 38 || e.keyCode === 40) {
-        return;
-      }
+      if (e.keyCode === 13 || e.keyCode === 38 || e.keyCode === 40) return;
       // Check if the input isn't empty
       // Check if focus triggered by tab
-      if (this.oldVal !== val && (M.tabPressed || e.type !== 'focus')) {
-        this.open();
-      }
+      if (this.oldVal !== val && (M.tabPressed || e.type !== 'focus')) this.open();
       // Update oldVal
       this.oldVal = val;
     }
@@ -168,7 +163,7 @@
           .children('li')
           .eq(this.activeIndex);
         if (liElement.length) {
-          this.selectOption(liElement);
+          this.selectOption(liElement[0].getAttribute('data-id'));
           e.preventDefault();
         }
         return;
@@ -226,99 +221,88 @@
       this.isOpen = false;
       this._mousedown = false;
     }
-    _renderDropdown(data, val) {
+    _renderDropdown(data, selectedValue) {
       this._resetAutocomplete();
-      let matchingData = [];
-      // Gather all matching data
-      for (let key in data) {
-        if (data.hasOwnProperty(key) && key.toLowerCase().indexOf(val) !== -1) {
-          let entry = {
-            data: data[key],
-            key: key
-          };
-          matchingData.push(entry);
 
-          this.count++;
-        }
-      }
+      let matchingData = data.filter(
+        (entry) => (entry.text || entry.id).toLowerCase().indexOf(selectedValue) !== -1
+      );
+      this.count = matchingData.length;
+
       // Sort
       if (this.options.sortFunction) {
         let sortFunctionBound = (a, b) => {
           return this.options.sortFunction(
-            a.key.toLowerCase(),
-            b.key.toLowerCase(),
-            val.toLowerCase()
+            (a.text || a.id).toLowerCase(),
+            (b.text || b.id).toLowerCase(),
+            selectedValue.toLowerCase()
           );
         };
         matchingData.sort(sortFunctionBound);
       }
       // Limit
       matchingData = matchingData.slice(0, this.options.limit);
+
       // Render
       for (let i = 0; i < matchingData.length; i++) {
         const entry = matchingData[i];
         const item = document.createElement('li');
-        if (!!entry.data) {
+        item.setAttribute('data-id', entry.id);
+        if (entry.image) {
           const img = document.createElement('img');
           img.classList.add('right', 'circle');
-          img.src = entry.data;
+          img.src = entry.image;
           item.appendChild(img);
         }
-        const parts = this._highlightPartialText(val, entry.key);
-        const s = document.createElement('span');
+        const parts = this._highlightPartialText(selectedValue, entry.text || entry.id);
+        const span = document.createElement('span');
         if (this.options.allowUnsafeHTML) {
-          s.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
+          span.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
         } else {
-          s.appendChild(document.createTextNode(parts[0]));
-          if (!!parts[1]) {
+          span.appendChild(document.createTextNode(parts[0]));
+          if (parts[1]) {
             const highlight = document.createElement('span');
             highlight.textContent = parts[1];
             highlight.classList.add('highlight');
-            s.appendChild(highlight);
-            s.appendChild(document.createTextNode(parts[2]));
+            span.appendChild(highlight);
+            span.appendChild(document.createTextNode(parts[2]));
           }
         }
-        item.appendChild(s);
+        item.appendChild(span);
         $(this.container).append(item);
       }
     }
 
-    selectOption(el) {
-      let text = el.text().trim();
-      this.el.value = text;
+    selectOption(id) {
+      const entries = this.options.data.filter((entry) => entry.id == id);
+      if (entries.length === 0) return;
+      const entry = entries[0];
+      this.el.value = entry.text || entry.id;
       this.$el.trigger('change');
       this._resetAutocomplete();
       this.close();
-      // Handle onAutocomplete callback.
-      if (typeof this.options.onAutocomplete === 'function') {
-        this.options.onAutocomplete.call(this, text);
-      }
+      // Trigger Autocomplete Event
+      if (typeof this.options.onAutocomplete === 'function')
+        this.options.onAutocomplete.call(this, entry);
     }
     open() {
-      let val = this.el.value.toLowerCase();
+      const selectedValue = this.el.value.toLowerCase();
       this._resetAutocomplete();
-      if (val.length >= this.options.minLength) {
+      if (selectedValue.length >= this.options.minLength) {
         this.isOpen = true;
-        this._renderDropdown(this.options.data, val);
+        this._renderDropdown(this.options.data, selectedValue);
       }
       // Open dropdown
-      if (!this.dropdown.isOpen) {
-        this.dropdown.open();
-      } else {
-        // Recalculate dropdown when its already open
-        this.dropdown.recalculateDimensions();
-      }
+      if (!this.dropdown.isOpen) this.dropdown.open();
+      else this.dropdown.recalculateDimensions(); // Recalculate dropdown when its already open
     }
     close() {
       this.dropdown.close();
     }
     updateData(data) {
-      let val = this.el.value.toLowerCase();
+      let selectedValue = this.el.value.toLowerCase();
       this.options.data = data;
-
-      if (this.isOpen) {
-        this._renderDropdown(data, val);
-      }
+      if (this.isOpen) this._renderDropdown(data, selectedValue);
     }
   }
 
