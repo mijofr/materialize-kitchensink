@@ -80,12 +80,10 @@
         if (this.isMultiple) {
           // Multi-Select
           this._toggleEntryFromArray(value);
-          this._setValueToInput();
         } else {
           // Single-Select
           this._deselectAll();
           value.el.setAttribute('selected', 'selected');
-          this._setValueToInput();
         }
         const actualSelectedValues = this.getSelectedValues();
         const selectionHasChanged = !this._arraysEqual(
