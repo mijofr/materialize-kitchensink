@@ -57,14 +57,12 @@
     _handleSelectChange(e) {
       this._setValueToInput();
     }
-
     _handleOptionClick(e) {
       e.preventDefault();
       let virtualOption = $(e.target).closest('li')[0];
       this._selectOptionElement(virtualOption);
       e.stopPropagation();
     }
-
     _arraysEqual(a, b) {
       if (a === b) return true;
       if (a == null || b == null) return false;
@@ -72,7 +70,6 @@
       for (let i = 0; i < a.length; ++i) if (a[i] !== b[i]) return false;
       return true;
     }
-
     _selectOptionElement(virtualOption) {
       if (!$(virtualOption).hasClass('disabled') && !$(virtualOption).hasClass('optgroup')) {
         const value = this._values.filter((value) => value.optionEl === virtualOption)[0];
@@ -94,14 +91,12 @@
       }
       if (!this.isMultiple) this.dropdown.close();
     }
-
     _handleInputClick() {
       if (this.dropdown && this.dropdown.isOpen) {
         this._setValueToInput();
         this._setSelectedStates();
       }
     }
-
     _setupDropdown() {
       this.wrapper = document.createElement('div');
       $(this.wrapper).addClass('select-wrapper ' + this.options.classes);
@@ -203,11 +198,9 @@
       // Add initial selections
       this._setSelectedStates();
     }
-
     _addOptionToValues(realOption, virtualOption) {
       this._values.push({ el: realOption, optionEl: virtualOption });
     }
-
     _removeDropdown() {
       $(this.wrapper)
         .find('.caret')
@@ -217,7 +210,6 @@
       $(this.wrapper).before(this.$el);
       $(this.wrapper).remove();
     }
-
     _createAndAppendOptionWithIcon(realOption, type) {
       const li = document.createElement('li');
       if (realOption.disabled) li.classList.add('disabled');
@@ -241,7 +233,6 @@
       $(this.dropdownOptions).append(li);
       return li;
     }
-
     _deselectValue(value) {
       value.optionEl.classList.remove('selected');
       value.el.removeAttribute('selected');
@@ -294,6 +285,7 @@
       if (!this.isMultiple) ul.find('li.selected').removeClass('selected');
       $(li).addClass('selected');
     }
+
     getSelectedValues() {
       return this._values.filter(
         (value) => value.el.hasAttribute('selected') && !value.el.hasAttribute('disabled')
