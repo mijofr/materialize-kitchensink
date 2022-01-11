@@ -109,10 +109,10 @@
         });
         // Methods
         document.querySelector('.btn1').addEventListener('click', e => {
-          alert(instances[0].getSelectedValues().map(value => value.el.value));
+          alert(instances[0].getSelectedValues());
         });
         document.querySelector('.btn2').addEventListener('click', e => {
-          alert(instances[1].getSelectedValues().map(value => value.el.value));
+          alert(instances[1].getSelectedValues());
         });
       });
     </script>

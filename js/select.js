@@ -287,9 +287,9 @@
     }
 
     getSelectedValues() {
-      return this._values.filter(
-        (value) => value.el.hasAttribute('selected') && !value.el.hasAttribute('disabled')
-      );
+      return this._values
+        .filter((value) => value.el.hasAttribute('selected') && !value.el.hasAttribute('disabled'))
+        .map((value) => value.el.value);
     }
   }
 
