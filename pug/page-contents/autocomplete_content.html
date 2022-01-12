@@ -53,11 +53,11 @@
     var elems = document.querySelectorAll('.autocomplete');
     var instances = M.Autocomplete.init(elems, {
       // specify options here
-      data: {
-        "Apple": null,
-        "Microsoft": null,
-        "Google": 'https://placehold.it/250x250'
-      }
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ]
     });
   });
 
@@ -67,11 +67,11 @@
   $(document).ready(function(){
     $('input.autocomplete').autocomplete({
       // specify options here
-      data: {
-        "Apple": null,
-        "Microsoft": null,
-        "Google": 'https://placehold.it/250x250'
-      },
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ],
     });
   });
           </code>
@@ -94,9 +94,9 @@
           <tbody>
             <tr>
               <td>data</td>
-              <td>Object</td>
-              <td>{}</td>
-              <td>Data object defining autocomplete options with optional icon strings.</td>
+              <td>Array</td>
+              <td>[]</td>
+              <td>	Array with Data-Objects defining autocomplete options with optional icon (image). Required is only <u>id</u> which can be a string too. Also it is possible to use the properties <u>text</u> and <u>image</u>.</td>
             </tr>
             <tr>
               <td>limit</td>
@@ -108,13 +108,13 @@
               <td>onAutocomplete</td>
               <td>Function</td>
               <td>null</td>
-              <td>Callback for when autocompleted.</td>
+              <td>Callback for when autocompleted. After a Selection was made this Function is called. This is also called when a default value is set.</td>
             </tr>
             <tr>
               <td>minLength</td>
               <td>Number</td>
               <td>1</td>
-              <td>Minimum number of characters before autocomplete starts.</td>
+              <td>Minimum number of characters before autocomplete starts. When set to 0, the Options are shown on click or focus.</td>
             </tr>
             <tr>
               <td>sortFunction</td>
@@ -132,7 +132,7 @@
               <td>dropdownOptions</td>
               <td>Object</td>
               <td>{}</td>
-              <td>Pass options object to select dropdown initialization.</td>
+              <td>Pass options object for the dropdown initialization.</td>
             </tr>
           </tbody>
         </table>
@@ -197,30 +197,31 @@ instance.close();
         <br>
 
         <h5 class="method-header">
-          .selectOption();
+          .selectOption(id);
         </h5>
-        <p>Select a specific autocomplete options.</p>
+        <p>Select a specific autocomplete option via id-property.</p>
         <h6>Arguments</h6>
         <p>
-          <b>Element:</b> Element of the autocomplete option.</p>
+          <b>id:</b> The id of a data-entry.</p>
         <pre><code class="language-javascript col s12">
-instance.selectOption(el);
+instance.selectOption(42);
       </code></pre>
         <br>
 
         <h5 class="method-header">
-          .updateData();
+          .updateData(dataArray);
         </h5>
-        <p>Update autocomplete options data.</p>
+        <p>Updates the autocomplete options which can be selected.</p>
         <h6>Arguments</h6>
         <p>
-          <b>Object:</b> Autocomplete options data object.</p>
+          <b>dataArray:</b> Autocomplete options Data-Array.</p>
         <pre><code class="language-javascript col s12">
-instance.updateData({
-  "Apple": null,
-  "Microsoft": null,
-  "Google": 'https://placehold.it/250x250'
-});
+instance.updateData([
+  {id: "Test"},
+  {id: 12, text: "Apple"},
+  {id: 13, text: "Microsoft"},
+  {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+]);
       </code></pre>
         <br>
 
