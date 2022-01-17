@@ -255,9 +255,13 @@
       li.querySelector('input[type="checkbox"]').checked = !isSelected;
       return isSelected;
     }
+    _isOptionChosen(realOption) {
+      if (realOption.hasAttribute('disabled')) return false;
+      return realOption.selected || realOption.hasAttribute('selected');
+    }
     _setValueToInput() {
       const texts = this._values
-        .filter((value) => value.el.hasAttribute('selected') && !value.el.hasAttribute('disabled'))
+        .filter((value) => this._isOptionChosen(value.el))
         .map((value) => value.optionEl.querySelector('span').innerText.trim());
       // Set input-text to first Option with empty value which indicates a description like "choose your option"
       if (texts.length === 0) {
@@ -288,7 +292,7 @@
 
     getSelectedValues() {
       return this._values
-        .filter((value) => value.el.hasAttribute('selected') && !value.el.hasAttribute('disabled'))
+        .filter((value) => this._isOptionChosen(value.el))
         .map((value) => value.el.value);
     }
   }
