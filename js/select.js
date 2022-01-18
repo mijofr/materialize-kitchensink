@@ -80,8 +80,11 @@
         } else {
           // Single-Select
           this._deselectAll();
-          value.el.setAttribute('selected', 'selected');
+          this._selectValue(value);
         }
+        // Refresh Input-Text
+        this._setValueToInput();
+        // Trigger Change-Event only when data is different
         const actualSelectedValues = this.getSelectedValues();
         const selectionHasChanged = !this._arraysEqual(
           previousSelectedValues,
@@ -166,6 +169,7 @@
       // Initialize dropdown
       if (!this.el.disabled) {
         let dropdownOptions = $.extend({}, this.options.dropdownOptions);
+        dropdownOptions.coverTrigger = false;
         let userOnOpenEnd = dropdownOptions.onOpenEnd;
         // Add callback for centering selected option when dropdown content is scrollable
         dropdownOptions.onOpenEnd = (el) => {
@@ -233,36 +237,41 @@
       $(this.dropdownOptions).append(li);
       return li;
     }
+
+    _selectValue(value) {
+      value.el.selected = true;
+      value.optionEl.classList.add('selected');
+      const checkbox = value.optionEl.querySelector('input[type="checkbox"]');
+      if (checkbox) checkbox.checked = true;
+    }
     _deselectValue(value) {
+      value.el.selected = false;
       value.optionEl.classList.remove('selected');
-      value.el.removeAttribute('selected');
+      const checkbox = value.optionEl.querySelector('input[type="checkbox"]');
+      if (checkbox) checkbox.checked = false;
     }
     _deselectAll() {
       this._values.forEach((value) => {
         this._deselectValue(value);
       });
     }
+    _isValueSelected(value) {
+      const realValues = this.getSelectedValues();
+      return realValues.some((realValue) => realValue === value.el.value);
+    }
     _toggleEntryFromArray(value) {
-      const li = value.optionEl;
-      const isSelected = li.classList.contains('selected');
-      if (isSelected) {
-        value.el.removeAttribute('selected');
-        li.classList.remove('selected');
-      } else {
-        value.el.setAttribute('selected', 'selected');
-        li.classList.add('selected');
-      }
-      li.querySelector('input[type="checkbox"]').checked = !isSelected;
-      return isSelected;
+      const isSelected = this._isValueSelected(value);
+      if (isSelected) this._deselectValue(value);
+      else this._selectValue(value);
     }
-    _isOptionChosen(realOption) {
-      if (realOption.hasAttribute('disabled')) return false;
-      return realOption.selected || realOption.hasAttribute('selected');
+    _getSelectedOptions() {
+      return Array.prototype.filter.call(this.el.selectedOptions, (realOption) => realOption);
     }
+
     _setValueToInput() {
-      const texts = this._values
-        .filter((value) => this._isOptionChosen(value.el))
-        .map((value) => value.optionEl.querySelector('span').innerText.trim());
+      const realOptions = this._getSelectedOptions();
+      const values = this._values.filter((value) => realOptions.indexOf(value.el) >= 0);
+      const texts = values.map((value) => value.optionEl.querySelector('span').innerText.trim());
       // Set input-text to first Option with empty value which indicates a description like "choose your option"
       if (texts.length === 0) {
         const firstDisabledOption = this.$el.find('option:disabled').eq(0);
@@ -291,9 +300,7 @@
     }
 
     getSelectedValues() {
-      return this._values
-        .filter((value) => this._isOptionChosen(value.el))
-        .map((value) => value.el.value);
+      return this._getSelectedOptions().map((realOption) => realOption.value);
     }
   }
 
