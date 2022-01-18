@@ -265,13 +265,21 @@
       else this._selectValue(value);
     }
     _getSelectedOptions() {
-      return Array.prototype.map.call(this.el.selectedOptions, (realOption) => realOption);
+      return Array.prototype.filter.call(this.el.selectedOptions, (realOption) => realOption);
     }
 
     _setValueToInput() {
       const realOptions = this._getSelectedOptions();
       const values = this._values.filter((value) => realOptions.indexOf(value.el) >= 0);
       const texts = values.map((value) => value.optionEl.querySelector('span').innerText.trim());
+      // Set input-text to first Option with empty value which indicates a description like "choose your option"
+      if (texts.length === 0) {
+        const firstDisabledOption = this.$el.find('option:disabled').eq(0);
+        if (firstDisabledOption.length > 0 && firstDisabledOption[0].value === '') {
+          this.input.value = firstDisabledOption.text();
+          return;
+        }
+      }
       this.input.value = texts.join(', ');
     }
     _setSelectedStates() {
