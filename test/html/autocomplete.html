@@ -166,16 +166,16 @@
             {id: "test"}
         ];
         const countries = [
-            {id: 'Afghanistan'},
+            {id: 'Afghanistan', image: '../../docs/images/placeholder/250x250_e.png'},
             {id: 'Albania'},
             {id: 'Algeria'},
-            {id: 'Andorra'},
+            {id: 'Andorra', image: '../../docs/images/placeholder/250x250_d.png'},
             {id: 'Angola'},
             {id: 'Antigua and Barbuda'},
             {id: 'Argentina'},
             {id: 'Armenia'},
-            {id: 'Australia'},
-            {id: 'Austria'},
+            {id: 'Australia', image: '../../docs/images/placeholder/250x250_c.png'},
+            {id: 'Austria', image: '../../docs/images/placeholder/250x250_a.png'},
             {id: 'Azerbaijan'},
             {id: 'The Bahamas'},
             {id: 'Bahrain'},
@@ -231,7 +231,7 @@
             {id: 'Gabon'},
             {id: 'The Gambia'},
             {id: 'Georgia'},
-            {id: 'Germany'},
+            {id: 'Germany', image: '../../docs/images/placeholder/250x250_b.png'},
             {id: 'Ghana'},
             {id: 'Greece'},
             {id: 'Grenada'},
@@ -379,7 +379,7 @@
         const a1 = {
             //data: defaultData,
             minLength: 0,
-            limit: 5,
+            limit: 10,
             onSearch: (text, instance) => {
                 setTimeout(() => {
                     const matchingData = countries.filter(country => country.id.toLowerCase().indexOf(text.toLowerCase()) !== -1);

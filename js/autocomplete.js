@@ -16,6 +16,7 @@
       // Sort function for sorting autocomplete results
       return a.indexOf(inputString) - b.indexOf(inputString);
     },
+    isMultipleSelect: true,
     onSearch: null, // dynamic read function
     allowUnsafeHTML: false
   };
@@ -30,6 +31,7 @@
       this.count = 0;
       this.activeIndex = -1;
       this.oldVal;
+      this.selectedValues = [];
       this.$inputField = this.$el.closest('.input-field');
       this.$active = $();
       this._mousedown = false;
@@ -202,15 +204,6 @@
     _handleContainerMouseupAndTouchend(e) {
       this._mousedown = false;
     }
-    _highlightPartialText(input, label) {
-      const start = label.toLowerCase().indexOf('' + input.toLowerCase() + '');
-      const end = start + input.length - 1;
-      //custom filters may return results where the string does not match any part
-      if (start == -1 || end == -1) {
-        return [label, '', ''];
-      }
-      return [label.slice(0, start), label.slice(start, end + 1), label.slice(end + 1)];
-    }
     _resetCurrentElementPosition() {
       this.activeIndex = -1;
       this.$active.removeClass('active');
@@ -222,30 +215,63 @@
       this.isOpen = false;
       this._mousedown = false;
     }
+
+    _highlightPartialText(input, label) {
+      const start = label.toLowerCase().indexOf('' + input.toLowerCase() + '');
+      const end = start + input.length - 1;
+      //custom filters may return results where the string does not match any part
+      if (start == -1 || end == -1) {
+        return [label, '', ''];
+      }
+      return [label.slice(0, start), label.slice(start, end + 1), label.slice(end + 1)];
+    }
     _createDropdownItem(entry, inputText) {
       const item = document.createElement('li');
       item.setAttribute('data-id', entry.id);
+
+      item.setAttribute(
+        'style',
+        'display:grid; grid-template-columns: 50px 50px auto; grid-auto-flow: column; user-select: none;'
+      );
+      item.innerHTML = `
+        <div class="item-selection" style="align-self:center;text-align:center;">
+          <label><input type="checkbox"><span style="padding-left:21px;"></span></label>
+        </div>
+        <div class="item-image" style="align-self:center;text-align:center;"></div>
+        <div class="item-text" style="align-self:center;"></div>
+      `;
+
+      // Image
       if (entry.image) {
         const img = document.createElement('img');
-        img.classList.add('right', 'circle');
+        img.setAttribute('style', 'margin:0;');
+        img.classList.add('circle');
         img.src = entry.image;
-        item.appendChild(img);
+        item.querySelector('.item-image').appendChild(img);
       }
+      // Text
       const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
-      const span = document.createElement('span');
+      const div = document.createElement('div');
+      div.setAttribute('style', 'line-height:1.1;font-weight:600;');
       if (this.options.allowUnsafeHTML) {
-        span.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
+        div.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
       } else {
-        span.appendChild(document.createTextNode(parts[0]));
+        div.appendChild(document.createTextNode(parts[0]));
         if (parts[1]) {
           const highlight = document.createElement('span');
           highlight.textContent = parts[1];
           highlight.classList.add('highlight');
-          span.appendChild(highlight);
-          span.appendChild(document.createTextNode(parts[2]));
+          highlight.setAttribute('style', 'color:red;');
+          div.appendChild(highlight);
+          div.appendChild(document.createTextNode(parts[2]));
         }
       }
-      item.appendChild(span);
+      const description = document.createElement('small');
+      description.setAttribute('style', 'line-height:1.3;color:grey;');
+      description.innerText = 'This is a description...';
+
+      item.querySelector('.item-text').appendChild(div);
+      item.querySelector('.item-text').appendChild(description);
       return item;
     }
     _renderDropdown(inputText) {
@@ -299,16 +325,29 @@
     }
 
     selectOption(id) {
+      //console.log("Select Option...");
       const entries = this.options.data.filter((entry) => entry.id == id);
       if (entries.length === 0) return;
       const entry = entries[0];
-      this.el.value = entry.text || entry.id;
+
+      // Toggle Checkbox
+      const li = this.container.querySelector('li[data-id="' + id + '"]');
+      const checkbox = li.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      if (checkbox.checked) this.selectedValues.push(entry);
+      else this.selectedValues.filter((selectedEntry) => selectedEntry.id !== entry.id);
+      //console.log(this);
+      this.el.focus();
+
+      //this.el.value = entry.text || entry.id;
       this.$el.trigger('change');
-      this._resetAutocomplete();
-      this.close();
+      if (!this.options.isMultipleSelect) {
+        this._resetAutocomplete();
+        this.close();
+      }
       // Trigger Autocomplete Event
       if (typeof this.options.onAutocomplete === 'function')
-        this.options.onAutocomplete.call(this, entry);
+        this.options.onAutocomplete.call(this, this.selectedValues);
     }
     open() {
       const inputText = this.el.value.toLowerCase();
