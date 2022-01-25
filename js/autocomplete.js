@@ -16,6 +16,7 @@
       // Sort function for sorting autocomplete results
       return a.indexOf(inputString) - b.indexOf(inputString);
     },
+    onSearch: null, // dynamic read function
     allowUnsafeHTML: false
   };
 
@@ -142,24 +143,28 @@
     _handleInputKeyupAndFocus(e) {
       if (e.type === 'keyup') Autocomplete._keydown = false;
       this.count = 0;
-      let val = this.el.value.toLowerCase();
+      const actualValue = this.el.value.toLowerCase();
       // Don't capture enter or arrow key usage.
       if (e.keyCode === 13 || e.keyCode === 38 || e.keyCode === 40) return;
       // Check if the input isn't empty
       // Check if focus triggered by tab
-      if (this.oldVal !== val && (M.tabPressed || e.type !== 'focus')) this.open();
-      // Update oldVal
-      this.oldVal = val;
+      if (this.oldVal !== actualValue && (M.tabPressed || e.type !== 'focus')) {
+        this.open();
+        if (typeof this.options.onSearch === 'function') {
+          this._setLoading();
+          this.options.onSearch(this.el.value, this);
+        }
+      }
+      this.oldVal = actualValue;
     }
     _handleInputKeydown(e) {
       Autocomplete._keydown = true;
       // Arrow keys and enter key usage
-      let keyCode = e.keyCode,
-        liElement,
-        numItems = $(this.container).children('li').length;
+      const keyCode = e.keyCode;
+      const numItems = $(this.container).children('li').length;
       // select element on Enter
       if (keyCode === M.keys.ENTER && this.activeIndex >= 0) {
-        liElement = $(this.container)
+        const liElement = $(this.container)
           .children('li')
           .eq(this.activeIndex);
         if (liElement.length) {
@@ -171,12 +176,8 @@
       // Capture up and down key
       if (keyCode === M.keys.ARROW_UP || keyCode === M.keys.ARROW_DOWN) {
         e.preventDefault();
-        if (keyCode === M.keys.ARROW_UP && this.activeIndex > 0) {
-          this.activeIndex--;
-        }
-        if (keyCode === M.keys.ARROW_DOWN && this.activeIndex < numItems - 1) {
-          this.activeIndex++;
-        }
+        if (keyCode === M.keys.ARROW_UP && this.activeIndex > 0) this.activeIndex--;
+        if (keyCode === M.keys.ARROW_DOWN && this.activeIndex < numItems - 1) this.activeIndex++;
         this.$active.removeClass('active');
         if (this.activeIndex >= 0) {
           this.$active = $(this.container)
@@ -217,60 +218,84 @@
     _resetAutocomplete() {
       $(this.container).empty();
       this._resetCurrentElementPosition();
-      this.oldVal = null;
+      //this.oldVal = null;
       this.isOpen = false;
       this._mousedown = false;
     }
-    _renderDropdown(data, selectedValue) {
+    _createDropdownItem(entry, inputText) {
+      const item = document.createElement('li');
+      item.setAttribute('data-id', entry.id);
+      if (entry.image) {
+        const img = document.createElement('img');
+        img.classList.add('right', 'circle');
+        img.src = entry.image;
+        item.appendChild(img);
+      }
+      const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
+      const span = document.createElement('span');
+      if (this.options.allowUnsafeHTML) {
+        span.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
+      } else {
+        span.appendChild(document.createTextNode(parts[0]));
+        if (parts[1]) {
+          const highlight = document.createElement('span');
+          highlight.textContent = parts[1];
+          highlight.classList.add('highlight');
+          span.appendChild(highlight);
+          span.appendChild(document.createTextNode(parts[2]));
+        }
+      }
+      item.appendChild(span);
+      return item;
+    }
+    _renderDropdown(inputText) {
       this._resetAutocomplete();
 
-      let matchingData = data.filter(
-        (entry) => (entry.text || entry.id).toLowerCase().indexOf(selectedValue) !== -1
-      );
-      this.count = matchingData.length;
-
-      // Sort
-      if (this.options.sortFunction) {
-        let sortFunctionBound = (a, b) => {
-          return this.options.sortFunction(
-            (a.text || a.id).toLowerCase(),
-            (b.text || b.id).toLowerCase(),
-            selectedValue.toLowerCase()
-          );
-        };
-        matchingData.sort(sortFunctionBound);
+      let matchingData = this.options.data;
+      if (!typeof this.options.onSearch) {
+        // Default Search
+        matchingData = this.options.data.filter(
+          (entry) =>
+            (entry.text || entry.id)
+              .toString()
+              .toLowerCase()
+              .indexOf(inputText.toLowerCase()) !== -1
+        );
+        this.count = matchingData.length;
+        // Sort
+        if (this.options.sortFunction) {
+          let sortFunctionBound = (a, b) => {
+            return this.options.sortFunction(
+              (a.text || a.id).toString().toLowerCase(),
+              (b.text || b.id).toString().toLowerCase(),
+              inputText.toLowerCase()
+            );
+          };
+          matchingData.sort(sortFunctionBound);
+        }
       }
       // Limit
       matchingData = matchingData.slice(0, this.options.limit);
-
       // Render
       for (let i = 0; i < matchingData.length; i++) {
-        const entry = matchingData[i];
-        const item = document.createElement('li');
-        item.setAttribute('data-id', entry.id);
-        if (entry.image) {
-          const img = document.createElement('img');
-          img.classList.add('right', 'circle');
-          img.src = entry.image;
-          item.appendChild(img);
-        }
-        const parts = this._highlightPartialText(selectedValue, entry.text || entry.id);
-        const span = document.createElement('span');
-        if (this.options.allowUnsafeHTML) {
-          span.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
-        } else {
-          span.appendChild(document.createTextNode(parts[0]));
-          if (parts[1]) {
-            const highlight = document.createElement('span');
-            highlight.textContent = parts[1];
-            highlight.classList.add('highlight');
-            span.appendChild(highlight);
-            span.appendChild(document.createTextNode(parts[2]));
-          }
-        }
-        item.appendChild(span);
+        const item = this._createDropdownItem(matchingData[i], inputText);
         $(this.container).append(item);
       }
+    }
+    _setLoading() {
+      const div = document.createElement('div');
+      div.classList.add('status-info');
+      div.setAttribute('style', 'position: absolute;right:0;top:0;');
+      div.innerHTML = `<div style="height:50px;width:50px;"><svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+      <circle fill="#888c" stroke="none" cx="6" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1"/></circle>
+      <circle fill="#888c" stroke="none" cx="26" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.2"/></circle>
+      <circle fill="#888c" stroke="none" cx="46" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite"  begin="0.3"/></circle>
+    </svg></div>`;
+      this._unsetLoading();
+      this.el.parentElement.appendChild(div);
+    }
+    _unsetLoading() {
+      this.el.parentElement.querySelectorAll('.status-info').forEach((el) => el.remove());
     }
 
     selectOption(id) {
@@ -286,11 +311,11 @@
         this.options.onAutocomplete.call(this, entry);
     }
     open() {
-      const selectedValue = this.el.value.toLowerCase();
+      const inputText = this.el.value.toLowerCase();
       this._resetAutocomplete();
-      if (selectedValue.length >= this.options.minLength) {
+      if (inputText.length >= this.options.minLength) {
         this.isOpen = true;
-        this._renderDropdown(this.options.data, selectedValue);
+        this._renderDropdown(inputText);
       }
       // Open dropdown
       if (!this.dropdown.isOpen) this.dropdown.open();
@@ -300,9 +325,14 @@
       this.dropdown.close();
     }
     updateData(data) {
-      let selectedValue = this.el.value.toLowerCase();
+      const inputText = this.el.value.toLowerCase();
       this.options.data = data;
-      if (this.isOpen) this._renderDropdown(data, selectedValue);
+      //if (this.isOpen)
+      this._renderDropdown(inputText);
+      this.open();
+      if (typeof this.options.onSearch === 'function') {
+        this._unsetLoading();
+      }
     }
   }
 
