@@ -166,7 +166,7 @@
             {id: "test"}
         ];
         const countries = [
-            {id: 'Afghanistan', image: '../../docs/images/placeholder/250x250_e.png'},
+            {id: 'Afghanistan', image: '../../docs/images/placeholder/250x250_e.png', description: 'The name Afghanistan (Afghānistān, land of the Afghans/Pashtuns, afāghina, sing. afghān) can be traced to the early eighth/fourteenth century.'},
             {id: 'Albania'},
             {id: 'Algeria'},
             {id: 'Andorra', image: '../../docs/images/placeholder/250x250_d.png'},
@@ -175,7 +175,7 @@
             {id: 'Argentina'},
             {id: 'Armenia'},
             {id: 'Australia', image: '../../docs/images/placeholder/250x250_c.png'},
-            {id: 'Austria', image: '../../docs/images/placeholder/250x250_a.png'},
+            {id: 'Austria', image: '../../docs/images/placeholder/250x250_a.png', description: 'There are nice Mountains.'},
             {id: 'Azerbaijan'},
             {id: 'The Bahamas'},
             {id: 'Bahrain'},
@@ -384,7 +384,7 @@
                 setTimeout(() => {
                     const matchingData = countries.filter(country => country.id.toLowerCase().indexOf(text.toLowerCase()) !== -1);
                     instance.updateData(matchingData);
-                }, 1000);
+                }, 300);
             },
             onAutocomplete: entry => console.log('a1', entry)
         };

@@ -108,6 +108,7 @@
     }
     _setupDropdown() {
       this.container = document.createElement('ul');
+      this.container.style.maxHeight = '300px'; // TODO: Set as Option
       this.container.id = `autocomplete-options-${M.guid()}`;
       $(this.container).addClass('autocomplete-content dropdown-content');
       this.$inputField.append(this.container);
@@ -132,6 +133,12 @@
       this.el.removeEventListener('click', this.dropdown._handleClickBound);
       // Set Value if already set in HTML
       if (this.el.value) this.selectOption(this.el.value);
+      // Add Status
+      const div = document.createElement('div');
+      div.classList.add('status-info');
+      div.setAttribute('style', 'position: absolute;right:0;top:0;');
+      this.el.parentElement.appendChild(div);
+      this._unsetLoading(); // render Status
     }
     _removeDropdown() {
       this.container.parentNode.removeChild(this.container);
@@ -152,6 +159,9 @@
       // Check if focus triggered by tab
       if (this.oldVal !== actualValue && (M.tabPressed || e.type !== 'focus')) {
         this.open();
+      }
+      // Value has changed!
+      if (this.oldVal !== actualValue) {
         if (typeof this.options.onSearch === 'function') {
           this._setLoading();
           this.options.onSearch(this.el.value, this);
@@ -231,14 +241,16 @@
 
       item.setAttribute(
         'style',
-        'display:grid; grid-template-columns: 50px 50px auto; grid-auto-flow: column; user-select: none;'
+        'display:grid; grid-template-columns: 35px 60px auto; grid-auto-flow: column; user-select: none; align-items: center;'
       );
       item.innerHTML = `
-        <div class="item-selection" style="align-self:center;text-align:center;">
-          <label><input type="checkbox"><span style="padding-left:21px;"></span></label>
+        <div class="item-selection" style="text-align:right;">
+          <input type="checkbox"${
+            this.selectedValues.some((sel) => sel.id === entry.id) ? ' checked="checked"' : ''
+          }><span style="padding-left:21px;"></span>
         </div>
-        <div class="item-image" style="align-self:center;text-align:center;"></div>
-        <div class="item-text" style="align-self:center;"></div>
+        <div class="item-image" style="text-align:center;"></div>
+        <div class="item-text" style="overflow:hidden;"></div>
       `;
 
       // Image
@@ -252,7 +264,7 @@
       // Text
       const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
       const div = document.createElement('div');
-      div.setAttribute('style', 'line-height:1.1;font-weight:600;');
+      div.setAttribute('style', 'line-height:1.2;font-weight:600;');
       if (this.options.allowUnsafeHTML) {
         div.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
       } else {
@@ -266,12 +278,18 @@
           div.appendChild(document.createTextNode(parts[2]));
         }
       }
-      const description = document.createElement('small');
-      description.setAttribute('style', 'line-height:1.3;color:grey;');
-      description.innerText = 'This is a description...';
-
       item.querySelector('.item-text').appendChild(div);
-      item.querySelector('.item-text').appendChild(description);
+
+      // Description
+      if (entry.description) {
+        const description = document.createElement('small');
+        description.setAttribute(
+          'style',
+          'line-height:1.3;color:grey;white-space:nowrap;text-overflow:ellipsis;display:block;width:90%;overflow:hidden;'
+        );
+        description.innerText = entry.description;
+        item.querySelector('.item-text').appendChild(description);
+      }
       return item;
     }
     _renderDropdown(inputText) {
@@ -309,19 +327,17 @@
       }
     }
     _setLoading() {
-      const div = document.createElement('div');
-      div.classList.add('status-info');
-      div.setAttribute('style', 'position: absolute;right:0;top:0;');
-      div.innerHTML = `<div style="height:50px;width:50px;"><svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+      this.el.parentElement.querySelector(
+        '.status-info'
+      ).innerHTML = `<div style="height:50px;width:50px;"><svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
       <circle fill="#888c" stroke="none" cx="6" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1"/></circle>
       <circle fill="#888c" stroke="none" cx="26" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.2"/></circle>
       <circle fill="#888c" stroke="none" cx="46" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite"  begin="0.3"/></circle>
     </svg></div>`;
-      this._unsetLoading();
-      this.el.parentElement.appendChild(div);
     }
     _unsetLoading() {
-      this.el.parentElement.querySelectorAll('.status-info').forEach((el) => el.remove());
+      this.el.parentElement.querySelector('.status-info').innerHTML =
+        this.selectedValues.length + ' selected';
     }
 
     selectOption(id) {
@@ -334,10 +350,16 @@
       const li = this.container.querySelector('li[data-id="' + id + '"]');
       const checkbox = li.querySelector('input[type="checkbox"]');
       checkbox.checked = !checkbox.checked;
+
       if (checkbox.checked) this.selectedValues.push(entry);
-      else this.selectedValues.filter((selectedEntry) => selectedEntry.id !== entry.id);
+      else
+        this.selectedValues = this.selectedValues.filter(
+          (selectedEntry) => selectedEntry.id !== entry.id
+        );
+
       //console.log(this);
       this.el.focus();
+      this._unsetLoading();
 
       //this.el.value = entry.text || entry.id;
       this.$el.trigger('change');
