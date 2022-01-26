@@ -241,14 +241,15 @@
 
       item.setAttribute(
         'style',
-        'display:grid; grid-template-columns: 35px 50px auto; grid-auto-flow: column; user-select: none; align-items: center;'
+        'display:grid; grid-auto-flow: column; user-select: none; align-items: center;'
       );
       item.innerHTML = `
-        <div class="item-selection" style="text-align:right;">
-          <input type="checkbox"${
-            this.selectedValues.some((sel) => sel.id === entry.id) ? ' checked="checked"' : ''
-          }><span style="padding-left:21px;"></span>
+        <div class="item-selection" style="text-align:center;">
+        <input type="checkbox"${
+          this.selectedValues.some((sel) => sel.id === entry.id) ? ' checked="checked"' : ''
+        }><span style="padding-left:21px;"></span>
         </div>`;
+      let gridCounter = 2;
 
       // Image
       if (entry.image) {
@@ -257,7 +258,9 @@
         img.classList.add('circle');
         img.src = entry.image;
         item.appendChild(img);
+        gridCounter++;
       }
+
       // Text
       const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
       const div = document.createElement('div');
@@ -279,7 +282,6 @@
       itemText.classList.add('item-text');
       itemText.setAttribute('style', 'overflow:hidden;');
       item.appendChild(itemText);
-
       item.querySelector('.item-text').appendChild(div);
 
       // Description
@@ -292,6 +294,9 @@
         description.innerText = entry.description;
         item.querySelector('.item-text').appendChild(description);
       }
+      // Set Grid
+      if (gridCounter === 2) item.style.gridTemplateColumns = '42px auto';
+      else if (gridCounter === 3) item.style.gridTemplateColumns = '42px 50px auto';
       return item;
     }
     _renderDropdown(inputText) {
