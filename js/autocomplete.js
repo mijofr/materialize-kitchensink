@@ -241,7 +241,7 @@
 
       item.setAttribute(
         'style',
-        'display:grid; grid-auto-flow: column; user-select: none; align-items: center;'
+        'display:grid; grid-auto-flow: column; user-select: none; align-items: center; gap: 0.5em;'
       );
       item.innerHTML = `
         <div class="item-selection" style="text-align:center;">
@@ -264,7 +264,7 @@
       // Text
       const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
       const div = document.createElement('div');
-      div.setAttribute('style', 'line-height:1.2;font-weight:600;');
+      div.setAttribute('style', 'line-height:1.2;font-weight:500;');
       if (this.options.allowUnsafeHTML) {
         div.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
       } else {
@@ -273,7 +273,6 @@
           const highlight = document.createElement('span');
           highlight.textContent = parts[1];
           highlight.classList.add('highlight');
-          highlight.setAttribute('style', 'color:red;');
           div.appendChild(highlight);
           div.appendChild(document.createTextNode(parts[2]));
         }
@@ -295,8 +294,8 @@
         item.querySelector('.item-text').appendChild(description);
       }
       // Set Grid
-      if (gridCounter === 2) item.style.gridTemplateColumns = '42px auto';
-      else if (gridCounter === 3) item.style.gridTemplateColumns = '42px 50px auto';
+      if (gridCounter === 2) item.style.gridTemplateColumns = '40px auto';
+      else if (gridCounter === 3) item.style.gridTemplateColumns = '40px min-content auto';
       return item;
     }
     _renderDropdown(inputText) {
