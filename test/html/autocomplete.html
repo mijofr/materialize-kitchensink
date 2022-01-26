@@ -20,14 +20,24 @@
             <button class="btn1">Set Option (A1)</button>
             <button class="btn2">Set Option (A6)</button>
         </div>
+
         <h5>Default autocomplete example</h5>
         <div class="row">
-            <div class="col s12">
+            <div class="col s6">
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">textsms</i>
                         <input type="text" id="autocomplete-1" class="autocomplete">
                         <label for="autocomplete-1">Autocomplete</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col s6">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">textsms</i>
+                        <input type="text" id="autocomplete-12" class="autocomplete">
+                        <label for="autocomplete-12">Autocomplete</label>
                     </div>
                 </div>
             </div>
@@ -369,6 +379,7 @@
             //data: defaultData,
             minLength: 0,
             limit: 10,
+            isMultiSelect: true,
             onSearch: (text, instance) => {
                 setTimeout(() => {
                     const matchingData = countries.filter(country => country.id.toLowerCase().indexOf(text.toLowerCase()) !== -1);
@@ -376,6 +387,17 @@
                 }, 300);
             },
             onAutocomplete: entry => console.log('a1', entry)
+        };
+        const a12 = {
+            minLength: 0,
+            isMultiSelect: false,
+            onSearch: (text, instance) => {
+                setTimeout(() => {
+                    const matchingData = countries.filter(country => country.id.toLowerCase().indexOf(text.toLowerCase()) !== -1);
+                    instance.updateData(matchingData);
+                }, 300);
+            },
+            onAutocomplete: entry => console.log('a12', entry)
         };
         const a2 = {
             data: defaultData,
@@ -411,6 +433,7 @@
 
         document.addEventListener('DOMContentLoaded', function (){
             const inst1 = M.Autocomplete.init(document.getElementById('autocomplete-1'), a1);
+            M.Autocomplete.init(document.getElementById('autocomplete-12'), a12);
             M.Autocomplete.init(document.getElementById('autocomplete-2'), a2);
             M.Autocomplete.init(document.getElementById('autocomplete-3'), a3);
             M.Autocomplete.init(document.getElementById('autocomplete-4'), a4);

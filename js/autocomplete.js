@@ -16,7 +16,7 @@
       // Sort function for sorting autocomplete results
       return a.indexOf(inputString) - b.indexOf(inputString);
     },
-    isMultipleSelect: true,
+    isMultiSelect: true,
     onSearch: null, // dynamic read function
     allowUnsafeHTML: false
   };
@@ -235,32 +235,30 @@
       }
       return [label.slice(0, start), label.slice(start, end + 1), label.slice(end + 1)];
     }
+
     _createDropdownItem(entry, inputText) {
       const item = document.createElement('li');
       item.setAttribute('data-id', entry.id);
-
       item.setAttribute(
         'style',
-        'display:grid; grid-auto-flow: column; user-select: none; align-items: center; gap: 0.5em;'
+        'display:grid; grid-auto-flow: column; user-select: none; align-items: center;'
       );
-      item.innerHTML = `
-        <div class="item-selection" style="text-align:center;">
-        <input type="checkbox"${
-          this.selectedValues.some((sel) => sel.id === entry.id) ? ' checked="checked"' : ''
-        }><span style="padding-left:21px;"></span>
+      // Checkbox
+      if (this.options.isMultiSelect) {
+        item.innerHTML = `
+          <div class="item-selection" style="text-align:center;">
+          <input type="checkbox"${
+            this.selectedValues.some((sel) => sel.id === entry.id) ? ' checked="checked"' : ''
+          }><span style="padding-left:21px;"></span>
         </div>`;
-      let gridCounter = 2;
-
+      }
       // Image
       if (entry.image) {
         const img = document.createElement('img');
-        img.setAttribute('style', 'margin:0;');
         img.classList.add('circle');
         img.src = entry.image;
         item.appendChild(img);
-        gridCounter++;
       }
-
       // Text
       const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
       const div = document.createElement('div');
@@ -279,10 +277,9 @@
       }
       const itemText = document.createElement('div');
       itemText.classList.add('item-text');
-      itemText.setAttribute('style', 'overflow:hidden;');
+      itemText.setAttribute('style', 'padding:5px;overflow:hidden;');
       item.appendChild(itemText);
       item.querySelector('.item-text').appendChild(div);
-
       // Description
       if (entry.description) {
         const description = document.createElement('small');
@@ -294,10 +291,18 @@
         item.querySelector('.item-text').appendChild(description);
       }
       // Set Grid
-      if (gridCounter === 2) item.style.gridTemplateColumns = '40px auto';
-      else if (gridCounter === 3) item.style.gridTemplateColumns = '40px min-content auto';
+      const getGridConfig = () => {
+        if (this.options.isMultiSelect) {
+          if (entry.image) return '40px min-content auto'; // cb-img-txt
+          return '40px auto'; // cb-txt
+        }
+        if (entry.image) return 'min-content auto'; // img-txt
+        return 'auto'; // txt
+      };
+      item.style.gridTemplateColumns = getGridConfig();
       return item;
     }
+
     _renderDropdown(inputText) {
       this._resetAutocomplete();
 
@@ -343,7 +348,10 @@
     }
     _unsetLoading() {
       const statusElement = this.el.parentElement.querySelector('.status-info');
-      if (statusElement) statusElement.innerHTML = this.selectedValues.length + ' selected';
+      if (statusElement)
+        statusElement.innerHTML = this.options.isMultiSelect
+          ? this.selectedValues.length + ' selected'
+          : '';
     }
 
     selectOption(id) {
@@ -368,7 +376,7 @@
 
       //this.el.value = entry.text || entry.id;
       this.$el.trigger('change');
-      if (!this.options.isMultipleSelect) {
+      if (!this.options.isMultiSelect) {
         this._resetAutocomplete();
         this.close();
       }
