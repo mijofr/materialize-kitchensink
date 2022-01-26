@@ -1,31 +1,25 @@
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
-
     <title>Materialize - Documentation</title>
-
     <!-- Favicons -->
     <link rel="apple-touch-icon-precomposed" href="images/favicon/apple-touch-icon-152x152.png">
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png">
     <link rel="icon" href="../../images/favicon/favicon-32x32.png" sizes="32x32">
-
     <!-- Android 5 Chrome Color -->
     <meta name="theme-color" content="#EE6E73">
-
     <link href="../../bin/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
     <link href="../../css/prism.css" rel="stylesheet" />
-
 </head>
-
 <body>
-
     <div class="container">
-
+        <div>
+            <button class="btn1">Set Option (A1)</button>
+            <button class="btn2">Set Option (A6)</button>
+        </div>
         <h5>Default autocomplete example</h5>
         <div class="row">
             <div class="col s12">
@@ -143,11 +137,6 @@
                 </div>
             </div>
         </div> -->
-
-        <div>
-            <button class="btnAutocomplete6">Set Option (A6)</button>
-        </div>
-
     </div>
 
     <!--  Scripts-->
@@ -420,19 +409,18 @@
             onAutocomplete: entry => console.log('a6', entry)
         };
 
-        document.addEventListener('DOMContentLoaded', function () {
-            M.Autocomplete.init(document.getElementById('autocomplete-1'), a1);
+        document.addEventListener('DOMContentLoaded', function (){
+            const inst1 = M.Autocomplete.init(document.getElementById('autocomplete-1'), a1);
             M.Autocomplete.init(document.getElementById('autocomplete-2'), a2);
             M.Autocomplete.init(document.getElementById('autocomplete-3'), a3);
             M.Autocomplete.init(document.getElementById('autocomplete-4'), a4);
             M.Autocomplete.init(document.getElementById('autocomplete-5'), a5);
             const inst6 = M.Autocomplete.init(document.getElementById('autocomplete-6'), a6);
 
-            document.querySelector('.btnAutocomplete6').addEventListener('click', e => {
-                inst6.selectOption(42);
-            });
+            // Buttons
+            document.querySelector('.btn1').addEventListener('click', e => inst1.setValues(['Austria','Germany','Afghanistan']));
+            document.querySelector('.btn2').addEventListener('click', e => inst6.selectOption(42));
         });
     </script>
 </body>
-
 </html>

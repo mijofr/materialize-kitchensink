@@ -336,28 +336,27 @@
     </svg></div>`;
     }
     _unsetLoading() {
-      this.el.parentElement.querySelector('.status-info').innerHTML =
-        this.selectedValues.length + ' selected';
+      const statusElement = this.el.parentElement.querySelector('.status-info');
+      if (statusElement) statusElement.innerHTML = this.selectedValues.length + ' selected';
     }
 
     selectOption(id) {
-      //console.log("Select Option...");
       const entries = this.options.data.filter((entry) => entry.id == id);
       if (entries.length === 0) return;
       const entry = entries[0];
 
       // Toggle Checkbox
       const li = this.container.querySelector('li[data-id="' + id + '"]');
-      const checkbox = li.querySelector('input[type="checkbox"]');
-      checkbox.checked = !checkbox.checked;
+      if (li) {
+        const checkbox = li.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) this.selectedValues.push(entry);
+        else
+          this.selectedValues = this.selectedValues.filter(
+            (selectedEntry) => selectedEntry.id !== entry.id
+          );
+      }
 
-      if (checkbox.checked) this.selectedValues.push(entry);
-      else
-        this.selectedValues = this.selectedValues.filter(
-          (selectedEntry) => selectedEntry.id !== entry.id
-        );
-
-      //console.log(this);
       this.el.focus();
       this._unsetLoading();
 
@@ -388,12 +387,16 @@
     updateData(data) {
       const inputText = this.el.value.toLowerCase();
       this.options.data = data;
-      //if (this.isOpen)
       this._renderDropdown(inputText);
       this.open();
-      if (typeof this.options.onSearch === 'function') {
-        this._unsetLoading();
-      }
+      this._unsetLoading();
+    }
+    setValues(selectedIDs) {
+      if (!Array.isArray(selectedIDs)) return;
+      this.selectedValues = selectedIDs.map((id) => {
+        return { id };
+      });
+      this._unsetLoading();
     }
   }
 
