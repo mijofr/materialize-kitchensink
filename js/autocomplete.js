@@ -138,7 +138,7 @@
       div.classList.add('status-info');
       div.setAttribute('style', 'position: absolute;right:0;top:0;');
       this.el.parentElement.appendChild(div);
-      this._unsetLoading(); // render Status
+      this._refreshStatus(); // render Status
     }
     _removeDropdown() {
       this.container.parentNode.removeChild(this.container);
@@ -166,6 +166,10 @@
           this._setLoading();
           this.options.onSearch(this.el.value, this);
         }
+      }
+      // Reset Single-Select when Input cleared
+      if (!this.options.isMultiSelect && this.el.value.length === 0) {
+        this.selectedValues = [];
       }
       this.oldVal = actualValue;
     }
@@ -225,7 +229,6 @@
       this.isOpen = false;
       this._mousedown = false;
     }
-
     _highlightPartialText(input, label) {
       const start = label.toLowerCase().indexOf('' + input.toLowerCase() + '');
       const end = start + input.length - 1;
@@ -235,7 +238,6 @@
       }
       return [label.slice(0, start), label.slice(start, end + 1), label.slice(end + 1)];
     }
-
     _createDropdownItem(entry, inputText) {
       const item = document.createElement('li');
       item.setAttribute('data-id', entry.id);
@@ -302,7 +304,6 @@
       item.style.gridTemplateColumns = getGridConfig();
       return item;
     }
-
     _renderDropdown(inputText) {
       this._resetAutocomplete();
 
@@ -340,50 +341,28 @@
     _setLoading() {
       this.el.parentElement.querySelector(
         '.status-info'
-      ).innerHTML = `<div style="height:50px;width:50px;"><svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+      ).innerHTML = `<div style="height:100%;width:50px;"><svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
       <circle fill="#888c" stroke="none" cx="6" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1"/></circle>
       <circle fill="#888c" stroke="none" cx="26" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.2"/></circle>
       <circle fill="#888c" stroke="none" cx="46" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite"  begin="0.3"/></circle>
     </svg></div>`;
     }
-    _unsetLoading() {
+    _refreshStatus() {
       const statusElement = this.el.parentElement.querySelector('.status-info');
-      if (statusElement)
-        statusElement.innerHTML = this.options.isMultiSelect
-          ? this.selectedValues.length + ' selected'
-          : '';
+      if (statusElement) {
+        if (this.options.isMultiSelect)
+          statusElement.innerHTML = this.selectedValues.length + ' selected';
+        else statusElement.innerHTML = '';
+      }
+    }
+    _refreshInputText() {
+      if (this.selectedValues.length === 1) {
+        const entry = this.selectedValues[0];
+        this.el.value = entry.text || entry.id; // Write Text to Input
+      }
+      M.updateTextFields();
     }
 
-    selectOption(id) {
-      const entries = this.options.data.filter((entry) => entry.id == id);
-      if (entries.length === 0) return;
-      const entry = entries[0];
-
-      // Toggle Checkbox
-      const li = this.container.querySelector('li[data-id="' + id + '"]');
-      if (li) {
-        const checkbox = li.querySelector('input[type="checkbox"]');
-        checkbox.checked = !checkbox.checked;
-        if (checkbox.checked) this.selectedValues.push(entry);
-        else
-          this.selectedValues = this.selectedValues.filter(
-            (selectedEntry) => selectedEntry.id !== entry.id
-          );
-      }
-
-      this.el.focus();
-      this._unsetLoading();
-
-      //this.el.value = entry.text || entry.id;
-      this.$el.trigger('change');
-      if (!this.options.isMultiSelect) {
-        this._resetAutocomplete();
-        this.close();
-      }
-      // Trigger Autocomplete Event
-      if (typeof this.options.onAutocomplete === 'function')
-        this.options.onAutocomplete.call(this, this.selectedValues);
-    }
     open() {
       const inputText = this.el.value.toLowerCase();
       this._resetAutocomplete();
@@ -403,13 +382,47 @@
       this.options.data = data;
       this._renderDropdown(inputText);
       this.open();
-      this._unsetLoading();
+      this._refreshStatus();
     }
+
+    // TODO: Merge Functions
     setValues(selectedIDs) {
       this.selectedValues = selectedIDs.map((id) => {
         return { id: id };
       });
-      this._unsetLoading();
+      this._refreshStatus();
+      if (!this.options.isMultiSelect) this._refreshInputText();
+    }
+    selectOption(id) {
+      const entries = this.options.data.filter((entry) => entry.id == id);
+      if (entries.length === 0) return;
+      const entry = entries[0];
+
+      // Toggle Checkbox
+      const li = this.container.querySelector('li[data-id="' + id + '"]');
+      if (!li) return;
+      if (this.options.isMultiSelect) {
+        const checkbox = li.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) this.selectedValues.push(entry);
+        else
+          this.selectedValues = this.selectedValues.filter(
+            (selectedEntry) => selectedEntry.id !== entry.id
+          );
+        this.el.focus();
+        this._refreshStatus();
+      } else {
+        // Single-Select
+        this.selectedValues = [entry];
+        this._refreshStatus();
+        this._refreshInputText();
+        this._resetAutocomplete();
+        this.close();
+      }
+      this.$el.trigger('change');
+      // Trigger Autocomplete Event
+      if (typeof this.options.onAutocomplete === 'function')
+        this.options.onAutocomplete.call(this, this.selectedValues);
     }
   }
 

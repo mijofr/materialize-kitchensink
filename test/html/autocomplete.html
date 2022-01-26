@@ -18,6 +18,7 @@
     <div class="container">
         <div>
             <button class="btn1">Set Option (A1)</button>
+            <button class="btn12">Set Option (A12)</button>
             <button class="btn2">Set Option (A6)</button>
         </div>
 
@@ -433,7 +434,7 @@
 
         document.addEventListener('DOMContentLoaded', function (){
             const inst1 = M.Autocomplete.init(document.getElementById('autocomplete-1'), a1);
-            M.Autocomplete.init(document.getElementById('autocomplete-12'), a12);
+            const inst12 = M.Autocomplete.init(document.getElementById('autocomplete-12'), a12);
             M.Autocomplete.init(document.getElementById('autocomplete-2'), a2);
             M.Autocomplete.init(document.getElementById('autocomplete-3'), a3);
             M.Autocomplete.init(document.getElementById('autocomplete-4'), a4);
@@ -442,6 +443,7 @@
 
             // Buttons
             document.querySelector('.btn1').addEventListener('click', e => inst1.setValues(['Austria','Germany','Afghanistan']));
+            document.querySelector('.btn12').addEventListener('click', e => inst12.setValues(['Austria']));
             document.querySelector('.btn2').addEventListener('click', e => inst6.selectOption(42));
         });
     </script>
