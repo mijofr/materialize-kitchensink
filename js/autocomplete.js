@@ -399,9 +399,8 @@
       this._unsetLoading();
     }
     setValues(selectedIDs) {
-      if (!Array.isArray(selectedIDs)) return;
       this.selectedValues = selectedIDs.map((id) => {
-        return { id };
+        return { id: id };
       });
       this._unsetLoading();
     }
