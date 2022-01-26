@@ -3,7 +3,6 @@
 
   let _defaults = {
     data: [], // Autocomplete data set
-    limit: Infinity, // Limit of results the autocomplete shows
     onAutocomplete: null, // Callback for when autocompleted
     dropdownOptions: {
       // Default dropdown options
@@ -12,12 +11,9 @@
       coverTrigger: false
     },
     minLength: 1, // Min characters before autocomplete starts
-    sortFunction: function(a, b, inputString) {
-      // Sort function for sorting autocomplete results
-      return a.indexOf(inputString) - b.indexOf(inputString);
-    },
     isMultiSelect: true,
     onSearch: null, // dynamic read function
+    maxDropDownHeight: '300px',
     allowUnsafeHTML: false
   };
 
@@ -108,7 +104,7 @@
     }
     _setupDropdown() {
       this.container = document.createElement('ul');
-      this.container.style.maxHeight = '300px'; // TODO: Set as Option
+      this.container.style.maxHeight = this.options.maxDropDownHeight;
       this.container.id = `autocomplete-options-${M.guid()}`;
       $(this.container).addClass('autocomplete-content dropdown-content');
       this.$inputField.append(this.container);
@@ -229,6 +225,7 @@
       this.isOpen = false;
       this._mousedown = false;
     }
+
     _highlightPartialText(input, label) {
       const start = label.toLowerCase().indexOf('' + input.toLowerCase() + '');
       const end = start + input.length - 1;
@@ -238,7 +235,8 @@
       }
       return [label.slice(0, start), label.slice(start, end + 1), label.slice(end + 1)];
     }
-    _createDropdownItem(entry, inputText) {
+
+    _createDropdownItem(entry) {
       const item = document.createElement('li');
       item.setAttribute('data-id', entry.id);
       item.setAttribute(
@@ -261,7 +259,9 @@
         img.src = entry.image;
         item.appendChild(img);
       }
+
       // Text
+      const inputText = this.el.value.toLowerCase();
       const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
       const div = document.createElement('div');
       div.setAttribute('style', 'line-height:1.2;font-weight:500;');
@@ -277,6 +277,7 @@
           div.appendChild(document.createTextNode(parts[2]));
         }
       }
+
       const itemText = document.createElement('div');
       itemText.classList.add('item-text');
       itemText.setAttribute('style', 'padding:5px;overflow:hidden;');
@@ -304,37 +305,14 @@
       item.style.gridTemplateColumns = getGridConfig();
       return item;
     }
-    _renderDropdown(inputText) {
+    _renderDropdown() {
       this._resetAutocomplete();
-
-      let matchingData = this.options.data;
-      if (!typeof this.options.onSearch) {
-        // Default Search
-        matchingData = this.options.data.filter(
-          (entry) =>
-            (entry.text || entry.id)
-              .toString()
-              .toLowerCase()
-              .indexOf(inputText.toLowerCase()) !== -1
-        );
-        this.count = matchingData.length;
-        // Sort
-        if (this.options.sortFunction) {
-          let sortFunctionBound = (a, b) => {
-            return this.options.sortFunction(
-              (a.text || a.id).toString().toLowerCase(),
-              (b.text || b.id).toString().toLowerCase(),
-              inputText.toLowerCase()
-            );
-          };
-          matchingData.sort(sortFunctionBound);
-        }
+      // Check if Data is empty
+      if (this.options.data.length === 0) {
+        this.options.data = this.selectedValues; // Show selected Items
       }
-      // Limit
-      matchingData = matchingData.slice(0, this.options.limit);
-      // Render
-      for (let i = 0; i < matchingData.length; i++) {
-        const item = this._createDropdownItem(matchingData[i], inputText);
+      for (let i = 0; i < this.options.data.length; i++) {
+        const item = this._createDropdownItem(this.options.data[i]);
         $(this.container).append(item);
       }
     }
@@ -350,8 +328,7 @@
     _refreshStatus() {
       const statusElement = this.el.parentElement.querySelector('.status-info');
       if (statusElement) {
-        if (this.options.isMultiSelect)
-          statusElement.innerHTML = this.selectedValues.length + ' selected';
+        if (this.options.isMultiSelect) statusElement.innerHTML = this.selectedValues.length;
         else statusElement.innerHTML = '';
       }
     }
@@ -368,7 +345,7 @@
       this._resetAutocomplete();
       if (inputText.length >= this.options.minLength) {
         this.isOpen = true;
-        this._renderDropdown(inputText);
+        this._renderDropdown();
       }
       // Open dropdown
       if (!this.dropdown.isOpen) this.dropdown.open();
@@ -384,14 +361,12 @@
       this.open();
       this._refreshStatus();
     }
-
-    // TODO: Merge Functions
-    setValues(selectedIDs) {
-      this.selectedValues = selectedIDs.map((id) => {
-        return { id: id };
-      });
+    setValues(entries) {
+      this.selectedValues = entries;
       this._refreshStatus();
-      if (!this.options.isMultiSelect) this._refreshInputText();
+      if (!this.options.isMultiSelect) {
+        this._refreshInputText();
+      }
     }
     selectOption(id) {
       const entries = this.options.data.filter((entry) => entry.id == id);

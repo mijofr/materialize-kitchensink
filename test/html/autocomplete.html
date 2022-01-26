@@ -13,6 +13,9 @@
     <link href="../../bin/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="../../css/prism.css" rel="stylesheet" />
+    <style>
+        .highlight {color: orangered !important; }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -175,7 +178,7 @@
             {id: 'Argentina'},
             {id: 'Armenia'},
             {id: 'Australia', image: '../../docs/images/placeholder/250x250_c.png'},
-            {id: 'Austria', image: '../../docs/images/placeholder/250x250_a.png', description: 'There are nice Mountains.'},
+            {id: 'Austria', text: 'Österreich', image: '../../docs/images/placeholder/250x250_a.png', description: 'There are nice Mountains.'},
             {id: 'Azerbaijan'},
             {id: 'The Bahamas'},
             {id: 'Bahrain'},
@@ -375,15 +378,21 @@
             {id: '<img src=/ onerror="alert(\'xss\')">still not safe', text: '<img src=/ onerror="alert(\'xss\')">still not safe', image: 'https://placehold.it/250x250'}
         ];
 
+        function customSearch(text) {
+            return countries.filter(country => {
+                return country.id.toLowerCase().indexOf(text.toLowerCase()) >= 0
+                    || country.text?.toLowerCase().indexOf(text.toLowerCase()) >= 0
+                    || country.description?.toLowerCase().indexOf(text.toLowerCase()) >= 0;
+            });
+        }
+
         // Configurations
         const a1 = {
-            //data: defaultData,
             minLength: 0,
-            limit: 10,
             isMultiSelect: true,
             onSearch: (text, instance) => {
                 setTimeout(() => {
-                    const matchingData = countries.filter(country => country.id.toLowerCase().indexOf(text.toLowerCase()) !== -1);
+                    const matchingData = customSearch(text);
                     instance.updateData(matchingData);
                 }, 300);
             },
@@ -394,12 +403,12 @@
             isMultiSelect: false,
             onSearch: (text, instance) => {
                 setTimeout(() => {
-                    const matchingData = countries.filter(country => country.id.toLowerCase().indexOf(text.toLowerCase()) !== -1);
+                    const matchingData = customSearch(text);
                     instance.updateData(matchingData);
                 }, 300);
             },
             onAutocomplete: entry => console.log('a12', entry)
-        };
+        };        
         const a2 = {
             data: defaultData,
             filterFunction: function (key_string, filter_string) {
@@ -442,8 +451,8 @@
             const inst6 = M.Autocomplete.init(document.getElementById('autocomplete-6'), a6);
 
             // Buttons
-            document.querySelector('.btn1').addEventListener('click', e => inst1.setValues(['Austria','Germany','Afghanistan']));
-            document.querySelector('.btn12').addEventListener('click', e => inst12.setValues(['Austria']));
+            document.querySelector('.btn1').addEventListener('click', e => inst1.setValues([{id: 'Austria'},{id: 'Germany'},{id: 'Afghanistan'}]));
+            document.querySelector('.btn12').addEventListener('click', e => inst12.setValues([{id: 'Austria', text: 'Österreich', description: 'This is a description!'}]));
             document.querySelector('.btn2').addEventListener('click', e => inst6.selectOption(42));
         });
     </script>
