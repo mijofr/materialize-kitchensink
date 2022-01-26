@@ -241,17 +241,14 @@
 
       item.setAttribute(
         'style',
-        'display:grid; grid-template-columns: 35px 60px auto; grid-auto-flow: column; user-select: none; align-items: center;'
+        'display:grid; grid-template-columns: 35px 50px auto; grid-auto-flow: column; user-select: none; align-items: center;'
       );
       item.innerHTML = `
         <div class="item-selection" style="text-align:right;">
           <input type="checkbox"${
             this.selectedValues.some((sel) => sel.id === entry.id) ? ' checked="checked"' : ''
           }><span style="padding-left:21px;"></span>
-        </div>
-        <div class="item-image" style="text-align:center;"></div>
-        <div class="item-text" style="overflow:hidden;"></div>
-      `;
+        </div>`;
 
       // Image
       if (entry.image) {
@@ -259,7 +256,7 @@
         img.setAttribute('style', 'margin:0;');
         img.classList.add('circle');
         img.src = entry.image;
-        item.querySelector('.item-image').appendChild(img);
+        item.appendChild(img);
       }
       // Text
       const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
@@ -278,6 +275,11 @@
           div.appendChild(document.createTextNode(parts[2]));
         }
       }
+      const itemText = document.createElement('div');
+      itemText.classList.add('item-text');
+      itemText.setAttribute('style', 'overflow:hidden;');
+      item.appendChild(itemText);
+
       item.querySelector('.item-text').appendChild(div);
 
       // Description
