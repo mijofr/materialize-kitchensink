@@ -166,7 +166,7 @@
       // Reset Single-Select when Input cleared
       if (!this.options.isMultiSelect && this.el.value.length === 0) {
         this.selectedValues = [];
-        this.$el.trigger('change');
+        this._triggerChanged();
       }
       this.oldVal = actualValue;
     }
@@ -340,6 +340,12 @@
       }
       M.updateTextFields();
     }
+    _triggerChanged() {
+      this.$el.trigger('change');
+      // Trigger Autocomplete Event
+      if (typeof this.options.onAutocomplete === 'function')
+        this.options.onAutocomplete.call(this, this.selectedValues);
+    }
 
     open() {
       const inputText = this.el.value.toLowerCase();
@@ -368,12 +374,12 @@
       if (!this.options.isMultiSelect) {
         this._refreshInputText();
       }
+      this._triggerChanged();
     }
     selectOption(id) {
       const entries = this.options.data.filter((entry) => entry.id == id);
       if (entries.length === 0) return;
       const entry = entries[0];
-
       // Toggle Checkbox
       const li = this.container.querySelector('li[data-id="' + id + '"]');
       if (!li) return;
@@ -395,10 +401,7 @@
         this._resetAutocomplete();
         this.close();
       }
-      this.$el.trigger('change');
-      // Trigger Autocomplete Event
-      if (typeof this.options.onAutocomplete === 'function')
-        this.options.onAutocomplete.call(this, this.selectedValues);
+      this._triggerChanged();
     }
   }
 
