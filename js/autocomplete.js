@@ -11,7 +11,7 @@
       coverTrigger: false
     },
     minLength: 1, // Min characters before autocomplete starts
-    isMultiSelect: true,
+    isMultiSelect: false,
     onSearch: null, // dynamic read function
     maxDropDownHeight: '300px',
     allowUnsafeHTML: false
@@ -166,6 +166,7 @@
       // Reset Single-Select when Input cleared
       if (!this.options.isMultiSelect && this.el.value.length === 0) {
         this.selectedValues = [];
+        this.$el.trigger('change');
       }
       this.oldVal = actualValue;
     }
