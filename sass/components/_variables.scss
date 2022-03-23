@@ -36,20 +36,26 @@
 
 @use "sass:math";
 
-$primary-color: color("materialize-red", "lighten-2") !default;
-$primary-color-when-hovered-solid: darken($primary-color, 4%) !default;
-$primary-color-when-focused-solid: darken($primary-color, 8%) !default;
+$primary-color: var(--primary-color) !default;
+$primary-color-when-hovered-solid: var(--primary-color-raised-hover-solid) !default;
+$primary-color-when-focused-solid: var(--primary-color-raised-focus-solid) !default;
 $primary-color-font-emphasize-color: $primary-color !default;
-$primary-color-font-medium-color: rgba($primary-color, 0.7) !default;
-$primary-color-font-disabled-color: rgba($primary-color, 0.4) !default;
-$primary-color-hover-opaque: rgba($primary-color, 0.06) !default;
-$primary-color-focus-opaque: rgba($primary-color, 0.18) !default;
+$primary-color-font-medium-color: var(--primary-color-font-medium-color) !default;
+$primary-color-font-disabled-color: var(--primary-color-font-disabled-color) !default;
+$primary-color-hover-opaque: var(--primary-color-hover-opaque) !default;
+$primary-color-focus-opaque: var(--primary-color-focus-opaque) !default;
 
-$font-color-main: rgba(0, 0, 0, 0.87) !default;
-$font-color-medium: rgba(0, 0, 0, 0.56) !default;
-$font-color-disabled: rgba(0, 0, 0, 0.38) !default;
+$font-color-main: var(--font-color-main) !default;
+$font-color-medium: var(--font-color-medium) !default;
+$font-color-disabled: var(--font-color-disabled) !default;
 
-$secondary-color: color("teal", "lighten-1") !default;
+$font-on-primary-color-main: var(--font-on-primary-color-main) !default;
+$font-on-primary-color-medium: var(--font-on-primary-color-medium) !default;
+
+$secondary-color: var(--secondary-color) !default;
+$secondary-color-when-hovered-solid: var(--secondary-color-hover-solid) !default;
+$secondary-color-when-focused-solid: var(--secondary-color-focus-solid) !default;
+
 $success-color: color("green", "base") !default;
 $error-color: color("red", "base") !default;
 $link-color: color("light-blue", "darken-1") !default;
@@ -58,33 +64,29 @@ $bg-color: var(--background-color) !default;
 $bg-hover-color-opaque: var(--hover-color) !default;
 $bg-focus-color-opaque: var(--focus-color) !default;
 
-$secondary-color-when-hovered-solid: lighten($secondary-color, 4%) !default;
-$secondary-color-when-focused-solid: lighten($secondary-color, 12%) !default;
-$secondary-color-hover-opaque: rgba($secondary-color, 0.08) !default;
-$secondary-color-focus-opaque: rgba($secondary-color, 0.24) !default;
-
-$divider-color: #DDDDDD;
-
-$secondary-color-when-hovered-solid: lighten($secondary-color, 4%) !default;
-$secondary-color-when-focused-solid: lighten($secondary-color, 12%) !default;
-$secondary-color-hover-opaque: rgba($secondary-color, 0.08) !default;
-$secondary-color-focus-opaque: rgba($secondary-color, 0.24) !default;
+// TODO remove
+//$secondary-color-when-hovered-solid: lighten($secondary-color, 4%) !default;
+//$secondary-color-when-focused-solid: lighten($secondary-color, 12%) !default;
+//$secondary-color-hover-opaque: rgba($secondary-color, 0.08) !default;
+//$secondary-color-focus-opaque: rgba($secondary-color, 0.24) !default;
 
 $divider-color: var(--separator-color);
 // 2. Badges
 // ==========================================================================
 
-$badge-bg-color: $secondary-color !default;
+$badge-bg-color: $primary-color !default;
 $badge-height: 22px !default;
-$badge-color: $font-color-medium !default;
+$badge-color: var(--font-color-medium) !default;
+$badge-color-active: var(--font-on-primary-color-medium) !default;
+$badge-color-new: $font-on-primary-color-main !default;
 
 // 3. Buttons
 // ==========================================================================
 
 // Raised buttons
-$button-raised-background: $secondary-color !default;
-$button-raised-background-hover: $secondary-color-when-hovered-solid !default;
-$button-raised-background-focus: $secondary-color-when-focused-solid !default;
+$button-raised-background: $primary-color !default;
+$button-raised-background-hover: $primary-color-when-hovered-solid !default;
+$button-raised-background-focus: $primary-color-when-focused-solid !default;
 $button-raised-color: #fff !default;
 
 // Shared styles
@@ -119,9 +121,9 @@ $button-flat-focus-background-color: var(--focus-color) !default;
 $button-flat-disabled-color: var(--font-color-disabled) !default;
 
 // Floating buttons
-$button-floating-background: $button-raised-background !default;
-$button-floating-background-hover: $button-raised-background-hover !default;
-$button-floating-background-focus: $button-raised-background-focus !default;
+$button-floating-background: $secondary-color !default;
+$button-floating-background-hover: $secondary-color-when-hovered-solid !default;
+$button-floating-background-focus: $secondary-color-when-focused-solid !default;
 $button-floating-color: $button-raised-color !default;
 $button-floating-size: 40px !default;
 $button-floating-radius: 50% !default;
@@ -131,9 +133,8 @@ $button-floating-radius: 50% !default;
 // ==========================================================================
 
 $card-padding: 24px !default;
-$card-bg-color: #fff !default;
-$card-link-color: color("orange", "accent-2") !default;
-$card-link-color-light: lighten($card-link-color, 20%) !default;
+$card-bg-color: var(--background-color-card) !default;
+$card-link-color: $primary-color !default;
 
 
 // 5. Carousel
@@ -168,13 +169,13 @@ $chip-margin: 5px !default;
 $datepicker-display-font-size: 2.8rem;
 $datepicker-calendar-header-color: #999;
 $datepicker-weekday-color: rgba(0, 0, 0, .87) !default;
-$datepicker-weekday-bg: darken($secondary-color, 7%) !default;
-$datepicker-date-bg: $secondary-color !default;
+$datepicker-weekday-bg: $primary-color !default;
+$datepicker-date-bg: $primary-color !default;
 $datepicker-year: rgba(255, 255, 255, .7) !default;
 $datepicker-focus: rgba(0,0,0, .05) !default;
-$datepicker-selected: $secondary-color !default;
-$datepicker-selected-outfocus: desaturate(lighten($secondary-color, 35%), 15%) !default;
-$datepicker-day-focus: transparentize(desaturate($secondary-color, 5%), .75) !default;
+$datepicker-selected: $primary-color !default;
+$datepicker-selected-outfocus: $primary-color-when-focused-solid !default;
+$datepicker-day-focus: $primary-color-when-focused-solid !default;
 $datepicker-disabled-day-color: rgba(0, 0, 0, .3) !default;
 
 $timepicker-clock-bg: $bg-color !default;
@@ -188,7 +189,7 @@ $timepicker-clock-plate-bg: var(--background-color-level-4dp) !default;
 $dropdown-bg-color: $bg-color !default;
 $dropdown-hover-bg-color: $bg-hover-color-opaque !default;
 $dropdown-focus-bg-color: $bg-focus-color-opaque !default;
-$dropdown-color: $secondary-color !default;
+$dropdown-color: $primary-color !default;
 $dropdown-item-height: 50px !default;
 
 
@@ -203,7 +204,7 @@ $input-border: 1px solid $input-border-color !default;
 $input-background: #fff !default;
 $input-error-color: $error-color !default;
 $input-success-color: $success-color !default;
-$input-focus-color: $secondary-color !default;
+$input-focus-color: $primary-color !default;
 $input-font-size: 16px !default;
 $input-margin-bottom: 8px;
 $input-margin: 0 0 $input-margin-bottom 0 !default;
@@ -217,8 +218,8 @@ $input-icon-size: 2rem;
 $placeholder-text-color: var(--font-color-medium) !default;
 
 // Radio Buttons
-$radio-fill-color: $secondary-color !default;
-$radio-focus-color: $secondary-color-focus-opaque !default;
+$radio-fill-color: $primary-color !default;
+$radio-focus-color: $primary-color-focus-opaque !default;
 $radio-empty-color: #5a5a5a !default;
 $radio-border: 2px solid $radio-fill-color !default;
 
@@ -231,7 +232,7 @@ $range-track-color: var(--slider-track-color) !default;
 // Select
 $select-border: 1px solid #f2f2f2 !default;
 $select-background: $bg-color !default;
-$select-focus: 1px solid lighten($secondary-color, 47%) !default;
+$select-focus: 1px solid $primary-color-when-focused-solid !default;
 $select-option-hover: $bg-hover-color-opaque !default;
 $select-option-focus: $bg-focus-color-opaque !default;
 $select-option-selected: $bg-focus-color-opaque !default;
@@ -241,13 +242,13 @@ $select-disabled-color: var(--font-color-disabled) !default;
 $select-input-color: var(--font-color-main)  !default;
 
 // Switches
-$switch-thumb-checked-color: $secondary-color !default;
+$switch-thumb-checked-color: $primary-color !default;
 $switch-thumb-unchecked-color: var(--switch-thumb-off-color);
-$switch-reaction-checked-focus-color: $secondary-color-focus-opaque !default;
+$switch-reaction-checked-focus-color: $primary-color-focus-opaque !default;
 $switch-reaction-unchecked-focus-color: $bg-focus-color-opaque !default;
-$switch-reaction-checked-hover-color: $secondary-color-hover-opaque !default;
+$switch-reaction-checked-hover-color: $primary-color-hover-opaque !default;
 $switch-reaction-unchecked-hover-color: $bg-hover-color-opaque !default;
-$switch-track-checked-bg: rgba($secondary-color, 0.32) !default;
+$switch-track-checked-bg: rgba(var(--primary-color-numeric), 0.32) !default;
 $switch-track-unchecked-bg: var(--slider-track-color) !default;
 $switch-radius: 15px !default;
 
@@ -288,7 +289,9 @@ $navbar-line-height: $navbar-height !default;
 $navbar-height-mobile: 56px !default;
 $navbar-line-height-mobile: $navbar-height-mobile !default;
 $navbar-font-size: 1rem !default;
-$navbar-font-color: #fff !default;
+$navbar-font-color: $font-on-primary-color-main !default;
+$navbar-bg-color-focus: $primary-color-when-focused-solid !default;
+$navbar-bg-color-hover: $primary-color-when-hovered-solid !default;
 $navbar-brand-font-size: 2.1rem !default;
 
 // 14. Side Navigation
@@ -316,15 +319,15 @@ $slider-indicator-color: color('green', 'base') !default;
 // 16. Spinners | Loaders
 // ==========================================================================
 
-$spinner-default-color: $secondary-color !default;
+$spinner-default-color: $primary-color !default;
 
 
 // 17. Tabs
 // ==========================================================================
 
 $tabs-text-active-color: $primary-color-font-emphasize-color !default;
-$tabs-text-inactive-color: $primary-color-font-medium-color !default;
-$tabs-text-disabled-color: $primary-color-font-disabled-color !default;
+$tabs-text-inactive-color: $font-color-medium !default;
+$tabs-text-disabled-color: $font-color-disabled !default;
 $tabs-underline-color: $tabs-text-active-color !default;
 $tabs-bg-color: var(--background-color) !default;
 $tabs-hover-bg-color: var(--hover-color) !default;
@@ -381,12 +384,12 @@ $interval-size: math.div($range, $intervals) !default;
 // 23. Collections
 // ==========================================================================
 
-$collection-border-color: #e0e0e0 !default;
-$collection-bg-color: #fff !default;
-$collection-active-bg-color: $secondary-color !default;
-$collection-active-color: lighten($secondary-color, 55%) !default;
-$collection-hover-bg-color: #ddd !default;
-$collection-link-color: $secondary-color !default;
+$collection-border-color: $divider-color !default;
+$collection-bg-color: transparent !default;
+$collection-active-bg-color: $primary-color !default;
+$collection-active-color: var(--font-on-primary-color-main) !default;
+$collection-hover-bg-color: $bg-hover-color-opaque !default;
+$collection-link-color: $primary-color !default;
 $collection-line-height: 1.5rem !default;
 $collection-border-radius: 2px !default;
 
@@ -394,5 +397,5 @@ $collection-border-radius: 2px !default;
 // 24. Progress Bar
 // ==========================================================================
 
-$progress-bar-color: $secondary-color !default;
-$progress-bar-track-color: lighten($progress-bar-color, 40%) !default;
+$progress-bar-color: $primary-color !default;
+$progress-bar-track-color: rgba(var(--primary-color-numeric, 40%)) !default;

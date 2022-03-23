@@ -117,9 +117,14 @@ nav {
       padding: 0;
 
       &.active {
-        background-color: rgba(0,0,0,.1);
+        background-color: $navbar-bg-color-focus;
+      }
+
+      &:hover:not(.active) {
+        background-color: $navbar-bg-color-hover;
       }
     }
+
     a {
       transition: background-color .3s;
       font-size: $navbar-font-size;
@@ -137,10 +142,6 @@ nav {
           height: inherit;
           line-height: inherit;
         }
-      }
-
-      &:hover {
-        background-color: rgba(0,0,0,.1);
       }
     }
 

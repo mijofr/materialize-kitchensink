@@ -173,20 +173,25 @@ video.responsive-video {
     height: 30px;
 
     a {
-      color: #444;
+      color: $font-color-medium;
       display: inline-block;
       font-size: 1.2rem;
       padding: 0 10px;
       line-height: 30px;
     }
 
-    &.active a { color: #fff; }
+    &:hover:not(.disabled) {
+      background-color: $primary-color-hover-opaque;
+    }
 
-    &.active { background-color: $primary-color; }
+    &.active a { color: $font-on-primary-color-main; }
+
+    &.active,
+    &.active:hover,{ background-color: $primary-color; }
 
     &.disabled a {
       cursor: default;
-      color: #999;
+      color: $font-color-disabled;
     }
 
     i {
@@ -221,7 +226,7 @@ video.responsive-video {
 .breadcrumb {
   display: inline-block;
   font-size: 18px;
-  color: rgba(255,255,255, .7);
+  color: $font-on-primary-color-medium;
 
   i,
   [class^="mdi-"], [class*="mdi-"],
@@ -233,7 +238,7 @@ video.responsive-video {
 
   &:before {
     content: '\E5CC';
-    color: rgba(255,255,255, .7);
+    color: $font-on-primary-color-medium;
     vertical-align: top;
     display: inline-block;
     font-family: 'Material Icons';
@@ -250,7 +255,7 @@ video.responsive-video {
   }
 
   &:last-child {
-    color: #fff;
+    color: $font-on-primary-color-main;
   }
 }
 

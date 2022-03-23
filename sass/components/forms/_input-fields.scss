@@ -364,7 +364,7 @@ textarea {
 /* Autocomplete */
 .autocomplete-content {
   li {
-    .highlight { color: #444; }
+    .highlight { color: $font-color-main; }
 
     img {
       height: $dropdown-item-height - 10;

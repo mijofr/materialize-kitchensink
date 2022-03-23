@@ -18,7 +18,7 @@
 /* Clock Digital Display */
 .timepicker-digital-display {
   flex: 1 auto;
-  background-color: $secondary-color;
+  background-color: $primary-color;
   padding: 10px;
   font-weight: 300;
 }
@@ -101,7 +101,7 @@
 
 .timepicker-tick.active,
 .timepicker-tick:hover {
-	background-color: $secondary-color-hover-opaque;
+	background-color: $primary-color-hover-opaque;
 }
 .timepicker-dial {
 	transition: transform 350ms, opacity 350ms;
@@ -121,7 +121,7 @@
 	transition: opacity 175ms;
 
   line {
-	  stroke: $secondary-color;
+	  stroke: $primary-color;
 	  stroke-width: 4;
 	  stroke-linecap: round;
   }
@@ -131,11 +131,11 @@
 }
 .timepicker-canvas-bearing {
 	stroke: none;
-	fill: $secondary-color;
+	fill: $primary-color;
 }
 .timepicker-canvas-bg {
 	stroke: none;
-	fill: $secondary-color;
+	fill: $primary-color;
 }
 
 
@@ -152,7 +152,7 @@
 }
 
 .timepicker-close {
-  color: $secondary-color;
+  color: $primary-color;
 }
 
 .timepicker-clear,
