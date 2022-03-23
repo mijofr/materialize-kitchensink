@@ -64,12 +64,6 @@ $bg-color: var(--background-color) !default;
 $bg-hover-color-opaque: var(--hover-color) !default;
 $bg-focus-color-opaque: var(--focus-color) !default;
 
-// TODO remove
-//$secondary-color-when-hovered-solid: lighten($secondary-color, 4%) !default;
-//$secondary-color-when-focused-solid: lighten($secondary-color, 12%) !default;
-//$secondary-color-hover-opaque: rgba($secondary-color, 0.08) !default;
-//$secondary-color-focus-opaque: rgba($secondary-color, 0.24) !default;
-
 $divider-color: var(--separator-color);
 // 2. Badges
 // ==========================================================================
