@@ -1,76 +1,115 @@
 # Changelog
-All notable changes to this project will be documented in this file. For changes made before this fork, please refer to [HISTORY.md](https://github.com/materializecss/materialize/blob/main/HISTORY.md).
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.1.0](https://github.com/materializecss/materialize/tree/1.1.0) (2022-04-09)
 
-## [1.1.0-alpha] - 2021-03-31
+[Full Changelog](https://github.com/materializecss/materialize/compare/1.1.0-alpha...1.1.0)
 
-### Added
+**Implemented enhancements:**
 
-- Nightly builds of the latest code available through github actions ([Easy link for the latest build](https://nightly.link/materializecss/materialize/workflows/nightly/main/build)) ([58d18003](https://github.com/materializecss/materialize/commit/58d180036374f2b38a244e5e96c33838ce185220))
-- Added support for text input suffix icons ([3e516e5b](https://github.com/materializecss/materialize/commit/3e516e5b322e4f8c7299cc37504389d0ddbb1ed6))
-- Added dragTargetWidth option ([6f4b2a15](https://github.com/materializecss/materialize/commit/6f4b2a15fc9f21a91ce95a1baffe60cfb15619df))
-- Added ability to change tooltip animate opacity ([8fce193f](https://github.com/materializecss/materialize/commit/8fce193fa94fe6d5a04630e732623c84fc803c3d))
-- Added option to prevent user chips ([cc696bf3](https://github.com/materializecss/materialize/commit/cc696bf386e3ebbe72f14a7605bed886569da8f7))
+- Remove extra indentation and trailing spaces [\#247](https://github.com/materializecss/materialize/pull/247) ([notSagyo](https://github.com/notSagyo))
+- Refactored Select internaly for Arrays to prepare for other changes [\#244](https://github.com/materializecss/materialize/pull/244) ([wuda-io](https://github.com/wuda-io))
+- Make border radius of  .collection configurable [\#166](https://github.com/materializecss/materialize/pull/166) ([Calamari](https://github.com/Calamari))
+- feat\(datepicker\): add possibility for a format function to Datepicker [\#153](https://github.com/materializecss/materialize/pull/153) ([Calamari](https://github.com/Calamari))
+- Update datepicker & timepicker "container" option to allow being specified the same way [\#69](https://github.com/materializecss/materialize/pull/69) ([Cerothen](https://github.com/Cerothen))
 
-### Changed
+**Fixed bugs:**
 
-- Docs are now hosted at [materializecss.github.io/materialize](https://materializecss.github.io/materialize/). This also means removing all adverts, tracking and patreon stuff. ([ef0ce5b0](https://github.com/materializecss/materialize/commit/ef0ce5b0a13a418d47c6d88272fd3173b6954c2e), [fbfd2d6a](https://github.com/materializecss/materialize/commit/fbfd2d6afb09483700cff78c4e651875269430a6), [376be29f](https://github.com/materializecss/materialize/commit/376be29f10e53f77cbec203cee5f20a6e72cc62c), [1a4463a9](https://github.com/materializecss/materialize/commit/1a4463a9d476872e30e03fe9590ab5b256d17e07), [015d0c32](https://github.com/materializecss/materialize/commit/015d0c32123795d94e8b9c265936dcf170d52682))
-- Made the search results on the docs prettier ([e8871c20](https://github.com/materializecss/materialize/commit/e8871c2065ac5d2f20b01afebd18a9687a14e9ec), [2543a1ae](https://github.com/materializecss/materialize/commit/2543a1ae203066654300fb2a6ecf4b83e90d708c), [b9dfeceb](https://github.com/materializecss/materialize/commit/b9dfeceb4d7f74da7ad2ca5b1b700ea886b26915), [60297e1f](https://github.com/materializecss/materialize/commit/60297e1f281f3c8a645eb044881f942df076911a))
-- Use jsDelivr ([99ddf250](https://github.com/materializecss/materialize/commit/99ddf2506141e326b93bad5b6cd17635e4aa8d9f), [57e53568](https://github.com/materializecss/materialize/commit/57e535688518ca52252dbb49494262ae502bd636))
-- Updated waves.js ([fce7b8be](https://github.com/materializecss/materialize/commit/fce7b8be7b94cb8d0792f560694aa72cc12abcdb))
+- fix: Waves concat order [\#208](https://github.com/materializecss/materialize/pull/208) ([Smankusors](https://github.com/Smankusors))
+- fix: for iOS13 selecting wrong Dropdownitem on Touchdevices fix \#31 [\#199](https://github.com/materializecss/materialize/pull/199) ([wuda-io](https://github.com/wuda-io))
+- fix\(issue180\): handling invalid clickedIndex in carousel.js [\#187](https://github.com/materializecss/materialize/pull/187) ([LoganTann](https://github.com/LoganTann))
+- Fix for issue \#146 \(Rounding artefacts with dark table row\) [\#149](https://github.com/materializecss/materialize/pull/149) ([RamonvdW](https://github.com/RamonvdW))
+- fix\(dropdown\): 🐛 fix a bug with dropdown actives when used in selects [\#134](https://github.com/materializecss/materialize/pull/134) ([ChildishGiant](https://github.com/ChildishGiant))
 
-### Deprecated
+**Documentation changes:**
 
-- As part of the XSS fixes, html data for both tooltips and toasts is highly discouraged. The `html` option is now deprecated and usage of of `text` is recommended. If you really need to use HTML, use `unsafeHTML` and make sure to **sanitize any user input**.
-- Similarly, HTML is disabled by default for autocomplete components. To re-enable this `allowUnsafeHTML` must be set. Once again be sure to **sanitize any user input**.
+- Fix template missing in docs [\#243](https://github.com/materializecss/materialize/pull/243) ([Smankusors](https://github.com/Smankusors))
+- fix: add link to searchable list \#225 [\#242](https://github.com/materializecss/materialize/pull/242) ([MadhaviMandalia](https://github.com/MadhaviMandalia))
+- Icon list changed with link [\#235](https://github.com/materializecss/materialize/pull/235) ([MadhaviMandalia](https://github.com/MadhaviMandalia))
+- docs\(select\): rephrase a sentence in select docs, issue 171 [\#218](https://github.com/materializecss/materialize/pull/218) ([LoganTann](https://github.com/LoganTann))
+- docs: rework about and home page to mention this is the community fork [\#217](https://github.com/materializecss/materialize/pull/217) ([LoganTann](https://github.com/LoganTann))
+- Fix \#175 : Add a docs section on how to change the font stack [\#212](https://github.com/materializecss/materialize/pull/212) ([LoganTann](https://github.com/LoganTann))
+- docs\(getting\_started\): update the ways to install materialize [\#203](https://github.com/materializecss/materialize/pull/203) ([LoganTann](https://github.com/LoganTann))
+-  docs\(Issue179\): Modify some parts of the documentation to mention the new 1.1.0-alpha [\#202](https://github.com/materializecss/materialize/pull/202) ([LoganTann](https://github.com/LoganTann))
+- add back templates section, fix stylesheet link in parallax template [\#198](https://github.com/materializecss/materialize/pull/198) ([christinavoudouris](https://github.com/christinavoudouris))
+- Improving CONTRIBUTING document [\#177](https://github.com/materializecss/materialize/pull/177) ([Smankusors](https://github.com/Smankusors))
+- Fix Wrong href value on \<a\> tag [\#170](https://github.com/materializecss/materialize/pull/170) ([boileaum](https://github.com/boileaum))
+- Update templates [\#164](https://github.com/materializecss/materialize/pull/164) ([christinavoudouris](https://github.com/christinavoudouris))
+- docs: edit README [\#162](https://github.com/materializecss/materialize/pull/162) ([christinavoudouris](https://github.com/christinavoudouris))
+- docs: change to/add copy code icons [\#161](https://github.com/materializecss/materialize/pull/161) ([christinavoudouris](https://github.com/christinavoudouris))
+- Copy text without creating textarea and use single container for copy success message [\#158](https://github.com/materializecss/materialize/pull/158) ([warrenrodrigues](https://github.com/warrenrodrigues))
+- open old docs in new window [\#155](https://github.com/materializecss/materialize/pull/155) ([christinavoudouris](https://github.com/christinavoudouris))
+- Autocomplete off for docs [\#144](https://github.com/materializecss/materialize/pull/144) ([ChildishGiant](https://github.com/ChildishGiant))
+- Revert "fix\(doc\): invalid download sass link" [\#129](https://github.com/materializecss/materialize/pull/129) ([DanielRuf](https://github.com/DanielRuf))
+- fix\(doc\): invalid download sass link [\#128](https://github.com/materializecss/materialize/pull/128) ([roiLeo](https://github.com/roiLeo))
 
-### Fixed
-- Fix breakpoint issue and incorrect min-width size ([75af8680](https://github.com/materializecss/materialize/commit/75af8680f982715b921aec94f4edc68ffca332bb))
-- Fixed toast tests ([1e6e9dca](https://github.com/materializecss/materialize/commit/1e6e9dca7e5cf4a650c95ff38f34003f6a35bf86))
-- Fixed overflowed scroll sidenav on desktop ([27b87935](https://github.com/materializecss/materialize/commit/27b87935423f52462d7b4ef4bad9fa9c6f8e2e59))
-- Fixed a bug in Dropdown when not using jQuery ([faa73a11](https://github.com/materializecss/materialize/commit/faa73a118813109b91062b4147d60f23d34a8f18))
-- Fix for closing the modal ([68c12a3a](https://github.com/materializecss/materialize/commit/68c12a3af999cea7cd8096a699a02ee6a5854e5b))
-- Fix chrome passive event warnings ([0b6b70c3](https://github.com/materializecss/materialize/commit/0b6b70c3544581fc467c509f173b937f5d036ec8), [3cbfb259](https://github.com/materializecss/materialize/commit/3cbfb259cd6911e1796f6460abcd921ccaef6ccd), [95580a52](https://github.com/materializecss/materialize/commit/95580a524199ca8774ccff87f37d13911b9626d4), [3afddefe](https://github.com/materializecss/materialize/commit/3afddefe2cadef09cb0221d9cdbbc61095f27b06))
-- Fix disabled checked switch style ([28df51e4](https://github.com/materializecss/materialize/commit/28df51e475c7f8f2ca48b76a5456bb7711c3d991))
-- Fix when using indented text for select inputs ([63d5502](https://github.com/materializecss/materialize/commit/63d5502eebbe821db21bb1fbba0dba98d3f58272))
-- Fix for feature discovery target being misplaced ([ee5f767](https://github.com/materializecss/materialize/commit/ee5f7673dd3cfb890c9b643a49fc7ce9e71609e7))
-- Other misc fixes for bugs and typos
+**Meta changes:**
 
-### Security
+- test: upgrade grunt-contrib-jasmine to upgrade puppeteer and set version of jasmine [\#189](https://github.com/materializecss/materialize/pull/189) ([DanielRuf](https://github.com/DanielRuf))
+- build\(deps\): update deps and fix deprecation warning in sass files [\#154](https://github.com/materializecss/materialize/pull/154) ([ChildishGiant](https://github.com/ChildishGiant))
+- Fix ERR\_FILE\_NOT\_FOUND when running npm test [\#148](https://github.com/materializecss/materialize/pull/148) ([Smankusors](https://github.com/Smankusors))
+- build\(deps\): :lock: fix many security issues,  [\#141](https://github.com/materializecss/materialize/pull/141) ([ChildishGiant](https://github.com/ChildishGiant))
+- ci: ensure conventional commit styles are used for PRs [\#123](https://github.com/materializecss/materialize/pull/123) ([ChildishGiant](https://github.com/ChildishGiant))
 
-- Fixed XSS vulnerabilities ([3aae4cc9](https://github.com/materializecss/materialize/commit/3aae4cc9bb2b58c337bf25d2f04f129a2a0fa78f))
+## [1.1.0-alpha](https://github.com/materializecss/materialize/tree/1.1.0-alpha) (2021-04-28)
 
-#### Many other small changes have been made:
-https://github.com/Dogfalo/materialize/compare/v1-dev...materializecss:1.1.0-alpha
+[Full Changelog](https://github.com/materializecss/materialize/compare/1.0.0...1.1.0-alpha)
 
-#### Contributors
-Many thanks to all the contributors that made this release possible.
+**Implemented enhancements:**
 
-@DanielRuf
-@nekonenene
-@Smankusors
-@ChildishGiant
-@dev10110
-@WaeCo
-@tomwjerry
-@warrenrodrigues
-@samschurter
-@julienc91
-@RaquelAM
-@k2s
-@stweil
-@roiLeo
-@nicknickel
-@zn022285
-@pwcreative
-@june07
-@doughballs
-@dwu300
-@tomelsj
-@NoahvdAa
-@bugy
-@richarddewit
-@dargmuesli
-@christinavoudouris
+- add copy code button [\#105](https://github.com/materializecss/materialize/pull/105) ([christinavoudouris](https://github.com/christinavoudouris))
+- feat: :wastebasket: add warning when using deprecated html setting [\#99](https://github.com/materializecss/materialize/pull/99) ([ChildishGiant](https://github.com/ChildishGiant))
+- feat\(dropdown\): ♿  improve dropdown & autocomplete a11y [\#98](https://github.com/materializecss/materialize/pull/98) ([ChildishGiant](https://github.com/ChildishGiant))
+- build: 👷 add doc builds to github actions [\#78](https://github.com/materializecss/materialize/pull/78) ([ChildishGiant](https://github.com/ChildishGiant))
+- Upgrade testing framework, rewrite tests to use vanilla js instead of jQuery [\#64](https://github.com/materializecss/materialize/pull/64) ([tomwjerry](https://github.com/tomwjerry))
+- enable autocomplete to accept dropdown options [\#60](https://github.com/materializecss/materialize/pull/60) ([nicknickel](https://github.com/nicknickel))
+- add support for text input suffix icons [\#59](https://github.com/materializecss/materialize/pull/59) ([nicknickel](https://github.com/nicknickel))
+- Fixes open vulnerabilities for \#38 [\#49](https://github.com/materializecss/materialize/pull/49) ([samschurter](https://github.com/samschurter))
+- Add dragTargetWidth option [\#40](https://github.com/materializecss/materialize/pull/40) ([nekonenene](https://github.com/nekonenene))
+- Added ability to change tooltip animate opacity. [\#23](https://github.com/materializecss/materialize/pull/23) ([june07](https://github.com/june07))
+- Chips autocomplete should have option to prevent user own input [\#22](https://github.com/materializecss/materialize/pull/22) ([nicknickel](https://github.com/nicknickel))
+- Upgrade waves [\#11](https://github.com/materializecss/materialize/pull/11) ([WaeCo](https://github.com/WaeCo))
+
+**Fixed bugs:**
+
+- Fix issue with Feature Discovery [\#112](https://github.com/materializecss/materialize/pull/112) ([warrenrodrigues](https://github.com/warrenrodrigues))
+- Fix bug by adding missing classes in img element in select component [\#110](https://github.com/materializecss/materialize/pull/110) ([Talagozis](https://github.com/Talagozis))
+- Trim select text [\#100](https://github.com/materializecss/materialize/pull/100) ([richarddewit](https://github.com/richarddewit))
+- Fix breakpoint issue and incorrect min-width size [\#95](https://github.com/materializecss/materialize/pull/95) ([warrenrodrigues](https://github.com/warrenrodrigues))
+- \#93 fixed sharing onOptionClick handler in multiple autocomplete instances [\#94](https://github.com/materializecss/materialize/pull/94) ([bugy](https://github.com/bugy))
+- \#6279: fixed aligning of dropdown with coverTrigger=false, when can align bottom [\#87](https://github.com/materializecss/materialize/pull/87) ([bugy](https://github.com/bugy))
+- Fixed overflowed scroll sidenav on desktop [\#62](https://github.com/materializecss/materialize/pull/62) ([Smankusors](https://github.com/Smankusors))
+- fixed a bug in Dropdown which caused an Error, except you are using j… [\#57](https://github.com/materializecss/materialize/pull/57) ([wuda-io](https://github.com/wuda-io))
+- Fix modal behavior in Safari [\#41](https://github.com/materializecss/materialize/pull/41) ([nekonenene](https://github.com/nekonenene))
+- Fix the style of the input field for chips [\#34](https://github.com/materializecss/materialize/pull/34) ([nekonenene](https://github.com/nekonenene))
+- Revert "Refactored sidenav css to accommodate btns better" [\#32](https://github.com/materializecss/materialize/pull/32) ([nekonenene](https://github.com/nekonenene))
+- revert blur and focus on last chip delete [\#24](https://github.com/materializecss/materialize/pull/24) ([nicknickel](https://github.com/nicknickel))
+- fixed passive scroll listener for sidenav [\#21](https://github.com/materializecss/materialize/pull/21) ([doughballs](https://github.com/doughballs))
+- Fix disabled checked switch style [\#9](https://github.com/materializecss/materialize/pull/9) ([Smankusors](https://github.com/Smankusors))
+- fix dropdown position when coverTrigger is false [\#4](https://github.com/materializecss/materialize/pull/4) ([DanielRuf](https://github.com/DanielRuf))
+
+**Documentation changes:**
+
+- grammar fix [\#107](https://github.com/materializecss/materialize/pull/107) ([christinavoudouris](https://github.com/christinavoudouris))
+- fix: 🔨 fix broken links \(Closes \#83\) [\#90](https://github.com/materializecss/materialize/pull/90) ([ChildishGiant](https://github.com/ChildishGiant))
+- fix: :hammer: fix \#88 [\#89](https://github.com/materializecss/materialize/pull/89) ([ChildishGiant](https://github.com/ChildishGiant))
+- Fixed a typo in documentation about floating action button. [\#70](https://github.com/materializecss/materialize/pull/70) ([NoahvdAa](https://github.com/NoahvdAa))
+- \[DOC\] Improved Search Results [\#46](https://github.com/materializecss/materialize/pull/46) ([Smankusors](https://github.com/Smankusors))
+- Replace lorempixel.com images with self-hosted ones [\#45](https://github.com/materializecss/materialize/pull/45) ([nekonenene](https://github.com/nekonenene))
+- Update readme to describe building [\#30](https://github.com/materializecss/materialize/pull/30) ([nekonenene](https://github.com/nekonenene))
+- Update docs to avoid installing grunt-cli [\#29](https://github.com/materializecss/materialize/pull/29) ([nekonenene](https://github.com/nekonenene))
+- Updated quickstart cdn [\#25](https://github.com/materializecss/materialize/pull/25) ([ChildishGiant](https://github.com/ChildishGiant))
+- Add default options argument to sidebar documentation [\#19](https://github.com/materializecss/materialize/pull/19) ([dev10110](https://github.com/dev10110))
+- Update organization github star button [\#8](https://github.com/materializecss/materialize/pull/8) ([roiLeo](https://github.com/roiLeo))
+- Update the organization name [\#3](https://github.com/materializecss/materialize/pull/3) ([DanielRuf](https://github.com/DanielRuf))
+
+**Meta changes:**
+
+- chore: 🔖 release v1.1.0-alpha [\#101](https://github.com/materializecss/materialize/pull/101) ([ChildishGiant](https://github.com/ChildishGiant))
+- Nightly builds [\#63](https://github.com/materializecss/materialize/pull/63) ([ChildishGiant](https://github.com/ChildishGiant))
+- Update Node.js version \(using current LTS\) for Travis CI [\#33](https://github.com/materializecss/materialize/pull/33) ([nekonenene](https://github.com/nekonenene))
+- Fix Gruntfile.js to prevent erroneous replace [\#28](https://github.com/materializecss/materialize/pull/28) ([nekonenene](https://github.com/nekonenene))
+- Support Node.js 10 and above \(Update node-sass and lint-staged\) [\#27](https://github.com/materializecss/materialize/pull/27) ([nekonenene](https://github.com/nekonenene))
+
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
