@@ -24,7 +24,10 @@ To fully release a new version, you need to have access to the @materializecss o
    > ```
    > npm run release -- --oldver=1.0.0 --newver=1.1.0
    > ```
-2. Verify that version in package.json is correctly replaced
+2. Verify that version is correctly replaced in:
+   * package.json
+   * js\global.js
+   * the docs correctly shown the new version
 3. [Then generate the CHANGELOG.md](#generating-changelogmd)
 4. Create a PR ([example](https://github.com/materializecss/materialize/pull/258) so that we can verify nothing goes wrong, address the feedback from the reviewers if there is any
 5. Merge the PR after most (hopefully everyone) happy with the planned release PR
