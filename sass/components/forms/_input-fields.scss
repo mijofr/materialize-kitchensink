@@ -194,6 +194,14 @@ textarea.materialize-textarea {
       transform: translateY(-14px) scale(.8);
       transform-origin: 0 0;
     }
+
+    // Prevent label from floating on top of default HTML placeholders
+    &:not(.active) + input[type=date],
+    &:not(.active) + input[type=datetime-local],
+    &:not(.active) + input[type=month],
+    &:not(.active) + input[type=time] {
+      color: transparent;
+    }
   }
 
   // Autofill + date + time inputs

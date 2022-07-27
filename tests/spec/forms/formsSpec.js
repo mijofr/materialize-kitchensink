@@ -17,11 +17,11 @@ describe('Forms:', function() {
 
   it("should keep label active while focusing on input", function () {
     inputs.forEach(input => {
-      expect(input.previousElementSibling).not.toHaveClass('active')
+      expect(input.labels[0]).not.toHaveClass('active')
       input.focus()
-      expect(input.previousElementSibling).toHaveClass('active')
+      expect(input.labels[0]).toHaveClass('active')
       input.blur()
-      expect(input.previousElementSibling).not.toHaveClass('active')
+      expect(input.labels[0]).not.toHaveClass('active')
     })
   });
 });
