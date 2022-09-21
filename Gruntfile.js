@@ -622,9 +622,13 @@ module.exports = function(grunt) {
     },
 
     copy: {
-      docs: {
+      docs_js: {
         files: [
           {src: 'bin/materialize.js', dest: 'docs/js/materialize.js'},
+        ]
+      },
+      docs_templates: {
+        files: [
           {src: 'templates/**', dest: 'docs/'}
         ]
       }
@@ -682,7 +686,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('pug_compile', ['pug', 'notify:pug_compile']);
-  grunt.registerTask('js_compile', ['concat:temp', 'configureBabel', 'babel:bin', 'clean:temp']);
+  grunt.registerTask('js_compile', ['concat:temp', 'configureBabel', 'babel:bin', 'clean:temp', 'copy:docs_js']);
   grunt.registerTask('sass_compile', [
     'sass:gh',
     'sass:bin',
@@ -704,5 +708,5 @@ module.exports = function(grunt) {
     grunt.task.run(tasks);
 
   });
-  grunt.registerTask('docs', ['js_compile', 'copy:docs', 'sass:gh',  'postcss:gh', 'pug', 'replace:docs']);
+  grunt.registerTask('docs', ['js_compile', 'copy:docs_js', 'copy:docs_templates', 'sass:gh',  'postcss:gh', 'pug', 'replace:docs']);
 };
