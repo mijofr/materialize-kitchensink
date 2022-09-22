@@ -398,6 +398,12 @@ table {
     tr {
       border-bottom: none;
     }
+
+    > tbody {
+      > tr:nth-child(odd) {
+        background-color: $table-striped-color;
+      }
+    }
   }
 
   &.highlight > tbody > tr {
