@@ -178,7 +178,7 @@
     $('.sidenav').sidenav();
     $('.tap-target').tapTarget();
     $('input.autocomplete').autocomplete({
-      data: { Apple: null, Microsoft: null, Google: 'http://placehold.it/250x250' }
+      data: { Apple: null, Microsoft: null, Google: 'https://via.placeholder.com/250x250' }
     });
     $('input[data-length], textarea[data-length]').characterCounter();
 
