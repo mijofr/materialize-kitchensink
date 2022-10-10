@@ -1,5 +1,6 @@
 (function($) {
   const TEXT_BASED_INPUT_SELECTOR = [
+    'input:not([type])',
     'input[type=text]',
     'input[type=password]',
     'input[type=email]',
