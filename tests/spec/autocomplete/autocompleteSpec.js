@@ -8,7 +8,7 @@ describe("Autocomplete Plugin", function () {
         data: {
           "Apple": null,
           "Microsoft": null,
-          "Google": 'http://placehold.it/250x250'
+          "Google": 'https://via.placeholder.com/250x250'
         }
       });
       done();
@@ -35,7 +35,7 @@ describe("Autocomplete Plugin", function () {
           data: {
             "Apple": null,
             "Microsoft": null,
-            "Google": 'http://placehold.it/250x250'
+            "Google": 'https://via.placeholder.com/250x250'
           }
         });
 
