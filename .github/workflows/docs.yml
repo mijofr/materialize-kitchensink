@@ -1,5 +1,6 @@
 name: Docs
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -9,6 +10,27 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@master
+
+        - uses: actions/setup-node@v2
+        - name: Add Missing Contributors
+          env:
+            PRIVATE_TOKEN: ${{ github.token }}
+          run: |
+            yarn add all-contributors-cli
+            # Fetch Contributors and Add them
+            CONTRIBUTORS="$(yarn all-contributors check)"
+            CONTRIBUTORS=$(echo $CONTRIBUTORS | sed -E 's/^.*all-contributors check//g' | sed -E 's/Missing contributors in .all-contributorsrc: //g' | sed -E 's/Unknown contributors.*//g' | sed -E 's/Done in.*//g' | sed 's/^[ \t]*//;s/[ \t]*$//' | sed -E 's/\,//g')
+            # Add Contributors (code)
+            if [ -z $CONTRIBUTORS ]; then
+              echo "Everyone has been awarded credits! :D"
+            else
+              echo "Adding Contributors $CONTRIBUTORS"
+              echo $CONTRIBUTORS | xargs -d " " -I '{}'  yarn all-contributors add {} code
+            fi
+
+        - name: Generate Contributors Table
+          run: |
+            yarn all-contributors generate
 
         - name: Generate docs
           run: |
