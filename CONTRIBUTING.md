@@ -139,7 +139,8 @@ Adhering to the following process is the best way to get your work included in t
    git checkout -b <topic-branch-name>
    ```
 
-4. Commit your changes in logical chunks with messages written in English. Please adhere to these [git commit message guidelines](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) and use [conventional commit format](https://github.com/conventional-changelog/commitlint/#what-is-commitlint) in your commit messages (or use `npm run commit` to make your life easier). Failing to do this makes your commits unlikely to be merged into the main project.
+4. Commit your changes in logical chunks with messages written in English. Please adhere to these [git commit message guidelines](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) and use [conventional commit format](https://github.com/conventional-changelog/commitlint/#what-is-commitlint) in your commit messages. Failing to do this makes your commits unlikely to be merged into the main project.
+   > You can use `npm run commit` to help you formatting the message, or use [commitlint.io](https://commitlint.io) if you are not editing locally
 
 5. Locally merge (or rebase) the upstream development branch into your topic branch:
 
