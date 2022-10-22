@@ -1,17 +1,17 @@
 name: Bug Report
-description: Report an issue with Materialize
+description: Report an issue with Materialize.
 title: "[Bug]: "
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Before opening an issue here, make sure that you have **read the template completely** through
+        Before opening an issue here, make sure that you have **completely read the template**.
   - type: textarea
     id: context
     attributes:
       label: Context
-      description: A short summarry of the issue + How has this issue affected you? What are you trying to accomplish?
+      description: A short summarry of the issue + how has this issue affected you? What are you trying to accomplish?
     validations:
       required: true
   - type: textarea
@@ -19,7 +19,7 @@ body:
     attributes:
       label: Current Behavior
       description: Tell us in detail about what the bug does.
-      placeholder: What happened ?
+      placeholder: What happened?
     validations:
       required: false
   - type: textarea
@@ -27,7 +27,7 @@ body:
     attributes:
       label: Expected behavior
       description: Tell us in detail what should happen instead.
-      placeholder: Instead of the previous behavior, the application should do/display ...
+      placeholder: Instead of the previous behavior, the application should do/display...
     validations:
       required: false
   - type: textarea
@@ -35,7 +35,7 @@ body:
     attributes:
       label: Possible Solutions or Causes
       description: Not obligatory, but suggest a fix/reason for the bug, or ideas on how to implement the addition or change.
-      placeholder: I think this bug is due do [that piece of code] in the file [xxx] || I think we should do [something] to solve this issue.
+      placeholder: Eg. "I think this bug is due do [that piece of code] in the file [xxx]" or "I think we should do [something] to solve this issue."
     validations:
       required: false
   - type: textarea

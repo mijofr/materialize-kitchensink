@@ -1,5 +1,5 @@
 name: General issue
-description: Enhancement, New feature proposal, typo in documentation, etc.
+description: Enhancement, new feature proposal, typo in documentation, etc.
 body:
   - type: markdown
     attributes:
@@ -9,7 +9,7 @@ body:
     id: context
     attributes:
       label: Context
-      description: A short summarry of the issue + How has this issue affected you? What are you trying to accomplish?
+      description: A short summarry of the issue + how has this issue affected you? What are you trying to accomplish?
     validations:
       required: true
   - type: textarea
@@ -23,7 +23,7 @@ body:
     id: expected
     attributes:
       label: Expected behavior
-      description: Tell us in detail what we should fix
+      description: Tell us in detail what we should fix.
     validations:
       required: false
   - type: textarea
@@ -37,7 +37,9 @@ body:
     id: reproduce
     attributes:
       label: Steps to reproduce
-      description: If relevant, give a set of steps to reproduce this issue. Please also provide us a link to a live example. You can use the [following codepen template](https://codepen.io/shinprog/pen/KKROrBX).
+      description: |
+        If relevant, give a set of steps to reproduce this issue.  
+        Please also provide us a link to a live example. You can use the [following codepen template](https://codepen.io/shinprog/pen/KKROrBX).
       placeholder: |
         1. Open this codepen link
         2. Click there
