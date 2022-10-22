@@ -1,5 +1,5 @@
 name: Bug Report
-description: File a bug report
+description: Report an issue with Materialize
 title: "[Bug]: "
 labels: ["bug"]
 body:
@@ -11,15 +11,14 @@ body:
     id: context
     attributes:
       label: Context
-      description: A very short summarry of the issue + How has this issue affected you? What are you trying to accomplish?
-      placeholder: What happened ?
+      description: A short summarry of the issue + How has this issue affected you? What are you trying to accomplish?
     validations:
       required: true
   - type: textarea
     id: current
     attributes:
       label: Current Behavior
-      description: Tell us about what the bug does.
+      description: Tell us in detail about what the bug does.
       placeholder: What happened ?
     validations:
       required: false
@@ -27,7 +26,7 @@ body:
     id: expected
     attributes:
       label: Expected behavior
-      description: Tell us what should happen instead.
+      description: Tell us in detail what should happen instead.
       placeholder: Instead of the previous behavior, the application should do/display ...
     validations:
       required: false
@@ -35,7 +34,7 @@ body:
     id: posible-solutions
     attributes:
       label: Possible Solutions or Causes
-      description: Not obligatory, but suggest a fix/reason for the bug, or ideas how to implement the addition or change.
+      description: Not obligatory, but suggest a fix/reason for the bug, or ideas on how to implement the addition or change.
       placeholder: I think this bug is due do [that piece of code] in the file [xxx] || I think we should do [something] to solve this issue.
     validations:
       required: false
@@ -60,12 +59,11 @@ body:
       placeholder: A link to a codepen, to your site...
     validations:
       required: true
-  - type: input
+  - type: textarea
     id: environment
     attributes:
       label: Your Environment
       description: Include as many relevant details about the environment you experienced the bug in.
-      placeholder: A link to a codepen, to your site...
       value: |
         * Version used:
         * Browser Name and version:
