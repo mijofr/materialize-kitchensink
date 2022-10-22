@@ -35,7 +35,7 @@ module.exports = function(grunt) {
   ];
 
   // configure the tasks
-  let config = {
+  const config = {
     //  Jasmine
     jasmine: {
       components: {
@@ -696,7 +696,7 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('server', ['browserSync', 'notify:server']);
   grunt.registerTask('monitor', ['concurrent:monitor']);
-  grunt.registerTask('travis', ['js_compile', 'sass_compile', 'connect', 'jasmine']);
+  grunt.registerTask('test', ['js_compile', 'sass_compile', 'connect', 'jasmine']);
   grunt.registerTask('jas_test', ['connect', 'jasmine']);
   grunt.registerTask('test_repeat', function(){
     const tasks = ['connect'];
