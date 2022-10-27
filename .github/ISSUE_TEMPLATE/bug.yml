@@ -67,6 +67,6 @@ body:
         * Version used:
         * Browser Name and version:
         * Operating System and version (desktop or mobile):
-        * Additional informations you want to tell us:
+        * Additional information you want to tell us:
     validations:
       required: true
