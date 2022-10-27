@@ -1,7 +1,5 @@
-name: Bug Report
-description: Report an issue with Materialize.
-title: "[Bug]: "
-labels: ["bug"]
+name: Improvement
+description: Enhancement, new feature proposal, typo in documentation, etc.
 body:
   - type: checkboxes
     id: terms
@@ -25,48 +23,32 @@ body:
     id: current
     attributes:
       label: Current Behavior
-      description: Tell us in detail about what the bug does.
-      placeholder: What happened?
+      description: Tell us in detail about what's happening. We encourage you to link references or upload concept images/screenshots.
     validations:
       required: false
   - type: textarea
     id: expected
     attributes:
       label: Expected behavior
-      description: Tell us in detail what should happen instead.
-      placeholder: Instead of the previous behavior, the application should do/display...
+      description: Tell us in detail what we should fix.
     validations:
       required: false
   - type: textarea
     id: posible-solutions
     attributes:
       label: Possible Solutions or Causes
-      description: Not obligatory, but suggest a fix/reason for the bug, or ideas on how to implement the addition or change.
-      placeholder: Eg. "I think this bug is due do [that piece of code] in the file [xxx]" or "I think we should do [something] to solve this issue."
-    validations:
-      required: false
-  - type: textarea
-    id: reproduce
-    attributes:
-      label: Steps to reproduce
-      description: |
-        If relevant, give a set of steps to reproduce this bug.  
-        We encourage you a live example that demonstrates the bug (you may want to use the [following jsfiddle template](https://jsfiddle.net/1es0zhaf/))
-      placeholder: |
-        1. Open this link 
-        2. Click there
-        3. This appears, but...
+      description: Not obligatory, but suggest a fix/reason for this issue, or ideas on how to implement the addition or change.
     validations:
       required: false
   - type: textarea
     id: environment
     attributes:
       label: Your Environment
-      description: Include as many relevant details about the environment you experienced the bug in.
+      description: If relevant and possible, include as many relevant details about the environment you experienced the issue in.
       value: |
         * Version used:
         * Browser Name and version:
         * Operating System and version (desktop or mobile):
         * Additional informations you want to tell us:
     validations:
-      required: true
+      required: false
