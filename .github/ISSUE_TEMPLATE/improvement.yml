@@ -1,0 +1,54 @@
+name: Improvement
+description: Enhancement, new feature proposal, typo in documentation, etc.
+body:
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Before submitting...
+      options:
+        - label: I have searched for [duplicate or closed issues](https://github.com/materializecss/materialize/issues?utf8=%E2%9C%93&q=is%3Aissue).
+          required: true
+        - label: I have read the [CONTRIBUTING document](https://github.com/materializecss/materialize/blob/master/CONTRIBUTING.md) and my issue is following the guidelines. 
+          required: true
+        - label: I have read the template completely before filling it in.
+          required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: A short summarry of the issue + how has this issue affected you? What are you trying to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Behavior
+      description: Tell us in detail about what's happening. We encourage you to link references or upload concept images/screenshots.
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Tell us in detail what we should fix.
+    validations:
+      required: false
+  - type: textarea
+    id: posible-solutions
+    attributes:
+      label: Possible Solutions or Causes
+      description: Not obligatory, but suggest a fix/reason for this issue, or ideas on how to implement the addition or change.
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Your Environment
+      description: If relevant and possible, include as many relevant details about the environment you experienced the issue in.
+      value: |
+        * Version used:
+        * Browser Name and version:
+        * Operating System and version (desktop or mobile):
+        * Additional information you want to tell us:
+    validations:
+      required: false
