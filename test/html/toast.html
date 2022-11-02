@@ -34,19 +34,19 @@
 
     <script type="text/javascript">
     function toast1() {
-        text = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+        text = '<span>I am toast content</span><button type="button" class="btn-flat toast-action">Undo</button>';
         M.toast({text: text});
     }
     function toast2() {
-        text = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+        text = '<span>I am toast content</span><button type="button" class="btn-flat toast-action">Undo</button>';
         M.toast({html: text});
     }
     function toast3() {
-        text = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+        text = '<span>I am toast content</span>< type="button" class="btn-flat toast-action">Undo</button>';
         M.toast({unsafeHTML: text});
     }
     function toast4() {
-        text = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+        text = '<span>I am toast content</span><button type="button" class="btn-flat toast-action">Undo</button>';
         M.toast({unsafeHTML: text, text: text});
     }
     </script>

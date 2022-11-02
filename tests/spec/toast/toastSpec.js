@@ -11,6 +11,9 @@ describe( 'Toasts:', function() {
       setTimeout(function() {
         toast = document.querySelectorAll('.toast');
         expect(toast.length).toBe(1);
+        expect(toast[0].getAttribute("role")).toBe("alert");
+        expect(toast[0].getAttribute("aria-live")).toBe("assertive");
+        expect(toast[0].getAttribute("aria-atomic")).toBe("true");
         expect(toast[0]).toBeVisible();
         expect(toast[0].innerText).toBe('Test toast');
         setTimeout(function() {
