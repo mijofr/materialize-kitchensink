@@ -23,10 +23,10 @@
 <body>
 
     <div class="container">
-        <a onclick="toast1()" class="btn">Toast with text!</a>
-        <a onclick="toast2()" class="btn">Toast with html!</a>
-        <a onclick="toast3()" class="btn">Toast with unsafeHTML!</a>
-        <a onclick="toast4()" class="btn">Toast with unsafeHTML and text!</a>
+        <button type="button" onclick="toast1()" class="btn">Toast with text!</button>
+        <button type="button" onclick="toast2()" class="btn">Toast with html!</button>
+        <button type="button" onclick="toast3()" class="btn">Toast with unsafeHTML!</button>
+        <button type="button" onclick="toast4()" class="btn">Toast with unsafeHTML and text!</button>
     </div>
 
     <!-- Scripts -->
@@ -34,19 +34,19 @@
 
     <script type="text/javascript">
     function toast1() {
-        text = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+        text = '<span>I am toast content</span><button type="button" class="btn-flat toast-action">Undo</button>';
         M.toast({text: text});
     }
     function toast2() {
-        text = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+        text = '<span>I am toast content</span><button type="button" class="btn-flat toast-action">Undo</button>';
         M.toast({html: text});
     }
     function toast3() {
-        text = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+        text = '<span>I am toast content</span><button type="button" class="btn-flat toast-action">Undo</button>';
         M.toast({unsafeHTML: text});
     }
     function toast4() {
-        text = '<span>I am toast content</span><button class="btn-flat toast-action">Undo</button>';
+        text = '<span>I am toast content</span><button type="button" class="btn-flat toast-action">Undo</button>';
         M.toast({unsafeHTML: text, text: text});
     }
     </script>
