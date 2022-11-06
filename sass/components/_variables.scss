@@ -204,8 +204,8 @@ $input-margin-bottom: 8px;
 $input-margin: 0 0 $input-margin-bottom 0 !default;
 $input-padding: 0 !default;
 $label-font-size: .8rem !default;
-$input-disabled-color: rgba(0,0,0, .42) !default;
-$input-disabled-solid-color: #949494 !default;
+$input-disabled-color: var(--font-color-disabled) !default;
+$input-disabled-solid-color: var(--font-color-disabled) !default;
 $input-disabled-border: 1px dotted $input-disabled-color !default;
 $input-invalid-border: 1px solid $input-error-color !default;
 $input-icon-size: 2rem;
@@ -214,7 +214,7 @@ $placeholder-text-color: var(--font-color-medium) !default;
 // Radio Buttons
 $radio-fill-color: $primary-color !default;
 $radio-focus-color: $primary-color-focus-opaque !default;
-$radio-empty-color: #5a5a5a !default;
+$radio-empty-color: var(--font-color-medium) !default;
 $radio-border: 2px solid $radio-fill-color !default;
 
 // Range

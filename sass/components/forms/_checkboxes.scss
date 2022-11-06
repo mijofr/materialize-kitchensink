@@ -54,8 +54,8 @@
     transform: scale(1);
     border: 0;
     border-radius: 50%;
-    box-shadow: 0 0 0 10px rgba(0,0,0,.1);
-    background-color: rgba(0,0,0,.1);
+    box-shadow: 0 0 0 10px $bg-focus-color-opaque;
+    background-color: $bg-focus-color-opaque;
   }
 }
 
@@ -159,8 +159,8 @@
       top: 0;
       width: 20px;
       height: 20px;
-      border: 2px solid $secondary-color;
-      background-color: $secondary-color;
+      border: 2px solid $primary-color;
+      background-color: $primary-color;
       z-index: 0;
     }
   }
@@ -169,13 +169,13 @@
   &.tabbed:focus + span:not(.lever):after {
     border-radius: 2px;
     border-color: $radio-empty-color;
-    background-color: rgba(0,0,0,.1);
+    background-color: $bg-focus-color-opaque;
   }
 
   &.tabbed:checked:focus + span:not(.lever):after {
     border-radius: 2px;
-    background-color: $secondary-color;
-    border-color: $secondary-color;
+    background-color: $primary-color;
+    border-color: $primary-color;
   }
 
   // Disabled style
