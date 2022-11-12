@@ -70,7 +70,7 @@ $divider-color: var(--separator-color);
 $badge-bg-color: $primary-color !default;
 $badge-height: 22px !default;
 $badge-color: var(--font-color-medium) !default;
-$badge-color-active: var(--font-on-primary-color-medium) !default;
+$badge-color-active: var(--font-on-primary-color-main) !default;
 $badge-color-new: $font-on-primary-color-main !default;
 
 // 3. Buttons
@@ -387,6 +387,8 @@ $collection-hover-bg-color: $bg-hover-color-opaque !default;
 $collection-link-color: $primary-color !default;
 $collection-line-height: 1.5rem !default;
 $collection-border-radius: 2px !default;
+$collection-avatar-circle-bg-color: var(--slider-track-color) !default;
+$collection-avatar-circle-icon-color: #fff !default;
 
 
 // 24. Progress Bar
