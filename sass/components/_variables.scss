@@ -49,6 +49,7 @@ $font-color-disabled: var(--font-color-disabled) !default;
 
 $font-on-primary-color-main: var(--font-on-primary-color-main) !default;
 $font-on-primary-color-medium: var(--font-on-primary-color-medium) !default;
+$font-on-secondary-color-main: var(--font-on-secondary-color-main) !default;
 
 $secondary-color: var(--secondary-color) !default;
 $secondary-color-when-hovered-solid: var(--secondary-color-hover-solid) !default;
@@ -116,7 +117,7 @@ $button-flat-disabled-color: var(--font-color-disabled) !default;
 $button-floating-background: $secondary-color !default;
 $button-floating-background-hover: $secondary-color-when-hovered-solid !default;
 $button-floating-background-focus: $secondary-color-when-focused-solid !default;
-$button-floating-color: $button-raised-color !default;
+$button-floating-color: $bg-color !default;
 $button-floating-size: 40px !default;
 $button-floating-radius: 50% !default;
 
