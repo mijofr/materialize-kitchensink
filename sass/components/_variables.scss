@@ -137,6 +137,8 @@ $carousel-height: 400px !default;
 $carousel-item-height: $carousel-height * 0.5 !default;
 $carousel-item-width: $carousel-item-height !default;
 
+$carousel-indicator-color: var(--slider-track-color) !default;
+$carousel-indicator-color-active: $primary-color !default;
 
 // 6. Collapsible
 // ==========================================================================
