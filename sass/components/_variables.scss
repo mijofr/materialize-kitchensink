@@ -81,7 +81,7 @@ $badge-color-new: $font-on-primary-color-main !default;
 $button-raised-background: $primary-color !default;
 $button-raised-background-hover: $primary-color-when-hovered-solid !default;
 $button-raised-background-focus: $primary-color-when-focused-solid !default;
-$button-raised-color: #fff !default;
+$button-raised-color: $font-on-primary-color-main !default;
 
 // Shared styles
 $button-border: none !default;
@@ -195,7 +195,6 @@ $input-height: 3rem !default;
 $input-border-color: var(--font-color-medium) !default;
 $input-color: var(--font-color-main) !default;
 $input-border: 1px solid $input-border-color !default;
-$input-background: #fff !default;
 $input-error-color: $error-color !default;
 $input-success-color: $success-color !default;
 $input-focus-color: $primary-color !default;
