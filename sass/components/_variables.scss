@@ -145,8 +145,8 @@ $carousel-indicator-color-active: $primary-color !default;
 
 $collapsible-height: 3rem !default;
 $collapsible-line-height: $collapsible-height !default;
-$collapsible-header-color: #fff !default;
-$collapsible-border-color: #ddd !default;
+$collapsible-border-color: $divider-color !default;
+$collapsible-bg-color: $bg-color !default;
 
 
 // 7. Date + Time Picker
