@@ -19,7 +19,7 @@
 
     --separator-color: #DDDDDD; /* borders between components */
 
-    --slider-track-color: rgba(0, 0, 0, 0.32);
+    --slider-track-color: rgba(0, 0, 0, 0.26);
     --switch-thumb-off-color: #ffffff;
 
     --primary-color: #26a69a;
@@ -57,7 +57,7 @@
 
     --separator-color: #424242; /* borders between components */
 
-    --slider-track-color: rgba(255, 255, 255, 0.32);
+    --slider-track-color: rgba(255, 255, 255, 0.26);
     --switch-thumb-off-color: #bababa;
 
     --primary-color: #B39DDB;
