@@ -153,16 +153,12 @@ $collapsible-bg-color: $bg-color !default;
 // ==========================================================================
 
 $datepicker-display-font-size: 2.8rem;
-$datepicker-calendar-header-color: #999;
-$datepicker-weekday-color: rgba(0, 0, 0, .87) !default;
-$datepicker-weekday-bg: $primary-color !default;
-$datepicker-date-bg: $primary-color !default;
-$datepicker-year: rgba(255, 255, 255, .7) !default;
-$datepicker-focus: rgba(0, 0, 0, .05) !default;
-$datepicker-selected: $primary-color !default;
-$datepicker-selected-outfocus: $primary-color-when-focused-solid !default;
-$datepicker-day-focus: $primary-color-when-focused-solid !default;
-$datepicker-disabled-day-color: rgba(0, 0, 0, .3) !default;
+$datepicker-calendar-header-color: $font-color-medium;
+$datepicker-year: $font-on-primary-color-main !default;
+$datepicker-day-focus: $primary-color-focus-opaque !default;
+$datepicker-day-hover: $primary-color-hover-opaque !default;
+$datepicker-day-font-color: $font-color-main !default;
+$datepicker-day-font-color-disabled: $font-color-disabled !default;
 
 $timepicker-clock-bg: $bg-color !default;
 $timepicker-clock-color: var(--font-color-main) !default;
