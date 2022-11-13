@@ -35,6 +35,7 @@
 @use "sass:math";
 
 $primary-color: var(--primary-color) !default;
+$primary-color-dark: var(--primary-color-dark) !default;
 $primary-color-when-hovered-solid: var(--primary-color-raised-hover-solid) !default;
 $primary-color-when-focused-solid: var(--primary-color-raised-focus-solid) !default;
 $primary-color-font-emphasize-color: $primary-color !default;
@@ -328,8 +329,8 @@ $tabs-focus-bg-color: var(--focus-color) !default;
 // 18. Tables
 // ==========================================================================
 
-$table-border-color: rgba(0, 0, 0, .12) !default;
-$table-striped-color: rgba(242, 242, 242, 0.5) !default;
+$table-border-color: $divider-color !default;
+$table-striped-color: var(--background-color-slight-emphasis) !default;
 
 
 // 19. Toasts
@@ -358,10 +359,10 @@ $h6-fontsize: 1.15rem !default;
 // 21. Footer
 // ==========================================================================
 
-$footer-font-color: #fff !default;
+$footer-font-color: $font-on-primary-color-main !default;
 $footer-bg-color: $primary-color !default;
-$footer-copyright-font-color: rgba(255, 255, 255, .8) !default;
-$footer-copyright-bg-color: rgba(51, 51, 51, .08) !default;
+$footer-copyright-font-color: var(--font-on-primary-color-dark-main) !default;
+$footer-copyright-bg-color: $primary-color-dark !default;
 
 
 // 22. Flow Text

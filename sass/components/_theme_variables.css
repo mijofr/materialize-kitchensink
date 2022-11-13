@@ -7,6 +7,7 @@
     --font-color-disabled: rgba(0, 0, 0, 0.38);
 
     --font-on-primary-color-main: rgba(255, 255, 255, 0.87);
+    --font-on-primary-color-dark-main: rgba(255, 255, 255, 0.87);
     --font-on-primary-color-medium: rgba(255, 255, 255, 0.60);
     --font-on-secondary-color-main: rgba(0, 0, 0, 0.87);
 
@@ -16,6 +17,7 @@
 
     --background-color-disabled: rgba(0, 0, 0, 0.12);
     --background-color-level-4dp: rgba(0, 0, 0, 0.09);
+    --background-color-slight-emphasis: rgba(0, 0, 0, 0.025); /* stripes in table */
     --background-color-card: var(--background-color);
 
     --separator-color: #DDDDDD; /* borders between components */
@@ -24,6 +26,7 @@
     --switch-thumb-off-color: #ffffff;
 
     --primary-color: #26a69a;
+    --primary-color-dark: #009688;
     --primary-color-numeric: 38, 166, 154;
     --primary-color-raised-hover-solid: #30B0A4;
     --primary-color-raised-focus-solid: #44C4B8;
@@ -46,6 +49,7 @@
     --font-color-disabled: rgba(255, 255, 255, 0.38);
 
     --font-on-primary-color-main: rgba(0, 0, 0, 0.87);
+    --font-on-primary-color-dark-main: rgba(255, 255, 255, 0.87);
     --font-on-primary-color-medium: rgba(0, 0, 0, 0.56);
 
     --hover-color: rgba(255, 255, 255, 0.04);
@@ -55,6 +59,7 @@
     --background-color-disabled: rgba(255, 255, 255, 0.12);
     --background-color-level-4dp: rgba(255, 255, 255, 0.09);
     --background-color-card: var(--background-color-level-4dp);
+    --background-color-slight-emphasis: rgba(255, 255, 255, 0.05);
 
     --separator-color: #424242; /* borders between components */
 
@@ -62,6 +67,7 @@
     --switch-thumb-off-color: #bababa;
 
     --primary-color: #B39DDB;
+    --primary-color-dark: #9575CD;
     --primary-color-numeric: 179, 157, 219;
     --primary-color-raised-hover-solid: #C2ACEA;
     --primary-color-raised-focus-solid: #DBC5FF;
