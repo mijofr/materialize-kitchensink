@@ -2,19 +2,24 @@
   &.tabs-transparent {
     background-color: transparent;
 
-    .tab a,
+    .tab a {
+      color: $font-on-primary-color-medium;
+    }
+
     .tab.disabled a,
-    .tab.disabled a:hover {
-      color: rgba(255, 255, 255, 0.7);
+    .tab.disabled a:hover,
+    .tab.disabled a:focus, {
+      color: $font-on-primary-color-disabled;
     }
 
     .tab a:hover,
-    .tab a.active {
-      color: #fff;
+    .tab a.active,
+    .tab a:focus {
+      color: $font-on-primary-color-main;
     }
 
     .indicator {
-      background-color: #fff;
+      background-color: $font-on-primary-color-main;
     }
   }
 
