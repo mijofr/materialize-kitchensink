@@ -292,7 +292,7 @@ $navbar-brand-font-size: 2.1rem !default;
 $sidenav-width: 300px !default;
 $sidenav-font-size: 14px !default;
 $sidenav-font-color: var(--font-color-main) !default;
-$sidenav-bg-color: $bg-color !default;
+$sidenav-bg-color: var(--background-color-level-16dp-solid) !default;
 $sidenav-icon-color: var(--font-color-medium) !default;
 $sidenav-subheader-color: var(--font-color-medium) !default;
 $sidenav-padding: 16px !default;

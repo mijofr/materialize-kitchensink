@@ -194,8 +194,8 @@
 .sidenav.sidenav-fixed .collapsible-body > ul:not(.collapsible) > li.active {
   background-color: $primary-color;
 
-  a {
-    color: $sidenav-bg-color;
+  a:not(.btn) {
+    color: $font-on-primary-color-main;
   }
 }
 
