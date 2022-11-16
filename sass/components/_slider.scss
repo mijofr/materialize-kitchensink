@@ -78,13 +78,13 @@
       height: 16px;
       width: 16px;
       margin: 0 12px;
-      background-color: $slider-bg-color-light;
+      background-color: $slider-indicator-color;
 
       transition: background-color .3s;
       border-radius: 50%;
 
       &.active {
-        background-color: $slider-indicator-color;
+        background-color: $slider-indicator-color-active;
       }
     }
   }

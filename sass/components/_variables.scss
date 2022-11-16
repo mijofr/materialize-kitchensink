@@ -303,9 +303,10 @@ $sidenav-line-height: $sidenav-item-height !default;
 // 15. Photo Slider
 // ==========================================================================
 
-$slider-bg-color: color('grey', 'base') !default;
+$slider-bg-color: $carousel-indicator-color !default;
 $slider-bg-color-light: color('grey', 'lighten-2') !default;
-$slider-indicator-color: color('green', 'base') !default;
+$slider-indicator-color: $carousel-indicator-color !default;
+$slider-indicator-color-active: $carousel-indicator-color-active !default;
 
 
 // 16. Spinners | Loaders
