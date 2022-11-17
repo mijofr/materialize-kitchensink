@@ -11,7 +11,7 @@
 }
 
 .text-primary {
-	color: rgba(255, 255, 255, 1);
+  color: $font-on-primary-color-main;
 }
 
 
@@ -24,19 +24,19 @@
 }
 
 .timepicker-text-container {
-	font-size: 4rem;
-	font-weight: bold;
-	text-align: center;
-	color: rgba(255, 255, 255, 0.6);
+  font-size: 4rem;
+  font-weight: bold;
+  text-align: center;
+  color: $font-on-primary-color-medium;
   font-weight: 400;
-	position: relative;
+  position: relative;
   user-select: none;
 }
 
 .timepicker-span-hours,
 .timepicker-span-minutes,
 .timepicker-span-am-pm div {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .timepicker-span-hours {
@@ -58,84 +58,91 @@
 
 /* Analog Clock Display */
 .timepicker-analog-display {
-	flex: 2.5 auto;
-	background-color: $timepicker-clock-bg;
+  flex: 2.5 auto;
+  background-color: $timepicker-clock-bg;
 }
 
 .timepicker-plate {
-	background-color: $timepicker-clock-plate-bg;
-	border-radius: 50%;
-	width: 270px;
-	height: 270px;
-	overflow: visible;
-	position: relative;
+  background-color: $timepicker-clock-plate-bg;
+  border-radius: 50%;
+  width: 270px;
+  height: 270px;
+  overflow: visible;
+  position: relative;
   margin: auto;
   margin-top: 25px;
   margin-bottom: 5px;
-	user-select: none;
+  user-select: none;
 }
 
 .timepicker-canvas,
 .timepicker-dial {
-	position: absolute;
-	left: 0;
+  position: absolute;
+  left: 0;
   right: 0;
   top: 0;
   bottom: 0;
 }
+
 .timepicker-minutes {
-	visibility: hidden;
+  visibility: hidden;
 }
 
 .timepicker-tick {
-	border-radius: 50%;
-	color: $timepicker-clock-color;
-	line-height: 40px;
-	text-align: center;
-	width: 40px;
-	height: 40px;
-	position: absolute;
-	cursor: pointer;
+  border-radius: 50%;
+  color: $timepicker-clock-color;
+  line-height: 40px;
+  text-align: center;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  cursor: pointer;
   font-size: 15px;
 }
 
 .timepicker-tick.active,
 .timepicker-tick:hover {
-	background-color: $primary-color-hover-opaque;
+  background-color: $primary-color-hover-opaque;
 }
+
 .timepicker-dial {
-	transition: transform 350ms, opacity 350ms;
+  transition: transform 350ms, opacity 350ms;
 }
+
 .timepicker-dial-out {
   &.timepicker-hours {
-	  transform: scale(1.1, 1.1);
+    transform: scale(1.1, 1.1);
   }
 
   &.timepicker-minutes {
-	  transform: scale(.8, .8);
+    transform: scale(.8, .8);
   }
 
-	opacity: 0;
+  opacity: 0;
 }
+
 .timepicker-canvas {
-	transition: opacity 175ms;
+  transition: opacity 175ms;
 
   line {
-	  stroke: $primary-color;
-	  stroke-width: 4;
-	  stroke-linecap: round;
+    stroke: $primary-color;
+    stroke-width: 4;
+    stroke-linecap: round;
   }
 }
+
 .timepicker-canvas-out {
-	opacity: 0.25;
+  opacity: 0.25;
 }
+
 .timepicker-canvas-bearing {
-	stroke: none;
-	fill: $primary-color;
+  stroke: none;
+  fill: $primary-color;
 }
+
 .timepicker-canvas-bg {
-	stroke: none;
-	fill: $primary-color;
+  stroke: none;
+  fill: $primary-color;
 }
 
 
@@ -171,14 +178,14 @@
   }
 
   .timepicker-text-container {
-		top: 32%;
-	}
+    top: 32%;
+  }
 
-	.timepicker-display-am-pm {
-	  position: relative;
-	  right: auto;
-	  bottom: auto;
-	  text-align: center;
-	  margin-top: 1.2rem;
-	}
+  .timepicker-display-am-pm {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    text-align: center;
+    margin-top: 1.2rem;
+  }
 }
