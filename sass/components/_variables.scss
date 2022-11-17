@@ -58,7 +58,7 @@ $secondary-color-when-hovered-solid: var(--secondary-color-hover-solid) !default
 $secondary-color-when-focused-solid: var(--secondary-color-focus-solid) !default;
 
 $success-color: color("green", "base") !default;
-$error-color: color("red", "base") !default;
+$error-color: var(--error-color) !default;
 $link-color: color("light-blue", "darken-1") !default;
 
 $bg-color: var(--background-color) !default;
