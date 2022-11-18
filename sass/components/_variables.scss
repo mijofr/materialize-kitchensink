@@ -62,9 +62,9 @@ $success-color: color("green", "base") !default;
 $error-color: var(--error-color) !default;
 $link-color: color("light-blue", "darken-1") !default;
 
-$bg-color: var(--background-color) !default;
-$bg-hover-color-opaque: var(--hover-color) !default;
-$bg-focus-color-opaque: var(--focus-color) !default;
+$surface-color: var(--surface-color) !default;
+$surface-hover-color-opaque: var(--hover-color) !default;
+$surface-focus-color-opaque: var(--focus-color) !default;
 
 $divider-color: var(--separator-color);
 // 2. Badges
@@ -120,7 +120,7 @@ $button-flat-disabled-color: var(--font-color-disabled) !default;
 $button-floating-background: $secondary-color !default;
 $button-floating-background-hover: $secondary-color-when-hovered-solid !default;
 $button-floating-background-focus: $secondary-color-when-focused-solid !default;
-$button-floating-color: $bg-color !default;
+$button-floating-color: $font-on-secondary-color-main !default;
 $button-floating-size: 40px !default;
 $button-floating-radius: 50% !default;
 
@@ -149,7 +149,7 @@ $carousel-indicator-color-active: $primary-color !default;
 $collapsible-height: 3rem !default;
 $collapsible-line-height: $collapsible-height !default;
 $collapsible-border-color: $divider-color !default;
-$collapsible-bg-color: $bg-color !default;
+$collapsible-bg-color: $surface-color !default;
 
 
 // 7. Date + Time Picker
@@ -163,7 +163,7 @@ $datepicker-day-hover: $primary-color-hover-opaque !default;
 $datepicker-day-font-color: $font-color-main !default;
 $datepicker-day-font-color-disabled: $font-color-disabled !default;
 
-$timepicker-clock-bg: $bg-color !default;
+$timepicker-clock-bg: $surface-color !default;
 $timepicker-clock-color: var(--font-color-main) !default;
 $timepicker-clock-plate-bg: var(--background-color-level-4dp) !default;
 
@@ -171,9 +171,9 @@ $timepicker-clock-plate-bg: var(--background-color-level-4dp) !default;
 // 8. Dropdown
 // ==========================================================================
 
-$dropdown-bg-color: $bg-color !default;
-$dropdown-hover-bg-color: $bg-hover-color-opaque !default;
-$dropdown-focus-bg-color: $bg-focus-color-opaque !default;
+$dropdown-bg-color: $surface-color !default;
+$dropdown-hover-bg-color: $surface-hover-color-opaque !default;
+$dropdown-focus-bg-color: $surface-focus-color-opaque !default;
 $dropdown-color: $primary-color !default;
 $dropdown-item-height: 50px !default;
 
@@ -215,11 +215,11 @@ $range-track-color: var(--slider-track-color) !default;
 
 // Select
 $select-border: 1px solid var(--separator-color) !default;
-$select-background: $bg-color !default;
+$select-background: $surface-color !default;
 $select-focus: 1px solid $primary-color-when-focused-solid !default;
-$select-option-hover: $bg-hover-color-opaque !default;
-$select-option-focus: $bg-focus-color-opaque !default;
-$select-option-selected: $bg-focus-color-opaque !default;
+$select-option-hover: $surface-hover-color-opaque !default;
+$select-option-focus: $surface-focus-color-opaque !default;
+$select-option-selected: $surface-focus-color-opaque !default;
 $select-padding: 5px !default;
 $select-radius: 2px !default;
 $select-disabled-color: var(--font-color-disabled) !default;
@@ -229,9 +229,9 @@ $select-input-color: var(--font-color-main) !default;
 $switch-thumb-checked-color: $primary-color !default;
 $switch-thumb-unchecked-color: var(--switch-thumb-off-color);
 $switch-reaction-checked-focus-color: $primary-color-focus-opaque !default;
-$switch-reaction-unchecked-focus-color: $bg-focus-color-opaque !default;
+$switch-reaction-unchecked-focus-color: $surface-focus-color-opaque !default;
 $switch-reaction-checked-hover-color: $primary-color-hover-opaque !default;
-$switch-reaction-unchecked-hover-color: $bg-hover-color-opaque !default;
+$switch-reaction-unchecked-hover-color: $surface-hover-color-opaque !default;
 $switch-track-checked-bg: rgba(var(--primary-color-numeric), 0.32) !default;
 $switch-track-unchecked-bg: var(--slider-track-color) !default;
 $switch-radius: 15px !default;
@@ -324,10 +324,7 @@ $tabs-text-active-color: $primary-color-font-emphasize-color !default;
 $tabs-text-inactive-color: $font-color-medium !default;
 $tabs-text-disabled-color: $font-color-disabled !default;
 $tabs-underline-color: $tabs-text-active-color !default;
-$tabs-bg-color: var(--background-color) !default;
-$tabs-hover-bg-color: var(--hover-color) !default;
-$tabs-focus-bg-color: var(--focus-color) !default;
-
+$tabs-bg-color: $surface-color !default;
 
 // 18. Tables
 // ==========================================================================
@@ -389,8 +386,8 @@ $interval-size: math.div($range, $intervals) !default;
 $collection-border-color: $divider-color !default;
 $collection-bg-color: transparent !default;
 $collection-active-bg-color: $primary-color !default;
-$collection-active-color: var(--font-on-primary-color-main) !default;
-$collection-hover-bg-color: $bg-hover-color-opaque !default;
+$collection-active-color: $font-on-primary-color-main !default;
+$collection-hover-bg-color: $surface-hover-color-opaque !default;
 $collection-link-color: $primary-color !default;
 $collection-line-height: 1.5rem !default;
 $collection-border-radius: 2px !default;

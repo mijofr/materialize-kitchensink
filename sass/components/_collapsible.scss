@@ -29,7 +29,7 @@
 }
 
 .keyboard-focused .collapsible-header:focus {
-  background-color: $bg-focus-color-opaque;
+  background-color: $surface-focus-color-opaque;
 }
 
 .collapsible-body {
@@ -61,7 +61,7 @@
     padding: 0 $sidenav-padding;
 
     &:hover {
-      background-color: $bg-hover-color-opaque;
+      background-color: $surface-hover-color-opaque;
     }
 
     i {
