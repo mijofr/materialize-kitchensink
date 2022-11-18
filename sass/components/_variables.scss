@@ -23,11 +23,12 @@
 //  17. Tabs
 //  18. Tables
 //  19. Toasts
-//  20. Typography
-//  21. Footer
-//  22. Flow Text
-//  23. Collections
-//  24. Progress Bar
+//  20. Tooltips
+//  21. Typography
+//  22. Footer
+//  23. Flow Text
+//  24. Collections
+//  25. Progress Bar
 
 // 1. Colors
 // ==========================================================================
@@ -339,12 +340,19 @@ $table-striped-color: var(--background-color-slight-emphasis) !default;
 // ==========================================================================
 
 $toast-height: 48px !default;
-$toast-color: #323232 !default;
-$toast-text-color: #fff !default;
+$toast-color: var(--tooltip-background-color) !default;
+$toast-text-color: var(--tooltip-font-color) !default;
 $toast-action-color: #eeff41;
 
 
-// 20. Typography
+// 20. Tooltips
+// ==========================================================================
+
+$tooltip-bg-color: var(--tooltip-background-color) !default;
+$tooltip-font-color: var(--tooltip-font-color) !default;
+
+
+// 21. Typography
 // ==========================================================================
 
 $font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !default;
@@ -358,7 +366,7 @@ $h5-fontsize: 1.64rem !default;
 $h6-fontsize: 1.15rem !default;
 
 
-// 21. Footer
+// 22. Footer
 // ==========================================================================
 
 $footer-font-color: $font-on-primary-color-main !default;
@@ -367,7 +375,7 @@ $footer-copyright-font-color: var(--font-on-primary-color-dark-main) !default;
 $footer-copyright-bg-color: $primary-color-dark !default;
 
 
-// 22. Flow Text
+// 23. Flow Text
 // ==========================================================================
 
 $range: $large-screen - $small-screen !default;
@@ -375,7 +383,7 @@ $intervals: 20 !default;
 $interval-size: math.div($range, $intervals) !default;
 
 
-// 23. Collections
+// 24. Collections
 // ==========================================================================
 
 $collection-border-color: $divider-color !default;
@@ -390,12 +398,12 @@ $collection-avatar-circle-bg-color: var(--slider-track-color) !default;
 $collection-avatar-circle-icon-color: #fff !default;
 
 
-// 24. Progress Bar
+// 25. Progress Bar
 // ==========================================================================
 
 $progress-bar-color: $primary-color !default;
 $progress-bar-track-color: rgba(var(--primary-color-numeric), 40%) !default;
 
-// 25. Modal
+// 26. Modal
 // ==========================================================================
 $modal-background-color: var(--background-color-level-16dp-solid) !default;
