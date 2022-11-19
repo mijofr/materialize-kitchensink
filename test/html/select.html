@@ -30,25 +30,25 @@
 
     <div class="row">
       <div class="input-field col s12 m6">
-        <select>
+        <select id="select-test-1">
           <option value="" disabled selected>Choose your option</option>
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
         </select>
-        <label>Single-Select</label>
+        <label for="select-test-1">Single-Select</label>
         <div>
           <button class="btn1">Get Single-Select Values</button>
         </div>
       </div>
       <div class="input-field col s12 m6">
-        <select multiple>
+        <select id="select-test-2" multiple>
           <option value="" disabled>Choose your option</option>
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
           <option value="3">Option 3</option>
         </select>
-        <label>Multi-Select</label>
+        <label for="select-test-2">Multi-Select</label>
         <div>
           <button class="btn2">Get Multi-Select Values</button>
         </div>
@@ -56,7 +56,7 @@
     </div>
 
     <div class="input-field col s12">
-      <select>
+      <select id="select-test-3">
         <optgroup label="team 1">
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
@@ -66,44 +66,44 @@
           <option value="4">Option 4</option>
         </optgroup>
       </select>
-      <label>Single-Select with Optgroups</label>
+      <label for="select-test-3">Single-Select with Optgroups</label>
     </div>
 
     <div class="row">
       <h5>Selects with Images</h5>
       <div class="input-field col s12 m6">
-        <select class="icons">
+        <select id="select-test-4" class="icons">
           <option value="" disabled selected>Choose your option</option>
           <option value="" data-icon="../../docs/images/placeholder/250x250_a.png">example 1</option>
           <option value="" data-icon="../../docs/images/placeholder/250x250_b.png">example 2</option>
           <option value="" data-icon="../../docs/images/placeholder/250x250_c.png">example 3</option>
         </select>
-        <label>Single-Select with Images (right)</label>
+        <label for="select-test-4">Single-Select with Images (right)</label>
       </div>
       <div class="input-field col s12 m6">
-        <select class="icons">
+        <select id="select-test-5" class="icons">
           <option value="" disabled selected>Choose your option</option>
           <option value="" data-icon="../../docs/images/placeholder/250x250_a.png" class="left">example 1</option>
           <option value="" data-icon="../../docs/images/placeholder/250x250_b.png" class="left">example 2</option>
           <option value="" data-icon="../../docs/images/placeholder/250x250_c.png" class="left">example 3</option>
         </select>
-        <label>Single-Select with Images (left)</label>
+        <label for="select-test-5">Single-Select with Images (left)</label>
       </div>
     </div>
 
     <div class="row">
       <h5>Select with selected Options</h5>
       <div class="input-field col s12 m6">
-        <select>
+        <select id="select-test-6">
           <option value="" disabled>Choose your option</option>
           <option value="1">Option 1</option>
           <option value="2" selected>Option 2</option>
           <option value="3">Option 3</option>
         </select>
-        <label>Single-Select with Value set</label>
+        <label for="select-test-6">Single-Select with Value set</label>
       </div>
       <div class="input-field col s12 m6">
-        <select multiple class="icons">
+        <select id="select-test-7" multiple class="icons">
           <option value="" disabled selected>Choose your option</option>
           <option value="1" selected data-icon="../../docs/images/placeholder/250x250_a.png">example 1</option>
           <option value="2" selected data-icon="../../docs/images/placeholder/250x250_b.png">example 2</option>
@@ -112,26 +112,26 @@
           <option value="5" data-icon="../../docs/images/placeholder/250x250_e.png">example 4</option>
           <option value="6">example 5</option>
         </select>
-        <label>Multi-Select with Images (right) and Pre-Selections</label>
+        <label for="select-test-7">Multi-Select with Images (right) and Pre-Selections</label>
       </div>
     </div>
 
     <div class="row">
       <h5>Dynamically generated Select-Options <button class="btn3">Create + Init Select</button></h5>
       <div class="input-field col s12 m6">
-        <select class="dynamic-select-single"></select>
-        <label>Dynamic Single-Select</label>
+        <select id="select-test-8" class="dynamic-select-single"></select>
+        <label for="select-test-8">Dynamic Single-Select</label>
       </div>
       <div class="input-field col s12 m6">
-        <select class="dynamic-select-multi" multiple></select>
-        <label>Dynamic Multi-Select</label>
+        <select id="select-test-9" class="dynamic-select-multi" multiple></select>
+        <label for="select-test-9">Dynamic Multi-Select</label>
       </div>
     </div>
 
     <div class="row">
       <div class="col s12 m6">
-        <label>Browser Single-Select</label>
-        <select class="browser-default">
+        <label for="select-test-10">Browser Single-Select</label>
+        <select id="select-test-10" class="browser-default">
           <option value="" disabled selected>Choose your option</option>
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
@@ -139,8 +139,8 @@
         </select>
       </div>
       <div class="col s12 m6">
-        <label>Browser Multi-Select</label>
-        <select class="browser-default" multiple style="height:150px;">
+        <label for="select-test-11">Browser Multi-Select</label>
+        <select id="select-test-11" class="browser-default" multiple style="height:150px;">
           <option value="" disabled selected>Choose your option</option>
           <option value="1">Option 1</option>
           <option value="2">Option 2</option>
