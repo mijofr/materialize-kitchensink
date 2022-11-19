@@ -145,7 +145,7 @@
             const selectOptions = $(realOption).children('option');
             let lId = "opt-group-" + M.guid();
             let groupParent = $(
-              `<li class="optgroup" role="group" aria-labelledby="${lId}"><span id="${lId}" role="presentation">${realOption.getAttribute('label')}</span></li>`
+              `<li class="optgroup" role="group" aria-labelledby="${lId}" tabindex="-1"><span id="${lId}" role="presentation">${realOption.getAttribute('label')}</span></li>`
             )[0];
             let groupChildren = [];
             $(this.dropdownOptions).append(groupParent);
