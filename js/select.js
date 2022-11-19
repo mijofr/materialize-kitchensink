@@ -127,7 +127,7 @@
         'dropdown-content select-dropdown ' + (this.isMultiple ? 'multiple-select-dropdown' : '')
       );
       this.dropdownOptions.setAttribute("role", "listbox");
-      this.dropdownOptions.setAttribute("aria-required", this.$el.hasAttribute("required"));
+      this.dropdownOptions.setAttribute("aria-required", this.el.hasAttribute("required"));
       this.dropdownOptions.setAttribute("aria-multiselectable", this.isMultiple);
 
       // Create dropdown structure
