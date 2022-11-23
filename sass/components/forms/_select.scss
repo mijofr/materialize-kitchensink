@@ -1,7 +1,11 @@
 /* Select Field
    ========================================================================== */
 
-select.browser-default { opacity: 1; }
+select.browser-default {
+  opacity: 1;
+  color: $select-input-color;
+}
+
 select {
   opacity: 0;
   background-color: $select-background;

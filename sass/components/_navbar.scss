@@ -20,7 +20,9 @@ nav {
   height: $navbar-height-mobile;
   line-height: $navbar-line-height-mobile;
 
-  a { color: $navbar-font-color; }
+  a {
+    color: $navbar-font-color;
+  }
 
   i,
   [class^="mdi-"], [class*="mdi-"],
@@ -37,7 +39,9 @@ nav {
   }
 
   @media #{$large-and-up} {
-    a.sidenav-trigger { display: none; }
+    a.sidenav-trigger {
+      display: none;
+    }
   }
 
 
@@ -78,7 +82,9 @@ nav {
         transform: none;
       }
 
-      &.left { left: 0.5rem; }
+      &.left {
+        left: 0.5rem;
+      }
       &.right {
         right: 0.5rem;
         left: auto;
@@ -108,21 +114,13 @@ nav {
 
 
   // Navbar Links
-  ul {
+  ul:not(.dropdown-content) {
     margin: 0;
 
     li {
       transition: background-color .3s;
       float: left;
       padding: 0;
-
-      &.active {
-        background-color: $navbar-bg-color-focus;
-      }
-
-      &:hover:not(.active) {
-        background-color: $navbar-bg-color-hover;
-      }
     }
 
     a {
@@ -133,10 +131,19 @@ nav {
       padding: 0 15px;
       cursor: pointer;
 
+      &.active {
+        background-color: $navbar-bg-color-focus;
+      }
+
+      &:hover:not(.active) {
+        background-color: $navbar-bg-color-hover;
+      }
+
       &.btn, &.btn-large, &.btn-flat, &.btn-floating {
         margin-top: -2px;
         margin-left: 15px;
         margin-right: 15px;
+        display: inline-block;
 
         & > .material-icons {
           height: inherit;
@@ -181,7 +188,10 @@ nav {
         color: $font-on-primary-color-medium;
         transition: color .3s;
       }
-      &.active i { color: $navbar-font-color; }
+
+      &.active i {
+        color: $navbar-font-color;
+      }
     }
   }
 }
@@ -196,6 +206,7 @@ nav {
     position: fixed;
   }
 }
+
 @media #{$medium-and-up} {
   nav.nav-extended .nav-wrapper {
     min-height: $navbar-height;

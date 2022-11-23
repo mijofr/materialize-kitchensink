@@ -140,8 +140,8 @@ $carousel-height: 400px !default;
 $carousel-item-height: $carousel-height * 0.5 !default;
 $carousel-item-width: $carousel-item-height !default;
 
-$carousel-indicator-color: var(--slider-track-color) !default;
-$carousel-indicator-color-active: $primary-color !default;
+$carousel-indicator-color: var(--carousel-indicator-color) !default;
+$carousel-indicator-color-active: var(--carousel-indicator-active-color) !default;
 
 // 6. Collapsible
 // ==========================================================================
@@ -305,10 +305,11 @@ $sidenav-line-height: $sidenav-item-height !default;
 // 15. Photo Slider
 // ==========================================================================
 
-$slider-bg-color: $carousel-indicator-color !default;
-$slider-bg-color-light: color('grey', 'lighten-2') !default;
-$slider-indicator-color: $carousel-indicator-color !default;
-$slider-indicator-color-active: $carousel-indicator-color-active !default;
+$slider-bg-color: $surface-color !default;
+$slider-indicator-color: var(--slider-track-color) !default;
+$slider-indicator-color-active: $primary-color !default;
+$slider-fullscreen-indicator-color: $carousel-indicator-color !default;
+$slider-fullscreen-indicator-color-active: $carousel-indicator-color-active !default;
 
 
 // 16. Spinners | Loaders
@@ -368,7 +369,7 @@ $h6-fontsize: 1.15rem !default;
 
 $footer-font-color: $font-on-primary-color-main !default;
 $footer-bg-color: $primary-color !default;
-$footer-copyright-font-color: var(--font-on-primary-color-dark-main) !default;
+$footer-copyright-font-color: var(--font-on-primary-color-dark-medium) !default;
 $footer-copyright-bg-color: $primary-color-dark !default;
 
 

@@ -8,6 +8,7 @@
 
     --font-on-primary-color-main: rgba(255, 255, 255, 0.87);
     --font-on-primary-color-dark-main: rgba(255, 255, 255, 0.87);
+    --font-on-primary-color-dark-medium: rgba(255, 255, 255, 0.60);
     --font-on-primary-color-medium: rgba(255, 255, 255, 0.60);
     --font-on-primary-color-disabled: rgba(255, 255, 255, 0.38);
     --font-on-secondary-color-main: rgba(0, 0, 0, 0.87);
@@ -31,6 +32,9 @@
 
     --slider-track-color: rgba(0, 0, 0, 0.26);
     --switch-thumb-off-color: #ffffff;
+
+    --carousel-indicator-color: rgba(255, 255, 255, 0.45);
+    --carousel-indicator-active-color: #FFF;
 
     --primary-color: #26a69a;
     --primary-color-dark: #009688;
@@ -57,6 +61,7 @@
 
     --font-on-primary-color-main: rgba(0, 0, 0, 0.87);
     --font-on-primary-color-dark-main: rgba(255, 255, 255, 0.87);
+    --font-on-primary-color-dark-medium: rgba(255, 255, 255, 0.60);
     --font-on-primary-color-medium: rgba(0, 0, 0, 0.56);
     --font-on-primary-color-disabled: rgba(0, 0, 0, 0.38);
 
@@ -67,7 +72,7 @@
     --background-color-disabled: rgba(255, 255, 255, 0.12);
     --background-color-level-4dp: rgba(255, 255, 255, 0.09);
     --background-color-level-16dp-solid: #262626;
-    --background-color-card: var(--background-color-level-4dp);
+    --background-color-card: var(--surface-color);
     --background-color-slight-emphasis: rgba(255, 255, 255, 0.05);
 
     --separator-color: #424242; /* borders between components */
@@ -82,4 +87,8 @@
     --primary-color-numeric: 179, 157, 219;
     --primary-color-raised-hover-solid: #C2ACEA;
     --primary-color-raised-focus-solid: #DBC5FF;
+
+    --secondary-color: #CDDC39;
+    --secondary-color-hover-solid: #DCEB48;
+    --secondary-color-focus-solid: #F5FF61;
 }

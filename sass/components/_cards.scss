@@ -160,8 +160,10 @@
     &:last-child {
       border-radius: 0 0 2px 2px;
     }
+
     border-top: 1px solid $divider-color;
     position: relative;
+    background-color: inherit;
 
     a {
       padding: 16px $card-padding;

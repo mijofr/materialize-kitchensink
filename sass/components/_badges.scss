@@ -45,9 +45,15 @@ nav ul a span.badge {
 .collection-item span.badge {
   margin-top: calc(#{$collection-line-height * 0.5} - #{$badge-height * 0.5});
 }
+
 .collapsible span.badge {
   margin-left: auto;
 }
+
+.collapsible .active span.badge:not(.new) {
+  color: $badge-color;
+}
+
 .sidenav span.badge {
   margin-top: calc(#{$sidenav-line-height * 0.5} - #{$badge-height * 0.5});
 }

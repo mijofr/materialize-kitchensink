@@ -20,6 +20,15 @@
     ul.indicators {
       z-index: 2;
       bottom: 30px;
+
+      .indicator-item {
+        background-color: $slider-fullscreen-indicator-color;
+
+        &.active {
+          background-color: $slider-fullscreen-indicator-color-active;
+        }
+      }
+
     }
   }
 
@@ -53,7 +62,9 @@
         width: 70%;
         opacity: 0;
 
-        p { color: $slider-bg-color-light; }
+        p {
+          color: rgba(255, 255, 255, 0.75);
+        }
       }
 
       &.active {

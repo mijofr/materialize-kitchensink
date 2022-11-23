@@ -410,7 +410,12 @@ ul.staggered-list li {
   color: $footer-font-color;
   background-color: $footer-bg-color;
 
-  .footer-copyright {
+  a {
+    color: $footer-font-color;
+  }
+
+  .footer-copyright,
+  .footer-copyright a {
     overflow: hidden;
     min-height: 50px;
     display: flex;

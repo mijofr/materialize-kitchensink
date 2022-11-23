@@ -33,6 +33,10 @@
     float: none;
     line-height: $sidenav-line-height;
 
+    &:hover {
+      background-color: $button-flat-hover-background-color;
+    }
+
     &.active {
       background-color: $button-flat-focus-background-color;
     }
@@ -48,10 +52,6 @@
 
     &:not(.btn):not(.btn-flat):not(.btn-large):not(.btn-floating) {
       color: $sidenav-font-color;
-
-      &:hover {
-        background-color: $button-flat-hover-background-color;
-      }
     }
 
     &.btn, &.btn-large, &.btn-flat, &.btn-floating {
