@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Select accessibility [\#306](https://github.com/materializecss/materialize/pull/306) ([mauromascarenhas](https://github.com/mauromascarenhas))
 - Toast accessibility [\#300](https://github.com/materializecss/materialize/pull/300) ([mauromascarenhas](https://github.com/mauromascarenhas))
 - feat: add input function by typing to timepicker [\#290](https://github.com/materializecss/materialize/pull/290) ([Genne23v](https://github.com/Genne23v))
 - Add default input styling to input type month [\#270](https://github.com/materializecss/materialize/pull/270) ([DyegoCosta](https://github.com/DyegoCosta))
