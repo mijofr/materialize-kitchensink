@@ -1,6 +1,38 @@
 # Changelog
 
-## [1.1.0](https://github.com/materializecss/materialize/tree/1.1.0) (2022-04-09)
+## [1.2.0](https://github.com/materializecss/materialize/tree/1.2.0) (2022-11-19)
+
+[Full Changelog](https://github.com/materializecss/materialize/compare/1.1.0...1.2.0)
+
+**Implemented enhancements:**
+
+- Select accessibility [\#306](https://github.com/materializecss/materialize/pull/306) ([mauromascarenhas](https://github.com/mauromascarenhas))
+- Toast accessibility [\#300](https://github.com/materializecss/materialize/pull/300) ([mauromascarenhas](https://github.com/mauromascarenhas))
+- feat: add input function by typing to timepicker [\#290](https://github.com/materializecss/materialize/pull/290) ([Genne23v](https://github.com/Genne23v))
+- Add default input styling to input type month [\#270](https://github.com/materializecss/materialize/pull/270) ([DyegoCosta](https://github.com/DyegoCosta))
+
+**Fixed bugs:**
+
+- fix: floating labels do not work when type attribute is absent from input element \#288 [\#289](https://github.com/materializecss/materialize/pull/289) ([coffeeandwork](https://github.com/coffeeandwork))
+- Fix `striped` for tables. Fixes \#279. [\#282](https://github.com/materializecss/materialize/pull/282) ([rmehner](https://github.com/rmehner))
+
+**Documentation changes:**
+
+- Added CI to Automate Contributors list [\#299](https://github.com/materializecss/materialize/pull/299) ([CypherpunkSamurai](https://github.com/CypherpunkSamurai))
+- fix\(placeholder images\): replace placehold.it with placeholder.com [\#291](https://github.com/materializecss/materialize/pull/291) ([t-moennich](https://github.com/t-moennich))
+- Update and rearrange content for readability [\#283](https://github.com/materializecss/materialize/pull/283) ([ajoygp](https://github.com/ajoygp))
+- refactor: improve the documentation [\#271](https://github.com/materializecss/materialize/pull/271) ([gergo85](https://github.com/gergo85))
+
+**Meta changes:**
+
+- Use the new issue form feature \(a new type of issue template\) [\#297](https://github.com/materializecss/materialize/pull/297) ([LoganTann](https://github.com/LoganTann))
+- ci: remove mentions of Travis in the task files [\#295](https://github.com/materializecss/materialize/pull/295) ([LoganTann](https://github.com/LoganTann))
+- Update husky version [\#294](https://github.com/materializecss/materialize/pull/294) ([wuda-io](https://github.com/wuda-io))
+- Make conventional commits more explicit [\#292](https://github.com/materializecss/materialize/pull/292) ([Smankusors](https://github.com/Smankusors))
+- Fix js not updating when doing npm run dev [\#280](https://github.com/materializecss/materialize/pull/280) ([Smankusors](https://github.com/Smankusors))
+- Add maintainers doc [\#262](https://github.com/materializecss/materialize/pull/262) ([Smankusors](https://github.com/Smankusors))
+
+## [1.1.0](https://github.com/materializecss/materialize/tree/1.1.0) (2022-04-20)
 
 [Full Changelog](https://github.com/materializecss/materialize/compare/1.1.0-alpha...1.1.0)
 
@@ -30,14 +62,14 @@
 - Fix \#175 : Add a docs section on how to change the font stack [\#212](https://github.com/materializecss/materialize/pull/212) ([LoganTann](https://github.com/LoganTann))
 - docs\(getting\_started\): update the ways to install materialize [\#203](https://github.com/materializecss/materialize/pull/203) ([LoganTann](https://github.com/LoganTann))
 -  docs\(Issue179\): Modify some parts of the documentation to mention the new 1.1.0-alpha [\#202](https://github.com/materializecss/materialize/pull/202) ([LoganTann](https://github.com/LoganTann))
-- add back templates section, fix stylesheet link in parallax template [\#198](https://github.com/materializecss/materialize/pull/198) ([christinavoudouris](https://github.com/christinavoudouris))
+- add back templates section, fix stylesheet link in parallax template [\#198](https://github.com/materializecss/materialize/pull/198) ([ghost](https://github.com/ghost))
 - Improving CONTRIBUTING document [\#177](https://github.com/materializecss/materialize/pull/177) ([Smankusors](https://github.com/Smankusors))
 - Fix Wrong href value on \<a\> tag [\#170](https://github.com/materializecss/materialize/pull/170) ([boileaum](https://github.com/boileaum))
-- Update templates [\#164](https://github.com/materializecss/materialize/pull/164) ([christinavoudouris](https://github.com/christinavoudouris))
-- docs: edit README [\#162](https://github.com/materializecss/materialize/pull/162) ([christinavoudouris](https://github.com/christinavoudouris))
-- docs: change to/add copy code icons [\#161](https://github.com/materializecss/materialize/pull/161) ([christinavoudouris](https://github.com/christinavoudouris))
+- Update templates [\#164](https://github.com/materializecss/materialize/pull/164) ([ghost](https://github.com/ghost))
+- docs: edit README [\#162](https://github.com/materializecss/materialize/pull/162) ([ghost](https://github.com/ghost))
+- docs: change to/add copy code icons [\#161](https://github.com/materializecss/materialize/pull/161) ([ghost](https://github.com/ghost))
 - Copy text without creating textarea and use single container for copy success message [\#158](https://github.com/materializecss/materialize/pull/158) ([warrenrodrigues](https://github.com/warrenrodrigues))
-- open old docs in new window [\#155](https://github.com/materializecss/materialize/pull/155) ([christinavoudouris](https://github.com/christinavoudouris))
+- open old docs in new window [\#155](https://github.com/materializecss/materialize/pull/155) ([ghost](https://github.com/ghost))
 - Autocomplete off for docs [\#144](https://github.com/materializecss/materialize/pull/144) ([ChildishGiant](https://github.com/ChildishGiant))
 - Revert "fix\(doc\): invalid download sass link" [\#129](https://github.com/materializecss/materialize/pull/129) ([DanielRuf](https://github.com/DanielRuf))
 - fix\(doc\): invalid download sass link [\#128](https://github.com/materializecss/materialize/pull/128) ([roiLeo](https://github.com/roiLeo))
@@ -56,7 +88,7 @@
 
 **Implemented enhancements:**
 
-- add copy code button [\#105](https://github.com/materializecss/materialize/pull/105) ([christinavoudouris](https://github.com/christinavoudouris))
+- add copy code button [\#105](https://github.com/materializecss/materialize/pull/105) ([ghost](https://github.com/ghost))
 - feat: :wastebasket: add warning when using deprecated html setting [\#99](https://github.com/materializecss/materialize/pull/99) ([ChildishGiant](https://github.com/ChildishGiant))
 - feat\(dropdown\): ♿  improve dropdown & autocomplete a11y [\#98](https://github.com/materializecss/materialize/pull/98) ([ChildishGiant](https://github.com/ChildishGiant))
 - build: 👷 add doc builds to github actions [\#78](https://github.com/materializecss/materialize/pull/78) ([ChildishGiant](https://github.com/ChildishGiant))
@@ -67,7 +99,7 @@
 - Add dragTargetWidth option [\#40](https://github.com/materializecss/materialize/pull/40) ([nekonenene](https://github.com/nekonenene))
 - Added ability to change tooltip animate opacity. [\#23](https://github.com/materializecss/materialize/pull/23) ([june07](https://github.com/june07))
 - Chips autocomplete should have option to prevent user own input [\#22](https://github.com/materializecss/materialize/pull/22) ([nicknickel](https://github.com/nicknickel))
-- Upgrade waves [\#11](https://github.com/materializecss/materialize/pull/11) ([WaeCo](https://github.com/WaeCo))
+- Upgrade waves [\#11](https://github.com/materializecss/materialize/pull/11) ([Niels-Be](https://github.com/Niels-Be))
 
 **Fixed bugs:**
 
@@ -89,7 +121,7 @@
 
 **Documentation changes:**
 
-- grammar fix [\#107](https://github.com/materializecss/materialize/pull/107) ([christinavoudouris](https://github.com/christinavoudouris))
+- grammar fix [\#107](https://github.com/materializecss/materialize/pull/107) ([ghost](https://github.com/ghost))
 - fix: 🔨 fix broken links \(Closes \#83\) [\#90](https://github.com/materializecss/materialize/pull/90) ([ChildishGiant](https://github.com/ChildishGiant))
 - fix: :hammer: fix \#88 [\#89](https://github.com/materializecss/materialize/pull/89) ([ChildishGiant](https://github.com/ChildishGiant))
 - Fixed a typo in documentation about floating action button. [\#70](https://github.com/materializecss/materialize/pull/70) ([NoahvdAa](https://github.com/NoahvdAa))
