@@ -1695,7 +1695,7 @@ if (typeof define === 'function' && define.amd) {
   exports.default = M;
 }
 
-M.version = '1.0.0';
+M.version = '1.2.0';
 
 M.keys = {
   TAB: 9,
@@ -2068,7 +2068,7 @@ M.throttle = function (func, wait, options) {
 /* Feature detection */
 var passiveIfSupported = false;
 try {
-  window.addEventListener("test", null, Object.defineProperty({}, "passive", {
+  window.addEventListener('test', null, Object.defineProperty({}, 'passive', {
     get: function () {
       passiveIfSupported = { passive: false };
     }
@@ -12102,6 +12102,8 @@ $jscomp.polyfill = function (e, r, p, m) {
       _this68.isMultiple = _this68.$el.prop('multiple');
       _this68.el.tabIndex = -1;
       _this68._values = [];
+      _this68.labelEl = null;
+      _this68._labelFor = false;
       _this68._setupDropdown();
       _this68._setupEventHandlers();
       return _this68;
@@ -12110,6 +12112,8 @@ $jscomp.polyfill = function (e, r, p, m) {
     _createClass(FormSelect, [{
       key: "destroy",
       value: function destroy() {
+        // Returns label to its original owner
+        if (this._labelFor) this.labelEl.setAttribute("for", this.el.id);
         this._removeEventHandlers();
         this._removeDropdown();
         this.el.M_FormSelect = undefined;
@@ -12124,6 +12128,9 @@ $jscomp.polyfill = function (e, r, p, m) {
         this._handleInputClickBound = this._handleInputClick.bind(this);
         $(this.dropdownOptions).find('li:not(.optgroup)').each(function (el) {
           el.addEventListener('click', _this69._handleOptionClickBound);
+          el.addEventListener('keydown', function (e) {
+            if (e.key === " " || e.key === "Enter") _this69._handleOptionClickBound(e);
+          });
         });
         this.el.addEventListener('change', this._handleSelectChangeBound);
         this.input.addEventListener('click', this._handleInputClickBound);
@@ -12216,6 +12223,9 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.dropdownOptions = document.createElement('ul');
         this.dropdownOptions.id = "select-options-" + M.guid();
         $(this.dropdownOptions).addClass('dropdown-content select-dropdown ' + (this.isMultiple ? 'multiple-select-dropdown' : ''));
+        this.dropdownOptions.setAttribute("role", "listbox");
+        this.dropdownOptions.setAttribute("aria-required", this.el.hasAttribute("required"));
+        this.dropdownOptions.setAttribute("aria-multiselectable", this.isMultiple);
 
         // Create dropdown structure
         if (this.$selectOptions.length) {
@@ -12227,11 +12237,18 @@ $jscomp.polyfill = function (e, r, p, m) {
             } else if ($(realOption).is('optgroup')) {
               // Optgroup
               var selectOptions = $(realOption).children('option');
-              $(_this71.dropdownOptions).append($('<li class="optgroup"><span>' + realOption.getAttribute('label') + '</span></li>')[0]);
+              var lId = "opt-group-" + M.guid();
+              var groupParent = $("<li class=\"optgroup\" role=\"group\" aria-labelledby=\"" + lId + "\" tabindex=\"-1\"><span id=\"" + lId + "\" role=\"presentation\">" + realOption.getAttribute('label') + "</span></li>")[0];
+              var groupChildren = [];
+              $(_this71.dropdownOptions).append(groupParent);
               selectOptions.each(function (realOption) {
                 var virtualOption = _this71._createAndAppendOptionWithIcon(realOption, 'optgroup-option');
+                var cId = "opt-child-" + M.guid();
+                virtualOption.id = cId;
+                groupChildren.push(cId);
                 _this71._addOptionToValues(realOption, virtualOption);
               });
+              groupParent.setAttribute("aria-owns", groupChildren.join(" "));
             }
           });
         }
@@ -12239,23 +12256,65 @@ $jscomp.polyfill = function (e, r, p, m) {
 
         // Add input dropdown
         this.input = document.createElement('input');
+        this.input.id = "m_select-input-" + M.guid();
         $(this.input).addClass('select-dropdown dropdown-trigger');
         this.input.setAttribute('type', 'text');
         this.input.setAttribute('readonly', 'true');
         this.input.setAttribute('data-target', this.dropdownOptions.id);
+        this.input.setAttribute('aria-readonly', 'true');
         if (this.el.disabled) $(this.input).prop('disabled', 'true');
+
+        // Makes new element to assume HTML's select label and
+        //   aria-attributes, if exists
+        if (this.el.hasAttribute("aria-labelledby")) {
+          this.labelEl = document.getElementById(this.el.getAttribute("aria-labelledby"));
+        } else if (this.el.id != "") {
+          var lbl = $("label[for='" + this.el.id + "']");
+          if (lbl.length) {
+            this.labelEl = lbl[0];
+            this.labelEl.removeAttribute("for");
+            this._labelFor = true;
+          }
+        }
+        // Tries to find a valid label in parent element
+        if (!this.labelEl) {
+          var el = this.el.parentElement;
+          if (el) el = el.getElementsByTagName("label")[0];
+          if (el) this.labelEl = el;
+        }
+        if (this.labelEl && this.labelEl.id == "") {
+          this.labelEl.id = "m_select-label-" + M.guid();
+        }
+
+        if (this.labelEl) {
+          this.labelEl.setAttribute("for", this.input.id);
+          this.dropdownOptions.setAttribute("aria-labelledby", this.labelEl.id);
+        } else this.dropdownOptions.setAttribute("aria-label", "");
+
+        var attrs = this.el.attributes;
+        for (var i = 0; i < attrs.length; ++i) {
+          var attr = attrs[i];
+          if (attr.name.startsWith("aria-")) this.input.setAttribute(attr.name, attr.value);
+        }
+
+        // Adds aria-attributes to input element
+        this.input.setAttribute("role", "combobox");
+        this.input.setAttribute("aria-owns", this.dropdownOptions.id);
+        this.input.setAttribute("aria-controls", this.dropdownOptions.id);
+        this.input.setAttribute("aria-expanded", false);
 
         $(this.wrapper).prepend(this.input);
         this._setValueToInput();
 
         // Add caret
-        var dropdownIcon = $('<svg class="caret" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+        var dropdownIcon = $('<svg class="caret" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
         $(this.wrapper).prepend(dropdownIcon[0]);
         // Initialize dropdown
         if (!this.el.disabled) {
           var dropdownOptions = $.extend({}, this.options.dropdownOptions);
           dropdownOptions.coverTrigger = false;
           var userOnOpenEnd = dropdownOptions.onOpenEnd;
+          var userOnCloseEnd = dropdownOptions.onCloseEnd;
           // Add callback for centering selected option when dropdown content is scrollable
           dropdownOptions.onOpenEnd = function (el) {
             var selectedOption = $(_this71.dropdownOptions).find('.selected').first();
@@ -12272,8 +12331,17 @@ $jscomp.polyfill = function (e, r, p, m) {
                 _this71.dropdownOptions.scrollTop = scrollOffset;
               }
             }
+            // Sets "aria-expanded" to "true"
+            _this71.input.setAttribute("aria-expanded", true);
             // Handle user declared onOpenEnd if needed
             if (userOnOpenEnd && typeof userOnOpenEnd === 'function') userOnOpenEnd.call(_this71.dropdown, _this71.el);
+          };
+          // Add callback for reseting "expanded" state
+          dropdownOptions.onCloseEnd = function (el) {
+            // Sets "aria-expanded" to "false"
+            _this71.input.setAttribute("aria-expanded", false);
+            // Handle user declared onOpenEnd if needed
+            if (userOnCloseEnd && typeof userOnCloseEnd === 'function') userOnCloseEnd.call(_this71.dropdown, _this71.el);
           };
           // Prevent dropdown from closing too early
           dropdownOptions.closeOnClick = false;
@@ -12300,7 +12368,11 @@ $jscomp.polyfill = function (e, r, p, m) {
       key: "_createAndAppendOptionWithIcon",
       value: function _createAndAppendOptionWithIcon(realOption, type) {
         var li = document.createElement('li');
-        if (realOption.disabled) li.classList.add('disabled');
+        li.setAttribute("role", "option");
+        if (realOption.disabled) {
+          li.classList.add('disabled');
+          li.setAttribute("aria-disabled", true);
+        }
         if (type === 'optgroup-option') li.classList.add(type);
         // Text / Checkbox
         var span = document.createElement('span');
@@ -12311,6 +12383,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         var classes = realOption.getAttribute('class');
         if (iconUrl) {
           var img = $("<img alt=\"\" class=\"" + classes + "\" src=\"" + iconUrl + "\">");
+          img[0].setAttribute("aria-hidden", true);
           li.prepend(img[0]);
         }
         // Check for multiple type
@@ -12322,6 +12395,7 @@ $jscomp.polyfill = function (e, r, p, m) {
       value: function _selectValue(value) {
         value.el.selected = true;
         value.optionEl.classList.add('selected');
+        value.optionEl.setAttribute("aria-selected", true);
         var checkbox = value.optionEl.querySelector('input[type="checkbox"]');
         if (checkbox) checkbox.checked = true;
       }
@@ -12330,6 +12404,7 @@ $jscomp.polyfill = function (e, r, p, m) {
       value: function _deselectValue(value) {
         value.el.selected = false;
         value.optionEl.classList.remove('selected');
+        value.optionEl.setAttribute("aria-selected", false);
         var checkbox = value.optionEl.querySelector('input[type="checkbox"]');
         if (checkbox) checkbox.checked = false;
       }
@@ -12393,7 +12468,10 @@ $jscomp.polyfill = function (e, r, p, m) {
           $(value.optionEl).find('input[type="checkbox"]').prop('checked', optionIsSelected);
           if (optionIsSelected) {
             _this73._activateOption($(_this73.dropdownOptions), $(value.optionEl));
-          } else $(value.optionEl).removeClass('selected');
+          } else {
+            $(value.optionEl).removeClass('selected');
+            $(value.optionEl).attr("aria-selected", false);
+          }
         });
       }
     }, {
@@ -12402,6 +12480,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         if (!li) return;
         if (!this.isMultiple) ul.find('li.selected').removeClass('selected');
         $(li).addClass('selected');
+        $(li).attr("aria-selected", true);
       }
     }, {
       key: "getSelectedValues",
