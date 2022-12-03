@@ -533,7 +533,7 @@ module.exports = function(grunt) {
     // Replace text to update the version string
     replace: {
       version: {
-        src: ['bower.json', 'package.js', 'pug/**/*.html'],
+        src: ['bower.json', 'package.js', 'pug/**/*.html', 'pug/_navbar.pug', 'js/global.js'],
         overwrite: true,
         replacements: [
           {
@@ -572,7 +572,9 @@ module.exports = function(grunt) {
           banner:
             '/*!\n * Materialize v' +
             grunt.option('newver') +
-            ' (https://materializecss.github.io/materialize)\n * Copyright 2014-2021 Materialize\n * MIT License (https://raw.githubusercontent.com/materializecss/materialize/master/LICENSE)\n */',
+            ' (https://materializecss.github.io/materialize)\n * Copyright 2014-' +
+            new Date().getFullYear() +
+            ' Materialize\n * MIT License (https://raw.githubusercontent.com/materializecss/materialize/master/LICENSE)\n */',
           linebreak: true
         },
         files: {
