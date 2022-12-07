@@ -8,12 +8,12 @@
         <p class="caption">Material box is a material design implementation of the Lightbox plugin. When a user clicks on an image that can
           be enlarged, Material box centers the image and enlarges it in a smooth, non-jarring manner. To dismiss the image,
           the user can either click on the image again, scroll away, or press the ESC key.</p>
-        <img class="materialboxed responsive-img" width="650" src="images/sample-1.jpg">
+        <img class="materialboxed responsive-img" width="650" alt="Material Box sample image" src="images/sample-1.jpg">
 
         <p>Creating the above image with the effect is as simple as adding a
           <code class="language-markup">materialboxed</code> class to the image tag.</p>
         <pre><code class="language-markup">
-    &lt;img class="materialboxed" width="650" src="images/sample-1.jpg">
+    &lt;img class="materialboxed" width="650" alt="Material Box sample image" src="images/sample-1.jpg">
       </code></pre>
 
         <h4>Initialization</h4>
@@ -189,7 +189,7 @@
           <code class="language-markup">data-caption</code> attribute.</p>
         <img class="materialboxed" data-caption="A picture of a way with a group of trees in a park" width="250" src="images/placeholder/800x400_d.jpg">
         <pre><code class="language-markup">
-  &lt;img class="materialboxed" data-caption="A picture of a way with a group of trees in a park" width="250" src="images/placeholder/800x400_d.jpg">
+  &lt;img class="materialboxed" data-caption="A picture of a way with a group of trees in a park" width="250" alt="Sample image for Material Box with caption" src="images/placeholder/800x400_d.jpg">
           </code></pre>
       </div>
       <br>
@@ -204,7 +204,7 @@
         <div class="slider">
           <ul class="slides">
             <li>
-              <img src="images/placeholder/800x400_a.jpg">
+              <img src="images/placeholder/800x400_a.jpg" alt="Sample image for first slide">
               <!-- random image -->
               <div class="caption center-align">
                 <h3>This is our big Tagline!</h3>
@@ -212,7 +212,7 @@
               </div>
             </li>
             <li>
-              <img src="images/placeholder/800x400_b.jpg">
+              <img src="images/placeholder/800x400_b.jpg" alt="Sample image for second slide">
               <!-- random image -->
               <div class="caption left-align">
                 <h3>Left Aligned Caption</h3>
@@ -220,7 +220,7 @@
               </div>
             </li>
             <li>
-              <img src="images/placeholder/800x400_c.jpg">
+              <img src="images/placeholder/800x400_c.jpg" alt="Sample image for third slide">
               <!-- random image -->
               <div class="caption right-align">
                 <h3>Right Aligned Caption</h3>
@@ -228,7 +228,7 @@
               </div>
             </li>
             <li>
-              <img src="images/placeholder/800x400_d.jpg">
+              <img src="images/placeholder/800x400_d.jpg" alt="Sample image for fourth slide">
               <!-- random image -->
               <div class="caption center-align">
                 <h3>This is our big Tagline!</h3>
@@ -243,28 +243,28 @@
   &lt;div class="slider">
     &lt;ul class="slides">
       &lt;li>
-        &lt;img src="images/placeholder/800x400_a.jpg">
+        &lt;img src="images/placeholder/800x400_a.jpg" alt="Sample image for first slide">
         &lt;div class="caption center-align">
           &lt;h3>This is our big Tagline!&lt;/h3>
           &lt;h5 class="light grey-text text-lighten-3">Here's our small slogan.&lt;/h5>
         &lt;/div>
       &lt;/li>
       &lt;li>
-        &lt;img src="images/placeholder/800x400_b.jpg">
+        &lt;img src="images/placeholder/800x400_b.jpg" alt="Sample image for second slide">
         &lt;div class="caption left-align">
           &lt;h3>Left Aligned Caption&lt;/h3>
           &lt;h5 class="light grey-text text-lighten-3">Here's our small slogan.&lt;/h5>
         &lt;/div>
       &lt;/li>
       &lt;li>
-        &lt;img src="images/placeholder/800x400_c.jpg">
+        &lt;img src="images/placeholder/800x400_c.jpg" alt="Sample image for third slide">
         &lt;div class="caption right-align">
           &lt;h3>Right Aligned Caption&lt;/h3>
           &lt;h5 class="light grey-text text-lighten-3">Here's our small slogan.&lt;/h5>
         &lt;/div>
       &lt;/li>
       &lt;li>
-        &lt;img src="images/placeholder/800x400_d.jpg">
+        &lt;img src="images/placeholder/800x400_d.jpg" alt="Sample image for fourth slide">
         &lt;div class="caption center-align">
           &lt;h3>This is our big Tagline!&lt;/h3>
           &lt;h5 class="light grey-text text-lighten-3">Here's our small slogan.&lt;/h5>
@@ -281,6 +281,13 @@
     var elems = document.querySelectorAll('.slider');
     var instances = M.Slider.init(elems, {
       // specify options here
+      indicatorLabelFunc: (idx, current) => {
+        let label = "Go to slide " + idx;
+        if (current){
+          label = label + " (Current)";
+        }
+        return label;
+      }
     });
   });
 
@@ -289,6 +296,13 @@
   $(document).ready(function(){
     $('.slider').slider({
       // specify options here
+      indicatorLabelFunc: (idx, curr) => {
+        let label = "Go to slide " + idx;
+        if (current){
+          label = label + " (Current)";
+        }
+        return label;
+      }
     });
   });
         </code></pre>
@@ -329,6 +343,34 @@
               <td>Number</td>
               <td>6000</td>
               <td>Set the duration between transitions in ms.</td>
+            </tr>
+            <tr>
+              <td>pauseOnFocus</td>
+              <td>Boolean</td>
+              <td>true</td>
+              <td>If slider should pause when keyboard focus is received.</td>
+            </tr>
+            <tr>
+              <td>pauseOnHover</td>
+              <td>Boolean</td>
+              <td>true</td>
+              <td>If slider should pause when is hovered by a pointer.</td>
+            </tr>
+            <tr>
+              <td>indicatorLabelFunc</td>
+              <td>Function</td>
+              <td>null</td>
+              <td>
+                <p>
+                  Function used to generate ARIA label to indicators (for accessibility purposes).
+                </p>
+                <p>
+                  It receives the current index, starting from "1", and a boolean indicating whether it is the current element or not. 
+                </p>
+                <p>
+                  If not specified, the generated label is going to be the current index.
+                </p>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -424,6 +466,11 @@
               <td>activeIndex</td>
               <td>Number</td>
               <td>Index of current slide.</td>
+            </tr>
+            <tr>
+              <td>eventPause</td>
+              <td>Boolean</td>
+              <td>Indicates whether the slider is paused by a focus/mouse event or not.</td>
             </tr>
           </tbody>
         </table>
