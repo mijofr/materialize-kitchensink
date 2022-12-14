@@ -1,6 +1,24 @@
 # Changelog
 
-## [1.2.0](https://github.com/materializecss/materialize/tree/1.2.0) (2022-11-19)
+## [1.2.1](https://github.com/materializecss/materialize/tree/1.2.1) (2022-12-14)
+
+[Full Changelog](https://github.com/materializecss/materialize/compare/1.2.0...1.2.1)
+
+**Fixed bugs:**
+
+- fix\(select\): misplaced aria-required attribute [\#318](https://github.com/materializecss/materialize/pull/318) ([mauromascarenhas](https://github.com/mauromascarenhas))
+- fix: remove postinstall hook from packed package [\#313](https://github.com/materializecss/materialize/pull/313) ([Chicken](https://github.com/Chicken))
+
+**Documentation changes:**
+
+- fix\(fab\): fab toolbar demo [\#319](https://github.com/materializecss/materialize/pull/319) ([mauromascarenhas](https://github.com/mauromascarenhas))
+- Added Example for alignment option [\#298](https://github.com/materializecss/materialize/pull/298) ([CypherpunkSamurai](https://github.com/CypherpunkSamurai))
+
+**Meta changes:**
+
+- Fix missed files when replacing old version with new one [\#316](https://github.com/materializecss/materialize/pull/316) ([Smankusors](https://github.com/Smankusors))
+
+## [1.2.0](https://github.com/materializecss/materialize/tree/1.2.0) (2022-11-25)
 
 [Full Changelog](https://github.com/materializecss/materialize/compare/1.1.0...1.2.0)
 
@@ -32,6 +50,12 @@
 - Fix js not updating when doing npm run dev [\#280](https://github.com/materializecss/materialize/pull/280) ([Smankusors](https://github.com/Smankusors))
 - Add maintainers doc [\#262](https://github.com/materializecss/materialize/pull/262) ([Smankusors](https://github.com/Smankusors))
 
+**Merged pull requests:**
+
+- Release 1.2.0 [\#305](https://github.com/materializecss/materialize/pull/305) ([Smankusors](https://github.com/Smankusors))
+- chore: merge upstream changes [\#287](https://github.com/materializecss/materialize/pull/287) ([DanielRuf](https://github.com/DanielRuf))
+- refactor: improve the documentation by gergo85 [\#276](https://github.com/materializecss/materialize/pull/276) ([Smankusors](https://github.com/Smankusors))
+
 ## [1.1.0](https://github.com/materializecss/materialize/tree/1.1.0) (2022-04-20)
 
 [Full Changelog](https://github.com/materializecss/materialize/compare/1.1.0-alpha...1.1.0)
@@ -49,14 +73,12 @@
 - fix: Waves concat order [\#208](https://github.com/materializecss/materialize/pull/208) ([Smankusors](https://github.com/Smankusors))
 - fix: for iOS13 selecting wrong Dropdownitem on Touchdevices fix \#31 [\#199](https://github.com/materializecss/materialize/pull/199) ([wuda-io](https://github.com/wuda-io))
 - fix\(issue180\): handling invalid clickedIndex in carousel.js [\#187](https://github.com/materializecss/materialize/pull/187) ([LoganTann](https://github.com/LoganTann))
-- Fix for issue \#146 \(Rounding artefacts with dark table row\) [\#149](https://github.com/materializecss/materialize/pull/149) ([RamonvdW](https://github.com/RamonvdW))
 - fix\(dropdown\): 🐛 fix a bug with dropdown actives when used in selects [\#134](https://github.com/materializecss/materialize/pull/134) ([ChildishGiant](https://github.com/ChildishGiant))
 
 **Documentation changes:**
 
 - Fix template missing in docs [\#243](https://github.com/materializecss/materialize/pull/243) ([Smankusors](https://github.com/Smankusors))
 - fix: add link to searchable list \#225 [\#242](https://github.com/materializecss/materialize/pull/242) ([MadhaviMandalia](https://github.com/MadhaviMandalia))
-- Icon list changed with link [\#235](https://github.com/materializecss/materialize/pull/235) ([MadhaviMandalia](https://github.com/MadhaviMandalia))
 - docs\(select\): rephrase a sentence in select docs, issue 171 [\#218](https://github.com/materializecss/materialize/pull/218) ([LoganTann](https://github.com/LoganTann))
 - docs: rework about and home page to mention this is the community fork [\#217](https://github.com/materializecss/materialize/pull/217) ([LoganTann](https://github.com/LoganTann))
 - Fix \#175 : Add a docs section on how to change the font stack [\#212](https://github.com/materializecss/materialize/pull/212) ([LoganTann](https://github.com/LoganTann))
@@ -81,6 +103,10 @@
 - Fix ERR\_FILE\_NOT\_FOUND when running npm test [\#148](https://github.com/materializecss/materialize/pull/148) ([Smankusors](https://github.com/Smankusors))
 - build\(deps\): :lock: fix many security issues,  [\#141](https://github.com/materializecss/materialize/pull/141) ([ChildishGiant](https://github.com/ChildishGiant))
 - ci: ensure conventional commit styles are used for PRs [\#123](https://github.com/materializecss/materialize/pull/123) ([ChildishGiant](https://github.com/ChildishGiant))
+
+**Merged pull requests:**
+
+- Release 1.1.0 [\#258](https://github.com/materializecss/materialize/pull/258) ([Smankusors](https://github.com/Smankusors))
 
 ## [1.1.0-alpha](https://github.com/materializecss/materialize/tree/1.1.0-alpha) (2021-04-28)
 
