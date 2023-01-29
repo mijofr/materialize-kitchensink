@@ -36,6 +36,7 @@
        * @prop {Number} [interval=6000] - Length in ms of slide interval
        * @prop {Boolean} [pauseOnFocus=true] - Pauses transition when slider receives keyboard focus
        * @prop {Boolean} [pauseOnHover=true] - Pauses transition while mouse hovers the slider
+       * @prop {Function} [indicatorLabelFunc=null] - Function used to generate ARIA label to indicators (for accessibility purposes).
        */
       this.options = $.extend({}, Slider.defaults, options);
 
@@ -62,10 +63,10 @@
       this._setSliderHeight();
 
       // Sets element id if it does not have one
-      if (this.$slider[0].hasAttribute("id")) this._sliderId = this.$slider[0].getAttribute("id");
+      if (this.$slider.attr('id')) this._sliderId = this.$slider.attr('id');
       else {
-        this._sliderId = "slider-" + M.guid();
-        this.$slider[0].setAttribute("id", this._sliderId);
+        this._sliderId = 'slider-' + M.guid();
+        this.$slider.attr('id', this._sliderId);
       }
 
       // Set initial positions of captions
@@ -93,8 +94,7 @@
 
       // Show active slide
       if (this.$active) {
-        this.$active.css('display', 'block');
-        this.$active[0].style.visibility = 'visible';
+        this.$active.css('display', 'block').css('visibility', 'visible');
       } else {
         this.$slides.first().addClass('active');
         anim({
@@ -103,7 +103,7 @@
           duration: this.options.duration,
           easing: 'easeOutQuad'
         });
-        this.$slides.first()[0].style.visibility = 'visible';
+        this.$slides.first().css('visibility', 'visible');
 
         this.activeIndex = 0;
         this.$active = this.$slides.eq(this.activeIndex);
@@ -179,9 +179,7 @@
       }
 
       if (this.options.indicators) {
-        this.$indicators.each((el) => {
-          el.children[0].addEventListener('click', this._handleIndicatorClickBound);
-        });
+        this.$indicators.children().on('click', this._handleIndicatorClickBound);
       }
     }
 
@@ -313,7 +311,9 @@
       if (this.options.indicators) {
         this.$indicators = $('<ul class="indicators"></ul>');
         this.$slides.each((el, i) => {
-          let label = this.options.indicatorLabelFunc ? this.options.indicatorLabelFunc.call(this, i + 1, i === 0) : `${i + 1}`;
+          let label = this.options.indicatorLabelFunc
+            ? this.options.indicatorLabelFunc.call(this, i + 1, i === 0)
+            : `${i + 1}`;
           let $indicator = $(`<li class="indicator-item">
             <button type="button" class="indicator-item-btn" aria-label="${label}" aria-controls="${this._sliderId}"></button>
           </li>`);
@@ -346,9 +346,7 @@
         let $caption = this.$active.find('.caption');
         this.$active.removeClass('active');
         // Enables every slide
-        this.$slides.each((el) => {
-          el.style.visibility = 'visible';
-        });
+        this.$slides.css('visibility', 'visible');
 
         anim({
           targets: this.$active[0],
@@ -375,13 +373,33 @@
 
         // Update indicators
         if (this.options.indicators) {
-          let oActive = this.$indicators.eq(this.activeIndex).children().first()[0];
-          let nActive = this.$indicators.eq(index).children().first()[0];
-          oActive.classList.remove('active');
-          nActive.classList.add('active');
+          let activeIndicator  = this.$indicators
+            .eq(this.activeIndex)
+            .children()
+            .first();
+          let nextIndicator  = this.$indicators
+            .eq(index)
+            .children()
+            .first();
+          activeIndicator.removeClass('active');
+          nextIndicator.addClass('active');
           if (typeof this.options.indicatorLabelFunc === "function"){
-            oActive.setAttribute("aria-label", this.options.indicatorLabelFunc.call(this, this.$indicators.eq(this.activeIndex).index(), false));
-            nActive.setAttribute("aria-label", this.options.indicatorLabelFunc.call(this, this.$indicators.eq(index).index(), true));
+            activeIndicator.attr(
+              'aria-label',
+              this.options.indicatorLabelFunc.call(
+                this,
+                this.$indicators.eq(this.activeIndex).index(),
+                false
+              )
+            );
+            nextIndicator.attr(
+              'aria-label',
+              this.options.indicatorLabelFunc.call(
+                this,
+                this.$indicators.eq(index).index(),
+                true
+              )
+            );
           }
         }
 
