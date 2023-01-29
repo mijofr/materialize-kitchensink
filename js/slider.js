@@ -85,7 +85,7 @@
       });
       this.$slides.each((el) => {
         // Sets slide as focusable by code
-        if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", -1);
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', -1);
         // Removes initial visibility from "inactive" slides
         el.style.visibility = 'hidden';
       });
@@ -169,11 +169,11 @@
       this._handleAutoPauseHoverBound = this._handleAutoPauseHover.bind(this);
       this._handleAutoStartHoverBound = this._handleAutoStartHover.bind(this);
       
-      if (this.options.pauseOnFocus){
+      if (this.options.pauseOnFocus) {
         this.el.addEventListener('focusin', this._handleAutoPauseFocusBound);
         this.el.addEventListener('focusout', this._handleAutoStartFocusBound);
       }
-      if (this.options.pauseOnHover){
+      if (this.options.pauseOnHover) {
         this.el.addEventListener('mouseenter', this._handleAutoPauseHoverBound);
         this.el.addEventListener('mouseleave', this._handleAutoStartHoverBound);
       }
@@ -187,18 +187,16 @@
      * Remove Event Handlers
      */
     _removeEventHandlers() {
-      if (this.options.pauseOnFocus){
+      if (this.options.pauseOnFocus) {
         this.el.removeEventListener('focusin', this._handleAutoPauseFocusBound);
         this.el.removeEventListener('focusout', this._handleAutoStartFocusBound);
       }
-      if (this.options.pauseOnHover){
+      if (this.options.pauseOnHover) {
         this.el.removeEventListener('mouseenter', this._handleAutoPauseHoverBound);
         this.el.removeEventListener('mouseleave', this._handleAutoStartHoverBound);
       }
       if (this.options.indicators) {
-        this.$indicators.each((el) => {
-          el.children[0].removeEventListener('click', this._handleIndicatorClickBound);
-        });
+        this.$indicators.children().off('click', this._handleIndicatorClickBound);
       }
     }
 
@@ -217,7 +215,7 @@
      */
     _handleAutoPauseHover() {
       this._hovered = true;
-      if (this.interval != null){
+      if (this.interval != null) {
         this._pause(true);
       }
     }
@@ -227,7 +225,7 @@
      */
     _handleAutoPauseFocus() {
       this._focused = true;
-      if (this.interval != null){
+      if (this.interval != null) {
         this._pause(true);
       }
     }
@@ -237,7 +235,7 @@
      */
     _handleAutoStartHover() {
       this._hovered = false;
-      if (!(this.options.pauseOnFocus && this._focused) && this.eventPause){
+      if (!(this.options.pauseOnFocus && this._focused) && this.eventPause) {
         this.start();
       }
     }
@@ -247,7 +245,7 @@
      */
      _handleAutoStartFocus() {
       this._focused = false;
-      if (!(this.options.pauseOnHover && this._hovered) && this.eventPause){
+      if (!(this.options.pauseOnHover && this._hovered) && this.eventPause) {
         this.start();
       }
     }
@@ -421,7 +419,7 @@
         });
 
         this.$slides.eq(index).addClass('active');
-        if (this._focusCurrent){
+        if (this._focusCurrent) {
           this.$slides.eq(index)[0].focus();
           this._focusCurrent = false;
         }
@@ -429,7 +427,7 @@
 
         // Reset interval, if allowed. This check prevents autostart
         // when slider is paused, since it can be changed though indicators.
-        if (this.interval != null){
+        if (this.interval != null) {
           this.start();
         }
       }
