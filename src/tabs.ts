@@ -1,28 +1,39 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
+import anim from "animejs";
+import { Carousel } from "./carousel";
 
-  let _defaults = {
-    duration: 300,
-    onShow: null,
-    swipeable: false,
-    responsiveThreshold: Infinity // breakpoint for swipeable
-  };
+let _defaults = {
+  duration: 300,
+  onShow: null,
+  swipeable: false,
+  responsiveThreshold: Infinity, // breakpoint for swipeable
+};
 
+/**
+ * @class
+ *
+ */
+export class Tabs extends Component {
+  $tabLinks: any;
+  index: number;
+  _indicator: any;
+  _handleWindowResizeBound: (this: Window, ev: UIEvent) => any;
+  _handleTabClickBound: (this: Window, ev: UIEvent) => any;
+  tabWidth: number;
+  $activeTabLink: any;
+  $content: any;
+  tabsWidth: number;
+  _tabsCarousel: any;
   /**
-   * @class
-   *
+   * Construct Tabs instance
+   * @constructor
+   * @param {Element} el
+   * @param {Object} options
    */
-  class Tabs extends Component {
-    /**
-     * Construct Tabs instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
-    constructor(el, options) {
-      super(Tabs, el, options);
-
-      this.el.M_Tabs = this;
+  constructor(el, options: any) {
+    super(Tabs, el, options);
 
       /**
        * Options for the Tabs
@@ -82,7 +93,6 @@
         this._teardownNormalTabs();
       }
 
-      this.$el[0].M_Tabs = undefined;
     }
 
     /**
@@ -145,7 +155,7 @@
 
       // Update the variables with the new link and content
       this.$activeTabLink = tabLink;
-      this.$content = $(M.escapeHash(tabLink[0].hash));
+      this.$content = $(M.escapeHash((<any> tabLink[0]).hash));
       this.$tabLinks = this.$el.children('li.tab').children('a');
 
       // Make the tab active.
@@ -259,7 +269,7 @@
       // Keep active tab index to set initial carousel slide
       let activeTabIndex = this.$activeTabLink.closest('.tab').index();
 
-      this._tabsCarousel = M.Carousel.init($tabsWrapper[0], {
+      this._tabsCarousel = Carousel.init($tabsWrapper[0], {
         fullWidth: true,
         noWrap: true,
         onCycleTo: (item) => {
@@ -393,10 +403,3 @@
       }
     }
   }
-
-  M.Tabs = Tabs;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Tabs, 'tabs', 'M_Tabs');
-  }
-})(cash, M.anime);
