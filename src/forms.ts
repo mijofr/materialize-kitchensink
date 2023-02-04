@@ -26,7 +26,7 @@ export class Forms {
         (element as HTMLInputElement).value.length > 0 ||
         $(element).is(':focus') ||
         element.autofocus ||
-        $this.attr('placeholder') !== null
+        $this.attr('placeholder') !== undefined
       ) {
         $this.siblings('label').addClass('active');
       } else if ((element as HTMLInputElement).validity) {
@@ -38,7 +38,7 @@ export class Forms {
   };
 
   static validate_field (object) {
-    let hasLength = object.attr('data-length') !== null;
+    let hasLength = object.attr('data-length') !== undefined;
     let lenAttr = parseInt(object.attr('data-length'));
     let len = object[0].value.length;
 
