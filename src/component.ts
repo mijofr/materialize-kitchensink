@@ -34,7 +34,7 @@ export class Component {
     let instances = null;
     if (els instanceof Element) {
       instances = new classDef(els, options);
-    } else if (!!els && (els.jquery || els.cash || els instanceof NodeList)) {
+    } else if (!!els && (els.jquery || els.cash || els instanceof NodeList || els instanceof HTMLCollection)) {
       let instancesArr = [];
       for (let i = 0; i < els.length; i++) {
         instancesArr.push(new classDef(els[i], options));
