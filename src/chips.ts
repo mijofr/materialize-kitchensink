@@ -338,7 +338,7 @@ import { Autocomplete } from "./autocomplete";
       this._setPlaceholder();
       // fire chipAdd callback
       if (typeof this.options.onChipAdd === 'function') {
-        this.options.onChipAdd.call(this, this.$el, renderedChip);
+        this.options.onChipAdd(this.$el, renderedChip);
       }
     }
 
@@ -353,7 +353,7 @@ import { Autocomplete } from "./autocomplete";
 
       // fire chipDelete callback
       if (typeof this.options.onChipDelete === 'function') {
-        this.options.onChipDelete.call(this, this.$el, $chip[0]);
+        this.options.onChipDelete(this.$el, $chip[0]);
       }
     }
 
@@ -364,35 +364,25 @@ import { Autocomplete } from "./autocomplete";
 
       // fire chipSelect callback
       if (typeof this.options.onChipSelect === 'function') {
-        this.options.onChipSelect.call(this, this.$el, $chip[0]);
+        this.options.onChipSelect(this.$el, $chip[0]);
       }
     }
-    
-    static {
 
-    /**
-     * @static
-     * @memberof Chips
-     */
-    Chips._keydown = false;
-
-    M.Chips = Chips;
-
-    if (M.jQueryLoaded) {
-      M.initializeJqueryWrapper(Chips, 'chips', 'M_Chips');
-    }
-
-    $(document).ready(function() {
-      // Handle removal of static chips.
-      $(document.body).on('click', '.chip .close', function() {
-        let $chips = $(this).closest('.chips');
-        if ($chips.length && ($chips[0] as any).M_Chips) {
-          return;
-        }
-        $(this)
-          .closest('.chip')
-          .remove();
+    static Init(){
+      $(document).ready(function() {
+        // Handle removal of static chips.
+        $(document.body).on('click', '.chip .close', function() {
+          let $chips = $(this).closest('.chips');
+          if ($chips.length && ($chips[0] as any).M_Chips == undefined) {
+            return;
+          }
+          $(this)
+            .closest('.chip')
+            .remove();
+        });
       });
-    });
-  }
+    }
+    static {
+      Chips._keydown = false;      
+    }     
 }

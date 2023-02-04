@@ -1,6 +1,7 @@
 import { Autocomplete } from './autocomplete';
 import { Bounding } from './bounding';
 import { FloatingActionButton } from './buttons';
+import { Cards } from './cards';
 import { Carousel } from './carousel';
 import { CharacterCounter } from './characterCounter';
 import { Chips } from './chips';
@@ -8,6 +9,7 @@ import { Collapsible } from './collapsible';
 import { Datepicker } from './datepicker';
 import { Dropdown } from './dropdown';
 import { Edges } from './edges';
+import { Forms } from './forms';
 import { Materialbox } from './materialbox';
 import { Modal } from './modal';
 import { Parallax } from './parallax';
@@ -114,6 +116,9 @@ static {
   M.initializeJqueryWrapper(ScrollSpy, 'scrollSpy', 'M_ScrollSpy');
   M.initializeJqueryWrapper(Range, 'range', 'M_Range');
   M.initializeJqueryWrapper(Chips, 'chips', 'M_Chips');
+  Cards.Init();
+  Forms.Init();
+  Chips.Init();
 }
 
 static jQueryLoaded(): boolean

@@ -153,137 +153,142 @@ export class Forms {
     }
     $textarea.data('previous-length', $textarea[0].value.length);
   };
-}
 
-  $(document).ready(function() {
-    // Add active if form auto complete
-    $(document).on('change', TEXT_BASED_INPUT_SELECTOR, function() {
-      if (this.value.length !== 0 || $(this).attr('placeholder') !== null) {
-        $(this)
-          .siblings('label')
-          .addClass('active');
-      }
-      Forms.validate_field($(this));
-    });
-
-    // Add active if input element has been pre-populated on document ready
+  static Init(){
     $(document).ready(function() {
-      Forms.updateTextFields();
-    });
-
-    // HTML DOM FORM RESET handling
-    $(document).on('reset', function(e) {
-      let formReset = $(e.target);
-      if (formReset.is('form')) {
-        formReset
-          .find(TEXT_BASED_INPUT_SELECTOR)
-          .removeClass('valid')
-          .removeClass('invalid');
-        formReset.find(TEXT_BASED_INPUT_SELECTOR).each(function(e) {
-          if ((this as HTMLInputElement).value.length) {
-            $(this)
-              .siblings('label')
-              .removeClass('active');
-          }
-        });
-
-        // Reset select (after native reset)
-        setTimeout(function() {
-          formReset.find('select').each(function() {
-            // check if initialized
-            if ((this as any).M_FormSelect) {
-              $(this).trigger('change');
-            }
-          });
-        }, 0);
-      }
-    });
-
-    /**
-     * Add active when element has focus
-     * @param {Event} e
-     */
-    document.addEventListener(
-      'focus',
-      function(e: any) {
-        if ($(e.target).is(TEXT_BASED_INPUT_SELECTOR)) {
-          $(e.target)
-            .siblings('label, .prefix')
+      // Add active if form auto complete
+      $(document).on('change', TEXT_BASED_INPUT_SELECTOR, function() {
+        if (this.value.length !== 0 || $(this).attr('placeholder') != undefined) {
+          $(this)
+            .siblings('label')
             .addClass('active');
         }
-      },
-      true
-    );
-
-    /**
-     * Remove active when element is blurred
-     * @param {Event} e
-     */
-    document.addEventListener(
-      'blur',
-      function(e: any) {
-        let $inputElement = $(e.target);
-        if ($inputElement.is(TEXT_BASED_INPUT_SELECTOR)) {
-          let selector = '.prefix';
-
-          if (
-            ($inputElement[0] as HTMLInputElement).value.length === 0 &&
-            ($inputElement[0] as HTMLInputElement).validity.badInput !== true &&
-            $inputElement.attr('placeholder') === null
-          ) {
-            selector += ', label';
-          }
-          $inputElement.siblings(selector).removeClass('active');
-          Forms.validate_field($inputElement);
+        Forms.validate_field($(this));
+      });
+  
+      // Add active if input element has been pre-populated on document ready
+      $(document).ready(function() {
+        Forms.updateTextFields();
+      });
+  
+      // HTML DOM FORM RESET handling
+      $(document).on('reset', function(e) {
+        let formReset = $(e.target);
+        if (formReset.is('form')) {
+          formReset
+            .find(TEXT_BASED_INPUT_SELECTOR)
+            .removeClass('valid')
+            .removeClass('invalid');
+          formReset.find(TEXT_BASED_INPUT_SELECTOR).each(function(e) {
+            if ((this as HTMLInputElement).value.length) {
+              $(this)
+                .siblings('label')
+                .removeClass('active');
+            }
+          });
+  
+          // Reset select (after native reset)
+          setTimeout(function() {
+            formReset.find('select').each(function() {
+              // check if initialized
+              if ((this as any).M_FormSelect) {
+                $(this).trigger('change');
+              }
+            });
+          }, 0);
         }
-      },
-      true
-    );
-
-    // Radio and Checkbox focus class
-    let radio_checkbox = 'input[type=radio], input[type=checkbox]';
-    $(document).on('keyup', radio_checkbox, function(e) {
-      // TAB, check if tabbing to radio or checkbox.
-      if (e.which === M.keys.TAB) {
-        $(this).addClass('tabbed');
-        let $this = $(this);
-        $this.one('blur', function(e) {
-          $(this).removeClass('tabbed');
-        });
-        return;
-      }
-    });
-
-    let text_area_selector = '.materialize-textarea';
-    $(text_area_selector).each(function() {
-      let $textarea = $(this);
+      });
+  
       /**
-       * Resize textarea on document load after storing
-       * the original height and the original length
+       * Add active when element has focus
+       * @param {Event} e
        */
-      $textarea.data('original-height', $textarea.height());
-      $textarea.data('previous-length', (this as HTMLInputElement).value.length);
-      Forms.textareaAutoResize($textarea);
-    });
+      document.addEventListener(
+        'focus',
+        function(e: any) {
+          if ($(e.target).is(TEXT_BASED_INPUT_SELECTOR)) {
+            $(e.target)
+              .siblings('label, .prefix')
+              .addClass('active');
+          }
+        },
+        true
+      );
+  
+      /**
+       * Remove active when element is blurred
+       * @param {Event} e
+       */
+      document.addEventListener(
+        'blur',
+        function(e: any) {
+          let $inputElement = $(e.target);
+          if ($inputElement.is(TEXT_BASED_INPUT_SELECTOR)) {
+            let selector = '.prefix';
+  
+            if (
+              ($inputElement[0] as HTMLInputElement).value.length === 0 &&
+              ($inputElement[0] as HTMLInputElement).validity.badInput !== true &&
+              $inputElement.attr('placeholder') === undefined
+            ) {
+              selector += ', label';
+            }
+            $inputElement.siblings(selector).removeClass('active');
+            Forms.validate_field($inputElement);
+          }
+        },
+        true
+      );
+  
+      // Radio and Checkbox focus class
+      let radio_checkbox = 'input[type=radio], input[type=checkbox]';
+      $(document).on('keyup', radio_checkbox, function(e) {
+        // TAB, check if tabbing to radio or checkbox.
+        if (e.which === M.keys.TAB) {
+          $(this).addClass('tabbed');
+          let $this = $(this);
+          $this.one('blur', function(e) {
+            $(this).removeClass('tabbed');
+          });
+          return;
+        }
+      });
+  
+      let text_area_selector = '.materialize-textarea';
+      $(text_area_selector).each(function() {
+        let $textarea = $(this);
+        /**
+         * Resize textarea on document load after storing
+         * the original height and the original length
+         */
+        $textarea.data('original-height', $textarea.height());
+        $textarea.data('previous-length', (this as HTMLInputElement).value.length);
+        Forms.textareaAutoResize($textarea);
+      });
+  
+      $(document).on('keyup', text_area_selector, function() {
+        Forms.textareaAutoResize($(this));
+      });
+      $(document).on('keydown', text_area_selector, function() {
+        Forms.textareaAutoResize($(this));
+      });
+  
+      // File Input Path
+      $(document).on('change', '.file-field input[type="file"]', function() {
+        let file_field = $(this).closest('.file-field');
+        let path_input = file_field.find('input.file-path');
+        let files = ($(this)[0] as HTMLInputElement).files;
+        let file_names = [];
+        for (let i = 0; i < files.length; i++) {
+          file_names.push(files[i].name);
+        }
+        (path_input[0] as HTMLInputElement).value = file_names.join(', ');
+        path_input.trigger('change');
+      });
+    }); // End of $(document).ready
+  
+  
+  }
+}
 
-    $(document).on('keyup', text_area_selector, function() {
-      Forms.textareaAutoResize($(this));
-    });
-    $(document).on('keydown', text_area_selector, function() {
-      Forms.textareaAutoResize($(this));
-    });
-
-    // File Input Path
-    $(document).on('change', '.file-field input[type="file"]', function() {
-      let file_field = $(this).closest('.file-field');
-      let path_input = file_field.find('input.file-path');
-      let files = ($(this)[0] as HTMLInputElement).files;
-      let file_names = [];
-      for (let i = 0; i < files.length; i++) {
-        file_names.push(files[i].name);
-      }
-      (path_input[0] as HTMLInputElement).value = file_names.join(', ');
-      path_input.trigger('change');
-    });
-  }); // End of $(document).ready
-
+  
