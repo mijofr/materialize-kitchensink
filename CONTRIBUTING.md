@@ -101,13 +101,13 @@ Good pull requests - patches, improvements, new features - are a fantastic help.
 
 **Do not edit `materialize.css`, or `materialize.js`
 directly!** Those files are automatically generated. You should edit the
-source files in [`/materialize/sass/`](https://github.com/materializecss/materialize/tree/master/sass)
-and/or [`/materialize/js/`](https://github.com/materializecss/materialize/tree/master/js) instead.
+source files in [`/materialize/sass/`](https://github.com/materializecss/materialize/tree/main/sass)
+and/or [`/materialize/js/`](https://github.com/materializecss/materialize/tree/main/js) instead.
 
 ### Documentation
 
 When contributing to Materialize's documentation, you should edit the documentation source files in
-[the `/materialize/pug/page-contents/` directory of the `master` branch](https://github.com/materializecss/materialize/tree/master/pug).
+[the `/materialize/pug/page-contents/` directory of the `main` branch](https://github.com/materializecss/materialize/tree/main/pug).
 **Do not edit the `gh-pages` branch.** That branch is generated from the documentation source files and is managed separately by the Materialize maintainers.
 
 ### Submitting Your Pull Request
@@ -129,8 +129,8 @@ Adhering to the following process is the best way to get your work included in t
 2. If you cloned a while ago, get the latest changes from upstream:
 
    ```bash
-   git checkout master
-   git pull upstream master
+   git checkout main
+   git pull upstream main
    ```
 
 3. Create a new topic branch (off the main project development branch) to contain your feature, change, or fix:
@@ -145,7 +145,7 @@ Adhering to the following process is the best way to get your work included in t
 5. Locally merge (or rebase) the upstream development branch into your topic branch:
 
    ```bash
-   git pull [--rebase] upstream master
+   git pull [--rebase] upstream main
    ```
 
 6. Push your topic branch up to your fork:
@@ -165,7 +165,7 @@ If you want to help us translate the documentation into other languages, you can
 **References:**
 - [Jasmine Documentation](http://jasmine.github.io/2.0/introduction.html)
 - [Grunt Jasmine Plugin](https://github.com/gruntjs/grunt-contrib-jasmine)
-- [Example Jasmine Tests](https://github.com/materializecss/materialize/tree/master/tests/spec)
+- [Example Jasmine Tests](https://github.com/materializecss/materialize/tree/main/tests/spec)
 
 After `npm install`, you can run `npm test` and it will run the tests. If you get any errors and have not made any changes, it means you have not installed the proper dependencies.
 
