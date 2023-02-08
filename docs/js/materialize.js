@@ -3380,7 +3380,7 @@ $jscomp.polyfill = function (e, r, p, m) {
 
         // Container here will be closest ancestor with overflow: hidden
         var closestOverflowParent = getClosestAncestor(this.dropdownEl, function (ancestor) {
-          return $(ancestor).css('overflow') !== 'visible';
+          return !$(ancestor).is('html,body') && $(ancestor).css('overflow') !== 'visible';
         });
         // Fallback
         if (!closestOverflowParent) {
