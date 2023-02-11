@@ -8,16 +8,6 @@ html {
   box-sizing: inherit;
 }
 
-body {
-  // display: flex;
-  // min-height: 100vh;
-  // flex-direction: column;
-}
-
-main {
-  // flex: 1 0 auto;
-}
-
 button,
 input,
 optgroup,
@@ -442,7 +432,6 @@ table {
     tr {
       border-bottom: none;
     }
-
     tbody > tr:nth-child(odd) {
       background-color: $table-striped-color;
     }

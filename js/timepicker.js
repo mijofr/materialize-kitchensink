@@ -116,14 +116,16 @@
       this._handleClockClickStartBound = this._handleClockClickStart.bind(this);
       this._handleDocumentClickMoveBound = this._handleDocumentClickMove.bind(this);
       this._handleDocumentClickEndBound = this._handleDocumentClickEnd.bind(this);
+      this._inputFromTextFieldBound = this._handleTimeInputEnterKey.bind(this);
 
       this.el.addEventListener('click', this._handleInputClickBound);
       this.el.addEventListener('keydown', this._handleInputKeydownBound);
       this.plate.addEventListener('mousedown', this._handleClockClickStartBound);
       this.plate.addEventListener('touchstart', this._handleClockClickStartBound);
+      this.digitalClock.addEventListener('keyup', this._inputFromTextFieldBound);
 
-      $(this.spanHours).on('click', this.showView.bind(this, 'hours'));
-      $(this.spanMinutes).on('click', this.showView.bind(this, 'minutes'));
+      $(this.inputHours).on('click', this.showView.bind(this, 'hours'));
+      $(this.inputMinutes).on('click', this.showView.bind(this, 'minutes'));
     }
 
     _removeEventHandlers() {
@@ -139,6 +141,13 @@
       if (e.which === M.keys.ENTER) {
         e.preventDefault();
         this.open();
+      }
+    }
+
+    _handleTimeInputEnterKey(e) {
+      if (e.which === M.keys.ENTER) {
+        e.preventDefault();
+        this._inputFromTextField();
       }
     }
 
@@ -243,11 +252,12 @@
 
       this._canvas = this.modalEl.querySelector('.timepicker-canvas');
       this.plate = this.modalEl.querySelector('.timepicker-plate');
+      this.digitalClock = this.modalEl.querySelector('.timepicker-display-column');
 
       this.hoursView = this.modalEl.querySelector('.timepicker-hours');
       this.minutesView = this.modalEl.querySelector('.timepicker-minutes');
-      this.spanHours = this.modalEl.querySelector('.timepicker-span-hours');
-      this.spanMinutes = this.modalEl.querySelector('.timepicker-span-minutes');
+      this.inputHours = this.modalEl.querySelector('.timepicker-input-hours');
+      this.inputMinutes = this.modalEl.querySelector('.timepicker-input-minutes');
       this.spanAmPm = this.modalEl.querySelector('.timepicker-span-am-pm');
       this.footer = this.modalEl.querySelector('.timepicker-footer');
       this.amOrPm = 'PM';
@@ -428,8 +438,8 @@
       }
       this.hours = +value[0] || 0;
       this.minutes = +value[1] || 0;
-      this.spanHours.innerHTML = this.hours;
-      this.spanMinutes.innerHTML = Timepicker._addLeadingZero(this.minutes);
+      this.inputHours.value = this.hours;
+      this.inputMinutes.value = Timepicker._addLeadingZero(this.minutes);
 
       this._updateAmPmView();
     }
@@ -443,8 +453,8 @@
         hideView = isHours ? this.minutesView : this.hoursView;
       this.currentView = view;
 
-      $(this.spanHours).toggleClass('text-primary', isHours);
-      $(this.spanMinutes).toggleClass('text-primary', !isHours);
+      $(this.inputHours).toggleClass('text-primary', isHours);
+      $(this.inputMinutes).toggleClass('text-primary', !isHours);
 
       // Transition view
       hideView.classList.add('timepicker-dial-out');
@@ -483,6 +493,60 @@
       } else {
         this.setHand(x, y);
       }
+    }
+
+    _inputFromTextField() {
+      const isHours = this.currentView === 'hours';
+
+      if (isHours) {
+        const value = this['inputHours'].value;
+
+        if (value > 0 && value < 13) {
+          this.drawClockFromTimeInput(value, isHours);
+
+          this.showView('minutes', this.options.duration / 2);
+
+          this.hours = value;
+          this.inputMinutes.focus();
+        } else {
+          const hour = new Date().getHours();
+          this['inputHours'].value = hour % 12;
+        }
+      } else {
+        const value = this['inputMinutes'].value;
+
+        if (value >= 0 && value < 60) {
+          this['inputMinutes'].value = Timepicker._addLeadingZero(value);
+
+          this.drawClockFromTimeInput(value, isHours);
+
+          this.minutes = value;
+          this.modalEl.querySelector('.confirmation-btns :nth-child(2)').focus();
+        } else {
+          const minutes = new Date().getMinutes();
+          this['inputMinutes'].value = Timepicker._addLeadingZero(minutes);
+        }
+      }
+    }
+
+    drawClockFromTimeInput(value, isHours) {
+      const unit = Math.PI / (isHours ? 6 : 30);
+      const radian = value * unit;
+      let radius;
+
+      if (this.options.twelveHour) {
+        radius = this.options.outerRadius;
+      }
+
+      let cx1 = Math.sin(radian) * (radius - this.options.tickRadius),
+        cy1 = -Math.cos(radian) * (radius - this.options.tickRadius),
+        cx2 = Math.sin(radian) * radius,
+        cy2 = -Math.cos(radian) * radius;
+
+      this.hand.setAttribute('x2', cx1);
+      this.hand.setAttribute('y2', cy1);
+      this.bg.setAttribute('cx', cx2);
+      this.bg.setAttribute('cy', cy2);
     }
 
     setHand(x, y, roundBy5) {
@@ -547,9 +611,9 @@
 
       this[this.currentView] = value;
       if (isHours) {
-        this['spanHours'].innerHTML = value;
+        this['inputHours'].value = value;
       } else {
-        this['spanMinutes'].innerHTML = Timepicker._addLeadingZero(value);
+        this['inputMinutes'].value = Timepicker._addLeadingZero(value);
       }
 
       // Set clock hand and others' position
@@ -619,9 +683,9 @@
     '<div class="timepicker-digital-display">',
     '<div class="timepicker-text-container">',
     '<div class="timepicker-display-column">',
-    '<span class="timepicker-span-hours text-primary"></span>',
+    '<input type="text" maxlength="2" autofocus class="timepicker-input-hours text-primary" />',
     ':',
-    '<span class="timepicker-span-minutes"></span>',
+    '<input type="text" maxlength="2" class="timepicker-input-minutes" />',
     '</div>',
     '<div class="timepicker-display-column timepicker-display-am-pm">',
     '<div class="timepicker-span-am-pm"></div>',

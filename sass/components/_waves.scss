@@ -1,9 +1,9 @@
 /*!
  * Waves v0.7.6
- * http://fian.my.id/Waves 
- * 
- * Copyright 2014-2018 Alfiana E. Sibuea and other contributors 
- * Released under the MIT license 
+ * http://fian.my.id/Waves
+ *
+ * Copyright 2014-2018 Alfiana E. Sibuea and other contributors
+ * Released under the MIT license
  * https://github.com/fians/Waves/blob/master/LICENSE */
 
 @mixin waves-transition($transition) {
@@ -47,6 +47,7 @@
     opacity: 0;
     background: rgba(0, 0, 0, 0.2);
     $gradient: rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, .3) 40%, rgba(0, 0, 0, .4) 50%, rgba(0, 0, 0, .5) 60%, rgba(255, 255, 255, 0) 70%;
+
     background: -webkit-radial-gradient($gradient);
     background: -o-radial-gradient($gradient);
     background: -moz-radial-gradient($gradient);
@@ -63,6 +64,7 @@
   &.waves-light .waves-ripple {
     background: rgba(255, 255, 255, 0.4);
     $gradient: rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, .3) 40%, rgba(255, 255, 255, .4) 50%, rgba(255, 255, 255, .5) 60%, rgba(255, 255, 255, 0) 70%;
+
     background: -webkit-radial-gradient($gradient);
     background: -o-radial-gradient($gradient);
     background: -moz-radial-gradient($gradient);
@@ -75,6 +77,7 @@
 
   &.waves-classic.waves-light .waves-ripple {
     background: rgba(255, 255, 255, 0.4);
+
   }
 
   // Waves Colors
