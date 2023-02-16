@@ -281,6 +281,7 @@
     var elems = document.querySelectorAll('.slider');
     var instances = M.Slider.init(elems, {
       // specify options here
+      /** Optional function which generates ARIA label for each indicator */
       indicatorLabelFunc: (idx, current) => {
         let label = "Go to slide " + idx;
         if (current) {
@@ -296,7 +297,8 @@
   $(document).ready(function() {
     $('.slider').slider({
       // specify options here
-      indicatorLabelFunc: (idx, curr) => {
+      /** Optional function which generates ARIA label for each indicator */
+      indicatorLabelFunc: (idx, current) => {
         let label = "Go to slide " + idx;
         if (current) {
           label = label + " (Current)";
@@ -362,7 +364,7 @@
               <td>null</td>
               <td>
                 <p>
-                  Function used to generate ARIA label to indicators (for accessibility purposes).
+                  Optional function used to generate ARIA label to indicators (for accessibility purposes).
                 </p>
                 <p>
                   It receives the current index, starting from "1", and a boolean indicating whether it is the current element or not. 
