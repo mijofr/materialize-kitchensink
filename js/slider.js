@@ -371,11 +371,11 @@
 
         // Update indicators
         if (this.options.indicators) {
-          let activeIndicator  = this.$indicators
+          let activeIndicator = this.$indicators
             .eq(this.activeIndex)
             .children()
             .first();
-          let nextIndicator  = this.$indicators
+          let nextIndicator = this.$indicators
             .eq(index)
             .children()
             .first();
