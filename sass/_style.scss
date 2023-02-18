@@ -1,4 +1,4 @@
-$border-color: rgba(0,0,0,.14);
+$border-color: $divider-color;
 $font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 
 /***************
@@ -6,15 +6,17 @@ $font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans,
 ***************/
 body {
   //background-color: #fcfcfc;
-  color: $off-black;
+  color: $text-color;
   line-height: 1.6;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  background-color: var(--background-color);
 }
 
 p.box {
   padding: 20px;
 }
+
 p {
   padding: 0;
 
@@ -23,21 +25,7 @@ p {
 h5 > span {
   font-size: 14px;
   margin-left: 15px;
-  color: #777;
-}
-
-nav {
-  // background-color: color("materialize-red", "lighten-2");
-
-  a {
-    color: $font-color-main;
-  }
-  ul li a:hover {
-    background-color: $primary-color-when-hovered-solid;
-  }
-  ul li.active {
-    background-color: $primary-color-when-focused-solid;
-  }
+  color: $font-color-medium;
 }
 
 td, th {
@@ -50,8 +38,8 @@ td, th {
 }
 
 .preview {
-  background-color: #FFF;
-  border: 1px solid #eee;
+  background-color: $surface-color;
+  border: 1px solid $border-color;
   padding: 20px 20px;
 }
 
@@ -64,11 +52,13 @@ td, th {
 header, main, footer {
   padding-left: 300px;
 }
+
 .parallax-demo header,
 .parallax-demo main,
 .parallax-demo footer {
   padding-left: 0;
 }
+
 footer.example {
   padding-left: 0;
 }
@@ -99,21 +89,22 @@ ul.sidenav.sidenav-fixed li.logo {
     background-color: transparent;
   }
 }
+
 ul.sidenav.sidenav-fixed {
   overflow: hidden;
   box-shadow: none;
   border-right: 1px solid $border-color;
 
   > li:last-child {
-      margin-bottom: 160px;
-    }
+    margin-bottom: 160px;
+  }
 
 
   li {
     line-height: 44px;
 
     &.active {
-      background-color: rgba(50,50,50,.06);
+      background-color: $button-flat-focus-background-color;
     }
 
     a {
@@ -129,7 +120,7 @@ ul.sidenav.sidenav-fixed {
   }
 
   ul.collapsible-accordion {
-    background-color: #FFF;
+    background-color: $surface-color;
 
     a.collapsible-header {
       padding: 0 30px;
@@ -157,7 +148,7 @@ ul.sidenav.sidenav-fixed {
 }
 
 .current-version-number {
-  color: rgba(0,0,0,0.53);
+  color: $font-color-medium;
 }
 
 @media #{$medium-and-down} {
@@ -177,6 +168,7 @@ nav.top-nav {
     padding-top: 22px;
   }
 }
+
 a.sidenav-trigger.top-nav {
   position: absolute;
   text-align: center;
@@ -231,25 +223,9 @@ a.sidenav-trigger.top-nav {
   pointer-events: none;
 }
 
-@media only screen and (max-width: 992px) {
-  #front-page-nav ul.sidenav {
-    li {
-      float: none;
-      padding: 0 15px;
-
-      &:hover { background-color: #ddd; }
-      .active { background-color: transparent; }
-    }
-    a {
-      color: #444;
-    }
-  }
-}
-
-
 #responsive-img {
   width: 80%;
-  display:block;
+  display: block;
   margin: 0 auto;
 }
 
@@ -259,28 +235,30 @@ a.sidenav-trigger.top-nav {
   .container {
     position: relative;
   }
-  .header {
-    // color: #FFF;
-  }
+
   h4 {
     margin-bottom: 40px;
     line-height: 44px;
-    color: rgba(0,0,0,.7);
+    color: $font-color-main;
   }
+
   h1 {
     margin-top: 16px;
   }
 }
+
 @media #{$medium-and-down} {
   #index-banner {
     h1 {
       margin-top: 60px;
     }
+
     h4 {
       margin-bottom: 15px;
     }
   }
 }
+
 @media #{$small-and-down} {
   #index-banner {
     h4 {
@@ -291,7 +269,7 @@ a.sidenav-trigger.top-nav {
 
 // Latest commit widget
 .github-commit {
-  color: rgba(0,0,0,0.53);
+  color: $font-color-medium;
   border-top: 1px solid $border-color;
   padding: 14px 0;
   height: 64px;
@@ -302,6 +280,7 @@ a.sidenav-trigger.top-nav {
     margin: 0 6px 0 6px;
   }
 }
+
 @media #{$medium-and-down} {
   .github-commit {
     text-align: center;
@@ -313,6 +292,7 @@ a.sidenav-trigger.top-nav {
   &:hover {
     background-color: $primary-color-when-hovered-solid;
   }
+
   background-color: $primary-color;
   width: 260px;
   height: 70px;
@@ -323,7 +303,7 @@ a.sidenav-trigger.top-nav {
   font-weight: 400;
 }
 
-.promo{
+.promo {
   width: 100%;
 
   i {
@@ -342,29 +322,10 @@ a.sidenav-trigger.top-nav {
 
 }
 
-#front-page-nav {
-  background-color: #FFF;
-  position: relative;
-  a {
-      color: $primary-color;
-    }
-  li {
-    &:hover {
-      background-color: $primary-color-when-hovered-solid;
-    }
-    &.active {
-      background-color: $primary-color-when-focused-solid;
-    }
-  }
-  .container {
-    height: inherit;
-  }
-}
-
 // Grid doc styles
 
 .col.grid-example {
-  border: 1px solid #eee;
+  border: 1px solid $border-color;
   margin: 7px 0;
   text-align: center;
   line-height: 50px;
@@ -392,10 +353,12 @@ a.sidenav-trigger.top-nav {
   background-color: color("blue-grey", "lighten-2");
   height: 300px;
 }
+
 #site-layout-example-right {
   background-color: $secondary-color;
   height: 300px;
 }
+
 #site-layout-example-top {
   background-color: $primary-color;
   height: 42px;
@@ -404,21 +367,24 @@ a.sidenav-trigger.top-nav {
 .flat-text-header {
   height: 35px;
   width: 80%;
-  background-color: rgba(255,255,255,.15);
+  background-color: rgba(255, 255, 255, .15);
   display: block;
   margin: 27px auto;
 }
+
 .flat-text {
   height: 25px;
   width: 80%;
-  background-color: rgba(0,0,0,.15);
+  background-color: rgba(0, 0, 0, .15);
   display: block;
   margin: 27px auto;
+
   &.small {
     width: 25%;
     height: 25px;
-    background-color: rgba(0,0,0,.15);
+    background-color: rgba(0, 0, 0, .15);
   }
+
   &.full-width {
     width: 100%;
   }
@@ -433,8 +399,6 @@ a.sidenav-trigger.top-nav {
 $bottomColor: #E2E2E1;
 $topColor: lighten($bottomColor, 2%);
 
-$border: $bottomColor;
-
 $width: 100%;
 $height: auto;
 
@@ -444,11 +408,11 @@ $height: auto;
   height: $height;
   display: inline-block;
   border-radius: 5px 5px 2px 2px;
-  background-color: #fff;
+  background-color: var(--background-color-level-4dp);
   margin: 20px 0px;
   overflow: hidden;
 
-    .top-bar {
+  .top-bar {
     height: 30px;
     border-radius: 5px 5px 0 0;
     border-top: thin solid lighten($topColor, 1%);
@@ -465,16 +429,23 @@ $height: auto;
   background-color: lighten($topColor, 10%);
   margin-right: 1px;
 }
+
 #close-circle {
   background-color: #FF5C5A;
 }
+
 #minimize-circle {
   background-color: #FFBB50;
 }
+
 #maximize-circle {
   background-color: #1BC656;
 }
-.browser-window .circles { margin: 5px 12px; }
+
+.browser-window .circles {
+  margin: 5px 12px;
+}
+
 .browser-window .content {
   margin: 0;
   width: 100%;
@@ -483,11 +454,14 @@ $height: auto;
   border-radius: 0 0 5px 5px;
   background-color: #fafafa;
 }
+
 .browser-window .row {
   margin: 0;
 }
 
-.clear { clear: both; }
+.clear {
+  clear: both;
+}
 
 /**********************
 **********************/
@@ -496,7 +470,7 @@ $height: auto;
 // Color Wheel
 .dynamic-color {
 
-  .red, .pink, .purple, .deep-purple, .indigo, .blue, .light-blue, .cyan, .teal, .green, .light-green, .lime, .yellow, .amber, .orange, .deep-orange, .brown , .grey,  .blue-grey, .black, .white, .transparent {
+  .red, .pink, .purple, .deep-purple, .indigo, .blue, .light-blue, .cyan, .teal, .green, .light-green, .lime, .yellow, .amber, .orange, .deep-orange, .brown, .grey, .blue-grey, .black, .white, .transparent {
     height: 55px;
     width: 100%;
     padding: 0 15px;
@@ -507,6 +481,7 @@ $height: auto;
     flex-direction: column;
     box-sizing: border-box;
   }
+
   .col {
     margin-bottom: 55px;
   }
@@ -521,14 +496,17 @@ $height: auto;
 .material-icons.icon-demo {
   line-height: 50px;
 }
+
 .icon-container i {
   font-size: 3em;
   margin-bottom: 10px;
 }
+
 .icon-container .icon-preview {
   height: 120px;
   text-align: center;
 }
+
 .icon-container span {
   display: block;
 }
@@ -541,6 +519,7 @@ $height: auto;
 
   float: left;
   margin: 0 0px 15px 0px;
+
   p {
     margin: 0 0;
   }
@@ -559,13 +538,6 @@ $height: auto;
     z-index: 10;
   }
 }
-
-
-// Tables
-thead {
-  color: rgba(0, 0, 0, .6);
-}
-
 
 // Shadow demo styling
 .shadow-demo {
@@ -609,9 +581,10 @@ code, pre {
   font-size: 1rem;
   line-height: 1.1rem !important;
 }
+
 :not(pre) > code[class*="language-"] {
   padding: .1em .25em;
-  border: solid 1px rgba(51,51,51,0.12);
+  border: solid 1px $divider-color;
 }
 
 // Styles code blocks
@@ -619,21 +592,26 @@ pre[class*="language-"] {
   &:before {
     position: absolute;
     padding: 1px 5px;
-    background: hsl(30, 10%, 90%);
+    background: var(--background-color-level-16dp-solid);
     top: 0;
     left: 0;
     font-family: $font-stack;
     -webkit-font-smoothing: antialiased;
-    color: #555;
-    content:attr(class);
+    color: $font-color-medium;
+    content: attr(class);
     font-size: .9rem;
-    border: solid 1px rgba(51, 51, 51, 0.12);
+    border: solid 1px $divider-color;
     border-top: none;
     border-left: none;
   }
+
   padding: 25px 12px 7px 12px;
-  border: solid 1px rgba(51, 51, 51, 0.12);
-  background: rgba(246, 246, 246, .2);
+  border: solid 1px $divider-color;
+  background: var(--background-color-slight-emphasis);
+}
+
+.token.operator {
+  background: transparent;
 }
 
 pre[class*="language-"],
@@ -641,29 +619,34 @@ code[class*="language-"] {
   line-height: 1.3;
 }
 
+code[class*="language-"] {
+  color: $font-color-main;
+}
+
 // Styles one-liners
 :not(pre) > code[class*="language-"] {
-  background: rgba(246, 246, 246, .3);
+  background: var(--background-color-slight-emphasis);
+  color: $font-color-main
 }
 
 // copy code icons
 .copyMessage, .copyButton {
-  color: #757575; 
-  position: absolute; 
+  color: $font-color-medium;
+  position: absolute;
 }
 
 .copyMessage {
   font-size: 14px;
-	transition: all 0.2s ease-in;
-	opacity: 0;
-	right: 45px;
-	top: 15px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu,Cantarell, "Helvetica Neue", sans-serif;
+  transition: all 0.2s ease-in;
+  opacity: 0;
+  right: 45px;
+  top: 15px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
 .copyButton {
-  top: 10px; 
-  right: 10px; 
+  top: 10px;
+  right: 10px;
   cursor: pointer;
 }
 
@@ -677,20 +660,23 @@ code[class*="language-"] {
 }
 
 // Footer styling
-footer{
+footer {
   font-size: .9rem;
 }
+
 body.parallax-demo footer {
   margin-top: 0;
 }
+
 .docs-footer {
   margin-top: 40px;
   background-color: transparent;
   border-top: 1px solid $border-color;
   color: inherit;
 
-  .footer-copyright {
-    color: inherit;
+  .footer-copyright,
+  .footer-copyright a {
+    color: $font-color-medium;
     background-color: transparent;
   }
 }
@@ -698,6 +684,7 @@ body.parallax-demo footer {
 //About page styling
 .image-container {
   width: 100%;
+
   img {
     max-width: 100%;
   }
@@ -707,9 +694,9 @@ body.parallax-demo footer {
 // Mobile page styling
 
 .mobile-image {
- @media #{$small-and-down} {
-  max-width: 100%;
- }
+  @media #{$small-and-down} {
+    max-width: 100%;
+  }
 }
 
 // Waves page styling
@@ -723,16 +710,17 @@ body.parallax-demo footer {
       line-height: 37px;
     }
   }
+
   .btn {
     &:not(.waves-light) {
-    background-color: color("shades", "white");
-    color: #212121;
+      background-color: color("shades", "white");
+      color: #212121;
     }
   }
 }
 
 // Card Page styling
-.card-panel span, .card-content p{
+.card-panel span, .card-content p {
   -webkit-font-smoothing: antialiased;
 }
 
@@ -745,20 +733,22 @@ body.parallax-demo footer {
   position: relative;
   height: 100px;
 }
+
 #pushpin-demo-1 {
   display: block;
   height: inherit;
-  background-color: #ddd;
+  background-color: var(--slider-track-color);
 }
 
 // Valign Demo
 .valign-demo {
   height: 400px;
-  background-color: #ddd;
+  background-color: var(--slider-track-color);
 }
+
 .talign-demo {
   height: 100px;
-  background-color: #ddd;
+  background-color: var(--slider-track-color);
 }
 
 // Transitions demos
@@ -767,41 +757,6 @@ body.parallax-demo footer {
   opacity: 0;
 
 }
-
-// Transifex Styling
-
-#tx-live-lang-container {
-  background-color: #fcfcfc;
-  z-index: 999;
-
-  #tx-live-lang-picker {
-    background-color: #fcfcfc;
-
-    li {
-      color: $off-black;
-      &:hover{
-      color: inherit;
-      background-color: color("materialize-red", "lighten-5");
-      }
-    }
-
-  }
-
-  .txlive-langselector-toggle {
-    border-bottom: 2px solid color("materialize-red", "lighten-2");
-  }
-
-  .txlive-langselector-current {
-    color: $off-black;
-  }
-
-  .txlive-langselector-marker {
-    border-bottom: 4px solid rgba(0,0,0,.61);
-  }
-
-
-}
-
 
 // Thanks for Downloading
 #download-thanks {
@@ -828,12 +783,12 @@ body.parallax-demo footer {
     margin: 0 auto;
     display: inline-block;
     padding: 0 10px;
-    border-bottom: 1px solid rgba(0,0,0, .2);
+    border-bottom: 1px solid $divider-color;
 
     .caret {
       position: relative;
       top: 10px;
-      fill: rgba(0,0,0,.6);
+      fill: $button-flat-color;
     }
   }
 }
@@ -855,8 +810,6 @@ body.parallax-demo footer {
 
 // Search
 #nav-mobile li.search {
-  &:hover { background-color: #fff; }
-
   position: absolute;
   left: 0;
   right: 0;
@@ -870,7 +823,7 @@ body.parallax-demo footer {
       border-bottom: 1px solid $border-color;
     }
 
-    color: #777;
+    color: $font-color-medium;
     margin-top: -1px;
     border-top: 1px solid $border-color;
     transition: margin .25s ease;
@@ -881,7 +834,7 @@ body.parallax-demo footer {
         box-shadow: none;
       }
 
-      color: #777;
+      color: $font-color-medium;
       display: block;
       font-size: 16px;
       font-weight: 300;
@@ -905,12 +858,16 @@ body.parallax-demo footer {
   .search-results {
     margin: 0;
     border-top: 1px solid $border-color;
-    background-color: #fff;
+    background-color: $surface-color;
 
     a {
-      &:hover,
       &.focused {
-        background-color: #eee;
+        background-color: $surface-focus-color-opaque;
+        outline: none;
+      }
+
+      &:hover {
+        background-color: $surface-hover-color-opaque;
         outline: none;
       }
 
@@ -919,4 +876,17 @@ body.parallax-demo footer {
       display: block;
     }
   }
+}
+
+#nav-mobile {
+  li .new.badge {
+    background-color: var(--secondary-color);
+    color: var(--font-on-secondary-color-main);
+  }
+}
+
+#theme-switch {
+  position: relative;
+  bottom: -40px;
+  left: 30px;
 }

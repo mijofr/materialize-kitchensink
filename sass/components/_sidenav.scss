@@ -33,8 +33,12 @@
     float: none;
     line-height: $sidenav-line-height;
 
+    &:hover {
+      background-color: $button-flat-hover-background-color;
+    }
+
     &.active {
-      background-color: rgba(0, 0, 0, .05);
+      background-color: $button-flat-focus-background-color;
     }
   }
 
@@ -48,10 +52,6 @@
 
     &:not(.btn):not(.btn-flat):not(.btn-large):not(.btn-floating) {
       color: $sidenav-font-color;
-
-      &:hover {
-        background-color: rgba(0, 0, 0, .05);
-      }
     }
 
     &.btn, &.btn-large, &.btn-flat, &.btn-floating {
@@ -66,7 +66,7 @@
       line-height: $sidenav-line-height;
       margin: 0 ($sidenav-padding * 2) 0 0;
       width: $sidenav-item-height * 0.5;
-      color: rgba(0, 0, 0, .54);
+      color: $sidenav-icon-color;
     }
   }
 
@@ -82,7 +82,7 @@
 
     cursor: initial;
     pointer-events: none;
-    color: rgba(0, 0, 0, .54);
+    color: $sidenav-subheader-color;
     font-size: $sidenav-font-size;
     font-weight: 500;
     line-height: $sidenav-line-height;
@@ -194,8 +194,8 @@
 .sidenav.sidenav-fixed .collapsible-body > ul:not(.collapsible) > li.active {
   background-color: $primary-color;
 
-  a {
-    color: $sidenav-bg-color;
+  a:not(.btn) {
+    color: $font-on-primary-color-main;
   }
 }
 

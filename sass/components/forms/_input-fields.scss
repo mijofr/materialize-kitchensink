@@ -26,6 +26,7 @@ textarea.materialize-textarea {
 
   // General Styles
   background-color: transparent;
+  color: $input-color;
   border: none;
   border-bottom: $input-border;
   border-radius: 0;
@@ -224,7 +225,7 @@ textarea.materialize-textarea {
     min-height: 18px;
     display: block;
     font-size: 12px;
-    color: rgba(0,0,0,.54);
+    color: $font-color-medium;
   }
 
   // Prefix Icons
@@ -306,16 +307,8 @@ textarea.materialize-textarea {
   }
 
   &:focus:not(.browser-default) {
-    background-color: $input-background;
     border: 0;
     box-shadow: none;
-    color: #444;
-
-    & + label i,
-    & ~ .mdi-navigation-close,
-    & ~ .material-icons {
-      color: #444;
-    }
   }
 
   & + .label-icon {
@@ -372,7 +365,7 @@ textarea {
 /* Autocomplete */
 .autocomplete-content {
   li {
-    .highlight { color: #444; }
+    .highlight { color: $font-color-main; }
 
     img {
       height: $dropdown-item-height - 10;

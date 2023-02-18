@@ -52,7 +52,7 @@ input[type=range] + .thumb {
     border-radius: 50% 50% 50% 0;
 
     .value {
-      color: $input-background;
+      color: $font-on-primary-color-main;
       margin-left: -1px;
       margin-top: 8px;
       font-size: 10px;
@@ -63,7 +63,7 @@ input[type=range] + .thumb {
 // Shared
 @mixin range-track {
   height: $track-height;
-  background: #c2c0c2;
+  background: $range-track-color;
   border: none;
 }
 
@@ -100,8 +100,6 @@ input[type=range]::-webkit-slider-thumb {
 
 // FireFox
 input[type=range] {
-  /* fix for FF unable to apply focus style bug  */
-  border: 1px solid white;
 
   /*required for proper track sizing in FF*/
 }
@@ -144,12 +142,14 @@ input[type=range]::-ms-track {
   color: transparent;
 }
 
-input[type=range]::-ms-fill-lower {
-  background: #777;
+input[type=range]::-ms-fill-lower,
+input[type=range]::-moz-range-progress {
+  background: $primary-color;
 }
 
-input[type=range]::-ms-fill-upper {
-  background: #ddd;
+input[type=range]::-ms-fill-upper,
+input[type=range]::-moz-range-track {
+  background: $range-track-color;
 }
 
 input[type=range]::-ms-thumb {
