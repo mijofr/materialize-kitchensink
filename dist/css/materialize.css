@@ -1,9 +1,10 @@
 /*!
- * Materialize v1.1.0 (https://materializecss.github.io/materialize)
- * Copyright 2014-2021 Materialize
+ * Materialize v1.2.1 (https://materializecss.github.io/materialize)
+ * Copyright 2014-2022 Materialize
  * MIT License (https://raw.githubusercontent.com/materializecss/materialize/master/LICENSE)
  */
 @charset "UTF-8";
+
 .materialize-red {
   background-color: #e51c23 !important;
 }
@@ -2149,12 +2150,9 @@
  *    IE on Windows Phone and in iOS.
  */
 html {
-  line-height: 1.15;
-  /* 1 */
-  -ms-text-size-adjust: 100%;
-  /* 2 */
-  -webkit-text-size-adjust: 100%;
-  /* 2 */
+  line-height: 1.15; /* 1 */
+  -ms-text-size-adjust: 100%; /* 2 */
+  -webkit-text-size-adjust: 100%; /* 2 */
 }
 
 /* Sections
@@ -2195,8 +2193,7 @@ h1 {
  */
 figcaption,
 figure,
-main {
-  /* 1 */
+main { /* 1 */
   display: block;
 }
 
@@ -2213,12 +2210,9 @@ figure {
  */
 hr {
   -webkit-box-sizing: content-box;
-          box-sizing: content-box;
-  /* 1 */
-  height: 0;
-  /* 1 */
-  overflow: visible;
-  /* 2 */
+          box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
 }
 
 /**
@@ -2226,10 +2220,8 @@ hr {
  * 2. Correct the odd `em` font sizing in all browsers.
  */
 pre {
-  font-family: monospace, monospace;
-  /* 1 */
-  font-size: 1em;
-  /* 2 */
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
 }
 
 /* Text-level semantics
@@ -2239,10 +2231,8 @@ pre {
  * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
  */
 a {
-  background-color: transparent;
-  /* 1 */
-  -webkit-text-decoration-skip: objects;
-  /* 2 */
+  background-color: transparent; /* 1 */
+  -webkit-text-decoration-skip: objects; /* 2 */
 }
 
 /**
@@ -2250,14 +2240,11 @@ a {
  * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
  */
 abbr[title] {
-  border-bottom: none;
-  /* 1 */
-  text-decoration: underline;
-  /* 2 */
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
   -webkit-text-decoration: underline dotted;
      -moz-text-decoration: underline dotted;
-          text-decoration: underline dotted;
-  /* 2 */
+          text-decoration: underline dotted; /* 2 */
 }
 
 /**
@@ -2283,10 +2270,8 @@ strong {
 code,
 kbd,
 samp {
-  font-family: monospace, monospace;
-  /* 1 */
-  font-size: 1em;
-  /* 2 */
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
 }
 
 /**
@@ -2374,14 +2359,10 @@ input,
 optgroup,
 select,
 textarea {
-  font-family: sans-serif;
-  /* 1 */
-  font-size: 100%;
-  /* 1 */
-  line-height: 1.15;
-  /* 1 */
-  margin: 0;
-  /* 2 */
+  font-family: sans-serif; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0; /* 2 */
 }
 
 /**
@@ -2389,8 +2370,7 @@ textarea {
  * 1. Show the overflow in Edge.
  */
 button,
-input {
-  /* 1 */
+input { /* 1 */
   overflow: visible;
 }
 
@@ -2399,8 +2379,7 @@ input {
  * 1. Remove the inheritance of text transform in Firefox.
  */
 button,
-select {
-  /* 1 */
+select { /* 1 */
   text-transform: none;
 }
 
@@ -2413,8 +2392,7 @@ button,
 html [type=button],
 [type=reset],
 [type=submit] {
-  -webkit-appearance: button;
-  /* 2 */
+  -webkit-appearance: button; /* 2 */
 }
 
 /**
@@ -2453,18 +2431,12 @@ fieldset {
  */
 legend {
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  /* 1 */
-  color: inherit;
-  /* 2 */
-  display: table;
-  /* 1 */
-  max-width: 100%;
-  /* 1 */
-  padding: 0;
-  /* 3 */
-  white-space: normal;
-  /* 1 */
+          box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
 }
 
 /**
@@ -2472,10 +2444,8 @@ legend {
  * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.
  */
 progress {
-  display: inline-block;
-  /* 1 */
-  vertical-align: baseline;
-  /* 2 */
+  display: inline-block; /* 1 */
+  vertical-align: baseline; /* 2 */
 }
 
 /**
@@ -2492,10 +2462,8 @@ textarea {
 [type=checkbox],
 [type=radio] {
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  /* 1 */
-  padding: 0;
-  /* 2 */
+          box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
 }
 
 /**
@@ -2511,10 +2479,8 @@ textarea {
  * 2. Correct the outline style in Safari.
  */
 [type=search] {
-  -webkit-appearance: textfield;
-  /* 1 */
-  outline-offset: -2px;
-  /* 2 */
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
 }
 
 /**
@@ -2530,10 +2496,8 @@ textarea {
  * 2. Change font properties to `inherit` in Safari.
  */
 ::-webkit-file-upload-button {
-  -webkit-appearance: button;
-  /* 1 */
-  font: inherit;
-  /* 2 */
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
 }
 
 /* Interactive
@@ -2778,7 +2742,7 @@ video.responsive-video {
   font-size: 24px;
 }
 .breadcrumb:before {
-  content: "";
+  content: "\e5cc";
   color: rgba(255, 255, 255, 0.7);
   vertical-align: top;
   display: inline-block;
@@ -2962,6 +2926,9 @@ table {
 }
 table.striped tr {
   border-bottom: none;
+}
+table.striped > tbody > tr:nth-child(odd) {
+  background-color: var(--background-color-slight-emphasis);
 }
 table.highlight > tbody > tr {
   -webkit-transition: background-color 0.25s ease;
@@ -3164,6 +3131,7 @@ table.responsive-table td {
     right: -8%;
   }
 }
+
 /*******************
   Utility Classes
 *******************/
@@ -4327,12 +4295,10 @@ nav .input-field label.active i {
   nav.nav-extended .nav-wrapper {
     min-height: 64px;
   }
-
   nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
     height: 64px;
     line-height: 64px;
   }
-
   .navbar-fixed {
     height: 64px;
   }
@@ -4993,9 +4959,9 @@ small {
 }
 
 .btn,
-.btn-floating,
-.btn-large,
 .btn-small,
+.btn-large,
+.btn-floating,
 .btn-flat {
   font-size: 14px;
   outline: 0;
@@ -5344,10 +5310,10 @@ body.keyboard-focused .dropdown-content li:focus {
 
 /*!
  * Waves v0.7.6
- * http://fian.my.id/Waves
- *
- * Copyright 2014-2018 Alfiana E. Sibuea and other contributors
- * Released under the MIT license
+ * http://fian.my.id/Waves 
+ * 
+ * Copyright 2014-2018 Alfiana E. Sibuea and other contributors 
+ * Released under the MIT license 
  * https://github.com/fians/Waves/blob/master/LICENSE */
 .waves-effect {
   position: relative;
@@ -5855,6 +5821,7 @@ input[type=time]:not(.browser-default),
 input[type=date]:not(.browser-default),
 input[type=datetime]:not(.browser-default),
 input[type=datetime-local]:not(.browser-default),
+input[type=month]:not(.browser-default),
 input[type=tel]:not(.browser-default),
 input[type=number]:not(.browser-default),
 input[type=search]:not(.browser-default),
@@ -5895,6 +5862,8 @@ input[type=datetime]:not(.browser-default):disabled,
 input[type=datetime]:not(.browser-default)[readonly=readonly],
 input[type=datetime-local]:not(.browser-default):disabled,
 input[type=datetime-local]:not(.browser-default)[readonly=readonly],
+input[type=month]:not(.browser-default):disabled,
+input[type=month]:not(.browser-default)[readonly=readonly],
 input[type=tel]:not(.browser-default):disabled,
 input[type=tel]:not(.browser-default)[readonly=readonly],
 input[type=number]:not(.browser-default):disabled,
@@ -5923,6 +5892,8 @@ input[type=datetime]:not(.browser-default):disabled + label,
 input[type=datetime]:not(.browser-default)[readonly=readonly] + label,
 input[type=datetime-local]:not(.browser-default):disabled + label,
 input[type=datetime-local]:not(.browser-default)[readonly=readonly] + label,
+input[type=month]:not(.browser-default):disabled + label,
+input[type=month]:not(.browser-default)[readonly=readonly] + label,
 input[type=tel]:not(.browser-default):disabled + label,
 input[type=tel]:not(.browser-default)[readonly=readonly] + label,
 input[type=number]:not(.browser-default):disabled + label,
@@ -5942,6 +5913,7 @@ input[type=time]:not(.browser-default):focus:not([readonly]),
 input[type=date]:not(.browser-default):focus:not([readonly]),
 input[type=datetime]:not(.browser-default):focus:not([readonly]),
 input[type=datetime-local]:not(.browser-default):focus:not([readonly]),
+input[type=month]:not(.browser-default):focus:not([readonly]),
 input[type=tel]:not(.browser-default):focus:not([readonly]),
 input[type=number]:not(.browser-default):focus:not([readonly]),
 input[type=search]:not(.browser-default):focus:not([readonly]),
@@ -5959,6 +5931,7 @@ input[type=time]:not(.browser-default):focus:not([readonly]) + label,
 input[type=date]:not(.browser-default):focus:not([readonly]) + label,
 input[type=datetime]:not(.browser-default):focus:not([readonly]) + label,
 input[type=datetime-local]:not(.browser-default):focus:not([readonly]) + label,
+input[type=month]:not(.browser-default):focus:not([readonly]) + label,
 input[type=tel]:not(.browser-default):focus:not([readonly]) + label,
 input[type=number]:not(.browser-default):focus:not([readonly]) + label,
 input[type=search]:not(.browser-default):focus:not([readonly]) + label,
@@ -5974,6 +5947,7 @@ input[type=time]:not(.browser-default):focus.valid ~ label,
 input[type=date]:not(.browser-default):focus.valid ~ label,
 input[type=datetime]:not(.browser-default):focus.valid ~ label,
 input[type=datetime-local]:not(.browser-default):focus.valid ~ label,
+input[type=month]:not(.browser-default):focus.valid ~ label,
 input[type=tel]:not(.browser-default):focus.valid ~ label,
 input[type=number]:not(.browser-default):focus.valid ~ label,
 input[type=search]:not(.browser-default):focus.valid ~ label,
@@ -5989,6 +5963,7 @@ input[type=time]:not(.browser-default):focus.invalid ~ label,
 input[type=date]:not(.browser-default):focus.invalid ~ label,
 input[type=datetime]:not(.browser-default):focus.invalid ~ label,
 input[type=datetime-local]:not(.browser-default):focus.invalid ~ label,
+input[type=month]:not(.browser-default):focus.invalid ~ label,
 input[type=tel]:not(.browser-default):focus.invalid ~ label,
 input[type=number]:not(.browser-default):focus.invalid ~ label,
 input[type=search]:not(.browser-default):focus.invalid ~ label,
@@ -6004,6 +5979,7 @@ input[type=time]:not(.browser-default).validate + label,
 input[type=date]:not(.browser-default).validate + label,
 input[type=datetime]:not(.browser-default).validate + label,
 input[type=datetime-local]:not(.browser-default).validate + label,
+input[type=month]:not(.browser-default).validate + label,
 input[type=tel]:not(.browser-default).validate + label,
 input[type=number]:not(.browser-default).validate + label,
 input[type=search]:not(.browser-default).validate + label,
@@ -6028,6 +6004,8 @@ input[type=datetime]:not(.browser-default).valid,
 input[type=datetime]:not(.browser-default):focus.valid,
 input[type=datetime-local]:not(.browser-default).valid,
 input[type=datetime-local]:not(.browser-default):focus.valid,
+input[type=month]:not(.browser-default).valid,
+input[type=month]:not(.browser-default):focus.valid,
 input[type=tel]:not(.browser-default).valid,
 input[type=tel]:not(.browser-default):focus.valid,
 input[type=number]:not(.browser-default).valid,
@@ -6058,6 +6036,8 @@ input[type=datetime]:not(.browser-default).invalid,
 input[type=datetime]:not(.browser-default):focus.invalid,
 input[type=datetime-local]:not(.browser-default).invalid,
 input[type=datetime-local]:not(.browser-default):focus.invalid,
+input[type=month]:not(.browser-default).invalid,
+input[type=month]:not(.browser-default):focus.invalid,
 input[type=tel]:not(.browser-default).invalid,
 input[type=tel]:not(.browser-default):focus.invalid,
 input[type=number]:not(.browser-default).invalid,
@@ -6104,6 +6084,10 @@ input[type=datetime-local]:not(.browser-default).valid ~ .helper-text[data-succe
 input[type=datetime-local]:not(.browser-default):focus.valid ~ .helper-text[data-success],
 input[type=datetime-local]:not(.browser-default).invalid ~ .helper-text[data-error],
 input[type=datetime-local]:not(.browser-default):focus.invalid ~ .helper-text[data-error],
+input[type=month]:not(.browser-default).valid ~ .helper-text[data-success],
+input[type=month]:not(.browser-default):focus.valid ~ .helper-text[data-success],
+input[type=month]:not(.browser-default).invalid ~ .helper-text[data-error],
+input[type=month]:not(.browser-default):focus.invalid ~ .helper-text[data-error],
 input[type=tel]:not(.browser-default).valid ~ .helper-text[data-success],
 input[type=tel]:not(.browser-default):focus.valid ~ .helper-text[data-success],
 input[type=tel]:not(.browser-default).invalid ~ .helper-text[data-error],
@@ -6145,6 +6129,8 @@ input[type=datetime]:not(.browser-default).valid ~ .helper-text:after,
 input[type=datetime]:not(.browser-default):focus.valid ~ .helper-text:after,
 input[type=datetime-local]:not(.browser-default).valid ~ .helper-text:after,
 input[type=datetime-local]:not(.browser-default):focus.valid ~ .helper-text:after,
+input[type=month]:not(.browser-default).valid ~ .helper-text:after,
+input[type=month]:not(.browser-default):focus.valid ~ .helper-text:after,
 input[type=tel]:not(.browser-default).valid ~ .helper-text:after,
 input[type=tel]:not(.browser-default):focus.valid ~ .helper-text:after,
 input[type=number]:not(.browser-default).valid ~ .helper-text:after,
@@ -6174,6 +6160,8 @@ input[type=datetime]:not(.browser-default).invalid ~ .helper-text:after,
 input[type=datetime]:not(.browser-default):focus.invalid ~ .helper-text:after,
 input[type=datetime-local]:not(.browser-default).invalid ~ .helper-text:after,
 input[type=datetime-local]:not(.browser-default):focus.invalid ~ .helper-text:after,
+input[type=month]:not(.browser-default).invalid ~ .helper-text:after,
+input[type=month]:not(.browser-default):focus.invalid ~ .helper-text:after,
 input[type=tel]:not(.browser-default).invalid ~ .helper-text:after,
 input[type=tel]:not(.browser-default):focus.invalid ~ .helper-text:after,
 input[type=number]:not(.browser-default).invalid ~ .helper-text:after,
@@ -6195,6 +6183,7 @@ input[type=time]:not(.browser-default) + label:after,
 input[type=date]:not(.browser-default) + label:after,
 input[type=datetime]:not(.browser-default) + label:after,
 input[type=datetime-local]:not(.browser-default) + label:after,
+input[type=month]:not(.browser-default) + label:after,
 input[type=tel]:not(.browser-default) + label:after,
 input[type=number]:not(.browser-default) + label:after,
 input[type=search]:not(.browser-default) + label:after,
@@ -6254,6 +6243,9 @@ textarea.materialize-textarea + label:after {
           transform: translateY(-14px) scale(0.8);
   -webkit-transform-origin: 0 0;
           transform-origin: 0 0;
+}
+.input-field > label:not(.active) + input[type=date], .input-field > label:not(.active) + input[type=datetime-local], .input-field > label:not(.active) + input[type=month], .input-field > label:not(.active) + input[type=time] {
+  color: transparent;
 }
 .input-field > input[type]:-webkit-autofill:not(.browser-default):not([type=search]) + label, .input-field > input[type=date]:not(.browser-default) + label, .input-field > input[type=time]:not(.browser-default) + label {
   -webkit-transform: translateY(-14px) scale(0.8);
@@ -6380,10 +6372,8 @@ textarea {
 }
 textarea.materialize-textarea {
   line-height: normal;
-  overflow-y: hidden;
-  /* prevents scroll bar flash */
-  padding: 0.8rem 0 0.8rem 0;
-  /* prevents text jump on Enter keypress */
+  overflow-y: hidden; /* prevents scroll bar flash */
+  padding: 0.8rem 0 0.8rem 0; /* prevents text jump on Enter keypress */
   resize: none;
   min-height: 3rem;
   -webkit-box-sizing: border-box;
@@ -6394,10 +6384,8 @@ textarea.materialize-textarea {
   visibility: hidden;
   white-space: pre-wrap;
   word-wrap: break-word;
-  overflow-wrap: break-word;
-  /* future version of deprecated 'word-wrap' */
-  padding-top: 1.2rem;
-  /* prevents text jump on Enter keypress */
+  overflow-wrap: break-word; /* future version of deprecated 'word-wrap' */
+  padding-top: 1.2rem; /* prevents text jump on Enter keypress */
   position: absolute;
   top: 0;
   z-index: -1;
@@ -7524,78 +7512,62 @@ input[type=range]::-ms-thumb {
 @-webkit-keyframes fill-unfill-rotate {
   12.5% {
     -webkit-transform: rotate(135deg);
-  }
-  /* 0.5 * ARCSIZE */
+  } /* 0.5 * ARCSIZE */
   25% {
     -webkit-transform: rotate(270deg);
-  }
-  /* 1   * ARCSIZE */
+  } /* 1   * ARCSIZE */
   37.5% {
     -webkit-transform: rotate(405deg);
-  }
-  /* 1.5 * ARCSIZE */
+  } /* 1.5 * ARCSIZE */
   50% {
     -webkit-transform: rotate(540deg);
-  }
-  /* 2   * ARCSIZE */
+  } /* 2   * ARCSIZE */
   62.5% {
     -webkit-transform: rotate(675deg);
-  }
-  /* 2.5 * ARCSIZE */
+  } /* 2.5 * ARCSIZE */
   75% {
     -webkit-transform: rotate(810deg);
-  }
-  /* 3   * ARCSIZE */
+  } /* 3   * ARCSIZE */
   87.5% {
     -webkit-transform: rotate(945deg);
-  }
-  /* 3.5 * ARCSIZE */
+  } /* 3.5 * ARCSIZE */
   to {
     -webkit-transform: rotate(1080deg);
-  }
-  /* 4   * ARCSIZE */
+  } /* 4   * ARCSIZE */
 }
 @keyframes fill-unfill-rotate {
   12.5% {
     -webkit-transform: rotate(135deg);
             transform: rotate(135deg);
-  }
-  /* 0.5 * ARCSIZE */
+  } /* 0.5 * ARCSIZE */
   25% {
     -webkit-transform: rotate(270deg);
             transform: rotate(270deg);
-  }
-  /* 1   * ARCSIZE */
+  } /* 1   * ARCSIZE */
   37.5% {
     -webkit-transform: rotate(405deg);
             transform: rotate(405deg);
-  }
-  /* 1.5 * ARCSIZE */
+  } /* 1.5 * ARCSIZE */
   50% {
     -webkit-transform: rotate(540deg);
             transform: rotate(540deg);
-  }
-  /* 2   * ARCSIZE */
+  } /* 2   * ARCSIZE */
   62.5% {
     -webkit-transform: rotate(675deg);
             transform: rotate(675deg);
-  }
-  /* 2.5 * ARCSIZE */
+  } /* 2.5 * ARCSIZE */
   75% {
     -webkit-transform: rotate(810deg);
             transform: rotate(810deg);
-  }
-  /* 3   * ARCSIZE */
+  } /* 3   * ARCSIZE */
   87.5% {
     -webkit-transform: rotate(945deg);
             transform: rotate(945deg);
-  }
-  /* 3.5 * ARCSIZE */
+  } /* 3.5 * ARCSIZE */
   to {
     -webkit-transform: rotate(1080deg);
             transform: rotate(1080deg);
-  }
-  /* 4   * ARCSIZE */
+  } /* 4   * ARCSIZE */
 }
 @-webkit-keyframes blue-fade-in-out {
   from {
@@ -7739,6 +7711,7 @@ input[type=range]::-ms-thumb {
     opacity: 0;
   }
 }
+
 /**
  * Patch the gap that appear between the two adjacent div.circle-clipper while the
  * spinner is rotating (appears on Chrome 38, Safari 7.1, and IE 11).
@@ -7769,8 +7742,7 @@ input[type=range]::-ms-thumb {
 .circle-clipper .circle {
   width: 200%;
   height: 100%;
-  border-width: 3px;
-  /* STROKEWIDTH */
+  border-width: 3px; /* STROKEWIDTH */
   border-style: solid;
   border-color: inherit;
   border-bottom-color: transparent !important;
@@ -8072,6 +8044,7 @@ input[type=range]::-ms-thumb {
   visibility: visible;
   -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
           animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+
   -webkit-transition: opacity 0.3s, visibility 0s 1s, -webkit-transform 0.3s;
   transition: opacity 0.3s, visibility 0s 1s, -webkit-transform 0.3s;
   transition: opacity 0.3s, transform 0.3s, visibility 0s 1s;
@@ -8385,7 +8358,6 @@ input[type=range]::-ms-thumb {
   .datepicker-modal {
     max-width: 625px;
   }
-
   .datepicker-container.modal-content {
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
@@ -8393,20 +8365,17 @@ input[type=range]::-ms-thumb {
         -ms-flex-direction: row;
             flex-direction: row;
   }
-
   .datepicker-date-display {
     -webkit-box-flex: 0;
     -webkit-flex: 0 1 270px;
         -ms-flex: 0 1 270px;
             flex: 0 1 270px;
   }
-
   .datepicker-controls,
 .datepicker-table,
 .datepicker-footer {
     width: 320px;
   }
-
   .datepicker-day-button {
     line-height: 44px;
   }
@@ -8431,11 +8400,12 @@ input[type=range]::-ms-thumb {
 }
 
 .text-primary {
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 /* Clock Digital Display */
 .timepicker-digital-display {
+  width: 200px;
   -webkit-box-flex: 1;
   -webkit-flex: 1 auto;
       -ms-flex: 1 auto;
@@ -8457,19 +8427,33 @@ input[type=range]::-ms-thumb {
       -ms-user-select: none;
           user-select: none;
 }
+.timepicker-text-container input[type=text] {
+  height: 4rem;
+  color: rgba(255, 255, 255, 0.6);
+  border-bottom: 0px;
+  font-size: 4rem;
+  direction: ltr;
+}
 
-.timepicker-span-hours,
-.timepicker-span-minutes,
+.timepicker-input-hours,
+.timepicker-input-minutes,
 .timepicker-span-am-pm div {
   cursor: pointer;
 }
 
-.timepicker-span-hours {
+input[type=text].timepicker-input-hours {
+  text-align: right;
+  width: 28%;
   margin-right: 3px;
 }
 
-.timepicker-span-minutes {
+input[type=text].timepicker-input-minutes {
+  width: 33%;
   margin-left: 3px;
+}
+
+input[type=text].text-primary {
+  color: rgb(255, 255, 255);
 }
 
 .timepicker-display-am-pm {
@@ -8609,7 +8593,6 @@ input[type=range]::-ms-thumb {
   .timepicker-modal {
     max-width: 600px;
   }
-
   .timepicker-container.modal-content {
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
@@ -8617,11 +8600,9 @@ input[type=range]::-ms-thumb {
         -ms-flex-direction: row;
             flex-direction: row;
   }
-
   .timepicker-text-container {
     top: 32%;
   }
-
   .timepicker-display-am-pm {
     position: relative;
     right: auto;

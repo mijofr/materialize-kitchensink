@@ -37,6 +37,7 @@ describe("Select Plugin", function () {
         setTimeout(function() {
           expect(normalDropdown).toBeHidden('Should be hidden after choosing item.');
           expect(normalInput.value).toEqual(firstOption.innerText, 'Value should equal chosen option.');
+          expect(firstOption.getAttribute('aria-selected')).toBe('true', 'Item be selected to assistive technologies.');
           done();
         }, 400);
       }, 400);
@@ -48,6 +49,7 @@ describe("Select Plugin", function () {
 
       let firstOption = browserSelect.querySelector('option[selected]');
       expect(normalInput.value).toEqual(firstOption.innerText, 'Value should be equal to preselected option.');
+      expect(firstOption.getAttribute("aria-selected"), "First item should be selected to assistive technologies.")
     });
 
     it("should not initialize if browser default", function () {
@@ -85,6 +87,10 @@ describe("Select Plugin", function () {
       selectInstance = M.FormSelect.getInstance(browserSelect);
     });
 
+    it("Dropdown should allow multiple selections to assistive technologies", function(){
+      expect(selectInstance.dropdownOptions.getAttribute("aria-multiselectable")).toBe("true");
+    });
+
     it("should open dropdown and select multiple options", function(done) {
       multipleInput = selectInstance.wrapper.querySelector('input.select-dropdown');
       multipleDropdown = selectInstance.wrapper.querySelector('ul.select-dropdown');
@@ -106,12 +112,19 @@ describe("Select Plugin", function () {
           firstOption = multipleDropdown.querySelector('li:not(.disabled)');
           let secondOption = multipleDropdown.querySelectorAll('li:not(.disabled)')[1];
           let thirdOption = multipleDropdown.querySelectorAll('li:not(.disabled)')[2];
-          let selectedVals =
-            Array.prototype.slice.call(browserSelect.querySelectorAll('option:checked'), 0).map(function(v) { 
+          let selectedVals = Array.prototype.slice.call(browserSelect.querySelectorAll('option:checked'), 0).map(function(v) { 
             return v.value; 
+          });
+          let selectedAria = Array.prototype.slice.call(multipleDropdown.querySelectorAll('li.selected'), 0).map(function(v) { 
+            return v.getAttribute("aria-selected"); 
+          });
+          let unselectedAria = Array.prototype.slice.call(multipleDropdown.querySelectorAll('li:not(.selected)'), 0).map(function(v) { 
+            return v.getAttribute("aria-selected"); 
           });
           expect(multipleDropdown).toBeHidden('Should be hidden after choosing item.');
           expect(selectedVals).toEqual(['1', '2', '3'], 'Actual select should have correct selected values.');
+          expect(selectedAria).toEqual(['true', 'true', 'true'], 'Selected values should be checked to assistive technologies.');
+          expect(unselectedAria).toEqual(['false'], 'Unselected values should be checked to assistive technologies.');
           expect(multipleInput.value).toEqual(firstOption.innerText + ', ' + secondOption.innerText + ', ' + thirdOption.innerText, 'Value should equal chosen multiple options.');
           done();
         }, 400);
@@ -165,6 +178,22 @@ describe("Select Plugin", function () {
     beforeEach(function() {
       browserSelect = document.querySelector('select.optgroup');
       selectInstance = M.FormSelect.getInstance(browserSelect);
+    });
+
+    it("Option groups should behave as such for assistive technologies", function(){
+      optInput = selectInstance.wrapper.querySelector('input.select-dropdown');
+      optDropdown = selectInstance.wrapper.querySelector('ul.select-dropdown');
+
+      let optgroups = optDropdown.querySelectorAll('li.optgroup');
+      let browerSelectOptgroups = browserSelect.querySelectorAll('optgroup');
+
+      for (let i = 0; i < browerSelectOptgroups.length; i++) {
+        expect(optgroups[i].getAttribute("role")).toBe("group", "Should behave as group.");
+      }
+      for (let i = 0; i < browerSelectOptgroups.length; i++) {
+        expect(browerSelectOptgroups[i].children.length).toBe(optgroups[i].getAttribute("aria-owns").split(" ").length,
+          "Browser option groups and custom groups must have the same ammount of children for assistive technologies");
+      }
     });
 
     it("should open dropdown and select options", function(done) {

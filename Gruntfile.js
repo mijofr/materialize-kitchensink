@@ -35,15 +35,13 @@ module.exports = function(grunt) {
   ];
 
   // configure the tasks
-  let config = {
+  const config = {
     //  Jasmine
     jasmine: {
       components: {
         src: ['bin/materialize.js'],
         options: {
-          vendor: [
-            'node_modules/jquery/dist/jquery.min.js'
-          ],
+          vendor: ['node_modules/jquery/dist/jquery.min.js'],
           styles: 'bin/materialize.css',
           specs: 'tests/spec/**/*Spec.js',
           helpers: 'tests/spec/helper.js',
@@ -51,20 +49,19 @@ module.exports = function(grunt) {
           version: '3.8.0',
           page: {
             viewportSize: {
-                width: 1400,
-                height: 735
+              width: 1400,
+              height: 735
             }
           },
           sandboxArgs: {
             args: ['--headless', '--no-sandbox']
-          },
+          }
         }
       }
     },
 
     //  Sass
     sass: {
-
       // Global options
       options: {
         implementation: sass
@@ -372,61 +369,15 @@ module.exports = function(grunt) {
             debug: false
           }
         },
-        files: {
-          'docs/index.html': 'pug/index.pug',
-          'docs/icons.html': 'pug/icons.pug',
-          'docs/about.html': 'pug/about.pug',
-          'docs/sass.html': 'pug/sass.pug',
-          'docs/getting-started.html': 'pug/getting-started.pug',
-          'docs/mobile.html': 'pug/mobile.pug',
-          'docs/parallax.html': 'pug/parallax.pug',
-          'docs/parallax-demo.html': 'pug/parallax-demo.pug',
-          'docs/typography.html': 'pug/typography.pug',
-          'docs/color.html': 'pug/color.pug',
-          'docs/shadow.html': 'pug/shadow.pug',
-          'docs/grid.html': 'pug/grid.pug',
-          'docs/media-css.html': 'pug/media-css.pug',
-          'docs/table.html': 'pug/table.pug',
-          'docs/helpers.html': 'pug/helpers.pug',
-          'docs/buttons.html': 'pug/buttons.pug',
-          'docs/navbar.html': 'pug/navbar.pug',
-          'docs/cards.html': 'pug/cards.pug',
-          'docs/preloader.html': 'pug/preloader.pug',
-          'docs/collections.html': 'pug/collections.pug',
-          'docs/badges.html': 'pug/badges.pug',
-          'docs/footer.html': 'pug/footer.pug',
-          'docs/modals.html': 'pug/modals.pug',
-          'docs/dropdown.html': 'pug/dropdown.pug',
-          'docs/tabs.html': 'pug/tabs.pug',
-          'docs/toasts.html': 'pug/toasts.pug',
-          'docs/tooltips.html': 'pug/tooltips.pug',
-          'docs/sidenav.html': 'pug/sidenav.pug',
-          'docs/pushpin.html': 'pug/pushpin.pug',
-          'docs/waves.html': 'pug/waves.pug',
-          'docs/media.html': 'pug/media.pug',
-          'docs/collapsible.html': 'pug/collapsible.pug',
-          'docs/scrollspy.html': 'pug/scrollspy.pug',
-          'docs/fullscreen-slider-demo.html': 'pug/fullscreen-slider-demo.pug',
-          'docs/pagination.html': 'pug/pagination.pug',
-          'docs/breadcrumbs.html': 'pug/breadcrumbs.pug',
-          'docs/carousel.html': 'pug/carousel.pug',
-          'docs/feature-discovery.html': 'pug/feature-discovery.pug',
-          'docs/pulse.html': 'pug/pulse.pug',
-          'docs/pushpin-demo.html': 'pug/pushpin-demo.pug',
-          'docs/css-transitions.html': 'pug/css-transitions.pug',
-          'docs/404.html': 'pug/404.pug',
-          'docs/autocomplete.html': 'pug/autocomplete.pug',
-          'docs/checkboxes.html': 'pug/checkboxes.pug',
-          'docs/chips.html': 'pug/chips.pug',
-          'docs/pickers.html': 'pug/pickers.pug',
-          'docs/radio-buttons.html': 'pug/radio-buttons.pug',
-          'docs/range.html': 'pug/range.pug',
-          'docs/select.html': 'pug/select.pug',
-          'docs/switches.html': 'pug/switches.pug',
-          'docs/text-inputs.html': 'pug/text-inputs.pug',
-          'docs/floating-action-button.html': 'pug/floating-action-button.pug',
-          'docs/auto-init.html': 'pug/auto-init.pug'
-        }
+        files: [{
+          expand: true,
+          cwd: 'pug/',
+          src: ['*.pug'],
+          dest: 'docs/',
+          rename: function (dest, src) {
+            return dest + src.split('.', 2)[0] + '.html';
+          }
+        }]
       }
     },
 
@@ -536,7 +487,7 @@ module.exports = function(grunt) {
     // Replace text to update the version string
     replace: {
       version: {
-        src: ['bower.json', 'package.js', 'pug/**/*.html'],
+        src: ['bower.json', 'package.js', 'pug/**/*.html', 'pug/_navbar.pug', 'js/global.js'],
         overwrite: true,
         replacements: [
           {
@@ -575,7 +526,9 @@ module.exports = function(grunt) {
           banner:
             '/*!\n * Materialize v' +
             grunt.option('newver') +
-            ' (https://materializecss.github.io/materialize)\n * Copyright 2014-2021 Materialize\n * MIT License (https://raw.githubusercontent.com/materializecss/materialize/master/LICENSE)\n */',
+            ' (https://materializecss.github.io/materialize)\n * Copyright 2014-' +
+            new Date().getFullYear() +
+            ' Materialize\n * MIT License (https://raw.githubusercontent.com/materializecss/materialize/master/LICENSE)\n */',
           linebreak: true
         },
         files: {
@@ -608,10 +561,13 @@ module.exports = function(grunt) {
           port: 9001,
           protocol: 'http',
           middleware: function(connect, options, middlewares) {
-            middlewares.unshift(function(req, res, next){
+            middlewares.unshift(function(req, res, next) {
               res.setHeader('Access-Control-Allow-Origin', '*');
               res.setHeader('Access-Control-Allow-Credentials', true);
-              res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+              res.setHeader(
+                'Access-Control-Allow-Headers',
+                'Origin, X-Requested-With, Content-Type, Accept'
+              );
               res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
               next();
             });
@@ -622,14 +578,13 @@ module.exports = function(grunt) {
     },
 
     copy: {
-      docs: {
-        files: [
-          {src: 'bin/materialize.js', dest: 'docs/js/materialize.js'},
-          {src: 'templates/**', dest: 'docs/'}
-        ]
+      docs_js: {
+        files: [{ src: 'bin/materialize.js', dest: 'docs/js/materialize.js' }]
+      },
+      docs_templates: {
+        files: [{ src: 'templates/**', dest: 'docs/' }]
       }
     }
-
   };
 
   grunt.initConfig(config);
@@ -682,7 +637,13 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('pug_compile', ['pug', 'notify:pug_compile']);
-  grunt.registerTask('js_compile', ['concat:temp', 'configureBabel', 'babel:bin', 'clean:temp']);
+  grunt.registerTask('js_compile', [
+    'concat:temp',
+    'configureBabel',
+    'babel:bin',
+    'clean:temp',
+    'copy:docs_js'
+  ]);
   grunt.registerTask('sass_compile', [
     'sass:gh',
     'sass:bin',
@@ -692,9 +653,9 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('server', ['browserSync', 'notify:server']);
   grunt.registerTask('monitor', ['concurrent:monitor']);
-  grunt.registerTask('travis', ['js_compile', 'sass_compile', 'connect', 'jasmine']);
+  grunt.registerTask('test', ['js_compile', 'sass_compile', 'connect', 'jasmine']);
   grunt.registerTask('jas_test', ['connect', 'jasmine']);
-  grunt.registerTask('test_repeat', function(){
+  grunt.registerTask('test_repeat', function() {
     const tasks = ['connect'];
     const n = 30;
     for (let i = 0; i < n; i++) {
@@ -702,7 +663,14 @@ module.exports = function(grunt) {
     }
 
     grunt.task.run(tasks);
-
   });
-  grunt.registerTask('docs', ['js_compile', 'copy:docs', 'sass:gh',  'postcss:gh', 'pug', 'replace:docs']);
+  grunt.registerTask('docs', [
+    'js_compile',
+    'copy:docs_js',
+    'copy:docs_templates',
+    'sass:gh',
+    'postcss:gh',
+    'pug',
+    'replace:docs'
+  ]);
 };

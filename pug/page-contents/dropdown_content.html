@@ -169,6 +169,71 @@
             </tr>
           </tbody>
         </table>
+        <div id="options-examples">
+          <h4>Examples</h4>
+          
+          <!-- Dropdown Trigger 1 -->
+          <a id="left" class='dropdown-trigger btn' href='#' data-target='dropdown1' style='width: 200px'>Left DropDown!</a>
+
+          <!-- Dropdown Structure 1 -->
+          <ul id='dropdown1' class='dropdown-content'>
+            <li><a href="#!">one</a></li>
+            <li><a href="#!">two</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="#!">three</a></li>
+            <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
+            <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
+          </ul>
+
+          <!-- Dropdown Trigger 2 -->
+          <a id="right" class='dropdown-trigger btn' href='#' data-target='dropdown2' style='width: 200px'>Right DropDown!</a>
+
+          <!-- Dropdown Structure 2 -->
+          <ul id='dropdown2' class='dropdown-content'>
+            <li><a href="#!">one</a></li>
+            <li><a href="#!">two</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="#!">three</a></li>
+            <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
+            <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
+          </ul>
+
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.dropdown-trigger')[0];
+            var instances = M.Dropdown.init(elems, {
+              // the dropdown is aligned to left
+              alignment: 'left',
+              // enabled for example to be visible
+              constrainWidth: false,
+            });
+          });
+
+          document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.dropdown-trigger')[1];
+            var instances = M.Dropdown.init(elems, {
+              // the dropdown is aligned to left
+              alignment: 'right',
+              // enabled for example to be visible
+              constrainWidth: false,
+            });
+          });
+
+          </script>
+          
+          <code class="language-javascript col s12 copiedText">
+            document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.dropdown-trigger')[0];
+            var instances = M.Dropdown.init(elems, {
+              // the dropdown is aligned to left
+              alignment: 'left',
+              // enabled for example to be visible
+              constrainWidth: false,
+            });
+          });
+          </code>
+          
+        </div>
       </div>
 
       <div id="methods" class="scrollspy section">

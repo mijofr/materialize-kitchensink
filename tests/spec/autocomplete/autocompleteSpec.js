@@ -5,16 +5,11 @@ describe("Autocomplete Plugin", function () {
       M.Autocomplete.init(
         document.querySelectorAll('input.autocomplete'),
         {
-        data: [
-          {id: 12, text: "Apple"},
-          {id: 13, text: "Microsoft"},
-          {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
-        ]
-        // {
-        //   "Apple": null,
-        //   "Microsoft": null,
-        //   "Google": 'http://placehold.it/250x250'
-        // }
+          data: [
+            {id: 12, text: "Apple"},
+            {id: 13, text: "Microsoft"},
+            {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+          ]
       });
       done();
     }, 400);

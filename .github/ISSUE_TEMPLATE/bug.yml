@@ -1,0 +1,72 @@
+name: Bug Report
+description: Report an issue with Materialize.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Before submitting...
+      options:
+        - label: I have searched for [duplicate or closed issues](https://github.com/materializecss/materialize/issues?utf8=%E2%9C%93&q=is%3Aissue).
+          required: true
+        - label: I have read the [CONTRIBUTING document](https://github.com/materializecss/materialize/blob/master/CONTRIBUTING.md) and my issue is following the guidelines. 
+          required: true
+        - label: I have read the template completely before filling it in.
+          required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: A short summarry of the issue + how has this issue affected you? What are you trying to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Behavior
+      description: Tell us in detail about what the bug does.
+      placeholder: What happened?
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Tell us in detail what should happen instead.
+      placeholder: Instead of the previous behavior, the application should do/display...
+    validations:
+      required: false
+  - type: textarea
+    id: posible-solutions
+    attributes:
+      label: Possible Solutions or Causes
+      description: Not obligatory, but suggest a fix/reason for the bug, or ideas on how to implement the addition or change.
+      placeholder: Eg. "I think this bug is due do [that piece of code] in the file [xxx]" or "I think we should do [something] to solve this issue."
+    validations:
+      required: false
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: |
+        If relevant, give a set of steps to reproduce this bug.  
+        We encourage you a live example that demonstrates the bug (you may want to use the [following jsfiddle template](https://jsfiddle.net/1es0zhaf/))
+      placeholder: |
+        1. Open this link 
+        2. Click there
+        3. This appears, but...
+    validations:
+      required: false
+  - type: textarea
+    id: environment
+    attributes:
+      label: Your Environment
+      description: Include as many relevant details about the environment you experienced the bug in.
+      value: |
+        * Version used:
+        * Browser Name and version:
+        * Operating System and version (desktop or mobile):
+        * Additional information you want to tell us:
+    validations:
+      required: true
