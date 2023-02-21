@@ -220,7 +220,6 @@
       secondaryPlaceholder: '+Tag'
     });
     $('.chips-autocomplete').chips({
-      autocompleteOnly: true,
       autocompleteOptions: {
         data: [
           {id: 12, text: "Apple"},
