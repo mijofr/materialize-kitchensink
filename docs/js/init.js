@@ -182,7 +182,21 @@
     $('.sidenav').sidenav();
     $('.tap-target').tapTarget();
     $('input.autocomplete').autocomplete({
-      data: { Apple: null, Microsoft: null, Google: 'https://via.placeholder.com/250x250' }
+      minLength: 0,
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ]
+    });
+    $('input.autocomplete-multiple').autocomplete({
+      isMultiSelect: true,
+      minLength: 0,
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ]
     });
     $('input[data-length], textarea[data-length]').characterCounter();
 
@@ -196,15 +210,9 @@
     $('.chips-initial').chips({
       readOnly: true,
       data: [
-        {
-          tag: 'Apple'
-        },
-        {
-          tag: 'Microsoft'
-        },
-        {
-          tag: 'Google'
-        }
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
       ]
     });
     $('.chips-placeholder').chips({
@@ -213,11 +221,11 @@
     });
     $('.chips-autocomplete').chips({
       autocompleteOptions: {
-        data: {
-          Apple: null,
-          Microsoft: null,
-          Google: null
-        }
+        data: [
+          {id: 12, text: "Apple"},
+          {id: 13, text: "Microsoft"},
+          {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+        ]
       }
     });
 

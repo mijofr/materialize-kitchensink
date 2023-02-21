@@ -13,36 +13,11 @@
     onChipDelete: null
   };
 
-  /**
-   * @typedef {Object} chip
-   * @property {String} tag  chip tag string
-   * @property {String} [image]  chip avatar image string
-   */
-
-  /**
-   * @class
-   *
-   */
   class Chips extends Component {
-    /**
-     * Construct Chips instance and set up overlay
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+
     constructor(el, options) {
       super(Chips, el, options);
-
       this.el.M_Chips = this;
-
-      /**
-       * Options for the modal
-       * @member Chips#options
-       * @prop {Array} data
-       * @prop {String} placeholder
-       * @prop {String} secondaryPlaceholder
-       * @prop {Object} autocompleteOptions
-       */
       this.options = $.extend({}, Chips.defaults, options);
 
       this.$el.addClass('chips input-field');
@@ -50,23 +25,19 @@
       this.$chips = $();
       this._setupInput();
       this.hasAutocomplete = Object.keys(this.options.autocompleteOptions).length > 0;
-
       // Set input id
       if (!this.$input.attr('id')) {
         this.$input.attr('id', M.guid());
       }
-
       // Render initial chips
       if (this.options.data.length) {
         this.chipsData = this.options.data;
         this._renderChips(this.chipsData);
       }
-
       // Setup autocomplete if needed
       if (this.hasAutocomplete) {
         this._setupAutocomplete();
       }
-
       this._setPlaceholder();
       this._setupLabel();
       this._setupEventHandlers();
@@ -80,33 +51,21 @@
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Chips;
     }
 
-    /**
-     * Get Chips Data
-     */
     getData() {
       return this.chipsData;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       this._removeEventHandlers();
       this.$chips.remove();
       this.el.M_Chips = undefined;
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       this._handleChipClickBound = this._handleChipClick.bind(this);
       this._handleInputKeydownBound = this._handleInputKeydown.bind(this);
@@ -122,9 +81,6 @@
       this.$input[0].addEventListener('keydown', this._handleInputKeydownBound);
     }
 
-    /**
-     * Remove Event Handlers
-     */
     _removeEventHandlers() {
       this.el.removeEventListener('click', this._handleChipClickBound);
       document.removeEventListener('keydown', Chips._handleChipsKeydown);
@@ -135,10 +91,6 @@
       this.$input[0].removeEventListener('keydown', this._handleInputKeydownBound);
     }
 
-    /**
-     * Handle Chip Click
-     * @param {Event} e
-     */
     _handleChipClick(e) {
       let $chip = $(e.target).closest('.chip');
       let clickedClose = $(e.target).is('.close');
@@ -159,10 +111,6 @@
       }
     }
 
-    /**
-     * Handle Chips Keydown
-     * @param {Event} e
-     */
     static _handleChipsKeydown(e) {
       Chips._keydown = true;
 
@@ -220,63 +168,39 @@
       }
     }
 
-    /**
-     * Handle Chips Keyup
-     * @param {Event} e
-     */
     static _handleChipsKeyup(e) {
       Chips._keydown = false;
     }
 
-    /**
-     * Handle Chips Blur
-     * @param {Event} e
-     */
     static _handleChipsBlur(e) {
       if (!Chips._keydown && document.hidden) {
         let $chips = $(e.target).closest('.chips');
         let currChips = $chips[0].M_Chips;
-
         currChips._selectedChip = null;
       }
     }
 
-    /**
-     * Handle Input Focus
-     */
     _handleInputFocus() {
       this.$el.addClass('focus');
     }
 
-    /**
-     * Handle Input Blur
-     */
     _handleInputBlur() {
       this.$el.removeClass('focus');
     }
 
-    /**
-     * Handle Input Keydown
-     * @param {Event} e
-     */
     _handleInputKeydown(e) {
       Chips._keydown = true;
-
       // enter
       if (e.keyCode === 13) {
         // Override enter if autocompleting.
         if (this.hasAutocomplete && this.autocomplete && this.autocomplete.isOpen) {
           return;
         }
-
         e.preventDefault();
         if (!this.hasAutocomplete || (this.hasAutocomplete && !this.options.autocompleteOnly)) {
-          this.addChip({
-            tag: this.$input[0].value
-          });
+          this.addChip({id: this.$input[0].value});
         }
         this.$input[0].value = '';
-
         // delete or left
       } else if (
         (e.keyCode === 8 || e.keyCode === 37) &&
@@ -288,38 +212,25 @@
       }
     }
 
-    /**
-     * Render Chip
-     * @param {chip} chip
-     * @return {Element}
-     */
     _renderChip(chip) {
-      if (!chip.tag) {
-        return;
-      }
-
+      if (!chip.id) return;
       let renderedChip = document.createElement('div');
       let closeIcon = document.createElement('i');
       renderedChip.classList.add('chip');
-      renderedChip.textContent = chip.tag;
+      renderedChip.textContent = chip.text || chip.id;
       renderedChip.setAttribute('tabindex', 0);
       $(closeIcon).addClass('material-icons close');
       closeIcon.textContent = 'close';
-
       // attach image if needed
       if (chip.image) {
         let img = document.createElement('img');
         img.setAttribute('src', chip.image);
         renderedChip.insertBefore(img, renderedChip.firstChild);
       }
-
       renderedChip.appendChild(closeIcon);
       return renderedChip;
     }
 
-    /**
-     * Render Chips
-     */
     _renderChips() {
       this.$chips.remove();
       for (let i = 0; i < this.chipsData.length; i++) {
@@ -327,19 +238,15 @@
         this.$el.append(chipEl);
         this.$chips.add(chipEl);
       }
-
       // move input to end
       this.$el.append(this.$input[0]);
     }
 
-    /**
-     * Setup Autocomplete
-     */
     _setupAutocomplete() {
-      this.options.autocompleteOptions.onAutocomplete = (val) => {
-        this.addChip({
-          tag: val
-        });
+      this.options.autocompleteOptions.onAutocomplete = (items) => {
+        if (items.length > 0) {
+          this.addChip(items[0]);
+        }
         this.$input[0].value = '';
         this.$input[0].focus();
       };
@@ -347,22 +254,15 @@
       this.autocomplete = M.Autocomplete.init(this.$input[0], this.options.autocompleteOptions);
     }
 
-    /**
-     * Setup Input
-     */
     _setupInput() {
       this.$input = this.$el.find('input');
       if (!this.$input.length) {
         this.$input = $('<input></input>');
         this.$el.append(this.$input);
       }
-
       this.$input.addClass('input');
     }
 
-    /**
-     * Setup Label
-     */
     _setupLabel() {
       this.$label = this.$el.find('label');
       if (this.$label.length) {
@@ -370,9 +270,6 @@
       }
     }
 
-    /**
-     * Set placeholder
-     */
     _setPlaceholder() {
       if (this.chipsData !== undefined && !this.chipsData.length && this.options.placeholder) {
         $(this.$input).prop('placeholder', this.options.placeholder);
@@ -384,50 +281,27 @@
       }
     }
 
-    /**
-     * Check if chip is valid
-     * @param {chip} chip
-     */
-    _isValid(chip) {
-      if (chip.hasOwnProperty('tag') && chip.tag !== '') {
-        let exists = false;
-        for (let i = 0; i < this.chipsData.length; i++) {
-          if (this.chipsData[i].tag === chip.tag) {
-            exists = true;
-            break;
-          }
-        }
-        return !exists;
-      }
-
-      return false;
+    _isValidAndNotExist(chip) {
+      const isValid = !!chip.id;
+      const doesNotExist = !this.chipsData.some(item => item.id == chip.id);
+      return isValid && doesNotExist;
     }
 
-    /**
-     * Add chip
-     * @param {chip} chip
-     */
     addChip(chip) {
-      if (!this._isValid(chip) || this.chipsData.length >= this.options.limit) {
+      if (!this._isValidAndNotExist(chip) || this.chipsData.length >= this.options.limit) {
         return;
       }
-
       let renderedChip = this._renderChip(chip);
       this.$chips.add(renderedChip);
       this.chipsData.push(chip);
       $(this.$input).before(renderedChip);
       this._setPlaceholder();
-
       // fire chipAdd callback
       if (typeof this.options.onChipAdd === 'function') {
         this.options.onChipAdd.call(this, this.$el, renderedChip);
       }
     }
 
-    /**
-     * Delete chip
-     * @param {Number} chip
-     */
     deleteChip(chipIndex) {
       let $chip = this.$chips.eq(chipIndex);
       this.$chips.eq(chipIndex).remove();
@@ -443,10 +317,6 @@
       }
     }
 
-    /**
-     * Select chip
-     * @param {Number} chip
-     */
     selectChip(chipIndex) {
       let $chip = this.$chips.eq(chipIndex);
       this._selectedChip = $chip;
@@ -459,10 +329,6 @@
     }
   }
 
-  /**
-   * @static
-   * @memberof Chips
-   */
   Chips._keydown = false;
 
   M.Chips = Chips;

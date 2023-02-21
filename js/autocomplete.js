@@ -2,8 +2,7 @@
   'use strict';
 
   let _defaults = {
-    data: {}, // Autocomplete data set
-    limit: Infinity, // Limit of results the autocomplete shows
+    data: [], // Autocomplete data set
     onAutocomplete: null, // Callback for when autocompleted
     dropdownOptions: {
       // Default dropdown options
@@ -12,84 +11,52 @@
       coverTrigger: false
     },
     minLength: 1, // Min characters before autocomplete starts
-    sortFunction: function(a, b, inputString) {
-      // Sort function for sorting autocomplete results
-      return a.indexOf(inputString) - b.indexOf(inputString);
+    isMultiSelect: false,
+    onSearch: function(text, autocomplete) {
+      const filteredData = autocomplete.options.data.filter(item => {
+        return Object.keys(item)
+          .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
+          .some(isMatch => isMatch);
+      });
+      autocomplete.setMenuItems(filteredData);
     },
+    maxDropDownHeight: '300px',
     allowUnsafeHTML: false
   };
 
-  /**
-   * @class
-   *
-   */
   class Autocomplete extends Component {
-    /**
-     * Construct Autocomplete instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
     constructor(el, options) {
       super(Autocomplete, el, options);
-
       this.el.M_Autocomplete = this;
-
-      /**
-       * Options for the autocomplete
-       * @member Autocomplete#options
-       * @prop {Number} duration
-       * @prop {Number} dist
-       * @prop {number} shift
-       * @prop {number} padding
-       * @prop {Boolean} fullWidth
-       * @prop {Boolean} indicators
-       * @prop {Boolean} noWrap
-       * @prop {Function} onCycleTo
-       */
       this.options = $.extend({}, Autocomplete.defaults, options);
-
-      // Setup
       this.isOpen = false;
       this.count = 0;
       this.activeIndex = -1;
       this.oldVal;
+      this.selectedValues = [];
+      this.menuItems = [];
       this.$inputField = this.$el.closest('.input-field');
       this.$active = $();
       this._mousedown = false;
       this._setupDropdown();
-
       this._setupEventHandlers();
     }
-
     static get defaults() {
       return _defaults;
     }
-
     static init(els, options) {
       return super.init(this, els, options);
     }
-
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
-      let domElem = !!el.jquery ? el[0] : el;
+      let domElem = el.jquery ? el[0] : el;
       return domElem.M_Autocomplete;
     }
-
-    /**
-     * Teardown component
-     */
     destroy() {
       this._removeEventHandlers();
       this._removeDropdown();
       this.el.M_Autocomplete = undefined;
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       this._handleInputBlurBound = this._handleInputBlur.bind(this);
       this._handleInputKeyupAndFocusBound = this._handleInputKeyupAndFocus.bind(this);
@@ -101,7 +68,6 @@
       this._handleContainerMouseupAndTouchendBound = this._handleContainerMouseupAndTouchend.bind(
         this
       );
-
       this.el.addEventListener('blur', this._handleInputBlurBound);
       this.el.addEventListener('keyup', this._handleInputKeyupAndFocusBound);
       this.el.addEventListener('focus', this._handleInputKeyupAndFocusBound);
@@ -112,7 +78,6 @@
         this._handleContainerMousedownAndTouchstartBound
       );
       this.container.addEventListener('mouseup', this._handleContainerMouseupAndTouchendBound);
-
       if (typeof window.ontouchstart !== 'undefined') {
         this.container.addEventListener(
           'touchstart',
@@ -121,10 +86,6 @@
         this.container.addEventListener('touchend', this._handleContainerMouseupAndTouchendBound);
       }
     }
-
-    /**
-     * Remove Event Handlers
-     */
     _removeEventHandlers() {
       this.el.removeEventListener('blur', this._handleInputBlurBound);
       this.el.removeEventListener('keyup', this._handleInputKeyupAndFocusBound);
@@ -148,17 +109,13 @@
         );
       }
     }
-
-    /**
-     * Setup dropdown
-     */
     _setupDropdown() {
       this.container = document.createElement('ul');
+      this.container.style.maxHeight = this.options.maxDropDownHeight;
       this.container.id = `autocomplete-options-${M.guid()}`;
-      $(this.container).addClass('autocomplete-content dropdown-content');
+      this.container.classList.add('autocomplete-content', 'dropdown-content');
       this.$inputField.append(this.container);
       this.el.setAttribute('data-target', this.container.id);
-
       // Initialize dropdown
       let dropdownOptions = $.extend(
         {},
@@ -166,110 +123,86 @@
         this.options.dropdownOptions
       );
       let userOnItemClick = dropdownOptions.onItemClick;
-
-      // Ensuring the selectOption call when user passes custom onItemClick function to dropdown
-      dropdownOptions.onItemClick = (el) => {
-        this.selectOption($(el));
-
+      // Ensuring the select Option call when user passes custom onItemClick function to dropdown
+      dropdownOptions.onItemClick = (li) => {
+        if (!li) return;
+        const entryID = li.getAttribute('data-id');
+        this.selectOption(entryID);
         // Handle user declared onItemClick if needed
-        if (userOnItemClick && typeof userOnItemClick === 'function') {
+        if (userOnItemClick && typeof userOnItemClick === 'function')
           userOnItemClick.call(this.dropdown, this.el);
-        }
       };
-
       this.dropdown = M.Dropdown.init(this.el, dropdownOptions);
-
       // Sketchy removal of dropdown click handler
       this.el.removeEventListener('click', this.dropdown._handleClickBound);
+      // Set Value if already set in HTML
+      if (this.el.value) this.selectOption(this.el.value);
+      // Add StatusInfo
+      const div = document.createElement('div');
+      div.classList.add('status-info');
+      div.setAttribute('style', 'position: absolute;right:0;top:0;');
+      this.el.parentElement.appendChild(div);
+      this._updateSelectedInfo();
     }
-
-    /**
-     * Remove dropdown
-     */
     _removeDropdown() {
       this.container.parentNode.removeChild(this.container);
     }
-
-    /**
-     * Handle Input Blur
-     */
     _handleInputBlur() {
       if (!this._mousedown) {
         this.close();
         this._resetAutocomplete();
       }
     }
-
-    /**
-     * Handle Input Keyup and Focus
-     * @param {Event} e
-     */
     _handleInputKeyupAndFocus(e) {
-      if (e.type === 'keyup') {
-        Autocomplete._keydown = false;
-      }
-
+      if (e.type === 'keyup') Autocomplete._keydown = false;
       this.count = 0;
-      let val = this.el.value.toLowerCase();
-
+      const actualValue = this.el.value.toLowerCase();
       // Don't capture enter or arrow key usage.
-      if (e.keyCode === 13 || e.keyCode === 38 || e.keyCode === 40) {
-        return;
-      }
-
+      if (e.keyCode === 13 || e.keyCode === 38 || e.keyCode === 40) return;
       // Check if the input isn't empty
       // Check if focus triggered by tab
-      if (this.oldVal !== val && (M.tabPressed || e.type !== 'focus')) {
+      if (this.oldVal !== actualValue && (M.tabPressed || e.type !== 'focus')) {
         this.open();
       }
-
-      // Update oldVal
-      this.oldVal = val;
+      // Value has changed!
+      if (this.oldVal !== actualValue) {
+        this._setStatusLoading();
+        this.options.onSearch(this.el.value, this);
+      }
+      // Reset Single-Select when Input cleared
+      if (!this.options.isMultiSelect && this.el.value.length === 0) {
+        this.selectedValues = [];
+        this._triggerChanged();
+      }
+      this.oldVal = actualValue;
     }
-
-    /**
-     * Handle Input Keydown
-     * @param {Event} e
-     */
     _handleInputKeydown(e) {
       Autocomplete._keydown = true;
-
       // Arrow keys and enter key usage
-      let keyCode = e.keyCode,
-        liElement,
-        numItems = $(this.container).children('li').length;
-
+      const keyCode = e.keyCode;
+      const numItems = $(this.container).children('li').length;
       // select element on Enter
       if (keyCode === M.keys.ENTER && this.activeIndex >= 0) {
-        liElement = $(this.container)
+        const liElement = $(this.container)
           .children('li')
           .eq(this.activeIndex);
         if (liElement.length) {
-          this.selectOption(liElement);
+          this.selectOption(liElement[0].getAttribute('data-id'));
           e.preventDefault();
         }
         return;
       }
-
       // Capture up and down key
       if (keyCode === M.keys.ARROW_UP || keyCode === M.keys.ARROW_DOWN) {
         e.preventDefault();
-
-        if (keyCode === M.keys.ARROW_UP && this.activeIndex > 0) {
-          this.activeIndex--;
-        }
-
-        if (keyCode === M.keys.ARROW_DOWN && this.activeIndex < numItems - 1) {
-          this.activeIndex++;
-        }
-
+        if (keyCode === M.keys.ARROW_UP && this.activeIndex > 0) this.activeIndex--;
+        if (keyCode === M.keys.ARROW_DOWN && this.activeIndex < numItems - 1) this.activeIndex++;
         this.$active.removeClass('active');
         if (this.activeIndex >= 0) {
           this.$active = $(this.container)
             .children('li')
             .eq(this.activeIndex);
           this.$active.addClass('active');
-
           // Focus selected
           this.container.children[this.activeIndex].scrollIntoView({
             behavior: 'smooth',
@@ -279,35 +212,28 @@
         }
       }
     }
-
-    /**
-     * Handle Input Click
-     * @param {Event} e
-     */
     _handleInputClick(e) {
       this.open();
     }
-
-    /**
-     * Handle Container Mousedown and Touchstart
-     * @param {Event} e
-     */
     _handleContainerMousedownAndTouchstart(e) {
       this._mousedown = true;
     }
-
-    /**
-     * Handle Container Mouseup and Touchend
-     * @param {Event} e
-     */
     _handleContainerMouseupAndTouchend(e) {
       this._mousedown = false;
     }
+    _resetCurrentElementPosition() {
+      this.activeIndex = -1;
+      this.$active.removeClass('active');
+    }
+    _resetAutocomplete() {
+      $(this.container).empty();
+      this._resetCurrentElementPosition();
+      this.oldVal = null;
+      this.isOpen = false;
+      this._mousedown = false;
+    }
 
-    /**
-     * Highlight partial match
-     */
-    _highlight(input, label) {
+    _highlightPartialText(input, label) {
       const start = label.toLowerCase().indexOf('' + input.toLowerCase() + '');
       const end = start + input.length - 1;
       //custom filters may return results where the string does not match any part
@@ -317,162 +243,176 @@
       return [label.slice(0, start), label.slice(start, end + 1), label.slice(end + 1)];
     }
 
-    /**
-     * Reset current element position
-     */
-    _resetCurrentElement() {
-      this.activeIndex = -1;
-      this.$active.removeClass('active');
-    }
+    _createDropdownItem(entry) {
+      const item = document.createElement('li');
+      item.setAttribute('data-id', entry.id);
+      item.setAttribute(
+        'style',
+        'display:grid; grid-auto-flow: column; user-select: none; align-items: center;'
+      );
+      // Checkbox
+      if (this.options.isMultiSelect) {
+        item.innerHTML = `
+          <div class="item-selection" style="text-align:center;">
+          <input type="checkbox"${
+            this.selectedValues.some((sel) => sel.id === entry.id) ? ' checked="checked"' : ''
+          }><span style="padding-left:21px;"></span>
+        </div>`;
+      }
+      // Image
+      if (entry.image) {
+        const img = document.createElement('img');
+        img.classList.add('circle');
+        img.src = entry.image;
+        item.appendChild(img);
+      }
 
-    /**
-     * Reset autocomplete elements
-     */
-    _resetAutocomplete() {
-      $(this.container).empty();
-      this._resetCurrentElement();
-      this.oldVal = null;
-      this.isOpen = false;
-      this._mousedown = false;
-    }
+      // Text
+      const inputText = this.el.value.toLowerCase();
+      const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
+      const div = document.createElement('div');
+      div.setAttribute('style', 'line-height:1.2;font-weight:500;');
+      if (this.options.allowUnsafeHTML) {
+        div.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
+      } else {
+        div.appendChild(document.createTextNode(parts[0]));
+        if (parts[1]) {
+          const highlight = document.createElement('span');
+          highlight.textContent = parts[1];
+          highlight.classList.add('highlight');
+          div.appendChild(highlight);
+          div.appendChild(document.createTextNode(parts[2]));
+        }
+      }
 
-    /**
-     * Select autocomplete option
-     * @param {Element} el  Autocomplete option list item element
-     */
-    selectOption(el) {
-      let text = el.text().trim();
-      this.el.value = text;
+      const itemText = document.createElement('div');
+      itemText.classList.add('item-text');
+      itemText.setAttribute('style', 'padding:5px;overflow:hidden;');
+      item.appendChild(itemText);
+      item.querySelector('.item-text').appendChild(div);
+      // Description
+      if (typeof entry.description === 'string' || (typeof entry.description === 'number' && !isNaN(entry.description))) {
+        const description = document.createElement('small');
+        description.setAttribute(
+          'style',
+          'line-height:1.3;color:grey;white-space:nowrap;text-overflow:ellipsis;display:block;width:90%;overflow:hidden;'
+        );
+        description.innerText = entry.description;
+        item.querySelector('.item-text').appendChild(description);
+      }
+      // Set Grid
+      const getGridConfig = () => {
+        if (this.options.isMultiSelect) {
+          if (entry.image) return '40px min-content auto'; // cb-img-txt
+          return '40px auto'; // cb-txt
+        }
+        if (entry.image) return 'min-content auto'; // img-txt
+        return 'auto'; // txt
+      };
+      item.style.gridTemplateColumns = getGridConfig();
+      return item;
+    }
+    _renderDropdown() {
+      this._resetAutocomplete();
+      // Check if Data is empty
+      if (this.menuItems.length === 0) {
+        this.menuItems = this.selectedValues; // Show selected Items
+      }
+      for (let i = 0; i < this.menuItems.length; i++) {
+        const item = this._createDropdownItem(this.menuItems[i]);
+        this.container.append(item);
+      }
+    }
+    _setStatusLoading() {
+      this.el.parentElement.querySelector(
+        '.status-info'
+      ).innerHTML = `<div style="height:100%;width:50px;"><svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+      <circle fill="#888c" stroke="none" cx="6" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1"/></circle>
+      <circle fill="#888c" stroke="none" cx="26" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.2"/></circle>
+      <circle fill="#888c" stroke="none" cx="46" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite"  begin="0.3"/></circle>
+    </svg></div>`;
+    }
+    _updateSelectedInfo() {
+      const statusElement = this.el.parentElement.querySelector('.status-info');
+      if (statusElement) {
+        if (this.options.isMultiSelect) statusElement.innerHTML = this.selectedValues.length;
+        else statusElement.innerHTML = '';
+      }
+    }
+    _refreshInputText() {
+      if (this.selectedValues.length === 1) {
+        const entry = this.selectedValues[0];
+        this.el.value = entry.text || entry.id; // Write Text to Input
+      }
+      M.updateTextFields();
+    }
+    _triggerChanged() {
       this.$el.trigger('change');
-      this._resetAutocomplete();
-      this.close();
-
-      // Handle onAutocomplete callback.
-      if (typeof this.options.onAutocomplete === 'function') {
-        this.options.onAutocomplete.call(this, text);
-      }
+      // Trigger Autocomplete Event
+      if (typeof this.options.onAutocomplete === 'function')
+        this.options.onAutocomplete.call(this, this.selectedValues);
     }
 
-    /**
-     * Render dropdown content
-     * @param {Object} data  data set
-     * @param {String} val  current input value
-     */
-    _renderDropdown(data, val) {
-      this._resetAutocomplete();
-
-      let matchingData = [];
-
-      // Gather all matching data
-      for (let key in data) {
-        if (data.hasOwnProperty(key) && key.toLowerCase().indexOf(val) !== -1) {
-          let entry = {
-            data: data[key],
-            key: key
-          };
-          matchingData.push(entry);
-
-          this.count++;
-        }
-      }
-
-      // Sort
-      if (this.options.sortFunction) {
-        let sortFunctionBound = (a, b) => {
-          return this.options.sortFunction(
-            a.key.toLowerCase(),
-            b.key.toLowerCase(),
-            val.toLowerCase()
-          );
-        };
-        matchingData.sort(sortFunctionBound);
-      }
-
-      // Limit
-      matchingData = matchingData.slice(0, this.options.limit);
-
-      // Render
-      for (let i = 0; i < matchingData.length; i++) {
-        const entry = matchingData[i];
-        const item = document.createElement('li');
-        if (!!entry.data) {
-          const img = document.createElement('img');
-          img.classList.add('right', 'circle');
-          img.src = entry.data;
-          item.appendChild(img);
-        }
-
-        const parts = this._highlight(val, entry.key);
-        const s = document.createElement('span');
-        if (this.options.allowUnsafeHTML) {
-          s.innerHTML = parts[0] + '<span class="highlight">' + parts[1] + '</span>' + parts[2];
-        } else {
-          s.appendChild(document.createTextNode(parts[0]));
-          if (!!parts[1]) {
-            const highlight = document.createElement('span');
-            highlight.textContent = parts[1];
-            highlight.classList.add('highlight');
-            s.appendChild(highlight);
-            s.appendChild(document.createTextNode(parts[2]));
-          }
-        }
-        item.appendChild(s);
-
-        $(this.container).append(item);
-      }
-    }
-
-    /**
-     * Open Autocomplete Dropdown
-     */
     open() {
-      let val = this.el.value.toLowerCase();
-
+      const inputText = this.el.value.toLowerCase();
       this._resetAutocomplete();
-
-      if (val.length >= this.options.minLength) {
+      if (inputText.length >= this.options.minLength) {
         this.isOpen = true;
-        this._renderDropdown(this.options.data, val);
+        this._renderDropdown();
       }
-
       // Open dropdown
       if (!this.dropdown.isOpen) {
-        this.dropdown.open();
-      } else {
-        // Recalculate dropdown when its already open
-        this.dropdown.recalculateDimensions();
+        setTimeout(() => {
+          this.dropdown.open();
+        }, 100);
       }
+      else this.dropdown.recalculateDimensions(); // Recalculate dropdown when its already open
     }
-
-    /**
-     * Close Autocomplete Dropdown
-     */
     close() {
       this.dropdown.close();
     }
-
-    /**
-     * Update Data
-     * @param {Object} data
-     */
-    updateData(data) {
-      let val = this.el.value.toLowerCase();
-      this.options.data = data;
-
-      if (this.isOpen) {
-        this._renderDropdown(data, val);
+    setMenuItems(menuItems) {
+      this.menuItems = menuItems;
+      this.open();
+      this._updateSelectedInfo();
+    }
+    setValues(entries) {
+      this.selectedValues = entries;
+      this._updateSelectedInfo();
+      if (!this.options.isMultiSelect) {
+        this._refreshInputText();
       }
+      this._triggerChanged();
+    }
+    selectOption(id) {
+      const entry = this.menuItems.find((item) => item.id == id);
+      if (!entry) return;
+      // Toggle Checkbox
+      const li = this.container.querySelector('li[data-id="'+id+'"]');
+      if (!li) return;
+      if (this.options.isMultiSelect) {
+        const checkbox = li.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) this.selectedValues.push(entry);
+        else
+          this.selectedValues = this.selectedValues.filter(
+            (selectedEntry) => selectedEntry.id !== entry.id
+          );
+        this.el.focus();
+      } else {
+        // Single-Select
+        this.selectedValues = [entry];
+        this._refreshInputText();
+        this._resetAutocomplete();
+        this.close();
+      }
+      this._updateSelectedInfo();
+      this._triggerChanged();
     }
   }
 
-  /**
-   * @static
-   * @memberof Autocomplete
-   */
   Autocomplete._keydown = false;
-
   M.Autocomplete = Autocomplete;
-
   if (M.jQueryLoaded) {
     M.initializeJqueryWrapper(Autocomplete, 'autocomplete', 'M_Autocomplete');
   }
