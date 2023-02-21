@@ -210,9 +210,9 @@
     $('.chips-initial').chips({
       readOnly: true,
       data: [
-        {tag: 'Apple'},
-        {tag: 'Microsoft'},
-        {tag: 'Google'}
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
       ]
     });
     $('.chips-placeholder').chips({
@@ -220,6 +220,7 @@
       secondaryPlaceholder: '+Tag'
     });
     $('.chips-autocomplete').chips({
+      autocompleteOnly: true,
       autocompleteOptions: {
         data: [
           {id: 12, text: "Apple"},

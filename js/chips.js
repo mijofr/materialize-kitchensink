@@ -190,20 +190,17 @@
 
     _handleInputKeydown(e) {
       Chips._keydown = true;
-
       // enter
       if (e.keyCode === 13) {
         // Override enter if autocompleting.
         if (this.hasAutocomplete && this.autocomplete && this.autocomplete.isOpen) {
           return;
         }
-
         e.preventDefault();
         if (!this.hasAutocomplete || (this.hasAutocomplete && !this.options.autocompleteOnly)) {
-          this.addChip({tag: this.$input[0].value});
+          this.addChip({id: this.$input[0].value});
         }
         this.$input[0].value = '';
-
         // delete or left
       } else if (
         (e.keyCode === 8 || e.keyCode === 37) &&
@@ -216,23 +213,20 @@
     }
 
     _renderChip(chip) {
-      if (!chip.tag) return;
-
+      if (!chip.id) return;
       let renderedChip = document.createElement('div');
       let closeIcon = document.createElement('i');
       renderedChip.classList.add('chip');
-      renderedChip.textContent = chip.tag;
+      renderedChip.textContent = chip.text || chip.id;
       renderedChip.setAttribute('tabindex', 0);
       $(closeIcon).addClass('material-icons close');
       closeIcon.textContent = 'close';
-
       // attach image if needed
       if (chip.image) {
         let img = document.createElement('img');
         img.setAttribute('src', chip.image);
         renderedChip.insertBefore(img, renderedChip.firstChild);
       }
-
       renderedChip.appendChild(closeIcon);
       return renderedChip;
     }
@@ -249,10 +243,9 @@
     }
 
     _setupAutocomplete() {
-      this.options.autocompleteOptions.onAutocomplete = (val) => {
-        if (val.length > 0) {
-          const tag = val[0].text || val[0].id;
-          this.addChip({tag: tag});
+      this.options.autocompleteOptions.onAutocomplete = (items) => {
+        if (items.length > 0) {
+          this.addChip(items[0]);
         }
         this.$input[0].value = '';
         this.$input[0].focus();
@@ -288,32 +281,21 @@
       }
     }
 
-    _isValid(chip) {
-      if (chip.hasOwnProperty('tag') && chip.tag !== '') {
-        let exists = false;
-        for (let i = 0; i < this.chipsData.length; i++) {
-          if (this.chipsData[i].tag === chip.tag) {
-            exists = true;
-            break;
-          }
-        }
-        return !exists;
-      }
-
-      return false;
+    _isValidAndNotExist(chip) {
+      const isValid = !!chip.id;
+      const doesNotExist = !this.chipsData.some(item => item.id == chip.id);
+      return isValid && doesNotExist;
     }
 
     addChip(chip) {
-      if (!this._isValid(chip) || this.chipsData.length >= this.options.limit) {
+      if (!this._isValidAndNotExist(chip) || this.chipsData.length >= this.options.limit) {
         return;
       }
-
       let renderedChip = this._renderChip(chip);
       this.$chips.add(renderedChip);
       this.chipsData.push(chip);
       $(this.$input).before(renderedChip);
       this._setPlaceholder();
-
       // fire chipAdd callback
       if (typeof this.options.onChipAdd === 'function') {
         this.options.onChipAdd.call(this, this.$el, renderedChip);

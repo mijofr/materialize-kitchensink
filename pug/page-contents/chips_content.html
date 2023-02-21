@@ -103,9 +103,9 @@
     });
     $('.chips-initial').chips({
       data: [
-        {tag: 'Apple'},
-        {tag: 'Microsoft'},
-        {tag: 'Google'}
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
       ]
     });
     $('.chips-placeholder').chips({
@@ -130,8 +130,9 @@
           <i class="material-icons copyButton">content_copy</i>
           <code class="language-javascript copiedText">
   var chip = {
-    tag: 'chip content',
-    image: '', //optional
+    id: '4711', // unique identifier (can be a string too)
+    text: 'Title' // optional Text
+    image: '', // optional Image-Url
   };
           </code>
         </pre>
@@ -242,7 +243,8 @@
           <b>Chip:</b> Chip data object.</p>
         <pre><code class="language-javascript col s12">
   instance.addChip({
-    tag: 'chip content',
+    id: 1337,
+    text: 'John Doe', // optional
     image: '', // optional
   });
         </code></pre>
