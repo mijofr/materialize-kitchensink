@@ -26,14 +26,57 @@
             <button class="btn2">Set Option (A6)</button>
         </div>
 
-        <h5>Default autocomplete example</h5>
+        <h5>Autocomplete Combos</h5>
         <div class="row">
+            <div class="col s6">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">textsms</i>
+                        <input type="text" id="autocomplete-2" class="autocomplete">
+                        <label for="autocomplete-2">SingleSelect FixedData</label>
+                    </div>
+                </div>
+            </div>
+
             <div class="col s6">
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">textsms</i>
                         <input type="text" id="autocomplete-1" class="autocomplete">
-                        <label for="autocomplete-1">Autocomplete</label>
+                        <label for="autocomplete-1">MultiSelect FixedData</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s6">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">textsms</i>
+                        <input type="text" id="autocomplete-12" class="autocomplete">
+                        <label for="autocomplete-12">SingleSelect DynamicData</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s6">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">textsms</i>
+                        <input type="text" id="autocomplete-3" class="autocomplete">
+                        <label for="autocomplete-3">MultiSelect DynamicData</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5>allowUnsafeHTML</h5>
+        <div class="row">
+            <div class="col s6">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">textsms</i>
+                        <input type="text" id="autocomplete-4" class="autocomplete">
+                        <label for="autocomplete-4">allowUnsafeHTML: false</label>
                     </div>
                 </div>
             </div>
@@ -41,73 +84,20 @@
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">textsms</i>
-                        <input type="text" id="autocomplete-12" class="autocomplete">
-                        <label for="autocomplete-12">Autocomplete</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h5>Custom filter function</h5>
-        <div class="row">
-            <div class="col s12">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">textsms</i>
-                        <input type="text" id="autocomplete-2" class="autocomplete">
-                        <label for="autocomplete-2">Filter Function</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h5>Limit Set (200 Entries)</h5>
-        <div class="row">
-            <div class="col s12">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">textsms</i>
-                        <input type="text" id="autocomplete-3" class="autocomplete">
-                        <label for="autocomplete-3">Filter Function</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h5>allowUnsafeHTML: false</h5>
-        <div class="row">
-            <div class="col s12">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">textsms</i>
-                        <input type="text" id="autocomplete-4" class="autocomplete">
-                        <label for="autocomplete-4">Filter Function</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <h5>allowUnsafeHTML: true</h5>
-        <div class="row">
-            <div class="col s12">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">textsms</i>
                         <input type="text" id="autocomplete-5" class="autocomplete">
-                        <label for="autocomplete-5">Filter Function</label>
+                        <label for="autocomplete-5">allowUnsafeHTML: true</label>
                     </div>
                 </div>
             </div>
         </div>
 
-        <h5>Custom dropdown options</h5>
         <div class="row">
             <div class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
                         <i class="material-icons prefix">textsms</i>
                         <input type="text" id="autocomplete-6" class="autocomplete" value="12">
-                        <label for="autocomplete-6">Autocomplete with set Value</label>
+                        <label for="autocomplete-6">SingleSelect FixedData (500 Entries)</label>
                     </div>
                 </div>
             </div>
@@ -158,7 +148,7 @@
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="../../dist/js/materialize.js"></script>
+    <script src="../../bin/materialize.js"></script>
 
     <script>
         // Data
@@ -174,8 +164,8 @@
         ];
         const countries = [
             {id: 'Afghanistan', image: '../../docs/images/placeholder/250x250_e.png', description: 'The name Afghanistan (Afghānistān, land of the Afghans/Pashtuns, afāghina, sing. afghān) can be traced to the early eighth/fourteenth century.'},
-            {id: 'Albania'},
-            {id: 'Algeria'},
+            {id: 'Albania', text: 'Shqipëria'},
+            {id: 'Algeria', text: 'الجزائر'},
             {id: 'Andorra', image: '../../docs/images/placeholder/250x250_d.png'},
             {id: 'Angola'},
             {id: 'Antigua and Barbuda'},
@@ -183,7 +173,7 @@
             {id: 'Armenia'},
             {id: 'Australia', image: '../../docs/images/placeholder/250x250_c.png'},
             {id: 'Austria', text: 'Österreich', image: '../../docs/images/placeholder/250x250_a.png', description: 'There are nice Mountains.'},
-            {id: 'Azerbaijan'},
+            {id: 'Azerbaijan', text: 'Azərbaycan'},
             {id: 'The Bahamas'},
             {id: 'Bahrain'},
             {id: 'Bangladesh'},
@@ -238,15 +228,15 @@
             {id: 'Gabon'},
             {id: 'The Gambia'},
             {id: 'Georgia'},
-            {id: 'Germany', image: '../../docs/images/placeholder/250x250_b.png'},
+            {id: 'Germany', text: 'Deutschland', image: '../../docs/images/placeholder/250x250_b.png'},
             {id: 'Ghana'},
-            {id: 'Greece'},
+            {id: 'Greece', text: 'Ελλάδα'},
             {id: 'Grenada'},
             {id: 'Guatemala'},
             {id: 'Guinea'},
             {id: 'Guinea-Bissau'},
             {id: 'Guyana'},
-            {id: 'Haiti'},
+            {id: 'Haiti', text: 'Ayiti'},
             {id: 'Honduras'},
             {id: 'Hungary'},
             {id: 'Iceland'},
@@ -256,9 +246,9 @@
             {id: 'Iraq'},
             {id: 'Ireland'},
             {id: 'Israel'},
-            {id: 'Italy'},
+            {id: 'Italy', text: 'Italia'},
             {id: 'Jamaica'},
-            {id: 'Japan'},
+            {id: 'Japan', text: '日本'},
             {id: 'Jordan'},
             {id: 'Kazakhstan'},
             {id: 'Kenya'},
@@ -317,7 +307,7 @@
             {id: 'Portugal'},
             {id: 'Qatar'},
             {id: 'Romania'},
-            {id: 'Russia'},
+            {id: 'Russia', text: 'Россия'},
             {id: 'Rwanda'},
             {id: 'Saint Kitts and Nevis'},
             {id: 'Saint Lucia'},
@@ -325,7 +315,7 @@
             {id: 'Samoa'},
             {id: 'San Marino'},
             {id: 'Sao Tome and Principe'},
-            {id: 'Saudi Arabia'},
+            {id: 'Saudi Arabia', text: 'السعودية'},
             {id: 'Senegal'},
             {id: 'Serbia'},
             {id: 'Seychelles'},
@@ -342,12 +332,12 @@
             {id: 'Sudan, South'},
             {id: 'Suriname'},
             {id: 'Sweden'},
-            {id: 'Switzerland'},
+            {id: 'Switzerland', text: 'Schweiz'},
             {id: 'Syria'},
             {id: 'Taiwan'},
-            {id: 'Tajikistan'},
+            {id: 'Tajikistan', text: 'Тоҷикистон'},
             {id: 'Tanzania'},
-            {id: 'Thailand'},
+            {id: 'Thailand', text: 'ประเทศไทย'},
             {id: 'Togo'},
             {id: 'Tonga'},
             {id: 'Trinidad and Tobago'},
@@ -356,7 +346,7 @@
             {id: 'Turkmenistan'},
             {id: 'Tuvalu'},
             {id: 'Uganda'},
-            {id: 'Ukraine'},
+            {id: 'Ukraine', text: 'Україна'},
             {id: 'United Arab Emirates'},
             {id: 'United Kingdom'},
             {id: 'United States'},
@@ -372,9 +362,9 @@
         ];
         
         const bigData = [];
-        for (let i = 200; i >= 0; i--) {
+        for (let i = 500; i >= 0; i--) {
             const randString = 'a' + Math.random().toString(36).substring(2);
-            bigData.push({id: randString});
+            bigData.push({id: randString, description: i});
         }
         const unsafeData = [
             {id: "<span style='color: red;'>payload</span>Apple", text: "<span style='color: red;'>payload</span>Apple"},
@@ -382,51 +372,57 @@
             {id: '<img src=/ onerror="alert(\'xss\')">still not safe', text: '<img src=/ onerror="alert(\'xss\')">still not safe', image: 'https://placehold.it/250x250'}
         ];
 
-        function customSearch(text) {
-            return countries.filter(country => {
-                return country.id.toLowerCase().indexOf(text.toLowerCase()) >= 0
-                    || country.text?.toLowerCase().indexOf(text.toLowerCase()) >= 0
-                    || country.description?.toLowerCase().indexOf(text.toLowerCase()) >= 0;
-            });
-        }
-
         // Configurations
+
+        // Multi fixed
         const a1 = {
+            data: countries,
             minLength: 0,
             isMultiSelect: true,
-            onSearch: (text, instance) => {
-                setTimeout(() => {
-                    const matchingData = customSearch(text);
-                    instance.updateData(matchingData);
-                }, 300);
-            },
             onAutocomplete: entry => console.log('a1', entry)
         };
+
+        // Single dynamic
         const a12 = {
             minLength: 0,
-            isMultiSelect: false,
-            onSearch: (text, instance) => {
+            onSearch: function(text, autocomplete) {
                 setTimeout(() => {
-                    const matchingData = customSearch(text);
-                    instance.updateData(matchingData);
-                }, 300);
+                    const filteredData = countries.filter(item => {
+                        return Object.keys(item)
+                        .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
+                        .some(isMatch => isMatch);
+                    }).splice(0, 5);
+                    autocomplete.setMenuItems(filteredData);
+                }, 500);
             },
             onAutocomplete: entry => console.log('a12', entry)
-        };        
-        const a2 = {
-            data: defaultData,
-            filterFunction: function (key_string, filter_string) {
-                return true;
-            },
-            onAutocomplete: entry => console.log('a2', entry),
-            minLength: 0
         };
-        const a3 = {
-            data: bigData,
-            limit: 5,
+
+        // Single fixed
+        const a2 = {
+            data: countries,
             minLength: 0,
+            onAutocomplete: entry => console.log('a2', entry),
+        };
+
+        // Multi dynamic
+        const a3 = {
+            minLength: 0,
+            isMultiSelect: true,
+            onSearch: function(text, autocomplete) {
+                setTimeout(() => {
+                    const filteredData = countries.filter(item => {
+                        return Object.keys(item)
+                        .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
+                        .some(isMatch => isMatch);
+                    }).splice(0, 5);
+                    autocomplete.setMenuItems(filteredData);
+                }, 500);
+            },
             onAutocomplete: entry => console.log('a3', entry)
         }
+
+
         const a4 = {
             data: unsafeData,
             allowUnsafeHTML: false,
@@ -439,8 +435,10 @@
             minLength: 0,
             onAutocomplete: entry => console.log('a5', entry)
         }
+
+
         const a6 = {
-            data: defaultData,
+            data: bigData,
             minLength: 0,
             onAutocomplete: entry => console.log('a6', entry)
         };

@@ -12,7 +12,14 @@
     },
     minLength: 1, // Min characters before autocomplete starts
     isMultiSelect: false,
-    onSearch: null, // dynamic read function
+    onSearch: function(text, autocomplete) {
+      const filteredData = autocomplete.options.data.filter(item => {
+        return Object.keys(item)
+          .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
+          .some(isMatch => isMatch);
+      });
+      autocomplete.setMenuItems(filteredData);
+    },
     maxDropDownHeight: '300px',
     allowUnsafeHTML: false
   };
@@ -22,12 +29,12 @@
       super(Autocomplete, el, options);
       this.el.M_Autocomplete = this;
       this.options = $.extend({}, Autocomplete.defaults, options);
-      // Setup
       this.isOpen = false;
       this.count = 0;
       this.activeIndex = -1;
       this.oldVal;
       this.selectedValues = [];
+      this.menuItems = [];
       this.$inputField = this.$el.closest('.input-field');
       this.$active = $();
       this._mousedown = false;
@@ -106,7 +113,7 @@
       this.container = document.createElement('ul');
       this.container.style.maxHeight = this.options.maxDropDownHeight;
       this.container.id = `autocomplete-options-${M.guid()}`;
-      $(this.container).addClass('autocomplete-content dropdown-content');
+      this.container.classList.add('autocomplete-content', 'dropdown-content');
       this.$inputField.append(this.container);
       this.el.setAttribute('data-target', this.container.id);
       // Initialize dropdown
@@ -118,6 +125,7 @@
       let userOnItemClick = dropdownOptions.onItemClick;
       // Ensuring the select Option call when user passes custom onItemClick function to dropdown
       dropdownOptions.onItemClick = (li) => {
+        if (!li) return;
         const entryID = li.getAttribute('data-id');
         this.selectOption(entryID);
         // Handle user declared onItemClick if needed
@@ -129,12 +137,12 @@
       this.el.removeEventListener('click', this.dropdown._handleClickBound);
       // Set Value if already set in HTML
       if (this.el.value) this.selectOption(this.el.value);
-      // Add Status
+      // Add StatusInfo
       const div = document.createElement('div');
       div.classList.add('status-info');
       div.setAttribute('style', 'position: absolute;right:0;top:0;');
       this.el.parentElement.appendChild(div);
-      this._refreshStatus(); // render Status
+      this._updateSelectedInfo();
     }
     _removeDropdown() {
       this.container.parentNode.removeChild(this.container);
@@ -158,10 +166,8 @@
       }
       // Value has changed!
       if (this.oldVal !== actualValue) {
-        if (typeof this.options.onSearch === 'function') {
-          this._setLoading();
-          this.options.onSearch(this.el.value, this);
-        }
+        this._setStatusLoading();
+        this.options.onSearch(this.el.value, this);
       }
       // Reset Single-Select when Input cleared
       if (!this.options.isMultiSelect && this.el.value.length === 0) {
@@ -222,7 +228,7 @@
     _resetAutocomplete() {
       $(this.container).empty();
       this._resetCurrentElementPosition();
-      //this.oldVal = null;
+      this.oldVal = null;
       this.isOpen = false;
       this._mousedown = false;
     }
@@ -285,7 +291,7 @@
       item.appendChild(itemText);
       item.querySelector('.item-text').appendChild(div);
       // Description
-      if (entry.description) {
+      if (typeof entry.description === 'string' || (typeof entry.description === 'number' && !isNaN(entry.description))) {
         const description = document.createElement('small');
         description.setAttribute(
           'style',
@@ -309,15 +315,15 @@
     _renderDropdown() {
       this._resetAutocomplete();
       // Check if Data is empty
-      if (this.options.data.length === 0) {
-        this.options.data = this.selectedValues; // Show selected Items
+      if (this.menuItems.length === 0) {
+        this.menuItems = this.selectedValues; // Show selected Items
       }
-      for (let i = 0; i < this.options.data.length; i++) {
-        const item = this._createDropdownItem(this.options.data[i]);
-        $(this.container).append(item);
+      for (let i = 0; i < this.menuItems.length; i++) {
+        const item = this._createDropdownItem(this.menuItems[i]);
+        this.container.append(item);
       }
     }
-    _setLoading() {
+    _setStatusLoading() {
       this.el.parentElement.querySelector(
         '.status-info'
       ).innerHTML = `<div style="height:100%;width:50px;"><svg version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
@@ -326,7 +332,7 @@
       <circle fill="#888c" stroke="none" cx="46" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite"  begin="0.3"/></circle>
     </svg></div>`;
     }
-    _refreshStatus() {
+    _updateSelectedInfo() {
       const statusElement = this.el.parentElement.querySelector('.status-info');
       if (statusElement) {
         if (this.options.isMultiSelect) statusElement.innerHTML = this.selectedValues.length;
@@ -355,33 +361,34 @@
         this._renderDropdown();
       }
       // Open dropdown
-      if (!this.dropdown.isOpen) this.dropdown.open();
+      if (!this.dropdown.isOpen) {
+        setTimeout(() => {
+          this.dropdown.open();
+        }, 100);
+      }
       else this.dropdown.recalculateDimensions(); // Recalculate dropdown when its already open
     }
     close() {
       this.dropdown.close();
     }
-    updateData(data) {
-      const inputText = this.el.value.toLowerCase();
-      this.options.data = data;
-      this._renderDropdown(inputText);
+    setMenuItems(menuItems) {
+      this.menuItems = menuItems;
       this.open();
-      this._refreshStatus();
+      this._updateSelectedInfo();
     }
     setValues(entries) {
       this.selectedValues = entries;
-      this._refreshStatus();
+      this._updateSelectedInfo();
       if (!this.options.isMultiSelect) {
         this._refreshInputText();
       }
       this._triggerChanged();
     }
     selectOption(id) {
-      const entries = this.options.data.filter((entry) => entry.id == id);
-      if (entries.length === 0) return;
-      const entry = entries[0];
+      const entry = this.menuItems.find((item) => item.id == id);
+      if (!entry) return;
       // Toggle Checkbox
-      const li = this.container.querySelector('li[data-id="' + id + '"]');
+      const li = this.container.querySelector('li[data-id="'+id+'"]');
       if (!li) return;
       if (this.options.isMultiSelect) {
         const checkbox = li.querySelector('input[type="checkbox"]');
@@ -392,15 +399,14 @@
             (selectedEntry) => selectedEntry.id !== entry.id
           );
         this.el.focus();
-        this._refreshStatus();
       } else {
         // Single-Select
         this.selectedValues = [entry];
-        this._refreshStatus();
         this._refreshInputText();
         this._resetAutocomplete();
         this.close();
       }
+      this._updateSelectedInfo();
       this._triggerChanged();
     }
   }
