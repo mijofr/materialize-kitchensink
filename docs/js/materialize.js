@@ -7918,41 +7918,15 @@ $jscomp.polyfill = function (e, r, p, m) {
     onChipDelete: null
   };
 
-  /**
-   * @typedef {Object} chip
-   * @property {String} tag  chip tag string
-   * @property {String} [image]  chip avatar image string
-   */
-
-  /**
-   * @class
-   *
-   */
-
   var Chips = function (_Component12) {
     _inherits(Chips, _Component12);
 
-    /**
-     * Construct Chips instance and set up overlay
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
     function Chips(el, options) {
       _classCallCheck(this, Chips);
 
       var _this46 = _possibleConstructorReturn(this, (Chips.__proto__ || Object.getPrototypeOf(Chips)).call(this, Chips, el, options));
 
       _this46.el.M_Chips = _this46;
-
-      /**
-       * Options for the modal
-       * @member Chips#options
-       * @prop {Array} data
-       * @prop {String} placeholder
-       * @prop {String} secondaryPlaceholder
-       * @prop {Object} autocompleteOptions
-       */
       _this46.options = $.extend({}, Chips.defaults, options);
 
       _this46.$el.addClass('chips input-field');
@@ -7960,23 +7934,19 @@ $jscomp.polyfill = function (e, r, p, m) {
       _this46.$chips = $();
       _this46._setupInput();
       _this46.hasAutocomplete = Object.keys(_this46.options.autocompleteOptions).length > 0;
-
       // Set input id
       if (!_this46.$input.attr('id')) {
         _this46.$input.attr('id', M.guid());
       }
-
       // Render initial chips
       if (_this46.options.data.length) {
         _this46.chipsData = _this46.options.data;
         _this46._renderChips(_this46.chipsData);
       }
-
       // Setup autocomplete if needed
       if (_this46.hasAutocomplete) {
         _this46._setupAutocomplete();
       }
-
       _this46._setPlaceholder();
       _this46._setupLabel();
       _this46._setupEventHandlers();
@@ -7985,19 +7955,9 @@ $jscomp.polyfill = function (e, r, p, m) {
 
     _createClass(Chips, [{
       key: "getData",
-
-
-      /**
-       * Get Chips Data
-       */
       value: function getData() {
         return this.chipsData;
       }
-
-      /**
-       * Teardown component
-       */
-
     }, {
       key: "destroy",
       value: function destroy() {
@@ -8005,11 +7965,6 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.$chips.remove();
         this.el.M_Chips = undefined;
       }
-
-      /**
-       * Setup Event Handlers
-       */
-
     }, {
       key: "_setupEventHandlers",
       value: function _setupEventHandlers() {
@@ -8026,11 +7981,6 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.$input[0].addEventListener('blur', this._handleInputBlurBound);
         this.$input[0].addEventListener('keydown', this._handleInputKeydownBound);
       }
-
-      /**
-       * Remove Event Handlers
-       */
-
     }, {
       key: "_removeEventHandlers",
       value: function _removeEventHandlers() {
@@ -8042,12 +7992,6 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.$input[0].removeEventListener('blur', this._handleInputBlurBound);
         this.$input[0].removeEventListener('keydown', this._handleInputKeydownBound);
       }
-
-      /**
-       * Handle Chip Click
-       * @param {Event} e
-       */
-
     }, {
       key: "_handleChipClick",
       value: function _handleChipClick(e) {
@@ -8069,38 +8013,16 @@ $jscomp.polyfill = function (e, r, p, m) {
           this.$input[0].focus();
         }
       }
-
-      /**
-       * Handle Chips Keydown
-       * @param {Event} e
-       */
-
     }, {
       key: "_handleInputFocus",
-
-
-      /**
-       * Handle Input Focus
-       */
       value: function _handleInputFocus() {
         this.$el.addClass('focus');
       }
-
-      /**
-       * Handle Input Blur
-       */
-
     }, {
       key: "_handleInputBlur",
       value: function _handleInputBlur() {
         this.$el.removeClass('focus');
       }
-
-      /**
-       * Handle Input Keydown
-       * @param {Event} e
-       */
-
     }, {
       key: "_handleInputKeydown",
       value: function _handleInputKeydown(e) {
@@ -8115,9 +8037,7 @@ $jscomp.polyfill = function (e, r, p, m) {
 
           e.preventDefault();
           if (!this.hasAutocomplete || this.hasAutocomplete && !this.options.autocompleteOnly) {
-            this.addChip({
-              tag: this.$input[0].value
-            });
+            this.addChip({ tag: this.$input[0].value });
           }
           this.$input[0].value = '';
 
@@ -8127,19 +8047,10 @@ $jscomp.polyfill = function (e, r, p, m) {
           this.selectChip(this.chipsData.length - 1);
         }
       }
-
-      /**
-       * Render Chip
-       * @param {chip} chip
-       * @return {Element}
-       */
-
     }, {
       key: "_renderChip",
       value: function _renderChip(chip) {
-        if (!chip.tag) {
-          return;
-        }
+        if (!chip.tag) return;
 
         var renderedChip = document.createElement('div');
         var closeIcon = document.createElement('i');
@@ -8159,11 +8070,6 @@ $jscomp.polyfill = function (e, r, p, m) {
         renderedChip.appendChild(closeIcon);
         return renderedChip;
       }
-
-      /**
-       * Render Chips
-       */
-
     }, {
       key: "_renderChips",
       value: function _renderChips() {
@@ -8173,35 +8079,25 @@ $jscomp.polyfill = function (e, r, p, m) {
           this.$el.append(chipEl);
           this.$chips.add(chipEl);
         }
-
         // move input to end
         this.$el.append(this.$input[0]);
       }
-
-      /**
-       * Setup Autocomplete
-       */
-
     }, {
       key: "_setupAutocomplete",
       value: function _setupAutocomplete() {
         var _this47 = this;
 
         this.options.autocompleteOptions.onAutocomplete = function (val) {
-          _this47.addChip({
-            tag: val
-          });
+          if (val.length > 0) {
+            var tag = val[0].text || val[0].id;
+            _this47.addChip({ tag: tag });
+          }
           _this47.$input[0].value = '';
           _this47.$input[0].focus();
         };
 
         this.autocomplete = M.Autocomplete.init(this.$input[0], this.options.autocompleteOptions);
       }
-
-      /**
-       * Setup Input
-       */
-
     }, {
       key: "_setupInput",
       value: function _setupInput() {
@@ -8210,14 +8106,8 @@ $jscomp.polyfill = function (e, r, p, m) {
           this.$input = $('<input></input>');
           this.$el.append(this.$input);
         }
-
         this.$input.addClass('input');
       }
-
-      /**
-       * Setup Label
-       */
-
     }, {
       key: "_setupLabel",
       value: function _setupLabel() {
@@ -8226,11 +8116,6 @@ $jscomp.polyfill = function (e, r, p, m) {
           this.$label[0].setAttribute('for', this.$input.attr('id'));
         }
       }
-
-      /**
-       * Set placeholder
-       */
-
     }, {
       key: "_setPlaceholder",
       value: function _setPlaceholder() {
@@ -8240,12 +8125,6 @@ $jscomp.polyfill = function (e, r, p, m) {
           $(this.$input).prop('placeholder', this.options.secondaryPlaceholder);
         }
       }
-
-      /**
-       * Check if chip is valid
-       * @param {chip} chip
-       */
-
     }, {
       key: "_isValid",
       value: function _isValid(chip) {
@@ -8262,12 +8141,6 @@ $jscomp.polyfill = function (e, r, p, m) {
 
         return false;
       }
-
-      /**
-       * Add chip
-       * @param {chip} chip
-       */
-
     }, {
       key: "addChip",
       value: function addChip(chip) {
@@ -8286,12 +8159,6 @@ $jscomp.polyfill = function (e, r, p, m) {
           this.options.onChipAdd.call(this, this.$el, renderedChip);
         }
       }
-
-      /**
-       * Delete chip
-       * @param {Number} chip
-       */
-
     }, {
       key: "deleteChip",
       value: function deleteChip(chipIndex) {
@@ -8308,12 +8175,6 @@ $jscomp.polyfill = function (e, r, p, m) {
           this.options.onChipDelete.call(this, this.$el, $chip[0]);
         }
       }
-
-      /**
-       * Select chip
-       * @param {Number} chip
-       */
-
     }, {
       key: "selectChip",
       value: function selectChip(chipIndex) {
@@ -8331,11 +8192,6 @@ $jscomp.polyfill = function (e, r, p, m) {
       value: function init(els, options) {
         return _get(Chips.__proto__ || Object.getPrototypeOf(Chips), "init", this).call(this, this, els, options);
       }
-
-      /**
-       * Get Instance
-       */
-
     }, {
       key: "getInstance",
       value: function getInstance(el) {
@@ -8400,30 +8256,17 @@ $jscomp.polyfill = function (e, r, p, m) {
           }
         }
       }
-
-      /**
-       * Handle Chips Keyup
-       * @param {Event} e
-       */
-
     }, {
       key: "_handleChipsKeyup",
       value: function _handleChipsKeyup(e) {
         Chips._keydown = false;
       }
-
-      /**
-       * Handle Chips Blur
-       * @param {Event} e
-       */
-
     }, {
       key: "_handleChipsBlur",
       value: function _handleChipsBlur(e) {
         if (!Chips._keydown && document.hidden) {
           var $chips = $(e.target).closest('.chips');
           var currChips = $chips[0].M_Chips;
-
           currChips._selectedChip = null;
         }
       }
@@ -8436,12 +8279,6 @@ $jscomp.polyfill = function (e, r, p, m) {
 
     return Chips;
   }(Component);
-
-  /**
-   * @static
-   * @memberof Chips
-   */
-
 
   Chips._keydown = false;
 

@@ -102,13 +102,11 @@
       // specify options here
     });
     $('.chips-initial').chips({
-      data: [{
-        tag: 'Apple',
-      }, {
-        tag: 'Microsoft',
-      }, {
-        tag: 'Google',
-      }],
+      data: [
+        {tag: 'Apple'},
+        {tag: 'Microsoft'},
+        {tag: 'Google'}
+      ]
     });
     $('.chips-placeholder').chips({
       placeholder: 'Enter a tag',
@@ -116,13 +114,11 @@
     });
     $('.chips-autocomplete').chips({
       autocompleteOptions: {
-        data: {
-          'Apple': null,
-          'Microsoft': null,
-          'Google': null
-        },
-        limit: Infinity,
-        minLength: 1
+        data: [
+          {id: 12, text: "Apple"},
+          {id: 13, text: "Microsoft"},
+          {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+        ]
       }
     });
   });

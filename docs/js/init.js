@@ -210,15 +210,9 @@
     $('.chips-initial').chips({
       readOnly: true,
       data: [
-        {
-          tag: 'Apple'
-        },
-        {
-          tag: 'Microsoft'
-        },
-        {
-          tag: 'Google'
-        }
+        {tag: 'Apple'},
+        {tag: 'Microsoft'},
+        {tag: 'Google'}
       ]
     });
     $('.chips-placeholder').chips({
@@ -227,11 +221,11 @@
     });
     $('.chips-autocomplete').chips({
       autocompleteOptions: {
-        data: {
-          Apple: null,
-          Microsoft: null,
-          Google: null
-        }
+        data: [
+          {id: 12, text: "Apple"},
+          {id: 13, text: "Microsoft"},
+          {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+        ]
       }
     });
 
