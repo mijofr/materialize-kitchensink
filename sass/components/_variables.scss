@@ -30,6 +30,11 @@
 //  24. Collections
 //  25. Progress Bar
 
+
+// TypeScale
+$md_sys_typescale_body-large_size: 16px;
+
+
 // 1. Colors
 // ==========================================================================
 
@@ -67,6 +72,7 @@ $surface-hover-color-opaque: var(--hover-color) !default;
 $surface-focus-color-opaque: var(--focus-color) !default;
 
 $divider-color: var(--separator-color);
+
 // 2. Badges
 // ==========================================================================
 
