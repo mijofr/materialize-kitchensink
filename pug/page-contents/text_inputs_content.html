@@ -13,6 +13,7 @@
         <p>The validate class leverages HTML5 validation and will add a <code class="language-markup">valid</code> and <code class="language-markup">invalid</code> class accordingly. If you don't want the Green and Red validation states, just remove the <code class="language-markup">validate</code> class from your inputs.</p>
         <br>
           <form>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-bottom: 3em;">
               <div class="input-field filled">
                 <input id="first_name" type="text" placeholder=" ">
@@ -20,50 +21,48 @@
                 <span class="supporting-text">Supporting Text</span>
                 <span class="character-counter">0/20</span>
               </div>
+
               <div class="input-field outlined">
                 <input id="last_name" type="text" placeholder=" ">
                 <label for="last_name">Last Name</label>
-                <span class="supporting-text">Supporting Text</span>
+                <!--<span class="supporting-text">Supporting Text</span>-->
                 <span class="character-counter">0/20</span>
               </div>
+
               <div class="input-field filled">
-                <input id="test1" type="text" placeholder=" ">
-                <label for="test1">Test 1</label>
+                <input id="disabled" type="text" placeholder=" " value="I am not editable" disabled>
+                <label for="disabled">Disabled</label>
               </div>
-              <div class="input-field filled">
-                <input id="test2" type="text" placeholder=" ">
-                <label for="test2">Test 2</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input disabled value="I am not editable" id="disabled" type="text" class="validate">
+
+              <div class="input-field outlined">
+                <input id="disabled" type="text" placeholder=" " value="Not editable too" disabled>
                 <label for="disabled">Disabled</label>
               </div>
             </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input id="password" type="password" class="validate">
-                <label for="password">Password</label>
-              </div>
+
+            <div class="input-field filled">
+              <input id="password" type="password" class="validate" placeholder=" ">
+              <label for="password">Password</label>
+              <span class="character-counter">0/20</span>
             </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input id="email" type="email" class="validate">
-                <label for="email">Email</label>
-                <span class="helper-text" data-error="wrong" data-success="right">Helper text</span>
-              </div>
+
+            <div class="input-field filled">
+              <input id="email" type="email" class="validate" placeholder=" ">
+              <label for="email">Email</label>
+              <span class="supporting-text" data-error="wrong" data-success="right">Supporting text for additional information</span>
             </div>
-            <div class="row">
+
+            <div class="row" style="margin-top: 2em;">
               <div class="col s12">
                 This is an inline input field:
-                <div class="input-field inline">
-                  <input id="email_inline" type="email" class="validate">
+                <div class="input-field filled inline">
+                  <input id="email_inline" type="email" class="validate" placeholder=" ">
                   <label for="email_inline">Email</label>
                   <span class="helper-text" data-error="wrong" data-success="right"></span>
                 </div>
               </div>
             </div>
+
           </form>
         <pre><code class="language-markup">
   &lt;div class="row">
@@ -112,8 +111,8 @@
         <h5>Prefilling Text Inputs</h5>
         <p>If you are having trouble with the labels overlapping prefilled content, Try adding <code class="language-markup">class="active"</code> to the label. <br />You can also call the function <code class="language-javascript">M.updateTextFields();</code> to reinitialize all the Materialize labels on the page if you are dynamically adding inputs.</p>
         <div class="row">
-          <div class="input-field col s6">
-            <input value="Alvin" id="first_name2" type="text" class="validate">
+          <div class="input-field filled col s6">
+            <input value="Alvin" id="first_name2" type="text" class="validate" placeholder=" ">
             <label class="active" for="first_name2">First Name</label>
           </div>
         </div>

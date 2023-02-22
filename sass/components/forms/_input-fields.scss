@@ -34,50 +34,31 @@ textarea.materialize-textarea {
   background-color: transparent;
   color: $input-color;
   // CSS
-  border: none;
+  //border: none;
   box-sizing: border-box; /* https://stackoverflow.com/questions/1377719/padding-within-inputs-breaks-width-100*/
   width: 100%;  
   //padding: $input-padding;
 
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid $input-border-color;
+  border: none;
 
   // M3-Specs
   font-size: $md_sys_typescale_body-large_size; //$input-font-size; // => 16 dp
   height: 56px; // 56dp $input-height;
-  //padding: 0.5rem 1rem; // y:8dp  x:16dp
 
-  // Focused label style
-  /*
-  &:focus:not([readonly]), &:not(:placeholder-shown) {
-    padding: 
-  }
-  */
-
-  // &:focus:not([readonly]) + label {
-  //   color: $input-focus-color;
-  //   transform: translate(0, -1.5rem) scale(0.85);
-  // }
-  // // Stay in Place after Populated
-  // &:not(:placeholder-shown) + label {
-  //   transform: translate(0, -1.5rem) scale(0.85);
-  // }
-
-
-
-
+  //--- Disabled
   // Disabled input style
   &:disabled,
   &[readonly="readonly"] {    
     color: $input-disabled-color;
     border-bottom: $input-disabled-border;
+    opacity: 0.5;
   }
   // Disabled label style
   &:disabled + label,
   &[readonly="readonly"] + label {
     color: $input-disabled-color;
+    opacity: 0.5;
   }
-
 
   // // Focused input style
   // &:focus:not([readonly]) {
@@ -171,7 +152,7 @@ textarea.materialize-textarea {
 // Styling for input field wrapper
 .input-field {
   position: relative;
-  margin-bottom: 24px;
+  clear: both;
 
   & > label {
     color: $input-border-color;
@@ -197,16 +178,21 @@ textarea.materialize-textarea {
 
   // https://m3.material.io/styles/shape/shape-scale-tokens
 
-  &.filled {
-    border-radius: 4px; // md.sys.shape.corner.extra-small.top
-    background-color: var(--focus-color);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+  &.filled {    
     input {
       padding: 0 16px;
       padding-top: 20px;
+
+      background-color: var(--focus-color);
+
+      border-top: 2px solid transparent;
+      border-bottom: 1px solid $input-border-color;
+      border-radius: 4px; // md.sys.shape.corner.extra-small.top
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+
       &:focus:not([readonly]) {
-        border-top: 1px solid transparent;
+        //border-top: 0; //1px solid transparent;
         border-bottom: 2px solid $input-focus-color;
       }      
       &:focus:not([readonly]) + label {
@@ -222,21 +208,25 @@ textarea.materialize-textarea {
 
   &.outlined {
     input {
+      padding: 0 16px;
+
       border: 1px solid $input-border-color;
       border-radius: 4px; // md.sys.shape.corner.extra-small
-      padding-left: 16px;
+
       &:focus:not([readonly]) {
         border: 2px solid $input-focus-color;
+        margin: 0 -1px;
       }
       &:focus:not([readonly]) + label {
         color: $input-focus-color;
       }
       &:focus:not([readonly]) + label,
       &:not(:placeholder-shown) + label {
-        font-size: 12px;
-        transform: translate(-4px, -1.5rem);
+        font-size: 12px; // md.sys.typescale.body-small.size
+        top: -8px; // ?
+        left: 12px;
         background-color: var(--background-color);
-        padding: 0 5px;
+        padding: 0 4px;
       }
     }
   }
@@ -244,16 +234,18 @@ textarea.materialize-textarea {
   .supporting-text {
     color: $input-border-color;
     font-size: 12px;
-    position: absolute;
-    left: 0;
+    //position: absolute;
+    //left: 0;
     padding: 0 16px;
     margin-top: 4px;
   }
+
   .character-counter {
     color: $input-border-color;
     font-size: 12px;
-    position: absolute;
-    right: 0;
+    //position: absolute;
+    //right: 0;
+    float: right;
     padding: 0 16px;
     margin-top: 4px;
   }
@@ -294,7 +286,6 @@ textarea.materialize-textarea {
     //transform: translateY(-14px) scale(.8);
     //transform-origin: 0 0;
   }
-  */
 
   .helper-text {
     &::after {
@@ -303,13 +294,13 @@ textarea.materialize-textarea {
       top: 0;
       left: 0;
     }
-
     position: relative;
     min-height: 18px;
     display: block;
     font-size: 12px;
     color: $font-color-medium;
   }
+  */
 
   // Prefix Icons
   .prefix, .suffix {
@@ -318,10 +309,8 @@ textarea.materialize-textarea {
     font-size: $input-icon-size;
     transition: color .2s;
     top: ($input-height - $input-icon-size) * 0.5;
-
     &.active { color: $input-focus-color; }
   }
-
   .prefix ~ input,
   .prefix ~ textarea,
   .prefix ~ .select-wrapper,
@@ -333,9 +322,7 @@ textarea.materialize-textarea {
     width: 92%;
     width: calc(100% - 3rem);
   }
-
   .prefix ~ label { margin-left: 3rem; }
-
   @media #{$medium-and-down} {
     .prefix ~ input,
     .suffix ~ input {
@@ -343,7 +330,6 @@ textarea.materialize-textarea {
       width: calc(100% - 3rem);
     }
   }
-
   @media #{$small-and-down} {
     .prefix ~ input,
     .suffix ~ input {
@@ -351,13 +337,10 @@ textarea.materialize-textarea {
       width: calc(100% - 3rem);
     }
   }
-
-
   // Suffix Icons
   .suffix {
     right: 0;
   }
-
   .suffix ~ input,
   .suffix ~ textarea,
   .suffix ~ .select-wrapper,
@@ -369,18 +352,14 @@ textarea.materialize-textarea {
     width: 92%;
     width: calc(100% - 3rem);
   }
-
   .suffix ~ label { margin-right: 3rem; }
-
 }
 
 /* Search Field */
-
 .input-field input[type=search] {
   display: block;
   line-height: inherit;
   transition: .3s background-color;
-
   .nav-wrapper & {
     height: inherit;
     padding-left: 4rem;
@@ -388,17 +367,14 @@ textarea.materialize-textarea {
     border: 0;
     box-shadow: none;
   }
-
   &:focus:not(.browser-default) {
     border: 0;
     box-shadow: none;
   }
-
   & + .label-icon {
     transform: none;
     left: 1rem;
   }
-
   & ~ .mdi-navigation-close,
   & ~ .material-icons {
     position: absolute;
@@ -410,7 +386,6 @@ textarea.materialize-textarea {
     transition: .3s color;
   }
 }
-
 
 /* Textarea */
 
@@ -448,7 +423,6 @@ textarea {
 .autocomplete-content {
   li {
     .highlight { color: $font-color-main; }
-
     img {
       height: $dropdown-item-height - 10;
       width: $dropdown-item-height - 10;
