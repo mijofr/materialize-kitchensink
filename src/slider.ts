@@ -1,5 +1,6 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import anim from "animejs";
 
   let _defaults = {
     indicators: true,
@@ -12,7 +13,15 @@
    * @class
    *
    */
-  class Slider extends Component {
+  export class Slider extends Component {
+    $slider: any;
+    $slides: any;
+    activeIndex: any;
+    $active: any;
+    $indicators: any;
+    private _handleIntervalBound: any;
+    private _handleIndicatorClickBound: any;
+    interval: string | number | NodeJS.Timeout;
     /**
      * Construct Slider instance and set up overlay
      * @constructor
@@ -22,7 +31,7 @@
     constructor(el, options) {
       super(Slider, el, options);
 
-      this.el.M_Slider = this;
+      (this.el as any).M_Slider = this;
 
       /**
        * Options for the modal
@@ -50,12 +59,12 @@
       this._setSliderHeight();
 
       // Set initial positions of captions
-      this.$slides.find('.caption').each((el) => {
+      this.$slides.find('.caption').each((i, el) => {
         this._animateCaptionIn(el, 0);
       });
 
       // Move img src into background-image
-      this.$slides.find('img').each((el) => {
+      this.$slides.find('img').each((i, el) => {
         let placeholderBase64 =
           'data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
         if ($(el).attr('src') !== placeholderBase64) {
@@ -128,7 +137,7 @@
       this.pause();
       this._removeIndicators();
       this._removeEventHandlers();
-      this.el.M_Slider = undefined;
+      (this.el as any).M_Slider = undefined;
     }
 
     /**
@@ -139,7 +148,7 @@
       this._handleIndicatorClickBound = this._handleIndicatorClick.bind(this);
 
       if (this.options.indicators) {
-        this.$indicators.each((el) => {
+        this.$indicators.each((i, el) => {
           el.addEventListener('click', this._handleIndicatorClickBound);
         });
       }
@@ -150,7 +159,7 @@
      */
     _removeEventHandlers() {
       if (this.options.indicators) {
-        this.$indicators.each((el) => {
+        this.$indicators.each((i, el) => {
           el.removeEventListener('click', this._handleIndicatorClickBound);
         });
       }
@@ -187,6 +196,8 @@
         targets: caption,
         opacity: 0,
         duration: duration,
+        translateX: null,
+        translateY: null,
         easing: 'easeOutQuad'
       };
 
@@ -223,7 +234,7 @@
     _setupIndicators() {
       if (this.options.indicators) {
         this.$indicators = $('<ul class="indicators"></ul>');
-        this.$slides.each((el, index) => {
+        this.$slides.each((i, el) => {
           let $indicator = $('<li class="indicator-item"></li>');
           this.$indicators.append($indicator[0]);
         });
@@ -260,7 +271,7 @@
           duration: this.options.duration,
           easing: 'easeOutQuad',
           complete: () => {
-            this.$slides.not('.active').each((el) => {
+            this.$slides.not('.active').each((i, el) => {
               anim({
                 targets: el,
                 opacity: 0,
@@ -350,10 +361,6 @@
       this.set(newIndex);
     }
   }
+  
 
-  M.Slider = Slider;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Slider, 'slider', 'M_Slider');
-  }
-})(cash, M.anime);
+  

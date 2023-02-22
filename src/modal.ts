@@ -1,5 +1,7 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import anim from "animejs";
+import { M } from "./global";
 
   let _defaults = {
     opacity: 0.5,
@@ -19,7 +21,18 @@
    * @class
    *
    */
-  class Modal extends Component {
+  export class Modal extends Component {
+    static _modalsOpen: number;
+    static _count: number;
+    isOpen: boolean;
+    id: any;
+    private _openingTrigger: any;
+    $overlay: any;
+    private _nthModalOpened: number;
+    private _handleOverlayClickBound: any;
+    private _handleModalCloseClickBound: any;
+    private _handleKeydownBound: any;
+    private _handleFocusBound: any;
     /**
      * Construct Modal instance and set up overlay
      * @constructor
@@ -29,7 +42,7 @@
     constructor(el, options) {
       super(Modal, el, options);
 
-      this.el.M_Modal = this;
+      (this.el as any).M_Modal = this;
 
       /**
        * Options for the modal
@@ -56,7 +69,7 @@
       this.id = this.$el.attr('id');
       this._openingTrigger = undefined;
       this.$overlay = $('<div class="modal-overlay"></div>');
-      this.el.tabIndex = 0;
+      (this.el as HTMLElement).tabIndex = 0;
       this._nthModalOpened = 0;
 
       Modal._count++;
@@ -87,7 +100,7 @@
       this._removeEventHandlers();
       this.el.removeAttribute('style');
       this.$overlay.remove();
-      this.el.M_Modal = undefined;
+      (this.el as any).M_Modal = undefined;
     }
 
     /**
@@ -123,7 +136,7 @@
       let $trigger = $(e.target).closest('.modal-trigger');
       if ($trigger.length) {
         let modalId = M.getIdFromTrigger($trigger[0]);
-        let modalInstance = document.getElementById(modalId).M_Modal;
+        let modalInstance = (document.getElementById(modalId) as any).M_Modal;
         if (modalInstance) {
           modalInstance.open($trigger);
         }
@@ -169,7 +182,7 @@
     _handleFocus(e) {
       // Only trap focus if this modal is the last model opened (prevents loops in nested modals).
       if (!this.el.contains(e.target) && this._nthModalOpened === Modal._modalsOpen) {
-        this.el.focus();
+        (this.el as HTMLElement).focus();
       }
     }
 
@@ -178,7 +191,7 @@
      */
     _animateIn() {
       // Set initial styles
-      $.extend(this.el.style, {
+      $.extend((this.el as HTMLElement).style, {
         display: 'block',
         opacity: 0
       });
@@ -247,7 +260,7 @@
         easing: 'easeOutCubic',
         // Handle modal ready callback
         complete: () => {
-          this.el.style.display = 'none';
+          (this.el as HTMLElement).style.display = 'none';
           this.$overlay.remove();
 
           // Call onCloseEnd callback
@@ -292,7 +305,7 @@
 
       // Set Z-Index based on number of currently open modals
       this.$overlay[0].style.zIndex = 1000 + Modal._modalsOpen * 2;
-      this.el.style.zIndex = 1000 + Modal._modalsOpen * 2 + 1;
+      (this.el as HTMLElement).style.zIndex = (1000 + Modal._modalsOpen * 2 + 1).toString();
 
       // Set opening trigger, undefined indicates modal was opened by javascript
       this._openingTrigger = !!$trigger ? $trigger[0] : undefined;
@@ -321,7 +334,7 @@
       this._animateIn();
 
       // Focus modal
-      this.el.focus();
+      (this.el as HTMLElement).focus();
 
       return this;
     }
@@ -360,23 +373,22 @@
       this._animateOut();
       return this;
     }
+    
+    static{
+        /**
+           * @static
+           * @memberof Modal
+           */
+        Modal._modalsOpen = 0;
+
+        /**
+          * @static
+          * @memberof Modal
+          */
+        Modal._count = 0;
+    }
+
   }
 
-  /**
-   * @static
-   * @memberof Modal
-   */
-  Modal._modalsOpen = 0;
+ 
 
-  /**
-   * @static
-   * @memberof Modal
-   */
-  Modal._count = 0;
-
-  M.Modal = Modal;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Modal, 'modal', 'M_Modal');
-  }
-})(cash, M.anime);

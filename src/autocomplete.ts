@@ -1,8 +1,12 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import { M } from "./global";
+import $ from "cash-dom";
+import { Dropdown } from "./dropdown";
+import { Forms } from "./forms";
 
   let _defaults = {
-    data: [], // Autocomplete data set
+    data: {}, // Autocomplete data set
+    limit: Infinity, // Limit of results the autocomplete shows
     onAutocomplete: null, // Callback for when autocompleted
     dropdownOptions: {
       // Default dropdown options
@@ -11,6 +15,11 @@
       coverTrigger: false
     },
     minLength: 1, // Min characters before autocomplete starts
+    sortFunction: function(a, b, inputString) {
+      // Sort function for sorting autocomplete results
+      return a.indexOf(inputString) - b.indexOf(inputString);
+    },
+
     isMultiSelect: false,
     onSearch: function(text, autocomplete) {
       const filteredData = autocomplete.options.data.filter(item => {
@@ -24,10 +33,52 @@
     allowUnsafeHTML: false
   };
 
-  class Autocomplete extends Component {
+  /**
+   * @class
+   *
+   */
+  export class Autocomplete extends Component {
+    private isOpen: boolean;
+    private count: number;
+    private activeIndex: number;
+    private oldVal: any;
+    private $inputField: any;
+    private $active: any;
+    private _mousedown: boolean;
+    private _handleInputBlurBound: any;
+    private _handleInputKeyupAndFocusBound: any;
+    private _handleInputKeydownBound: any;
+    private _handleInputClickBound: any;
+    private _handleContainerMousedownAndTouchstartBound: any;
+    private _handleContainerMouseupAndTouchendBound: any;
+    container: any;
+    dropdown: any;
+    static _keydown: boolean;
+    selectedValues: any[];
+    menuItems: any[];
+    /**
+     * Construct Autocomplete instance
+     * @constructor
+     * @param {Element} el
+     * @param {Object} options
+     */
     constructor(el, options) {
       super(Autocomplete, el, options);
-      this.el.M_Autocomplete = this;
+
+      (this.el as any).M_Autocomplete = this;
+
+      /**
+       * Options for the autocomplete
+       * @member Autocomplete#options
+       * @prop {Number} duration
+       * @prop {Number} dist
+       * @prop {number} shift
+       * @prop {number} padding
+       * @prop {Boolean} fullWidth
+       * @prop {Boolean} indicators
+       * @prop {Boolean} noWrap
+       * @prop {Function} onCycleTo
+       */
       this.options = $.extend({}, Autocomplete.defaults, options);
       this.isOpen = false;
       this.count = 0;
@@ -54,7 +105,7 @@
     destroy() {
       this._removeEventHandlers();
       this._removeDropdown();
-      this.el.M_Autocomplete = undefined;
+      (this.el as any).M_Autocomplete = undefined;
     }
 
     _setupEventHandlers() {
@@ -132,11 +183,13 @@
         if (userOnItemClick && typeof userOnItemClick === 'function')
           userOnItemClick.call(this.dropdown, this.el);
       };
-      this.dropdown = M.Dropdown.init(this.el, dropdownOptions);
+
+      this.dropdown = Dropdown.init(this.el, dropdownOptions);
+
       // Sketchy removal of dropdown click handler
       this.el.removeEventListener('click', this.dropdown._handleClickBound);
       // Set Value if already set in HTML
-      if (this.el.value) this.selectOption(this.el.value);
+      if ( (this.el as HTMLInputElement).value) this.selectOption((this.el as HTMLInputElement).value);
       // Add StatusInfo
       const div = document.createElement('div');
       div.classList.add('status-info');
@@ -156,7 +209,8 @@
     _handleInputKeyupAndFocus(e) {
       if (e.type === 'keyup') Autocomplete._keydown = false;
       this.count = 0;
-      const actualValue = this.el.value.toLowerCase();
+      const actualValue = (this.el as HTMLInputElement).value.toLowerCase();
+
       // Don't capture enter or arrow key usage.
       if (e.keyCode === 13 || e.keyCode === 38 || e.keyCode === 40) return;
       // Check if the input isn't empty
@@ -167,10 +221,10 @@
       // Value has changed!
       if (this.oldVal !== actualValue) {
         this._setStatusLoading();
-        this.options.onSearch(this.el.value, this);
+        this.options.onSearch( (this.el as HTMLInputElement).value, this);
       }
       // Reset Single-Select when Input cleared
-      if (!this.options.isMultiSelect && this.el.value.length === 0) {
+      if (!this.options.isMultiSelect &&  (this.el as HTMLInputElement).value.length === 0) {
         this.selectedValues = [];
         this._triggerChanged();
       }
@@ -221,6 +275,7 @@
     _handleContainerMouseupAndTouchend(e) {
       this._mousedown = false;
     }
+
     _resetCurrentElementPosition() {
       this.activeIndex = -1;
       this.$active.removeClass('active');
@@ -242,6 +297,8 @@
       }
       return [label.slice(0, start), label.slice(start, end + 1), label.slice(end + 1)];
     }
+
+  
 
     _createDropdownItem(entry) {
       const item = document.createElement('li');
@@ -268,7 +325,7 @@
       }
 
       // Text
-      const inputText = this.el.value.toLowerCase();
+      const inputText =  (this.el as HTMLInputElement).value.toLowerCase();
       const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
       const div = document.createElement('div');
       div.setAttribute('style', 'line-height:1.2;font-weight:500;');
@@ -335,16 +392,17 @@
     _updateSelectedInfo() {
       const statusElement = this.el.parentElement.querySelector('.status-info');
       if (statusElement) {
-        if (this.options.isMultiSelect) statusElement.innerHTML = this.selectedValues.length;
+        if (this.options.isMultiSelect) 
+          statusElement.innerHTML = this.selectedValues.length.toString();
         else statusElement.innerHTML = '';
       }
     }
     _refreshInputText() {
       if (this.selectedValues.length === 1) {
         const entry = this.selectedValues[0];
-        this.el.value = entry.text || entry.id; // Write Text to Input
+        (this.el as HTMLInputElement).value = entry.text || entry.id; // Write Text to Input
       }
-      M.updateTextFields();
+      Forms.updateTextFields();
     }
     _triggerChanged() {
       this.$el.trigger('change');
@@ -354,7 +412,8 @@
     }
 
     open() {
-      const inputText = this.el.value.toLowerCase();
+      const inputText = (this.el as HTMLInputElement).value.toLowerCase();
+
       this._resetAutocomplete();
       if (inputText.length >= this.options.minLength) {
         this.isOpen = true;
@@ -398,7 +457,7 @@
           this.selectedValues = this.selectedValues.filter(
             (selectedEntry) => selectedEntry.id !== entry.id
           );
-        this.el.focus();
+          (this.el as HTMLInputElement).focus();
       } else {
         // Single-Select
         this.selectedValues = [entry];
@@ -411,9 +470,4 @@
     }
   }
 
-  Autocomplete._keydown = false;
-  M.Autocomplete = Autocomplete;
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Autocomplete, 'autocomplete', 'M_Autocomplete');
-  }
-})(cash);
+   

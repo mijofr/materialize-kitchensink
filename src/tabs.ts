@@ -34,6 +34,8 @@ export class Tabs extends Component {
    */
   constructor(el, options: any) {
     super(Tabs, el, options);
+      (this.el as any).M_Tabs = this;
+
 
       /**
        * Options for the Tabs
@@ -92,6 +94,8 @@ export class Tabs extends Component {
       } else {
         this._teardownNormalTabs();
       }
+
+      this.$el[0].M_Tabs = undefined;
 
     }
 
@@ -255,7 +259,7 @@ export class Tabs extends Component {
       }
 
       let $tabsContent = $();
-      this.$tabLinks.each((link) => {
+      this.$tabLinks.each((i, link) => {
         let $currContent = $(M.escapeHash(link.hash));
         $currContent.addClass('carousel-item');
         $tabsContent = $tabsContent.add($currContent);
@@ -306,7 +310,7 @@ export class Tabs extends Component {
      */
     _setupNormalTabs() {
       // Hide Tabs Content
-      this.$tabLinks.not(this.$activeTabLink).each((link) => {
+      this.$tabLinks.not(this.$activeTabLink).each((i, link) => {
         if (!!link.hash) {
           let $currContent = $(M.escapeHash(link.hash));
           if ($currContent.length) {
@@ -321,7 +325,7 @@ export class Tabs extends Component {
      */
     _teardownNormalTabs() {
       // show Tabs Content
-      this.$tabLinks.each((link) => {
+      this.$tabLinks.each((i, link) => {
         if (!!link.hash) {
           let $currContent = $(M.escapeHash(link.hash));
           if ($currContent.length) {

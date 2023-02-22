@@ -1,5 +1,6 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
 
   let _defaults = {
     onOpen: undefined,
@@ -10,7 +11,17 @@
    * @class
    *
    */
-  class TapTarget extends Component {
+  export class TapTarget extends Component {
+    isOpen: any;
+    wrapper: any;
+    private _handleDocumentClickBound: (this: HTMLElement, ev: MouseEvent) => any;
+    $origin: any;
+    private _handleTargetClickBound: EventListenerOrEventListenerObject;
+    originEl: any;
+    private _handleOriginClickBound: any;
+    private _handleThrottledResizeBound: any;
+    waveEl: HTMLElement & Element & Node;
+    contentEl: any;
     /**
      * Construct TapTarget instance
      * @constructor
@@ -20,7 +31,7 @@
     constructor(el, options) {
       super(TapTarget, el, options);
 
-      this.el.M_TapTarget = this;
+      (this.el as any).M_TapTarget = this;
 
       /**
        * Options for the select
@@ -61,7 +72,7 @@
      */
     destroy() {
       this._removeEventHandlers();
-      this.el.TapTarget = undefined;
+      (this.el as any).TapTarget = undefined;
     }
 
     /**
@@ -233,16 +244,18 @@
       let tapTargetWaveLeft = tapTargetWidth / 2 - tapTargetWaveWidth / 2;
 
       // Setting tap target
-      let tapTargetWrapperCssObj = {};
-      tapTargetWrapperCssObj.top = isTop ? tapTargetTop + 'px' : '';
-      tapTargetWrapperCssObj.right = isRight
-        ? windowWidth - tapTargetLeft - tapTargetWidth - scrollBarWidth + 'px'
-        : '';
-      tapTargetWrapperCssObj.bottom = isBottom
-        ? windowHeight - tapTargetTop - tapTargetHeight + 'px'
-        : '';
-      tapTargetWrapperCssObj.left = isLeft ? tapTargetLeft + 'px' : '';
-      tapTargetWrapperCssObj.position = tapTargetPosition;
+      let tapTargetWrapperCssObj = {
+        top: isTop ? tapTargetTop + 'px' : '',
+        right: isRight
+          ? windowWidth - tapTargetLeft - tapTargetWidth - scrollBarWidth + 'px'
+          : '',
+        bottom: isBottom
+          ? windowHeight - tapTargetTop - tapTargetHeight + 'px'
+          : '',
+        left: isLeft ? tapTargetLeft + 'px' : '',
+        position: tapTargetPosition
+      };
+                              
       $(this.wrapper).css(tapTargetWrapperCssObj);
 
       // Setting content
@@ -307,9 +320,5 @@
     }
   }
 
-  M.TapTarget = TapTarget;
+  
 
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(TapTarget, 'tapTarget', 'M_TapTarget');
-  }
-})(cash);

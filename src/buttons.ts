@@ -1,5 +1,6 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import anim from "animejs";
 
   let _defaults = {
     direction: 'top',
@@ -7,13 +8,28 @@
     toolbarEnabled: false
   };
 
-  $.fn.reverse = [].reverse;
+  ($.fn as any).reverse = [].reverse;
+  
 
   /**
    * @class
    *
    */
-  class FloatingActionButton extends Component {
+  export class FloatingActionButton extends Component {
+    isOpen: boolean;
+    $anchor: any;
+    $menu: any;
+    $floatingBtns: any;
+    $floatingBtnsReverse: any;
+    offsetY: number;
+    offsetX: number;
+    private _handleFABClickBound: any;
+    private _handleOpenBound: any;
+    private _handleCloseBound: any;
+    private _handleDocumentClickBound: (this: HTMLElement, ev: MouseEvent) => any;
+    btnBottom: number;
+    btnLeft: number;
+    btnWidth: number;
     /**
      * Construct FloatingActionButton instance
      * @constructor
@@ -23,7 +39,7 @@
     constructor(el, options) {
       super(FloatingActionButton, el, options);
 
-      this.el.M_FloatingActionButton = this;
+      (this.el as any).M_FloatingActionButton = this;
 
       /**
        * Options for the fab
@@ -76,7 +92,7 @@
      */
     destroy() {
       this._removeEventHandlers();
-      this.el.M_FloatingActionButton = undefined;
+      (this.el as any).M_FloatingActionButton = undefined;
     }
 
     /**
@@ -169,7 +185,7 @@
       this.$el.addClass('active');
 
       let time = 0;
-      this.$floatingBtnsReverse.each((el) => {
+      this.$floatingBtnsReverse.each((i, el) => {
         anim({
           targets: el,
           opacity: 1,
@@ -188,7 +204,7 @@
      * Classic FAB Menu close
      */
     _animateOutFAB() {
-      this.$floatingBtnsReverse.each((el) => {
+      this.$floatingBtnsReverse.each((i, el) => {
         anim.remove(el);
         anim({
           targets: el,
@@ -342,13 +358,4 @@
     }
   }
 
-  M.FloatingActionButton = FloatingActionButton;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(
-      FloatingActionButton,
-      'floatingActionButton',
-      'M_FloatingActionButton'
-    );
-  }
-})(cash, M.anime);
+  

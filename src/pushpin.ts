@@ -1,5 +1,6 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
 
   let _defaults = {
     top: 0,
@@ -12,7 +13,9 @@
    * @class
    *
    */
-  class Pushpin extends Component {
+  export class Pushpin extends Component {
+    static _pushpins: any[];
+    originalOffset: any;
     /**
      * Construct Pushpin instance
      * @constructor
@@ -22,7 +25,7 @@
     constructor(el, options) {
       super(Pushpin, el, options);
 
-      this.el.M_Pushpin = this;
+      (this.el as any).M_Pushpin = this;
 
       /**
        * Options for the modal
@@ -30,7 +33,7 @@
        */
       this.options = $.extend({}, Pushpin.defaults, options);
 
-      this.originalOffset = this.el.offsetTop;
+      this.originalOffset = (this.el as HTMLElement).offsetTop;
       Pushpin._pushpins.push(this);
       this._setupEventHandlers();
       this._updatePosition();
@@ -56,7 +59,7 @@
      * Teardown component
      */
     destroy() {
-      this.el.style.top = null;
+      (this.el as HTMLElement).style.top = null;
       this._removePinClasses();
 
       // Remove pushpin Inst
@@ -65,7 +68,7 @@
       if (Pushpin._pushpins.length === 0) {
         this._removeEventHandlers();
       }
-      this.el.M_Pushpin = undefined;
+      (this.el as any).M_Pushpin = undefined;
     }
 
     static _updateElements() {
@@ -92,7 +95,7 @@
         !this.el.classList.contains('pinned')
       ) {
         this._removePinClasses();
-        this.el.style.top = `${this.options.offset}px`;
+        (this.el as HTMLElement).style.top = `${this.options.offset}px`;
         this.el.classList.add('pinned');
 
         // onPositionChange callback
@@ -104,7 +107,7 @@
       // Add pin-top (when scrolled position is above top)
       if (scrolled < this.options.top && !this.el.classList.contains('pin-top')) {
         this._removePinClasses();
-        this.el.style.top = 0;
+        (this.el as HTMLElement).style.top = '0';
         this.el.classList.add('pin-top');
 
         // onPositionChange callback
@@ -117,7 +120,7 @@
       if (scrolled > this.options.bottom && !this.el.classList.contains('pin-bottom')) {
         this._removePinClasses();
         this.el.classList.add('pin-bottom');
-        this.el.style.top = `${this.options.bottom - this.originalOffset}px`;
+        (this.el as HTMLElement).style.top = `${this.options.bottom - this.originalOffset}px`;
 
         // onPositionChange callback
         if (typeof this.options.onPositionChange === 'function') {
@@ -132,17 +135,10 @@
       this.el.classList.remove('pinned');
       this.el.classList.remove('pin-bottom');
     }
-  }
 
-  /**
-   * @static
-   * @memberof Pushpin
-   */
-  Pushpin._pushpins = [];
+    static {
+      Pushpin._pushpins = [];
+    }
+  }  
 
-  M.Pushpin = Pushpin;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Pushpin, 'pushpin', 'M_Pushpin');
-  }
-})(cash);
+  

@@ -1,19 +1,32 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import $, { Selector } from "cash-dom";
+import { M } from "./global";
 
   let _defaults = {
     classes: '',
     dropdownOptions: {}
   };
 
-  class FormSelect extends Component {
+  export class FormSelect extends Component {
+    isMultiple: any;
+    private _values: any[];
+    labelEl: any;
+    private _labelFor: boolean;
+    private _handleSelectChangeBound: any;
+    private _handleOptionClickBound: any;
+    private _handleInputClickBound: any;
+    dropdownOptions: HTMLElement;
+    input: any;
+    dropdown: any;
+    wrapper: HTMLDivElement;
+    $selectOptions: any;
     constructor(el, options) {
       super(FormSelect, el, options);
       if (this.$el.hasClass('browser-default')) return;
-      this.el.M_FormSelect = this;
+      (this.el as any).M_FormSelect = this;
       this.options = $.extend({}, FormSelect.defaults, options);
       this.isMultiple = this.$el.prop('multiple');
-      this.el.tabIndex = -1;
+      (this.el as HTMLElement).tabIndex = -1;
       this._values = [];
       this.labelEl = null;
       this._labelFor = false;
@@ -35,7 +48,7 @@
       if (this._labelFor) this.labelEl.setAttribute("for", this.el.id);
       this._removeEventHandlers();
       this._removeDropdown();
-      this.el.M_FormSelect = undefined;
+      (this.el as any).M_FormSelect = undefined;
     }
     _setupEventHandlers() {
       this._handleSelectChangeBound = this._handleSelectChange.bind(this);
@@ -43,7 +56,7 @@
       this._handleInputClickBound = this._handleInputClick.bind(this);
       $(this.dropdownOptions)
         .find('li:not(.optgroup)')
-        .each((el) => {
+        .each((i, el) => {
           el.addEventListener('click', this._handleOptionClickBound);
           el.addEventListener('keydown', (e) => {
             if (e.key === " " || e.key === "Enter") this._handleOptionClickBound(e);
@@ -55,7 +68,7 @@
     _removeEventHandlers() {
       $(this.dropdownOptions)
         .find('li:not(.optgroup)')
-        .each((el) => {
+        .each((i, el) => {
           el.removeEventListener('click', this._handleOptionClickBound);
         });
       this.el.removeEventListener('change', this._handleSelectChangeBound);
@@ -117,12 +130,12 @@
       $(this.wrapper).append($hideSelect);
       $hideSelect[0].appendChild(this.el);
 
-      if (this.el.disabled) this.wrapper.classList.add('disabled');
+      if ((this.el as any).disabled) this.wrapper.classList.add('disabled');
 
       // Create dropdown
       this.$selectOptions = this.$el.children('option, optgroup');
       this.dropdownOptions = document.createElement('ul');
-      this.dropdownOptions.id = `select-options-${M.guid()}`;
+      (this.dropdownOptions as any).id = `select-options-${M.guid()}`;
       $(this.dropdownOptions).addClass(
         'dropdown-content select-dropdown ' + (this.isMultiple ? 'multiple-select-dropdown' : '')
       );
@@ -131,7 +144,7 @@
 
       // Create dropdown structure
       if (this.$selectOptions.length) {
-        this.$selectOptions.each((realOption) => {
+        this.$selectOptions.each((i, realOption) => {
           if ($(realOption).is('option')) {
             // Option
             const virtualOption = this._createAndAppendOptionWithIcon(
@@ -148,7 +161,7 @@
             )[0];
             let groupChildren = [];
             $(this.dropdownOptions).append(groupParent);
-            selectOptions.each((realOption) => {
+            selectOptions.each((i, realOption) => {
               const virtualOption = this._createAndAppendOptionWithIcon(
                 realOption,
                 'optgroup-option'
@@ -170,10 +183,10 @@
       $(this.input).addClass('select-dropdown dropdown-trigger');
       this.input.setAttribute('type', 'text');
       this.input.setAttribute('readonly', 'true');
-      this.input.setAttribute('data-target', this.dropdownOptions.id);
+      this.input.setAttribute('data-target', (this.dropdownOptions as any).id);
       this.input.setAttribute('aria-readonly', 'true');
       this.input.setAttribute("aria-required", this.el.hasAttribute("required"));
-      if (this.el.disabled) $(this.input).prop('disabled', 'true');
+      if ((this.el as any).disabled) $(this.input).prop('disabled', 'true');
 
       // Makes new element to assume HTML's select label and
       //   aria-attributes, if exists
@@ -213,8 +226,8 @@
 
       // Adds aria-attributes to input element
       this.input.setAttribute("role", "combobox");
-      this.input.setAttribute("aria-owns", this.dropdownOptions.id);
-      this.input.setAttribute("aria-controls", this.dropdownOptions.id);
+      this.input.setAttribute("aria-owns", (this.dropdownOptions as any).id);
+      this.input.setAttribute("aria-controls", (this.dropdownOptions as any).id);
       this.input.setAttribute("aria-expanded", false);
 
       $(this.wrapper).prepend(this.input);
@@ -226,7 +239,7 @@
       );
       $(this.wrapper).prepend(dropdownIcon[0]);
       // Initialize dropdown
-      if (!this.el.disabled) {
+      if (!(this.el as any).disabled) {
         let dropdownOptions = $.extend({}, this.options.dropdownOptions);
         dropdownOptions.coverTrigger = false;
         let userOnOpenEnd = dropdownOptions.onOpenEnd;
@@ -246,7 +259,7 @@
             if (this.dropdown.isScrollable) {
               let scrollOffset =
                 selectedOption[0].getBoundingClientRect().top -
-                this.dropdownOptions.getBoundingClientRect().top; // scroll to selected option
+                (this.dropdownOptions as HTMLElement).getBoundingClientRect().top; // scroll to selected option
               scrollOffset -= this.dropdownOptions.clientHeight / 2; // center in dropdown
               this.dropdownOptions.scrollTop = scrollOffset;
             }
@@ -289,7 +302,7 @@
       li.setAttribute("role", "option");
       if (realOption.disabled){
         li.classList.add('disabled');
-        li.setAttribute("aria-disabled", true);
+        li.setAttribute("aria-disabled", 'true');
       }
       if (type === 'optgroup-option') li.classList.add(type);
       // Text / Checkbox
@@ -305,7 +318,7 @@
       const classes = realOption.getAttribute('class');
       if (iconUrl) {
         const img = $(`<img alt="" class="${classes}" src="${iconUrl}">`);
-        img[0].setAttribute("aria-hidden", true);
+        img[0].setAttribute("aria-hidden", 'true');
         li.prepend(img[0]);
       }
       // Check for multiple type
@@ -342,7 +355,7 @@
       else this._selectValue(value);
     }
     _getSelectedOptions() {
-      return Array.prototype.filter.call(this.el.selectedOptions, (realOption) => realOption);
+      return Array.prototype.filter.call((this.el as any).selectedOptions, (realOption) => realOption);
     }
 
     _setValueToInput() {
@@ -369,7 +382,7 @@
           this._activateOption($(this.dropdownOptions), $(value.optionEl));
         } else {
           $(value.optionEl).removeClass('selected');
-          $(value.optionEl).attr("aria-selected", false);
+          $(value.optionEl).attr("aria-selected", 'false');
         }
       });
     }
@@ -377,15 +390,12 @@
       if (!li) return;
       if (!this.isMultiple) ul.find('li.selected').removeClass('selected');
       $(li).addClass('selected');
-      $(li).attr("aria-selected", true);
+      $(li).attr("aria-selected", 'true');
     }
 
     getSelectedValues() {
       return this._getSelectedOptions().map((realOption) => realOption.value);
     }
   }
+  
 
-  M.FormSelect = FormSelect;
-
-  if (M.jQueryLoaded) M.initializeJqueryWrapper(FormSelect, 'formSelect', 'M_FormSelect');
-})(cash);

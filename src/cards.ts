@@ -1,4 +1,6 @@
-(function($, anim) {
+import $ from "cash-dom";
+import anim from "animejs";
+
   $(document).on('click', '.card', function(e) {
     if ($(this).children('.card-reveal').length) {
       var $card = $(e.target).closest('.card');
@@ -37,4 +39,3 @@
       }
     }
   });
-})(cash, M.anime);

@@ -1,4 +1,6 @@
-(function($) {
+import { M } from "./global";
+import $ from "cash-dom";
+
   const TEXT_BASED_INPUT_SELECTOR = [
     'input:not([type])',
     'input[type=text]',
@@ -15,26 +17,27 @@
     'textarea'
   ].join(',');
 
+export class Forms {   
   // Function to update labels of text fields
-  M.updateTextFields = function() {
-    $(TEXT_BASED_INPUT_SELECTOR).each(function(element, index) {
+  static updateTextFields () {
+    $(TEXT_BASED_INPUT_SELECTOR).each(function(index, element) {
       let $this = $(this);
       if (
-        element.value.length > 0 ||
+        (element as HTMLInputElement).value.length > 0 ||
         $(element).is(':focus') ||
         element.autofocus ||
         $this.attr('placeholder') !== null
       ) {
         $this.siblings('label').addClass('active');
-      } else if (element.validity) {
-        $this.siblings('label').toggleClass('active', element.validity.badInput === true);
+      } else if ((element as HTMLInputElement).validity) {
+        $this.siblings('label').toggleClass('active', (element as HTMLInputElement).validity.badInput === true);
       } else {
         $this.siblings('label').removeClass('active');
       }
     });
   };
 
-  M.validate_field = function(object) {
+  static validate_field (object) {
     let hasLength = object.attr('data-length') !== null;
     let lenAttr = parseInt(object.attr('data-length'));
     let len = object[0].value.length;
@@ -61,7 +64,7 @@
     }
   };
 
-  M.textareaAutoResize = function($textarea) {
+  static textareaAutoResize ($textarea) {
     // Wrap if native element
     if ($textarea instanceof Element) {
       $textarea = $($textarea);
@@ -150,6 +153,7 @@
     }
     $textarea.data('previous-length', $textarea[0].value.length);
   };
+}
 
   $(document).ready(function() {
     // Add active if form auto complete
@@ -159,12 +163,12 @@
           .siblings('label')
           .addClass('active');
       }
-      M.validate_field($(this));
+      Forms.validate_field($(this));
     });
 
     // Add active if input element has been pre-populated on document ready
     $(document).ready(function() {
-      M.updateTextFields();
+      Forms.updateTextFields();
     });
 
     // HTML DOM FORM RESET handling
@@ -176,7 +180,7 @@
           .removeClass('valid')
           .removeClass('invalid');
         formReset.find(TEXT_BASED_INPUT_SELECTOR).each(function(e) {
-          if (this.value.length) {
+          if ((this as HTMLInputElement).value.length) {
             $(this)
               .siblings('label')
               .removeClass('active');
@@ -187,7 +191,7 @@
         setTimeout(function() {
           formReset.find('select').each(function() {
             // check if initialized
-            if (this.M_FormSelect) {
+            if ((this as any).M_FormSelect) {
               $(this).trigger('change');
             }
           });
@@ -201,7 +205,7 @@
      */
     document.addEventListener(
       'focus',
-      function(e) {
+      function(e: any) {
         if ($(e.target).is(TEXT_BASED_INPUT_SELECTOR)) {
           $(e.target)
             .siblings('label, .prefix')
@@ -217,20 +221,20 @@
      */
     document.addEventListener(
       'blur',
-      function(e) {
+      function(e: any) {
         let $inputElement = $(e.target);
         if ($inputElement.is(TEXT_BASED_INPUT_SELECTOR)) {
           let selector = '.prefix';
 
           if (
-            $inputElement[0].value.length === 0 &&
-            $inputElement[0].validity.badInput !== true &&
+            ($inputElement[0] as HTMLInputElement).value.length === 0 &&
+            ($inputElement[0] as HTMLInputElement).validity.badInput !== true &&
             $inputElement.attr('placeholder') === null
           ) {
             selector += ', label';
           }
           $inputElement.siblings(selector).removeClass('active');
-          M.validate_field($inputElement);
+          Forms.validate_field($inputElement);
         }
       },
       true
@@ -258,28 +262,28 @@
        * the original height and the original length
        */
       $textarea.data('original-height', $textarea.height());
-      $textarea.data('previous-length', this.value.length);
-      M.textareaAutoResize($textarea);
+      $textarea.data('previous-length', (this as HTMLInputElement).value.length);
+      Forms.textareaAutoResize($textarea);
     });
 
     $(document).on('keyup', text_area_selector, function() {
-      M.textareaAutoResize($(this));
+      Forms.textareaAutoResize($(this));
     });
     $(document).on('keydown', text_area_selector, function() {
-      M.textareaAutoResize($(this));
+      Forms.textareaAutoResize($(this));
     });
 
     // File Input Path
     $(document).on('change', '.file-field input[type="file"]', function() {
       let file_field = $(this).closest('.file-field');
       let path_input = file_field.find('input.file-path');
-      let files = $(this)[0].files;
+      let files = ($(this)[0] as HTMLInputElement).files;
       let file_names = [];
       for (let i = 0; i < files.length; i++) {
         file_names.push(files[i].name);
       }
-      path_input[0].value = file_names.join(', ');
+      (path_input[0] as HTMLInputElement).value = file_names.join(', ');
       path_input.trigger('change');
     });
   }); // End of $(document).ready
-})(cash);
+
