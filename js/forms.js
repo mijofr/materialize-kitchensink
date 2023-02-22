@@ -17,6 +17,7 @@
 
   // Function to update labels of text fields
   M.updateTextFields = function() {
+    /*
     $(TEXT_BASED_INPUT_SELECTOR).each(function(element, index) {
       let $this = $(this);
       if (
@@ -32,6 +33,7 @@
         $this.siblings('label').removeClass('active');
       }
     });
+    */
   };
 
   M.validate_field = function(object) {
@@ -154,11 +156,13 @@
   $(document).ready(function() {
     // Add active if form auto complete
     $(document).on('change', TEXT_BASED_INPUT_SELECTOR, function() {
+      /*
       if (this.value.length !== 0 || $(this).attr('placeholder') !== null) {
         $(this)
           .siblings('label')
           .addClass('active');
       }
+      */
       M.validate_field($(this));
     });
 
@@ -176,11 +180,13 @@
           .removeClass('valid')
           .removeClass('invalid');
         formReset.find(TEXT_BASED_INPUT_SELECTOR).each(function(e) {
+          /*
           if (this.value.length) {
             $(this)
               .siblings('label')
               .removeClass('active');
           }
+          */
         });
 
         // Reset select (after native reset)
@@ -199,6 +205,7 @@
      * Add active when element has focus
      * @param {Event} e
      */
+    /*
     document.addEventListener(
       'focus',
       function(e) {
@@ -210,11 +217,13 @@
       },
       true
     );
+    */
 
     /**
      * Remove active when element is blurred
      * @param {Event} e
      */
+    /*
     document.addEventListener(
       'blur',
       function(e) {
@@ -235,6 +244,7 @@
       },
       true
     );
+    */
 
     // Radio and Checkbox focus class
     let radio_checkbox = 'input[type=radio], input[type=checkbox]';

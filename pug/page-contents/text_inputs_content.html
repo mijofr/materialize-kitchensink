@@ -13,14 +13,18 @@
         <p>The validate class leverages HTML5 validation and will add a <code class="language-markup">valid</code> and <code class="language-markup">invalid</code> class accordingly. If you don't want the Green and Red validation states, just remove the <code class="language-markup">validate</code> class from your inputs.</p>
         <br>
           <form>
-            <div class="row">
-              <div class="input-field col s6">
-                <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-bottom: 3em;">
+              <div class="input-field filled">
+                <input id="first_name" type="text" placeholder=" ">
                 <label for="first_name">First Name</label>
+                <span class="supporting-text">Supporting Text</span>
+                <span class="character-counter">0/20</span>
               </div>
-              <div class="input-field col s6">
-                <input id="last_name" type="text">
+              <div class="input-field outlined">
+                <input id="last_name" type="text" placeholder=" ">
                 <label for="last_name">Last Name</label>
+                <span class="supporting-text">Supporting Text</span>
+                <span class="character-counter">0/20</span>
               </div>
             </div>
             <div class="row">

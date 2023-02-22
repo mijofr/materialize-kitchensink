@@ -23,45 +23,62 @@ input[type=tel]:not(.browser-default),
 input[type=number]:not(.browser-default),
 input[type=search]:not(.browser-default),
 textarea.materialize-textarea {
-
-  // General Styles
   background-color: transparent;
   color: $input-color;
   border: none;
   border-bottom: $input-border;
   border-radius: 0;
   outline: none;
-  height: $input-height;
-  width: 100%;
-  font-size: $input-font-size;
-  margin: $input-margin;
+  //margin: $input-margin;
   padding: $input-padding;
+  //box-sizing: content-box;
+  //transition: box-shadow .3s, border .3s;
   box-shadow: none;
-  box-sizing: content-box;
-  transition: box-shadow .3s, border .3s;
+  border-bottom: 2px solid $input-border-color;
+  
+  // CSS
+  box-sizing: border-box; /* https://stackoverflow.com/questions/1377719/padding-within-inputs-breaks-width-100*/
+  width: 100%;
+
+  // M3-Specs
+  font-size: 1rem; //$input-font-size; // => 16 dp
+  height: 3.5rem; // 56dp $input-height;
+  //padding: 0.5rem 1rem; // y:8dp  x:16dp
+
+  // Focused label style
+  /*
+  &:focus:not([readonly]), &:not(:placeholder-shown) {
+    padding: 
+  }
+  */
+
+  &:focus:not([readonly]) + label {
+    color: $input-focus-color;
+    transform: translate(0, -1.5rem) scale(0.85);
+  }
+  // Stay in Place after Populated
+  &:not(:placeholder-shown) + label {
+    transform: translate(0, -1.5rem) scale(0.85);
+  }
+
+
+
 
   // Disabled input style
   &:disabled,
-  &[readonly="readonly"] {
+  &[readonly="readonly"] {    
     color: $input-disabled-color;
     border-bottom: $input-disabled-border;
   }
-
   // Disabled label style
-  &:disabled+label,
-  &[readonly="readonly"]+label {
+  &:disabled + label,
+  &[readonly="readonly"] + label {
     color: $input-disabled-color;
   }
-
   // Focused input style
   &:focus:not([readonly]) {
-    border-bottom: 1px solid $input-focus-color;
-    box-shadow: 0 1px 0 0 $input-focus-color;
-  }
-
-  // Focused label style
-  &:focus:not([readonly])+label {
-    color: $input-focus-color;
+    border-color: $input-focus-color;
+    box-shadow: 0 0px 0 0 $input-focus-color;
   }
 
   // Hide helper text on data message
@@ -136,6 +153,7 @@ textarea.materialize-textarea {
   content: attr(data-error);
   color: $input-error-color;
 }
+
 %input-after-style {
   display: block;
   content: "";
@@ -146,22 +164,86 @@ textarea.materialize-textarea {
   transition: .2s opacity ease-out, .2s color ease-out;
 }
 
-
 // Styling for input field wrapper
 .input-field {
+  position: relative;
+
+  & > label {
+    color: $input-border-color;
+    user-select: none;
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    font-size: 1rem;
+    cursor: text;
+    transform-origin: top left;
+    transition: all 0.2s ease-out;
+    
+    // Prevent label from floating on top of default HTML placeholders
+    /*
+    &:not(.active) + input[type=date],
+    &:not(.active) + input[type=datetime-local],
+    &:not(.active) + input[type=month],
+    &:not(.active) + input[type=time] {
+      color: transparent;
+    }
+    */
+  }
+
+  &.filled {
+    border-radius: 7px;
+    background-color: var(--focus-color);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  &.outlined {
+    input {
+      border: 1px solid $input-border-color;
+      border-radius: 7px;
+      padding-left: 1rem;
+
+      &:focus:not([readonly]) + label,
+      &:not(:placeholder-shown) + label 
+      {
+        transform: translate(-4px, -1.5rem) scale(0.85);
+        background-color: var(--background-color);
+        padding: 0 5px;
+      }
+    }
+  }
+
+  .supporting-text {
+    color: $input-border-color;
+    font-size: 0.75rem;
+    position: absolute;
+    padding: 0 1rem;
+    left: 0;
+    bottom: -1.5rem;
+  }
+  .character-counter {
+    color: $input-border-color;
+    font-size: 0.75rem;
+    position: absolute;
+    padding: 0 1rem;
+    right: 0;
+    bottom: -1.5rem;
+  }
+
   // Inline styles
+  /*
   &.inline {
     display: inline-block;
     vertical-align: middle;
     margin-left: 5px;
-
     input,
     .select-dropdown {
       margin-bottom: 1rem;
     }
   }
-
+  */
   // Gutter spacing
+  /*
   &.col {
     label {
       left: $gutter-width * 0.5;
@@ -174,44 +256,17 @@ textarea.materialize-textarea {
       width: calc(100% - 3rem - #{$gutter-width});
     }
   }
-
-  position: relative;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-
-  & > label {
-    color: $input-border-color;
-    position: absolute;
-    top: 0;
-    left: 0;
-    font-size: 1rem;
-    cursor: text;
-    transition: transform .2s ease-out, color .2s ease-out;
-    transform-origin: 0% 100%;
-    text-align: initial;
-    transform: translateY(12px);
-
-    &:not(.label-icon).active {
-      transform: translateY(-14px) scale(.8);
-      transform-origin: 0 0;
-    }
-
-    // Prevent label from floating on top of default HTML placeholders
-    &:not(.active) + input[type=date],
-    &:not(.active) + input[type=datetime-local],
-    &:not(.active) + input[type=month],
-    &:not(.active) + input[type=time] {
-      color: transparent;
-    }
-  }
+  */  
 
   // Autofill + date + time inputs
+  /*
   & > input[type]:-webkit-autofill:not(.browser-default):not([type="search"]) + label,
   & > input[type=date]:not(.browser-default) + label,
   & > input[type=time]:not(.browser-default) + label {
-    transform: translateY(-14px) scale(.8);
-    transform-origin: 0 0;
+    //transform: translateY(-14px) scale(.8);
+    //transform-origin: 0 0;
   }
+  */
 
   .helper-text {
     &::after {
@@ -361,7 +416,6 @@ textarea {
   z-index: -1;
 }
 
-
 /* Autocomplete */
 .autocomplete-content {
   li {
@@ -373,9 +427,4 @@ textarea {
       margin: 5px 15px;
     }
   }
-}
-
-/* Character Counter */
-.character-counter {
-  min-height: 18px;
 }
