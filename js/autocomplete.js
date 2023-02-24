@@ -35,7 +35,6 @@
       this.oldVal;
       this.selectedValues = [];
       this.menuItems = [];
-      this.$inputField = this.$el.closest('.input-field');
       this.$active = $();
       this._mousedown = false;
       this._setupDropdown();
@@ -109,13 +108,16 @@
         );
       }
     }
-    _setupDropdown() {
+    _setupDropdown() {      
       this.container = document.createElement('ul');
       this.container.style.maxHeight = this.options.maxDropDownHeight;
       this.container.id = `autocomplete-options-${M.guid()}`;
       this.container.classList.add('autocomplete-content', 'dropdown-content');
-      this.$inputField.append(this.container);
       this.el.setAttribute('data-target', this.container.id);
+
+      // ! Issue in Component Dropdown: _placeDropdown moves dom-position
+      this.el.parentElement.appendChild(this.container); 
+
       // Initialize dropdown
       let dropdownOptions = $.extend(
         {},
@@ -133,6 +135,12 @@
           userOnItemClick.call(this.dropdown, this.el);
       };
       this.dropdown = M.Dropdown.init(this.el, dropdownOptions);
+
+      // ! Workaround for Label: move label up again
+      // TODO: Just use PopperJS in future!
+      const label = this.el.parentElement.querySelector('label');
+      if (label) this.el.after(label);
+
       // Sketchy removal of dropdown click handler
       this.el.removeEventListener('click', this.dropdown._handleClickBound);
       // Set Value if already set in HTML
@@ -141,7 +149,7 @@
       const div = document.createElement('div');
       div.classList.add('status-info');
       div.setAttribute('style', 'position: absolute;right:0;top:0;');
-      this.el.parentElement.appendChild(div);
+      this.el.parentElement.appendChild(div);      
       this._updateSelectedInfo();
     }
     _removeDropdown() {

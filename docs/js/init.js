@@ -191,7 +191,7 @@
     });
     $('input.autocomplete-multiple').autocomplete({
       isMultiSelect: true,
-      minLength: 0,
+      minLength: 1,
       data: [
         {id: 12, text: "Apple"},
         {id: 13, text: "Microsoft"},

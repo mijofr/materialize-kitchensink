@@ -207,6 +207,10 @@ $input-invalid-border: 2px solid $input-error-color !default;
 $input-icon-size: 2rem;
 $placeholder-text-color: var(--font-color-medium) !default;
 
+$textfield_disabled_containercolor: rgba(var(--md_sys_color_on-surface), 0.04);
+$textfield_disabled_outlinecolor: rgba(var(--md_sys_color_on-surface), 0.12);
+$textfield_disabled_color: rgba(var(--md_sys_color_on-surface), 0.38);
+
 // Radio Buttons
 $radio-fill-color: $primary-color !default;
 $radio-focus-color: $primary-color-focus-opaque !default;

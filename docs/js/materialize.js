@@ -6814,7 +6814,6 @@ $jscomp.polyfill = function (e, r, p, m) {
       _this37.oldVal;
       _this37.selectedValues = [];
       _this37.menuItems = [];
-      _this37.$inputField = _this37.$el.closest('.input-field');
       _this37.$active = $();
       _this37._mousedown = false;
       _this37._setupDropdown();
@@ -6875,8 +6874,11 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.container.style.maxHeight = this.options.maxDropDownHeight;
         this.container.id = "autocomplete-options-" + M.guid();
         this.container.classList.add('autocomplete-content', 'dropdown-content');
-        this.$inputField.append(this.container);
         this.el.setAttribute('data-target', this.container.id);
+
+        // ! Issue in Component Dropdown: _placeDropdown moves dom-position
+        this.el.parentElement.appendChild(this.container);
+
         // Initialize dropdown
         var dropdownOptions = $.extend({}, Autocomplete.defaults.dropdownOptions, this.options.dropdownOptions);
         var userOnItemClick = dropdownOptions.onItemClick;
@@ -6889,6 +6891,12 @@ $jscomp.polyfill = function (e, r, p, m) {
           if (userOnItemClick && typeof userOnItemClick === 'function') userOnItemClick.call(_this38.dropdown, _this38.el);
         };
         this.dropdown = M.Dropdown.init(this.el, dropdownOptions);
+
+        // ! Workaround for Label: move label up again
+        // TODO: Just use PopperJS in future!
+        var label = this.el.parentElement.querySelector('label');
+        if (label) this.el.after(label);
+
         // Sketchy removal of dropdown click handler
         this.el.removeEventListener('click', this.dropdown._handleClickBound);
         // Set Value if already set in HTML
@@ -11973,7 +11981,14 @@ $jscomp.polyfill = function (e, r, p, m) {
         var _this72 = this;
 
         this.wrapper = document.createElement('div');
-        $(this.wrapper).addClass('select-wrapper ' + this.options.classes);
+        this.wrapper.classList.add('select-wrapper');
+        this.wrapper.classList.add('input-field');
+
+        if (this.options.classes.length > 0) {
+          var customClasses = this.options.classes.split(' ') || [];
+          this.wrapper.classList.add(...customClasses);
+        }
+
         this.$el.before($(this.wrapper));
 
         // Move actual select element into overflow hidden wrapper
@@ -12041,11 +12056,10 @@ $jscomp.polyfill = function (e, r, p, m) {
             this._labelFor = true;
           }
         }
+
         // Tries to find a valid label in parent element
         if (!this.labelEl) {
-          var el = this.el.parentElement;
-          if (el) el = el.getElementsByTagName("label")[0];
-          if (el) this.labelEl = el;
+          this.labelEl = this.el.parentElement.querySelector('label');
         }
         if (this.labelEl && this.labelEl.id == "") {
           this.labelEl.id = "m_select-label-" + M.guid();
@@ -12067,6 +12081,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.input.setAttribute("aria-owns", this.dropdownOptions.id);
         this.input.setAttribute("aria-controls", this.dropdownOptions.id);
         this.input.setAttribute("aria-expanded", false);
+        this.input.placeholder = " ";
 
         $(this.wrapper).prepend(this.input);
         this._setValueToInput();
@@ -12114,6 +12129,9 @@ $jscomp.polyfill = function (e, r, p, m) {
         }
         // Add initial selections
         this._setSelectedStates();
+
+        // ! Workaround for Label: move label up again
+        if (this.labelEl) this.input.after(this.labelEl);
       }
     }, {
       key: "_addOptionToValues",

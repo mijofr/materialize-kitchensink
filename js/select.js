@@ -109,7 +109,14 @@
     }
     _setupDropdown() {
       this.wrapper = document.createElement('div');
-      $(this.wrapper).addClass('select-wrapper ' + this.options.classes);
+      this.wrapper.classList.add('select-wrapper');
+      this.wrapper.classList.add('input-field');
+
+      if (this.options.classes.length > 0) {
+        const customClasses = this.options.classes.split(' ') || [];
+        this.wrapper.classList.add(...customClasses);
+      }
+
       this.$el.before($(this.wrapper));
 
       // Move actual select element into overflow hidden wrapper
@@ -188,11 +195,10 @@
           this._labelFor = true;
         }
       }
+
       // Tries to find a valid label in parent element
       if (!this.labelEl){
-        let el = this.el.parentElement;
-        if (el) el = el.getElementsByTagName("label")[0];
-        if (el) this.labelEl = el;
+        this.labelEl = this.el.parentElement.querySelector('label');
       }
       if (this.labelEl && this.labelEl.id == ""){
         this.labelEl.id = "m_select-label-" + M.guid();
@@ -216,8 +222,9 @@
       this.input.setAttribute("aria-owns", this.dropdownOptions.id);
       this.input.setAttribute("aria-controls", this.dropdownOptions.id);
       this.input.setAttribute("aria-expanded", false);
+      this.input.placeholder = " ";
 
-      $(this.wrapper).prepend(this.input);
+      $(this.wrapper).prepend(this.input);      
       this._setValueToInput();
 
       // Add caret
@@ -271,6 +278,9 @@
       }
       // Add initial selections
       this._setSelectedStates();
+
+      // ! Workaround for Label: move label up again
+      if (this.labelEl) this.input.after(this.labelEl);
     }
     _addOptionToValues(realOption, virtualOption) {
       this._values.push({ el: realOption, optionEl: virtualOption });
