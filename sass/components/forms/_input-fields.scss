@@ -31,15 +31,15 @@ textarea.materialize-textarea {
   
   outline: none;
   //box-shadow: none;
-  background-color: transparent;
+  //background-color: transparent;
   color: $input-color;
   // CSS
   //border: none;
-  box-sizing: border-box; /* https://stackoverflow.com/questions/1377719/padding-within-inputs-breaks-width-100*/
+  //box-sizing: border-box; /* https://stackoverflow.com/questions/1377719/padding-within-inputs-breaks-width-100*/
   width: 100%;  
   //padding: $input-padding;
 
-  border: none;
+  //border: none;
 
   // M3-Specs
   font-size: $md_sys_typescale_body-large_size; //$input-font-size; // => 16 dp
@@ -149,10 +149,42 @@ textarea.materialize-textarea {
   transition: .2s opacity ease-out, .2s color ease-out;
 }
 
+
+// https://m3.material.io/styles/shape/shape-scale-tokens
+
 // Styling for input field wrapper
+
 .input-field {
   position: relative;
   clear: both;
+  
+  & > input, & > textarea {
+    box-sizing: border-box; /* https://stackoverflow.com/questions/1377719/padding-within-inputs-breaks-width-100*/
+
+    padding: 0 16px;
+    padding-top: 20px;
+
+    background-color: $surface-color;
+
+    border: none; // reset
+    border-radius: 4px; // md.sys.shape.corner.extra-small.top
+    border-bottom: 1px solid $input-border-color;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    &:focus:not([readonly]) {
+      border-bottom: 2px solid $input-focus-color;
+      padding-top: 20px + 1px; // add border-width
+    }
+    &:focus:not([readonly]) + label {
+      color: $input-focus-color;        
+    }
+    &:focus:not([readonly]) + label,
+    &:not(:placeholder-shown) + label {
+      font-size: 12px;
+      top: 8px;
+    }
+  }
 
   & > label {
     color: $input-border-color;
@@ -176,47 +208,23 @@ textarea.materialize-textarea {
     */
   }
 
-  // https://m3.material.io/styles/shape/shape-scale-tokens
-
-  &.filled {    
-    input {
-      padding: 0 16px;
-      padding-top: 20px;
-
-      background-color: var(--focus-color);
-
-      border-top: 2px solid transparent;
-      border-bottom: 1px solid $input-border-color;
-      border-radius: 4px; // md.sys.shape.corner.extra-small.top
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-
-      &:focus:not([readonly]) {
-        //border-top: 0; //1px solid transparent;
-        border-bottom: 2px solid $input-focus-color;
-      }      
-      &:focus:not([readonly]) + label {
-        color: $input-focus-color;        
-      }
-      &:focus:not([readonly]) + label,
-      &:not(:placeholder-shown) + label {
-        font-size: 12px;
-        top: 8px;
-      }
-    }
-  }
+  // Outlined
 
   &.outlined {
     input {
       padding: 0 16px;
+
+      background-color: var(--background-color);
 
       border: 1px solid $input-border-color;
       border-radius: 4px; // md.sys.shape.corner.extra-small
 
       &:focus:not([readonly]) {
         border: 2px solid $input-focus-color;
-        margin: 0 -1px;
+        padding: 0 16px - 1px; // reset! and subtract border-width
       }
+
+      // Label
       &:focus:not([readonly]) + label {
         color: $input-focus-color;
       }
@@ -234,8 +242,6 @@ textarea.materialize-textarea {
   .supporting-text {
     color: $input-border-color;
     font-size: 12px;
-    //position: absolute;
-    //left: 0;
     padding: 0 16px;
     margin-top: 4px;
   }
@@ -243,8 +249,6 @@ textarea.materialize-textarea {
   .character-counter {
     color: $input-border-color;
     font-size: 12px;
-    //position: absolute;
-    //right: 0;
     float: right;
     padding: 0 16px;
     margin-top: 4px;
@@ -355,6 +359,8 @@ textarea.materialize-textarea {
   .suffix ~ label { margin-right: 3rem; }
 }
 
+
+
 /* Search Field */
 .input-field input[type=search] {
   display: block;
@@ -387,6 +393,8 @@ textarea.materialize-textarea {
   }
 }
 
+
+
 /* Textarea */
 
 // Default textarea
@@ -404,6 +412,8 @@ textarea {
     box-sizing: border-box;
   }
 }
+
+
 
 // For textarea autoresize
 .hiddendiv {

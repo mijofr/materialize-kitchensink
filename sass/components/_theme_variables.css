@@ -1,5 +1,5 @@
 :root {
-    --surface-color: #ffffff;
+    --surface-color: #eeeeee;
     --background-color: #ffffff;
 
     --font-color-main: rgba(0, 0, 0, 0.87);
@@ -36,7 +36,7 @@
     --carousel-indicator-color: rgba(255, 255, 255, 0.45);
     --carousel-indicator-active-color: #FFF;
 
-    --primary-color: #1c64f2; /* #26a69a;*/
+    --primary-color: #26a69a;
     --primary-color-dark: #009688;
     --primary-color-numeric: 38, 166, 154;
     --primary-color-raised-hover-solid: #30B0A4;
