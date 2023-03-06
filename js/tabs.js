@@ -175,14 +175,14 @@
 
       // Keep active tab index to set initial carousel slide
       const tab = this._activeTabLink.parentElement;
-      const activeTabIndex = [...tab.parentNode.children].indexOf(tab);
+      const activeTabIndex = Array.from(tab.parentNode.children).indexOf(tab);
 
       this._tabsCarousel = M.Carousel.init(tabsWrapper, {
         fullWidth: true,
         noWrap: true,
         onCycleTo: (item) => {
           const prevIndex = this.index;
-          this.index = [...item.parentNode.children].indexOf(item);
+          this.index = Array.from(item.parentNode.children).indexOf(item);
           this._activeTabLink.classList.remove('active');
           this._activeTabLink = Array.from(this._tabLinks)[this.index];
           this._activeTabLink.classList.add('active');
