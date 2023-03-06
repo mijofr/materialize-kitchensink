@@ -1823,15 +1823,6 @@ M.guid = function () {
 }();
 
 /**
- * Escapes hash from special characters
- * @param {string} hash  String returned from this.hash
- * @returns {string}
- */
-M.escapeHash = function (hash) {
-  return hash.replace(/(:|\.|\[|\]|,|=|\/)/g, '\\$1');
-};
-
-/**
  * @typedef {Object} Edges
  * @property {Boolean} top  If the top edge was exceeded
  * @property {Boolean} right  If the right edge was exceeded
@@ -4628,374 +4619,246 @@ $jscomp.polyfill = function (e, r, p, m) {
     responsiveThreshold: Infinity // breakpoint for swipeable
   };
 
-  /**
-   * @class
-   *
-   */
-
   var Tabs = function (_Component6) {
     _inherits(Tabs, _Component6);
 
-    /**
-     * Construct Tabs instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
     function Tabs(el, options) {
       _classCallCheck(this, Tabs);
 
       var _this22 = _possibleConstructorReturn(this, (Tabs.__proto__ || Object.getPrototypeOf(Tabs)).call(this, Tabs, el, options));
 
       _this22.el.M_Tabs = _this22;
-
-      /**
-       * Options for the Tabs
-       * @member Tabs#options
-       * @prop {Number} duration
-       * @prop {Function} onShow
-       * @prop {Boolean} swipeable
-       * @prop {Number} responsiveThreshold
-       */
       _this22.options = $.extend({}, Tabs.defaults, options);
-
-      // Setup
-      _this22.$tabLinks = _this22.$el.children('li.tab').children('a');
+      _this22._tabLinks = _this22.$el[0].querySelectorAll('li.tab > a');
       _this22.index = 0;
       _this22._setupActiveTabLink();
-
-      // Setup tabs content
       if (_this22.options.swipeable) {
         _this22._setupSwipeableTabs();
       } else {
         _this22._setupNormalTabs();
       }
-
       // Setup tabs indicator after content to ensure accurate widths
       _this22._setTabsAndTabWidth();
       _this22._createIndicator();
-
       _this22._setupEventHandlers();
       return _this22;
     }
 
     _createClass(Tabs, [{
       key: "destroy",
-
-
-      /**
-       * Teardown component
-       */
       value: function destroy() {
         this._removeEventHandlers();
         this._indicator.parentNode.removeChild(this._indicator);
-
         if (this.options.swipeable) {
           this._teardownSwipeableTabs();
         } else {
           this._teardownNormalTabs();
         }
-
         this.$el[0].M_Tabs = undefined;
       }
-
-      /**
-       * Setup Event Handlers
-       */
-
     }, {
       key: "_setupEventHandlers",
       value: function _setupEventHandlers() {
         this._handleWindowResizeBound = this._handleWindowResize.bind(this);
         window.addEventListener('resize', this._handleWindowResizeBound);
-
         this._handleTabClickBound = this._handleTabClick.bind(this);
         this.el.addEventListener('click', this._handleTabClickBound);
       }
-
-      /**
-       * Remove Event Handlers
-       */
-
     }, {
       key: "_removeEventHandlers",
       value: function _removeEventHandlers() {
         window.removeEventListener('resize', this._handleWindowResizeBound);
         this.el.removeEventListener('click', this._handleTabClickBound);
       }
-
-      /**
-       * Handle window Resize
-       */
-
     }, {
       key: "_handleWindowResize",
       value: function _handleWindowResize() {
         this._setTabsAndTabWidth();
-
         if (this.tabWidth !== 0 && this.tabsWidth !== 0) {
-          this._indicator.style.left = this._calcLeftPos(this.$activeTabLink) + 'px';
-          this._indicator.style.right = this._calcRightPos(this.$activeTabLink) + 'px';
+          this._indicator.style.left = this._calcLeftPos(this._activeTabLink) + 'px';
+          this._indicator.style.right = this._calcRightPos(this._activeTabLink) + 'px';
         }
       }
-
-      /**
-       * Handle tab click
-       * @param {Event} e
-       */
-
     }, {
       key: "_handleTabClick",
       value: function _handleTabClick(e) {
         var _this23 = this;
 
-        var tab = $(e.target).closest('li.tab');
-        var tabLink = $(e.target).closest('a');
-
+        var tabLink = e.target;
+        var tab = tabLink.parentElement;
         // Handle click on tab link only
-        if (!tabLink.length || !tabLink.parent().hasClass('tab')) {
-          return;
-        }
-
-        if (tab.hasClass('disabled')) {
+        if (!tabLink || !tab.classList.contains('tab')) return;
+        // is disabled?
+        if (tab.classList.contains('disabled')) {
           e.preventDefault();
           return;
         }
-
         // Act as regular link if target attribute is specified.
-        if (!!tabLink.attr('target')) {
-          return;
-        }
-
+        if (tabLink.hasAttribute('target')) return;
         // Make the old tab inactive.
-        this.$activeTabLink.removeClass('active');
-        var $oldContent = this.$content;
-
+        this._activeTabLink.classList.remove('active');
+        var _oldContent = this._content;
         // Update the variables with the new link and content
-        this.$activeTabLink = tabLink;
-        this.$content = $(M.escapeHash(tabLink[0].hash));
-        this.$tabLinks = this.$el.children('li.tab').children('a');
-
-        // Make the tab active.
-        this.$activeTabLink.addClass('active');
+        this._activeTabLink = tabLink;
+        this._content = document.querySelector(tabLink.hash);
+        this._tabLinks = this.$el[0].querySelectorAll('li.tab > a');
+        // Make the tab active
+        this._activeTabLink.classList.add('active');
         var prevIndex = this.index;
-        this.index = Math.max(this.$tabLinks.index(tabLink), 0);
-
+        this.index = Math.max(Array.from(this._tabLinks).indexOf(tabLink), 0);
         // Swap content
         if (this.options.swipeable) {
           if (this._tabsCarousel) {
             this._tabsCarousel.set(this.index, function () {
-              if (typeof _this23.options.onShow === 'function') {
-                _this23.options.onShow.call(_this23, _this23.$content[0]);
-              }
+              if (typeof _this23.options.onShow === 'function') _this23.options.onShow.call(_this23, _this23._content);
             });
           }
         } else {
-          if (this.$content.length) {
-            this.$content[0].style.display = 'block';
-            this.$content.addClass('active');
-            if (typeof this.options.onShow === 'function') {
-              this.options.onShow.call(this, this.$content[0]);
-            }
-
-            if ($oldContent.length && !$oldContent.is(this.$content)) {
-              $oldContent[0].style.display = 'none';
-              $oldContent.removeClass('active');
+          if (this._content) {
+            this._content.style.display = 'block';
+            this._content.classList.add('active');
+            if (typeof this.options.onShow === 'function') this.options.onShow.call(this, this._content);
+            if (_oldContent && _oldContent !== this._content) {
+              _oldContent.style.display = 'none';
+              _oldContent.classList.remove('active');
             }
           }
         }
-
         // Update widths after content is swapped (scrollbar bugfix)
         this._setTabsAndTabWidth();
-
-        // Update indicator
         this._animateIndicator(prevIndex);
-
-        // Prevent the anchor's default click action
         e.preventDefault();
       }
-
-      /**
-       * Generate elements for tab indicator.
-       */
-
     }, {
       key: "_createIndicator",
       value: function _createIndicator() {
-        var _this24 = this;
-
         var indicator = document.createElement('li');
         indicator.classList.add('indicator');
-
         this.el.appendChild(indicator);
         this._indicator = indicator;
-
-        setTimeout(function () {
-          _this24._indicator.style.left = _this24._calcLeftPos(_this24.$activeTabLink) + 'px';
-          _this24._indicator.style.right = _this24._calcRightPos(_this24.$activeTabLink) + 'px';
-        }, 0);
+        this._indicator.style.left = this._calcLeftPos(this._activeTabLink) + 'px';
+        this._indicator.style.right = this._calcRightPos(this._activeTabLink) + 'px';
       }
-
-      /**
-       * Setup first active tab link.
-       */
-
     }, {
       key: "_setupActiveTabLink",
       value: function _setupActiveTabLink() {
         // If the location.hash matches one of the links, use that as the active tab.
-        this.$activeTabLink = $(this.$tabLinks.filter('[href="' + location.hash + '"]'));
-
+        this._activeTabLink = Array.from(this._tabLinks).find(function (a) {
+          return a.getAttribute('href') === location.hash;
+        });
         // If no match is found, use the first link or any with class 'active' as the initial active tab.
-        if (this.$activeTabLink.length === 0) {
-          this.$activeTabLink = this.$el.children('li.tab').children('a.active').first();
+        if (!this._activeTabLink) {
+          this._activeTabLink = this.$el[0].querySelector('li.tab a.active');
         }
-        if (this.$activeTabLink.length === 0) {
-          this.$activeTabLink = this.$el.children('li.tab').children('a').first();
+        if (this._activeTabLink.length === 0) {
+          this._activeTabLink = this.$el[0].querySelector('li.tab a');
         }
+        Array.from(this._tabLinks).forEach(function (a) {
+          return a.classList.remove('active');
+        });
+        this._activeTabLink.classList.add('active');
 
-        this.$tabLinks.removeClass('active');
-        this.$activeTabLink[0].classList.add('active');
-
-        this.index = Math.max(this.$tabLinks.index(this.$activeTabLink), 0);
-
-        if (this.$activeTabLink.length) {
-          this.$content = $(M.escapeHash(this.$activeTabLink[0].hash));
-          this.$content.addClass('active');
+        this.index = Math.max(Array.from(this._tabLinks).indexOf(this._activeTabLink), 0);
+        if (this._activeTabLink) {
+          this._content = document.querySelector(this._activeTabLink.hash);
+          this._content.classList.add('active');
         }
       }
-
-      /**
-       * Setup swipeable tabs
-       */
-
     }, {
       key: "_setupSwipeableTabs",
       value: function _setupSwipeableTabs() {
-        var _this25 = this;
+        var _this24 = this;
 
         // Change swipeable according to responsive threshold
-        if (window.innerWidth > this.options.responsiveThreshold) {
-          this.options.swipeable = false;
-        }
+        if (window.innerWidth > this.options.responsiveThreshold) this.options.swipeable = false;
 
-        var $tabsContent = $();
-        this.$tabLinks.each(function (link) {
-          var $currContent = $(M.escapeHash(link.hash));
-          $currContent.addClass('carousel-item');
-          $tabsContent = $tabsContent.add($currContent);
+        var tabsContent = [];
+        this._tabLinks.forEach(function (a) {
+          var currContent = document.querySelector(a.hash);
+          currContent.classList.add('carousel-item');
+          tabsContent.push(currContent);
         });
 
-        var $tabsWrapper = $('<div class="tabs-content carousel carousel-slider"></div>');
-        $tabsContent.first().before($tabsWrapper);
-        $tabsWrapper.append($tabsContent);
-        $tabsContent[0].style.display = '';
+        // Create Carousel-Wrapper around Tab-Contents
+        var tabsWrapper = document.createElement('div');
+        tabsWrapper.classList.add('tabs-content', 'carousel', 'carousel-slider');
+
+        // Wrap around
+        tabsContent[0].parentElement.insertBefore(tabsWrapper, tabsContent[0]);
+        tabsContent.forEach(function (tabContent) {
+          tabsWrapper.appendChild(tabContent);
+          tabContent.style.display = '';
+        });
 
         // Keep active tab index to set initial carousel slide
-        var activeTabIndex = this.$activeTabLink.closest('.tab').index();
+        var tab = this._activeTabLink.parentElement;
+        var activeTabIndex = [...tab.parentNode.children].indexOf(tab);
 
-        this._tabsCarousel = M.Carousel.init($tabsWrapper[0], {
+        this._tabsCarousel = M.Carousel.init(tabsWrapper, {
           fullWidth: true,
           noWrap: true,
           onCycleTo: function (item) {
-            var prevIndex = _this25.index;
-            _this25.index = $(item).index();
-            _this25.$activeTabLink.removeClass('active');
-            _this25.$activeTabLink = _this25.$tabLinks.eq(_this25.index);
-            _this25.$activeTabLink.addClass('active');
-            _this25._animateIndicator(prevIndex);
-            if (typeof _this25.options.onShow === 'function') {
-              _this25.options.onShow.call(_this25, _this25.$content[0]);
-            }
+            var prevIndex = _this24.index;
+            _this24.index = [...item.parentNode.children].indexOf(item);
+            _this24._activeTabLink.classList.remove('active');
+            _this24._activeTabLink = Array.from(_this24._tabLinks)[_this24.index];
+            _this24._activeTabLink.classList.add('active');
+            _this24._animateIndicator(prevIndex);
+            if (typeof _this24.options.onShow === 'function') _this24.options.onShow.call(_this24, _this24._content);
           }
         });
-
         // Set initial carousel slide to active tab
         this._tabsCarousel.set(activeTabIndex);
       }
-
-      /**
-       * Teardown normal tabs.
-       */
-
     }, {
       key: "_teardownSwipeableTabs",
       value: function _teardownSwipeableTabs() {
         var $tabsWrapper = this._tabsCarousel.$el;
         this._tabsCarousel.destroy();
-
         // Unwrap
         $tabsWrapper.after($tabsWrapper.children());
         $tabsWrapper.remove();
       }
-
-      /**
-       * Setup normal tabs.
-       */
-
     }, {
       key: "_setupNormalTabs",
       value: function _setupNormalTabs() {
+        var _this25 = this;
+
         // Hide Tabs Content
-        this.$tabLinks.not(this.$activeTabLink).each(function (link) {
-          if (!!link.hash) {
-            var $currContent = $(M.escapeHash(link.hash));
-            if ($currContent.length) {
-              $currContent[0].style.display = 'none';
-            }
+        Array.from(this._tabLinks).forEach(function (a) {
+          if (a === _this25._activeTabLink) return;
+          if (a.hash) {
+            var currContent = document.querySelector(a.hash);
+            if (currContent) currContent.style.display = 'none';
           }
         });
       }
-
-      /**
-       * Teardown normal tabs.
-       */
-
     }, {
       key: "_teardownNormalTabs",
       value: function _teardownNormalTabs() {
         // show Tabs Content
-        this.$tabLinks.each(function (link) {
-          if (!!link.hash) {
-            var $currContent = $(M.escapeHash(link.hash));
-            if ($currContent.length) {
-              $currContent[0].style.display = '';
-            }
+        this._tabLinks.forEach(function (a) {
+          if (a.hash) {
+            var currContent = document.querySelector(a.hash);
+            if (currContent) currContent.style.display = '';
           }
         });
       }
-
-      /**
-       * set tabs and tab width
-       */
-
     }, {
       key: "_setTabsAndTabWidth",
       value: function _setTabsAndTabWidth() {
-        this.tabsWidth = this.$el.width();
-        this.tabWidth = Math.max(this.tabsWidth, this.el.scrollWidth) / this.$tabLinks.length;
+        this.tabsWidth = this.$el[0].getBoundingClientRect().width;
+        this.tabWidth = Math.max(this.tabsWidth, this.el.scrollWidth) / this._tabLinks.length;
       }
-
-      /**
-       * Finds right attribute for indicator based on active tab.
-       * @param {cash} el
-       */
-
     }, {
       key: "_calcRightPos",
       value: function _calcRightPos(el) {
-        return Math.ceil(this.tabsWidth - el.position().left - el[0].getBoundingClientRect().width);
+        return Math.ceil(this.tabsWidth - el.offsetLeft - el.getBoundingClientRect().width);
       }
-
-      /**
-       * Finds left attribute for indicator based on active tab.
-       * @param {cash} el
-       */
-
     }, {
       key: "_calcLeftPos",
       value: function _calcLeftPos(el) {
-        return Math.floor(el.position().left);
+        return Math.floor(el.offsetLeft);
       }
     }, {
       key: "updateTabIndicator",
@@ -5003,33 +4866,22 @@ $jscomp.polyfill = function (e, r, p, m) {
         this._setTabsAndTabWidth();
         this._animateIndicator(this.index);
       }
-
-      /**
-       * Animates Indicator to active tab.
-       * @param {Number} prevIndex
-       */
-
     }, {
       key: "_animateIndicator",
       value: function _animateIndicator(prevIndex) {
         var leftDelay = 0,
             rightDelay = 0;
 
-        if (this.index - prevIndex >= 0) {
-          leftDelay = 90;
-        } else {
-          rightDelay = 90;
-        }
+        if (this.index - prevIndex >= 0) leftDelay = 90;else rightDelay = 90;
 
-        // Animate
         var animOptions = {
           targets: this._indicator,
           left: {
-            value: this._calcLeftPos(this.$activeTabLink),
+            value: this._calcLeftPos(this._activeTabLink),
             delay: leftDelay
           },
           right: {
-            value: this._calcRightPos(this.$activeTabLink),
+            value: this._calcRightPos(this._activeTabLink),
             delay: rightDelay
           },
           duration: this.options.duration,
@@ -5038,30 +4890,19 @@ $jscomp.polyfill = function (e, r, p, m) {
         anim.remove(this._indicator);
         anim(animOptions);
       }
-
-      /**
-       * Select tab.
-       * @param {String} tabId
-       */
-
     }, {
       key: "select",
       value: function select(tabId) {
-        var tab = this.$tabLinks.filter('[href="#' + tabId + '"]');
-        if (tab.length) {
-          tab.trigger('click');
-        }
+        var tab = Array.from(this._tabLinks).find(function (a) {
+          return a.getAttribute('href') === '#' + tabId;
+        });
+        if (tab) tab.click();
       }
     }], [{
       key: "init",
       value: function init(els, options) {
         return _get(Tabs.__proto__ || Object.getPrototypeOf(Tabs), "init", this).call(this, this, els, options);
       }
-
-      /**
-       * Get Instance
-       */
-
     }, {
       key: "getInstance",
       value: function getInstance(el) {
