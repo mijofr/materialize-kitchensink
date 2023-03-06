@@ -159,15 +159,6 @@ M.guid = (function() {
 })();
 
 /**
- * Escapes hash from special characters
- * @param {string} hash  String returned from this.hash
- * @returns {string}
- */
-M.escapeHash = function(hash) {
-  return hash.replace(/(:|\.|\[|\]|,|=|\/)/g, '\\$1');
-};
-
-/**
  * @typedef {Object} Edges
  * @property {Boolean} top  If the top edge was exceeded
  * @property {Boolean} right  If the right edge was exceeded
