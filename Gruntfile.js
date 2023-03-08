@@ -173,7 +173,7 @@ module.exports = function(grunt) {
       bsFiles: ['bin/*', 'css/ghpages-materialize.css', '!**/node_modules/**/*'],
       options: {
         server: {
-          baseDir: './' // make server from root dir
+          baseDir: './docs/' // make server from root dir
         },
         port: 8000,
         ui: {
