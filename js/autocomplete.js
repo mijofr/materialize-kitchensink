@@ -352,7 +352,6 @@
         const entry = this.selectedValues[0];
         this.el.value = entry.text || entry.id; // Write Text to Input
       }
-      M.updateTextFields();
     }
     _triggerChanged() {
       this.$el.trigger('change');

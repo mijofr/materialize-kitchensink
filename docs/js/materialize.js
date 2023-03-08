@@ -6959,7 +6959,6 @@ $jscomp.polyfill = function (e, r, p, m) {
           var entry = this.selectedValues[0];
           this.el.value = entry.text || entry.id; // Write Text to Input
         }
-        M.updateTextFields();
       }
     }, {
       key: "_triggerChanged",

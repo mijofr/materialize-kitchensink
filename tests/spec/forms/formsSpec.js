@@ -15,6 +15,8 @@ describe('Forms:', function() {
     window.location.hash = "";
   });
 
+  // No active class added, because it is now a css feature only
+  /*
   it("should keep label active while focusing on input", function () {
     inputs.forEach(input => {
       expect(input.labels[0]).not.toHaveClass('active')
@@ -24,4 +26,6 @@ describe('Forms:', function() {
       expect(input.labels[0]).not.toHaveClass('active')
     })
   });
+  */
+
 });
