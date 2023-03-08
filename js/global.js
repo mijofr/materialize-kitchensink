@@ -24,7 +24,7 @@ if (typeof define === 'function' && define.amd) {
   exports.default = M;
 }
 
-M.version = '1.2.1';
+M.version = '1.2.2';
 
 M.keys = {
   TAB: 9,
@@ -157,15 +157,6 @@ M.guid = (function() {
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
   };
 })();
-
-/**
- * Escapes hash from special characters
- * @param {string} hash  String returned from this.hash
- * @returns {string}
- */
-M.escapeHash = function(hash) {
-  return hash.replace(/(:|\.|\[|\]|,|=|\/)/g, '\\$1');
-};
 
 /**
  * @typedef {Object} Edges
