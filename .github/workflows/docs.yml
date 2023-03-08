@@ -42,6 +42,7 @@ jobs:
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             publish_dir: ./docs
+            cname: materializeweb.com
             exclude_assets: node_modules
             user_name: 'github-actions[bot]'
             user_email: 'github-actions[bot]@users.noreply.github.com'
