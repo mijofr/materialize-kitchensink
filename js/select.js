@@ -114,7 +114,7 @@
 
       if (this.options.classes.length > 0) {
         const customClasses = this.options.classes.split(' ') || [];
-        this.wrapper.classList.add(...customClasses);
+        customClasses.forEach(customClass => this.wrapper.classList.add(customClass));
       }
 
       this.$el.before($(this.wrapper));
