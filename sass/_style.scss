@@ -320,19 +320,19 @@ a.sidenav-trigger.top-nav {
   width: 100%;
 
   i {
-    margin: 40px 0;
-    color: $primary-color;
-    font-size: 7rem;
+    margin: 30px 0;
+    //color: $primary-color;
+    color: $secondary-color;
+    font-size: 5rem;
     display: block;
   }
 }
 
 .promo-caption {
-  font-size: 1.7rem;
+  font-size: 1.25rem;
   font-weight: 500;
   margin-top: 5px;
   margin-bottom: 0;
-
 }
 
 // Grid doc styles
