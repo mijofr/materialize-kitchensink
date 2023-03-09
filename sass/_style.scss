@@ -33,8 +33,9 @@ td, th {
 }
 
 .header {
-  color: $primary-color;
-  font-weight: 300;
+  //color: $primary-color;
+  font-weight: 400;
+  font-size: 3.25rem;
 }
 
 .preview {
@@ -149,6 +150,18 @@ ul.sidenav.sidenav-fixed {
 
 .current-version-number {
   color: $font-color-medium;
+}
+
+.intro #logo {
+  height: 150px;
+}
+
+.call-to-action > .btn { border: 1px solid teal; }
+.call-to-action > .btn:first-of-type { border: none;  }
+
+.materialize-benefits .collection-item > h4 {
+  font-size: 1.75rem;
+  font-weight: 500;
 }
 
 @media #{$medium-and-down} {
