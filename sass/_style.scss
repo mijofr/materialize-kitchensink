@@ -33,7 +33,7 @@ td, th {
 }
 
 .header {
-  //color: $primary-color;
+  color: $font-color-main; //$primary-color;
   font-weight: 400;
   font-size: 3.25rem;
 }
@@ -156,8 +156,9 @@ ul.sidenav.sidenav-fixed {
   height: 150px;
 }
 
-.call-to-action > .btn { border: 1px solid teal; }
+.call-to-action > .btn { border: 1px solid $primary-color; }
 .call-to-action > .btn:first-of-type { border: none;  }
+.call-to-action > .btn-flat { color: $primary-color; }
 
 .materialize-benefits .collection-item > h4 {
   font-size: 1.75rem;
@@ -582,6 +583,7 @@ $height: auto;
 ul.table-of-contents {
   margin-top: 0;
   padding-top: 48px;
+  font-size: 1rem;
 }
 
 // Prism Styling

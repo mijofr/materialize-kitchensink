@@ -27,3 +27,6 @@ link(href='css/ghpages-materialize.css', type='text/css', rel='stylesheet', medi
 link(href='https://fonts.googleapis.com/css?family=Inconsolata', rel='stylesheet', type='text/css')
 link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
 
+script.
+  const theme = localStorage.getItem('theme');
+  if (theme) document.documentElement.setAttribute('theme', theme);
