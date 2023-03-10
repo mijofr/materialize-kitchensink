@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
     .then(data => {
       const url = data.html_url;
       const sha = data.sha;
-      const date = jQuery.timeago(data.commit.author.date);
+      const date = timeago.format(data.commit.author.date);
       githubCommitElem.querySelector('.date').innerText = date;
       githubCommitElem.querySelector('.sha').innerText = sha;
       githubCommitElem.querySelector('.sha').href = url;
