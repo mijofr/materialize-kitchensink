@@ -261,16 +261,14 @@ document.addEventListener("DOMContentLoaded", function() {
     window.index.add(index);
   });
 
-  
-  //------------------------
-
   // icon click
-  document.querySelector('ul#nav-mobile li.search .search-wrapper i.material-icons').click(function() {
-    if (document.querySelector('.search-results .focused').length) {
-      document.querySelector('.search-results .focused').first()[0].click();
-    } else if (document.querySelector('.search-results').children().length) {
-      document.querySelector('.search-results').children().first()[0].click();
-    }
+  document.querySelector('ul#nav-mobile li.search .search-wrapper i.material-icons').addEventListener('click', e => {
+    const focusedElem = document.querySelector('.search-results .focused');
+    const searchResults = document.querySelectorAll('.search-results');
+    if (focusedElem)
+      focusedElem.click();
+    else if (searchResults.children.length > 0)
+      searchResults.children[0].click();
   });
 
   const renderResults = function(results) {
@@ -285,9 +283,9 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   const debounce = function(fn) {
-    var timeout;
+    let timeout;
     return function () {
-      var args = Array.prototype.slice.call(arguments), ctx = this;
+      const args = Array.prototype.slice.call(arguments), ctx = this;
       clearTimeout(timeout);
       timeout = setTimeout(function () {
         fn.apply(ctx, args);
@@ -306,71 +304,68 @@ document.addEventListener("DOMContentLoaded", function() {
       inputSearch.parentElement.classList.remove('focused');
   });
 
-  inputSearch.addEventListener('keyup', debounce(function(e) {
+  inputSearch.addEventListener('keyup', debounce((e) => {
     const inputText = e.target.value;
     if (inputText.length < 2) {
       renderResults([]);
       return;
     }
-
     if (e.which === 38 || e.which === 40 || e.keyCode === 13) return;
-
-    const query = inputText;
-    const results = window.index.search(query).slice(0, 6).map(function(result) {
+    const results = window.index.search(inputText).slice(0, 6).map((result) => {
       result = window.indexStore[result.ref];
       return [result.title, result.href];
     });
     renderResults(results);
   }));
 
+  let currentItem;
 
-  inputSearch.addEventListener('keydown', debounce(function(e) {
+  inputSearch.addEventListener('keydown', debounce((e) => {
     const focusedElem = document.querySelector('.search-results .focused');
-
-    // Escape.
+    // Escape
     if (e.keyCode === 27) {
-      document.querySelector(this).val('');
-      document.querySelector(this).blur();
+      inputSearch.value = '';
+      inputSearch.blur();
       renderResults([]);
       return;
     }
+    // Enter
     else if (e.keyCode === 13) {
-      // enter
       if (focusedElem) 
         focusedElem.click();
-      else if (document.querySelector('.search-results').children().length) {
-        document.querySelector('.search-results').children().first()[0].click();
-      }
+      else if (document.querySelector('.search-results').children.length > 0/* children().length*/)
+        document.querySelector('.search-results').children[0].click();
       return;
     }
-
-    // Arrow keys.
-    var focused;
+    // Arrow keys
     switch(e.which) {
-      case 38: // up
+      // up
+      case 38:
         if (focusedElem) {
-          focused.removeClass('focused');
-          focused.prev().addClass('focused');
+          focusedElem.classList.remove('focused');
+          focusedElem.previousSibling.classList.add('focused'); // prev().addClass('focused');
         }
         break;
-
-      case 40: // down
+      // down
+      case 40:
         if (!focusedElem) {
-          //focused = document.querySelector('.search-results').children().first();
-          focused.addClass('focused');
+          currentItem = document.querySelector('.search-results').children[0];
+          currentItem.classList.add('focused');
         }
         else {
-          //focused = document.querySelector('.search-results .focused');
-          if (focused.next().length) {
-            focused.removeClass('focused');
-            focused.next().addClass('focused');
+          currentItem = focusedElem;
+          if (currentItem.nextSibling) {
+            currentItem.classList.remove('focused');
+            currentItem.nextSibling.classList.add('focused');
           }
         }
         break;
-
-      default: return; // exit this handler for other keys
+      // exit this handler for other keys
+      default: return;
     }
+
     e.preventDefault();
+
   }));
 
 });

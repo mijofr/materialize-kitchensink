@@ -13,11 +13,8 @@ html(lang="en")
     include _footer.html
     include _scripts.html
     script.
-      $('#download-source, #download-sass').on('click', function () {
-        $('#download').slideUp(
-          { duration: 500,
-            queue: false,
-            complete: function()
-              { $('#download-thanks').slideDown({ duration: 300 }); }
-          });
+      document.querySelectorAll('#download-source, #download-sass').forEach(a => {
+        a.addEventListener('click', e => {
+          document.querySelector('#download-thanks').classList.remove('is-closed');
+        });
       });
