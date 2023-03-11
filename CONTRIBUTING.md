@@ -116,7 +116,6 @@ Adhering to the following process is the best way to get your work included in t
 
 1. [Fork](https://help.github.com/fork-a-repo/) the project, clone your fork,
    and configure the remotes:
-
    ```bash
    # Clone your fork of the repo into the current directory
    git clone https://github.com/<your-username>/materialize.git
@@ -126,15 +125,26 @@ Adhering to the following process is the best way to get your work included in t
    git remote add upstream https://github.com/materializecss/materialize.git
    ```
 
-2. If you cloned a while ago, get the latest changes from upstream:
+2. Go to Starting Branch and get latest changes:
+First make yourself clear what you want to provide: Bugfix or Feature? The principle for both types of changes is the same: "First update, then work"
 
-   ```bash
-   git checkout main
-   git pull upstream main
-   ```
+    2.1. Bugfix
 
-3. Create a new topic branch (off the main project development branch) to contain your feature, change, or fix:
+    Get the latest changes from upstream main-branch:
+    ```bash
+    git checkout main # go to the main branch
+    git pull upstream main # pull from the community-repo main-branch
+    ```
 
+   2.2. Feature
+
+    Get the latest changes from upstream development-branch:
+    ```bash
+    git checkout v2-dev # go to the dev branch
+    git pull upstream v2-dev # pull from the community-repo dev-branch
+    ```
+
+3. Create a new topic branch to contain your work:
    ```bash
    git checkout -b <topic-branch-name>
    ```
@@ -142,19 +152,21 @@ Adhering to the following process is the best way to get your work included in t
 4. Commit your changes in logical chunks with messages written in English. Please adhere to these [git commit message guidelines](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) and use [conventional commit format](https://github.com/conventional-changelog/commitlint/#what-is-commitlint) in your commit messages. Failing to do this makes your commits unlikely to be merged into the main project.
    > You can use `npm run commit` to help you formatting the message, or use [commitlint.io](https://commitlint.io) if you are not editing locally
 
-5. Locally merge (or rebase) the upstream development branch into your topic branch:
-
+5. Locally merge (or rebase) the upstream branch into your topic branch.
+If in the meantime anything has changed in the community-repo you can add this changes locally into your repo.
    ```bash
-   git pull [--rebase] upstream main
+   git pull [--rebase] upstream main # bugfix
+   git pull [--rebase] upstream v2-dev # feature
    ```
 
 6. Push your topic branch up to your fork:
-
    ```bash
    git push origin <topic-branch-name>
    ```
 
 7. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/) with a clear title and description against the current development branch, usually `vX.X.X-dev`. Reference any open issue in the description so it is automatically linked. Try and keep your commit history clean and concise. Once you submit your pull request, Github Actions will automatically run your tests and will show a checkmark to show that all the tests have passed. Once this is done, we’ll review your tests and code and make comments if there are issues or things we think could be improved. Then once everything looks good we’ll merge the code in!
+
+Note: By submitting code, you agree to allow the project owners to license your work under the terms of the [MIT License](https://github.com/materializecss/materialize/blob/main/LICENSE).
 
 ## Translations
 
