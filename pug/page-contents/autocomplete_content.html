@@ -7,25 +7,28 @@
         <p class="caption">
           Add an autocomplete dropdown below your input to suggest possible values in your form. You can populate the list of autocomplete
           options dynamically as well.
+          <div class="input-field outlined">
+            <i class="material-icons prefix">textsms</i>
+            <input type="text" id="autocomplete-input" class="autocomplete" placeholder=" ">
+            <label for="autocomplete-input">Autocomplete</label>
+            <span class="supporting-text">Select a single item</span>
+          </div>
+  
+          <div class="col s12">
+            <p>You can initialize the Autocomplete with isMultiSelect for multiple selections</p>
+          </div>        
+          <div class="input-field">
+            <i class="material-icons prefix">textsms</i>
+            <input type="text" id="autocomplete-input-multi" class="autocomplete-multiple"  placeholder=" ">
+            <label for="autocomplete-input-multi">Multiple Autocomplete</label>
+          </div>
         </p>
 
-        <div class="input-field outlined">
-          <i class="material-icons prefix">textsms</i>
-          <input type="text" id="autocomplete-input" class="autocomplete" placeholder=" ">
-          <label for="autocomplete-input">Autocomplete</label>
-          <span class="supporting-text">Select a single item</span>
-        </div>
-
+        <!-- Update Info -->
         <div class="col s12">
-          <p>You can initialize the Autocomplete with isMultiSelect for multiple selections</p>
+          <p class="red-text"><strong>ATTENTION:</strong> Data-Format has changed from version 1.X.X to 2.0.0! Please update option 'data'.</p>
         </div>
-        
 
-        <div class="input-field">
-          <i class="material-icons prefix">textsms</i>
-          <input type="text" id="autocomplete-input-multi" class="autocomplete-multiple"  placeholder=" ">
-          <label for="autocomplete-input-multi">Multiple Autocomplete</label>
-        </div>
 
         <pre style="padding-top: 0px;">
           <span class="copyMessage">Copied!</span>
