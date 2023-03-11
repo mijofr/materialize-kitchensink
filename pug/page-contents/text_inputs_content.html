@@ -13,45 +13,72 @@
         <p>The validate class leverages HTML5 validation and will add a <code class="language-markup">valid</code> and <code class="language-markup">invalid</code> class accordingly. If you don't want the Green and Red validation states, just remove the <code class="language-markup">validate</code> class from your inputs.</p>
         <br>
           <form>
-            <div class="row">
-              <div class="input-field col s6">
-                <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-bottom: 3em;">
+              <div class="input-field">
+                <input id="first_name" type="text" placeholder=" ">
                 <label for="first_name">First Name</label>
+                <span class="supporting-text">Supporting Text</span>
+                <span class="character-counter">0/20</span>
               </div>
-              <div class="input-field col s6">
-                <input id="last_name" type="text">
+
+              <div class="input-field outlined">
+                <input id="last_name" type="text" placeholder=" ">
                 <label for="last_name">Last Name</label>
+                <!--<span class="supporting-text">Supporting Text</span>-->
+                <span class="character-counter">0/20</span>
               </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input disabled value="I am not editable" id="disabled" type="text" class="validate">
+
+              <div class="input-field">
+                <input id="disabled" type="text" placeholder=" " value="I am not editable" disabled>
                 <label for="disabled">Disabled</label>
               </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input id="password" type="password" class="validate">
-                <label for="password">Password</label>
+
+              <div class="input-field outlined">
+                <input id="disabled" type="text" placeholder=" " value="Not editable too" disabled>
+                <label for="disabled">Disabled</label>
+              </div>
+
+              <div class="input-field">
+                <div class="prefix"><i class="material-icons">place</i></div>
+                <div class="suffix"><i class="material-icons">gps_fixed</i></div>
+                <input id="inp-location" type="text" placeholder=" " value="Planet Earth">
+                <label for="inp-location">Location</label>
+              </div>
+
+              <div class="input-field outlined error">
+                <div class="prefix"><i class="material-icons">bubble_chart</i></div>
+                <div class="suffix"><i class="material-icons">error</i></div>
+                <input id="inp-error" type="text" placeholder=" " value="$%/'#sdf">
+                <label for="inp-error">Failing Input</label>
+                <span class="supporting-text">Invalid characters! Please use 0-9 only.</span>
+                <span class="character-counter">0/20</span>
               </div>
             </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input id="email" type="email" class="validate">
-                <label for="email">Email</label>
-                <span class="helper-text" data-error="wrong" data-success="right">Helper text</span>
-              </div>
+
+            <div class="input-field">
+              <input id="password" type="password" class="validate" placeholder=" ">
+              <label for="password">Password</label>
+              <span class="character-counter">0/20</span>
             </div>
-            <div class="row">
+
+            <div class="input-field">
+              <input id="email" type="email" class="validate" placeholder=" ">
+              <label for="email">Email</label>
+              <span class="supporting-text" data-error="wrong" data-success="right">Supporting text for additional information</span>
+            </div>
+
+            <div class="row" style="margin-top: 2em;">
               <div class="col s12">
                 This is an inline input field:
                 <div class="input-field inline">
-                  <input id="email_inline" type="email" class="validate">
+                  <input id="email_inline" type="email" class="validate" placeholder=" ">
                   <label for="email_inline">Email</label>
                   <span class="helper-text" data-error="wrong" data-success="right"></span>
                 </div>
               </div>
             </div>
+
           </form>
         <pre><code class="language-markup">
   &lt;div class="row">
@@ -97,30 +124,19 @@
     &lt;/form>
   &lt;/div>
         </code></pre><br>
-        <h5>Prefilling Text Inputs</h5>
-        <p>If you are having trouble with the labels overlapping prefilled content, Try adding <code class="language-markup">class="active"</code> to the label. <br />You can also call the function <code class="language-javascript">M.updateTextFields();</code> to reinitialize all the Materialize labels on the page if you are dynamically adding inputs.</p>
-        <div class="row">
-          <div class="input-field col s6">
-            <input value="Alvin" id="first_name2" type="text" class="validate">
+        <h5>Floating Labels with CSS only</h5>
+        <p>There should not be any problems with initializing the inputs properly, since the floating Labels are rendered with CSS only. The CSS Technique requires to use an empty placeholder in the HTML. You have to put an emtpy space in the placeholder. Putting an empty string wont work.</p>
+          <div class="input-field outline">
+            <input value="Daniel" id="first_name2" type="text" class="validate" placeholder=" ">
             <label class="active" for="first_name2">First Name</label>
           </div>
-        </div>
 
         <pre><code class="language-markup">
-  &lt;div class="row">
-    &lt;div class="input-field col s6">
-      &lt;input value="Alvin" id="first_name2" type="text" class="validate">
-      &lt;label class="active" for="first_name2">First Name&lt;/label>
-    &lt;/div>
-  &lt;/div>
+&lt;div class="input-field">
+  &lt;input value="Daniel" id="first_name2" type="text" class="validate" placeholder=" ">
+  &lt;label class="active" for="first_name2">First Name&lt;/label>
+&lt;/div>
         </code></pre>
-
-        <pre><code class="language-javascript">
-  $(document).ready(function() {
-    M.updateTextFields();
-  });
-        </code></pre>
-        <br>
 
         <h5>Icon Prefixes</h5>
         <p>You can add an icon prefix to make the form input label even more clear. Just add an icon with the class <code class="language-markup">prefix</code> before the input and label.</p><br>

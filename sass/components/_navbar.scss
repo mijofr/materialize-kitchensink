@@ -16,11 +16,14 @@ nav {
   color: $navbar-font-color;
   @extend .z-depth-1;
   background-color: $primary-color;
+
   width: 100%;
   height: $navbar-height-mobile;
   line-height: $navbar-line-height-mobile;
 
-  a { color: $navbar-font-color; }
+  a {
+    color: $navbar-font-color;
+  }
 
   i,
   [class^="mdi-"], [class*="mdi-"],
@@ -37,9 +40,10 @@ nav {
   }
 
   @media #{$large-and-up} {
-    a.sidenav-trigger { display: none; }
+    a.sidenav-trigger {
+      display: none;
+    }
   }
-
 
   // Collapse button
   .sidenav-trigger {
@@ -54,7 +58,6 @@ nav {
       line-height: $navbar-line-height-mobile;
     }
   }
-
 
   // Logo
   .brand-logo {
@@ -78,7 +81,9 @@ nav {
         transform: none;
       }
 
-      &.left { left: 0.5rem; }
+      &.left {
+        left: 0.5rem;
+      }
       &.right {
         right: 0.5rem;
         left: auto;
@@ -108,18 +113,15 @@ nav {
 
 
   // Navbar Links
-  ul {
+  ul:not(.dropdown-content) {
     margin: 0;
 
     li {
       transition: background-color .3s;
       float: left;
       padding: 0;
-
-      &.active {
-        background-color: rgba(0,0,0,.1);
-      }
     }
+
     a {
       transition: background-color .3s;
       font-size: $navbar-font-size;
@@ -128,19 +130,24 @@ nav {
       padding: 0 15px;
       cursor: pointer;
 
+      &.active {
+        background-color: $navbar-bg-color-focus;
+      }
+
+      &:hover:not(.active) {
+        background-color: $navbar-bg-color-hover;
+      }
+
       &.btn, &.btn-large, &.btn-flat, &.btn-floating {
         margin-top: -2px;
         margin-left: 15px;
         margin-right: 15px;
+        display: inline-block;
 
         & > .material-icons {
           height: inherit;
           line-height: inherit;
         }
-      }
-
-      &:hover {
-        background-color: rgba(0,0,0,.1);
       }
     }
 
@@ -158,11 +165,12 @@ nav {
     margin: 0;
     height: 100%;
 
-    input {
+    input[type=search] {
       height: 100%;
       font-size: 1.2rem;
       border: none;
       padding-left: 2rem;
+      color: #888; //$navbar-font-color;
 
       &:focus, &[type=text]:valid, &[type=password]:valid,
       &[type=email]:valid, &[type=url]:valid, &[type=date]:valid {
@@ -176,10 +184,13 @@ nav {
       left: 0;
 
       i {
-        color: rgba(255,255,255,.7);
+        color: $font-on-primary-color-medium;
         transition: color .3s;
       }
-      &.active i { color: $navbar-font-color; }
+
+      &.active i {
+        color: $navbar-font-color;
+      }
     }
   }
 }
@@ -192,8 +203,10 @@ nav {
 
   nav {
     position: fixed;
+    right: 0;
   }
 }
+
 @media #{$medium-and-up} {
   nav.nav-extended .nav-wrapper {
     min-height: $navbar-height;

@@ -76,32 +76,26 @@
     <script type="text/javascript">
     $( document ).ready(function() {
       $('.chips:not(.chips-data)').material_chip({
-          data: [{
-              tag: "Tag"
-          }]
+          data: [{id: "Tag"}]
       })
 
       $('.chips.chips-data').material_chip({
-        data: [{
-          tag: 'Apple',
-        }, {
-          tag: 'Microsoft',
-        }, {
-          tag: 'Google',
-        }],
+        data: [
+          {id: 12, text: "Apple"},
+          {id: 13, text: "Microsoft"},
+          {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+        ],
         placeholder: 'Enter a tag',
         secondaryPlaceholder: '+Tag',
       })
 
       $('#newData').click(function () {
         $('.chips.chips-data').material_chip({
-          data: [{
-            tag: 'New Data 1',
-          }, {
-            tag: 'New Data 2',
-          }, {
-            tag: 'New Data 3',
-          }],
+          data: [
+            {id: 'New Data 1'},
+            {id: 'New Data 2'},
+            {id: 'New Data 3'}
+          ],
           placeholder: 'Enter a tag',
           secondaryPlaceholder: '+Tag',
         })

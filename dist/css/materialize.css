@@ -4,6 +4,7 @@
  * MIT License (https://raw.githubusercontent.com/materializecss/materialize/master/LICENSE)
  */
 @charset "UTF-8";
+
 .materialize-red {
   background-color: #e51c23 !important;
 }
@@ -2927,7 +2928,7 @@ table.striped tr {
   border-bottom: none;
 }
 table.striped > tbody > tr:nth-child(odd) {
-  background-color: rgba(242, 242, 242, 0.5);
+  background-color: var(--background-color-slight-emphasis);
 }
 table.highlight > tbody > tr {
   -webkit-transition: background-color 0.25s ease;
@@ -3130,6 +3131,7 @@ table.responsive-table td {
     right: -8%;
   }
 }
+
 /*******************
   Utility Classes
 *******************/
@@ -5308,10 +5310,10 @@ body.keyboard-focused .dropdown-content li:focus {
 
 /*!
  * Waves v0.7.6
- * http://fian.my.id/Waves
- *
- * Copyright 2014-2018 Alfiana E. Sibuea and other contributors
- * Released under the MIT license
+ * http://fian.my.id/Waves 
+ * 
+ * Copyright 2014-2018 Alfiana E. Sibuea and other contributors 
+ * Released under the MIT license 
  * https://github.com/fians/Waves/blob/master/LICENSE */
 .waves-effect {
   position: relative;
@@ -7709,6 +7711,7 @@ input[type=range]::-ms-thumb {
     opacity: 0;
   }
 }
+
 /**
  * Patch the gap that appear between the two adjacent div.circle-clipper while the
  * spinner is rotating (appears on Chrome 38, Safari 7.1, and IE 11).
@@ -8049,6 +8052,7 @@ input[type=range]::-ms-thumb {
   visibility: visible;
   -webkit-animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
           animation: pulse-animation 1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+
   -webkit-transition: opacity 0.3s, visibility 0s 1s, -webkit-transform 0.3s;
   transition: opacity 0.3s, visibility 0s 1s, -webkit-transform 0.3s;
   transition: opacity 0.3s, transform 0.3s, visibility 0s 1s;

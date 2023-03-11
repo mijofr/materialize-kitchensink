@@ -7,19 +7,28 @@
         <p class="caption">
           Add an autocomplete dropdown below your input to suggest possible values in your form. You can populate the list of autocomplete
           options dynamically as well.
+          <div class="input-field outlined">
+            <i class="material-icons prefix">textsms</i>
+            <input type="text" id="autocomplete-input" class="autocomplete" placeholder=" ">
+            <label for="autocomplete-input">Autocomplete</label>
+            <span class="supporting-text">Select a single item</span>
+          </div>
+  
+          <div class="col s12">
+            <p>You can initialize the Autocomplete with isMultiSelect for multiple selections</p>
+          </div>        
+          <div class="input-field">
+            <i class="material-icons prefix">textsms</i>
+            <input type="text" id="autocomplete-input-multi" class="autocomplete-multiple"  placeholder=" ">
+            <label for="autocomplete-input-multi">Multiple Autocomplete</label>
+          </div>
         </p>
 
-        <div class="row">
-          <div class="col s12">
-            <div class="row">
-              <div class="input-field col s12">
-                <i class="material-icons prefix">textsms</i>
-                <input type="text" id="autocomplete-input" class="autocomplete">
-                <label for="autocomplete-input">Autocomplete</label>
-              </div>
-            </div>
-          </div>
+        <!-- Update Info -->
+        <div class="col s12">
+          <p class="red-text"><strong>ATTENTION:</strong> Data-Format has changed from version 1.X.X to 2.0.0! Please update option 'data'.</p>
         </div>
+
 
         <pre style="padding-top: 0px;">
           <span class="copyMessage">Copied!</span>
@@ -53,10 +62,50 @@
     var elems = document.querySelectorAll('.autocomplete');
     var instances = M.Autocomplete.init(elems, {
       // specify options here
-      data: {
-        "Apple": null,
-        "Microsoft": null,
-        "Google": 'https://placehold.it/250x250'
+      minLength: 0, // shows instantly
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ]
+    });
+  });
+
+  // With Mutlti Select
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.autocomplete');
+    var instances = M.Autocomplete.init(elems, {
+      // specify options here
+      minLength: 0, // shows instantly
+      isMultiSelect: true,
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ]
+    });
+  });
+
+  // With Mutlti Select and custom search function
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.autocomplete');
+    var instances = M.Autocomplete.init(elems, {
+      // specify options here
+      isMultiSelect: true,
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ],
+      onSearch: function(text, autocomplete) {
+        const filteredData = autocomplete.options.data.filter(item => {
+          return Object.keys(item)
+            .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
+            .some(isMatch => isMatch);
+        });
+        autocomplete.setMenuItems(filteredData);
       }
     });
   });
@@ -67,17 +116,16 @@
   $(document).ready(function(){
     $('input.autocomplete').autocomplete({
       // specify options here
-      data: {
-        "Apple": null,
-        "Microsoft": null,
-        "Google": 'https://placehold.it/250x250'
-      },
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ]
     });
   });
           </code>
         </pre>
       </div>
-
 
       <div id="options" class="scrollspy section">
         <h3 class="header">Options</h3>
@@ -94,33 +142,45 @@
           <tbody>
             <tr>
               <td>data</td>
-              <td>Object</td>
-              <td>{}</td>
-              <td>Data object defining autocomplete options with optional icon strings.</td>
+              <td>Array</td>
+              <td>[]</td>
+              <td>Array with Data-Objects defining autocomplete options with optional icon (image). The Property <u>id</u> is required which can be string or integer. It is also possible to use the properties <u>text</u> and <u>image</u>.</td>
             </tr>
             <tr>
-              <td>limit</td>
-              <td>Number</td>
-              <td>Infinity</td>
-              <td>Limit of results the autocomplete shows.</td>
+              <td>isMultiSelect</td>
+              <td>boolean</td>
+              <td>false</td>
+              <td>Flag which can be set if multiple values can be selected. The Result will be an Array.</td>
+            </tr>
+            <tr>
+              <td>maxDropDownHeight</td>
+              <td>string</td>
+              <td>'300px'</td>
+              <td>The height of the Menu which can be set via css-property.</td>
             </tr>
             <tr>
               <td>onAutocomplete</td>
               <td>Function</td>
               <td>null</td>
-              <td>Callback for when autocompleted.</td>
+              <td>Callback for when autocompleted. After a Selection was made this Function is called. This is also called when a default value is set.</td>
+            </tr>
+            <tr>
+              <td>onSearch</td>
+              <td>Function(text, el)</td>
+              <td>&nbsp;</td>
+              <td>Function is called when the input text is altered and data can also be loaded asynchronously. If the results are collected the items in the list can be updated via the function setMenuItems(collectedItems).</td>
             </tr>
             <tr>
               <td>minLength</td>
               <td>Number</td>
               <td>1</td>
-              <td>Minimum number of characters before autocomplete starts.</td>
+              <td>Minimum number of characters before autocomplete starts. When set to 0, the Options are shown on click or focus.</td>
             </tr>
             <tr>
-              <td>sortFunction</td>
-              <td>Function</td>
-              <td></td>
-              <td>Sort function that defines the order of the list of autocomplete options.</td>
+              <td>dropdownOptions</td>
+              <td>Object</td>
+              <td>{}</td>
+              <td>Pass options object for the dropdown initialization.</td>
             </tr>
             <tr>
               <td>allowUnsafeHTML</td>
@@ -128,30 +188,29 @@
               <td>false</td>
               <td>If true will render the key from each item directly as HTML. User input MUST be properly sanitized first.</td>
             </tr>
-            <tr>
-              <td>dropdownOptions</td>
-              <td>Object</td>
-              <td>{}</td>
-              <td>Pass options object to select dropdown initialization.</td>
-            </tr>
           </tbody>
         </table>
 
         <h5 class="method-header">
-          sortFunction
+          onSearch
         </h5>
-        <p>This is the default compareFunction. You can write your own compareFunction by passing in a function with these same
-          3 parameters. You can read more about how a compareFunction works
-          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort">here</a>.</p>
+        <p>This is the default Search Function. You can write your own search function by passing in a function with the same
+          parameters. You can load asynchronously data in this function or filter an existing list or dictionary. When the data is loaded
+          you can use setMenuItems() to update the content of the Menu.
+        </p>
           <pre style="padding-top: 0px;">
             <span class="copyMessage">Copied!</span>
             <i class="material-icons copyButton">content_copy</i>
             <code class="language-javascript col s12 copiedText">
-  // Sort function for sorting autocomplete results
-  function (a, b, inputString) {
-    return a.indexOf(inputString) - b.indexOf(inputString);
-  }
-            </code>
+onSearch: function(text, autocomplete) {
+  const filteredData = autocomplete.options.data.filter(item => {
+    return Object.keys(item)
+      .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
+      .some(isMatch => isMatch);
+  });
+  autocomplete.setMenuItems(filteredData);
+}
+</code>
           </pre>
         <p>To disable sorting and use the values as they appear in the data object, use a falsy value.</p>
       </div>
@@ -197,30 +256,31 @@ instance.close();
         <br>
 
         <h5 class="method-header">
-          .selectOption();
+          .selectOption(id);
         </h5>
-        <p>Select a specific autocomplete options.</p>
+        <p>Select a specific autocomplete option via id-property.</p>
         <h6>Arguments</h6>
         <p>
-          <b>Element:</b> Element of the autocomplete option.</p>
+          <b>id:</b> The id of a data-entry.</p>
         <pre><code class="language-javascript col s12">
-instance.selectOption(el);
+instance.selectOption(42);
       </code></pre>
         <br>
 
         <h5 class="method-header">
-          .updateData();
+          .setMenuItems(items);
         </h5>
-        <p>Update autocomplete options data.</p>
+        <p>Updates the visible or selectable items shown in the menu.</p>
         <h6>Arguments</h6>
         <p>
-          <b>Object:</b> Autocomplete options data object.</p>
+          <b>items:</b> .</p>
         <pre><code class="language-javascript col s12">
-instance.updateData({
-  "Apple": null,
-  "Microsoft": null,
-  "Google": 'https://placehold.it/250x250'
-});
+instance.setMenuItems([
+  {id: "Test"},
+  {id: 12, text: "Apple"},
+  {id: 13, text: "Microsoft"},
+  {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+]);
       </code></pre>
         <br>
 

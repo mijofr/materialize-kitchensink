@@ -16,10 +16,18 @@
         </div>
       </div>
 
+      <!-- Update Info -->
+      <div class="col s12">
+        <p class="red-text"><strong>ATTENTION:</strong> Data-Format has changed from version 1.X.X to 2.0.0! Please update option 'data'.</p>
+      </div>
+
       <div id="contact" class="section scrollspy">
         <h3 class="header">Contacts</h3>
         <p class="caption">
           To create a contact chip just add an img inside.
+          <div class="chip">
+            <img src="images/yuna.jpg" alt="Contact Person"> Jane Doe
+          </div>
         </p>
         <pre style="padding-top: 0px;">
           <span class="copyMessage">Copied!</span>
@@ -38,6 +46,10 @@
         <p class="caption">
           To create a tag chip just add a close icon inside with the class
           <code class="language-markup">close</code>.
+          <div class="chip">
+            Tag
+            <i class="close material-icons">close</i>
+          </div>
         </p>
         <pre style="padding-top: 0px;">
           <span class="copyMessage">Copied!</span>
@@ -102,13 +114,11 @@
       // specify options here
     });
     $('.chips-initial').chips({
-      data: [{
-        tag: 'Apple',
-      }, {
-        tag: 'Microsoft',
-      }, {
-        tag: 'Google',
-      }],
+      data: [
+        {id: 12, text: "Apple"},
+        {id: 13, text: "Microsoft"},
+        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+      ]
     });
     $('.chips-placeholder').chips({
       placeholder: 'Enter a tag',
@@ -116,13 +126,11 @@
     });
     $('.chips-autocomplete').chips({
       autocompleteOptions: {
-        data: {
-          'Apple': null,
-          'Microsoft': null,
-          'Google': null
-        },
-        limit: Infinity,
-        minLength: 1
+        data: [
+          {id: 12, text: "Apple"},
+          {id: 13, text: "Microsoft"},
+          {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
+        ]
       }
     });
   });
@@ -134,8 +142,9 @@
           <i class="material-icons copyButton">content_copy</i>
           <code class="language-javascript copiedText">
   var chip = {
-    tag: 'chip content',
-    image: '', //optional
+    id: '4711', // unique identifier (can be a string too)
+    text: 'Title' // optional Text
+    image: '', // optional Image-Url
   };
           </code>
         </pre>
@@ -246,7 +255,8 @@
           <b>Chip:</b> Chip data object.</p>
         <pre><code class="language-javascript col s12">
   instance.addChip({
-    tag: 'chip content',
+    id: 1337,
+    text: 'John Doe', // optional
     image: '', // optional
   });
         </code></pre>
