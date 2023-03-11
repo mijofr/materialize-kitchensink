@@ -273,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const renderResults = function(results) {
     const resultsContainer = document.querySelector('.search-results');
-    resultsContainer.innerHTML = ''; //.empty();
+    resultsContainer.innerHTML = '';
     Array.prototype.forEach.call(results, function(result) {
       const anchor = document.createElement('a');
       anchor.href = result[1];
@@ -293,80 +293,85 @@ document.addEventListener("DOMContentLoaded", function() {
     };
   };
 
-  const inputSearch = document.querySelector('input#search');
-
-  inputSearch.addEventListener('focus', e => { // focus(function() {
-    inputSearch.parentElement.classList.add('focused');
-  });
-
-  inputSearch.addEventListener('blur', e => { // blur(function() {
-    if (inputSearch.value.length === 0)
-      inputSearch.parentElement.classList.remove('focused');
-  });
-
-  inputSearch.addEventListener('keyup', debounce((e) => {
-    const inputText = e.target.value;
-    if (inputText.length < 2) {
-      renderResults([]);
-      return;
-    }
-    if (e.which === 38 || e.which === 40 || e.keyCode === 13) return;
-    const results = window.index.search(inputText).slice(0, 6).map((result) => {
-      result = window.indexStore[result.ref];
-      return [result.title, result.href];
-    });
-    renderResults(results);
-  }));
 
   let currentItem;
 
-  inputSearch.addEventListener('keydown', debounce((e) => {
-    const focusedElem = document.querySelector('.search-results .focused');
-    // Escape
-    if (e.keyCode === 27) {
-      inputSearch.value = '';
-      inputSearch.blur();
-      renderResults([]);
-      return;
-    }
-    // Enter
-    else if (e.keyCode === 13) {
-      if (focusedElem) 
-        focusedElem.click();
-      else if (document.querySelector('.search-results').children.length > 0/* children().length*/)
-        document.querySelector('.search-results').children[0].click();
-      return;
-    }
-    // Arrow keys
-    switch(e.which) {
-      // up
-      case 38:
-        if (focusedElem) {
-          focusedElem.classList.remove('focused');
-          focusedElem.previousSibling.classList.add('focused'); // prev().addClass('focused');
-        }
-        break;
-      // down
-      case 40:
-        if (!focusedElem) {
-          currentItem = document.querySelector('.search-results').children[0];
-          currentItem.classList.add('focused');
-        }
-        else {
-          currentItem = focusedElem;
-          if (currentItem.nextSibling) {
-            currentItem.classList.remove('focused');
-            currentItem.nextSibling.classList.add('focused');
+  const searchInputs = document.querySelectorAll('input.search-docs');
+
+  searchInputs.forEach(inputSearch => {
+
+    inputSearch.addEventListener('focus', e => {
+      inputSearch.parentElement.classList.add('focused');
+    });
+
+    inputSearch.addEventListener('blur', e => {
+      if (inputSearch.value.length === 0)
+        inputSearch.parentElement.classList.remove('focused');
+    });
+
+    inputSearch.addEventListener('keyup', debounce((e) => {
+      const inputText = e.target.value;
+      if (inputText.length < 2) {
+        renderResults([]);
+        return;
+      }
+      if (e.which === 38 || e.which === 40 || e.keyCode === 13) return;
+      const results = window.index.search(inputText).slice(0, 6).map((result) => {
+        result = window.indexStore[result.ref];
+        return [result.title, result.href];
+      });
+      renderResults(results);
+    }));
+
+    inputSearch.addEventListener('keydown', debounce((e) => {
+      const focusedElem = document.querySelector('.search-results .focused');
+      // Escape
+      if (e.keyCode === 27) {
+        inputSearch.value = '';
+        inputSearch.blur();
+        renderResults([]);
+        return;
+      }
+      // Enter
+      else if (e.keyCode === 13) {
+        if (focusedElem) 
+          focusedElem.click();
+        else if (document.querySelector('.search-results').children.length > 0/* children().length*/)
+          document.querySelector('.search-results').children[0].click();
+        return;
+      }
+      // Arrow keys
+      switch(e.which) {
+        // up
+        case 38:
+          if (focusedElem) {
+            focusedElem.classList.remove('focused');
+            focusedElem.previousSibling.classList.add('focused'); // prev().addClass('focused');
           }
-        }
-        break;
-      // exit this handler for other keys
-      default: return;
-    }
-
-    e.preventDefault();
-
-  }));
+          break;
+        // down
+        case 40:
+          if (!focusedElem) {
+            currentItem = document.querySelector('.search-results').children[0];
+            currentItem.classList.add('focused');
+          }
+          else {
+            currentItem = focusedElem;
+            if (currentItem.nextSibling) {
+              currentItem.classList.remove('focused');
+              currentItem.nextSibling.classList.add('focused');
+            }
+          }
+          break;
+        // exit this handler for other keys
+        default: return;
+      }
+  
+      e.preventDefault();
+  
+    }));
+    
+  });
 
 });
 

@@ -125,20 +125,39 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Theme
-  const checkbox = document.querySelector('#theme-switch input');
-  if (checkbox) {
-    checkbox.addEventListener('change', event => {
-      if (event.currentTarget.checked) {
+  const theme = localStorage.getItem('theme');
+  const themeSwitch = document.querySelector('#theme-switch');
+  const setTheme = (isDark) => {
+    if (isDark) {
+      themeSwitch.classList.add('is-dark');
+      themeSwitch.querySelector('i').innerText = 'light_mode';
+      themeSwitch.title = 'Switch to light mode';
+    }
+    else {
+      themeSwitch.classList.remove('is-dark');
+      themeSwitch.querySelector('i').innerText = 'dark_mode';
+      themeSwitch.title = 'Switch to dark mode';
+    }
+  }
+  if (themeSwitch) {
+    // Load
+    if (theme) setTheme(true);
+    // Change
+    themeSwitch.addEventListener('click', e => {
+      e.preventDefault();
+      if (!themeSwitch.classList.contains('is-dark')) {
+        // Dark Theme
         document.documentElement.setAttribute('theme', 'dark');
         localStorage.setItem('theme', 'dark');
+        setTheme(true);
       }
       else {
+        // Light Theme
         document.documentElement.removeAttribute('theme');
         localStorage.removeItem('theme');
+        setTheme(false);
       }
     });
-    const theme = localStorage.getItem('theme');
-    if (theme) checkbox.checked = true;
   }
 
   // Copy Button

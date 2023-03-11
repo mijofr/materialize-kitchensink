@@ -11802,7 +11802,9 @@ $jscomp.polyfill = function (e, r, p, m) {
 
         if (this.options.classes.length > 0) {
           var customClasses = this.options.classes.split(' ') || [];
-          this.wrapper.classList.add(...customClasses);
+          customClasses.forEach(function (customClass) {
+            return _this70.wrapper.classList.add(customClass);
+          });
         }
 
         this.$el.before($(this.wrapper));

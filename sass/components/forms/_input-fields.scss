@@ -227,10 +227,35 @@ textarea.materialize-textarea {
 }
 
 /* Search Field */
+.searchbar {  
+  .prefix {
+    position: absolute;
+    //left: 12px;
+    padding-left: 1rem;
+    top: 0;
+    user-select: none;
+    display: flex;
+    align-self: center;
+  }
+
+  & > input {
+    border-width: 0;
+    background-color: transparent;
+    padding-left: 3rem;
+  }
+}
+.searchbar.has-sidebar {
+  margin-left: 0;
+  @media #{$large-and-up} {
+    margin-left: $sidenav-width;
+  }
+}
+
+/*
 .input-field input[type=search] {
   display: block;
   line-height: inherit;
-  //transition: .3s background-color;
+
   .nav-wrapper & {
     height: inherit;
     padding-left: 4rem;
@@ -254,9 +279,9 @@ textarea.materialize-textarea {
     color: transparent;
     cursor: pointer;
     font-size: $input-icon-size;
-    //transition: .3s color;
   }
 }
+*/
 
 /* Textarea */
 // Default textarea
