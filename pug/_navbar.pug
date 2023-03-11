@@ -23,13 +23,16 @@ header
           a(href='https://materializecss.com/' target='_blank' rel='noopener noreferrer') 1.0.0
         li
           a(href='https://archives.materializecss.com/0.100.2/' target='_blank' rel='noopener noreferrer') 0.100.2
+
     li(class="search")
       div.search-wrapper.input-field
         input(id="search", type="search" placeholder="Search" autocomplete="off")
         i.material-icons search
-        div.search-results
+        div.search-results        
+
     li.bold(class=(page == "About" ? "active" : ""))
       a.waves-effect.waves-primary(href='about.html') About
+      
     li.bold(class=(page == "Getting Started" ? "active" : ""))
       a.waves-effect.waves-primary(href='getting-started.html') Getting Started
 

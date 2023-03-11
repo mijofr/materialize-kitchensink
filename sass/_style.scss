@@ -33,8 +33,9 @@ td, th {
 }
 
 .header {
-  color: $primary-color;
-  font-weight: 300;
+  color: $font-color-main; //$primary-color;
+  font-weight: 400;
+  font-size: 3.25rem;
 }
 
 .preview {
@@ -149,6 +150,19 @@ ul.sidenav.sidenav-fixed {
 
 .current-version-number {
   color: $font-color-medium;
+}
+
+.intro #logo {
+  height: 150px;
+}
+
+.call-to-action > .btn { border: 1px solid $primary-color; }
+.call-to-action > .btn:first-of-type { border: none;  }
+.call-to-action > .btn-flat { color: $primary-color; }
+
+.materialize-benefits .collection-item > h4 {
+  font-size: 1.75rem;
+  font-weight: 500;
 }
 
 @media #{$medium-and-down} {
@@ -307,19 +321,19 @@ a.sidenav-trigger.top-nav {
   width: 100%;
 
   i {
-    margin: 40px 0;
-    color: $primary-color;
-    font-size: 7rem;
+    margin: 30px 0;
+    //color: $primary-color;
+    color: $secondary-color;
+    font-size: 5rem;
     display: block;
   }
 }
 
 .promo-caption {
-  font-size: 1.7rem;
+  font-size: 1.25rem;
   font-weight: 500;
   margin-top: 5px;
   margin-bottom: 0;
-
 }
 
 // Grid doc styles
@@ -569,6 +583,7 @@ $height: auto;
 ul.table-of-contents {
   margin-top: 0;
   padding-top: 48px;
+  font-size: 1rem;
 }
 
 // Prism Styling
@@ -755,14 +770,24 @@ body.parallax-demo footer {
 #staggered-test li,
 #image-test {
   opacity: 0;
-
 }
 
 // Thanks for Downloading
 #download-thanks {
-  display: none;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+  max-height: 300px;
+  opacity: 1;
 }
-
+#download-thanks .header {
+  font-size: 1.75em;
+  color: $primary-color;
+}
+#download-thanks.is-closed {
+  opacity: 0;
+  max-height: 0;
+}
 
 // Twitter widget
 #twitter-widget-0 {
@@ -850,6 +875,7 @@ body.parallax-demo footer {
       position: absolute;
       top: 21px;
       right: 10px;
+      color: $border-color;
       cursor: pointer;
     }
   }
