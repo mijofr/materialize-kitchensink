@@ -30,6 +30,11 @@
 //  24. Collections
 //  25. Progress Bar
 
+
+// TypeScale
+$md_sys_typescale_body-large_size: 16px;
+
+
 // 1. Colors
 // ==========================================================================
 
@@ -67,6 +72,7 @@ $surface-hover-color-opaque: var(--hover-color) !default;
 $surface-focus-color-opaque: var(--focus-color) !default;
 
 $divider-color: var(--separator-color);
+
 // 2. Badges
 // ==========================================================================
 
@@ -185,7 +191,7 @@ $dropdown-item-height: 50px !default;
 $input-height: 3rem !default;
 $input-border-color: var(--font-color-medium) !default;
 $input-color: var(--font-color-main) !default;
-$input-border: 1px solid $input-border-color !default;
+$input-border: 2px solid $input-border-color !default;
 $input-error-color: $error-color !default;
 $input-success-color: $success-color !default;
 $input-focus-color: $primary-color !default;
@@ -196,10 +202,14 @@ $input-padding: 0 !default;
 $label-font-size: .8rem !default;
 $input-disabled-color: var(--font-color-disabled) !default;
 $input-disabled-solid-color: var(--font-color-disabled) !default;
-$input-disabled-border: 1px dotted $input-disabled-color !default;
-$input-invalid-border: 1px solid $input-error-color !default;
+$input-disabled-border: 2px solid $input-disabled-color !default;
+$input-invalid-border: 2px solid $input-error-color !default;
 $input-icon-size: 2rem;
 $placeholder-text-color: var(--font-color-medium) !default;
+
+$textfield_disabled_containercolor: rgba(var(--md_sys_color_on-surface), 0.04);
+$textfield_disabled_outlinecolor: rgba(var(--md_sys_color_on-surface), 0.12);
+$textfield_disabled_color: rgba(var(--md_sys_color_on-surface), 0.38);
 
 // Radio Buttons
 $radio-fill-color: $primary-color !default;

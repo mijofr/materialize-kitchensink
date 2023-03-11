@@ -7,10 +7,12 @@
         <p> Select allows user input through specified options. Make sure you wrap it in a
           <code class="language-markup">.input-field</code> for proper alignment with other text fields. Remember that this is a jQuery plugin so make sure you
           <a href="#initialization">initialize</a> this in your document ready. </p>
+
         <div class="row">
           <form class="col s12">
             <div class="row">
-              <div class="input-field col s12 m6">
+
+              <div class="input-field outlined col s12 m6">
                 <select id="select-example-1">
                   <option value="" disabled selected>Choose your option</option>
                   <option value="1">Option 1</option>
@@ -19,11 +21,13 @@
                 </select>
                 <label for="select-example-1">Materialize Select</label>
               </div>
+
               <div class="col s12">
                 <br>
                 <p>You can add the property
                   <code class="language-markup">multiple</code> to get the multiple select and select several options.</p>
               </div>
+
               <div class="input-field col s12 m6">
                 <select id="select-example-2" multiple>
                   <option value="" disabled selected>Choose your option</option>
@@ -33,6 +37,7 @@
                 </select>
                 <label for="select-example-2">Materialize Multiple Select</label>
               </div>
+
               <div class="col s12">
                 <br>
                 <p>We also support optgroups in our selects.</p>
@@ -92,7 +97,7 @@
           <div class="col s12">
             <pre><code class="language-markup">
   &lt;div class="input-field col s12">
-    &lt; id="form-select-1">
+    &lt;select id="form-select-1">
       &lt;option value="" disabled selected>Choose your option&lt;/option>
       &lt;option value="1">Option 1&lt;/option>
       &lt;option value="2">Option 2&lt;/option>

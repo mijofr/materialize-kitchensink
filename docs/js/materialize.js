@@ -6655,7 +6655,6 @@ $jscomp.polyfill = function (e, r, p, m) {
       _this37.oldVal;
       _this37.selectedValues = [];
       _this37.menuItems = [];
-      _this37.$inputField = _this37.$el.closest('.input-field');
       _this37.$active = $();
       _this37._mousedown = false;
       _this37._setupDropdown();
@@ -6716,8 +6715,11 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.container.style.maxHeight = this.options.maxDropDownHeight;
         this.container.id = "autocomplete-options-" + M.guid();
         this.container.classList.add('autocomplete-content', 'dropdown-content');
-        this.$inputField.append(this.container);
         this.el.setAttribute('data-target', this.container.id);
+
+        // ! Issue in Component Dropdown: _placeDropdown moves dom-position
+        this.el.parentElement.appendChild(this.container);
+
         // Initialize dropdown
         var dropdownOptions = $.extend({}, Autocomplete.defaults.dropdownOptions, this.options.dropdownOptions);
         var userOnItemClick = dropdownOptions.onItemClick;
@@ -6730,6 +6732,12 @@ $jscomp.polyfill = function (e, r, p, m) {
           if (userOnItemClick && typeof userOnItemClick === 'function') userOnItemClick.call(_this38.dropdown, _this38.el);
         };
         this.dropdown = M.Dropdown.init(this.el, dropdownOptions);
+
+        // ! Workaround for Label: move label up again
+        // TODO: Just use PopperJS in future!
+        var label = this.el.parentElement.querySelector('label');
+        if (label) this.el.after(label);
+
         // Sketchy removal of dropdown click handler
         this.el.removeEventListener('click', this.dropdown._handleClickBound);
         // Set Value if already set in HTML
@@ -6951,7 +6959,6 @@ $jscomp.polyfill = function (e, r, p, m) {
           var entry = this.selectedValues[0];
           this.el.value = entry.text || entry.id; // Write Text to Input
         }
-        M.updateTextFields();
       }
     }, {
       key: "_triggerChanged",
@@ -7055,45 +7062,6 @@ $jscomp.polyfill = function (e, r, p, m) {
   }
 })(cash);
 ;(function ($) {
-  var TEXT_BASED_INPUT_SELECTOR = ['input:not([type])', 'input[type=text]', 'input[type=password]', 'input[type=email]', 'input[type=url]', 'input[type=tel]', 'input[type=number]', 'input[type=search]', 'input[type=date]', 'input[type=time]', 'input[type=month]', 'input[type=datetime-local]', 'textarea'].join(',');
-
-  // Function to update labels of text fields
-  M.updateTextFields = function () {
-    $(TEXT_BASED_INPUT_SELECTOR).each(function (element, index) {
-      var $this = $(this);
-      if (element.value.length > 0 || $(element).is(':focus') || element.autofocus || $this.attr('placeholder') !== null) {
-        $this.siblings('label').addClass('active');
-      } else if (element.validity) {
-        $this.siblings('label').toggleClass('active', element.validity.badInput === true);
-      } else {
-        $this.siblings('label').removeClass('active');
-      }
-    });
-  };
-
-  M.validate_field = function (object) {
-    var hasLength = object.attr('data-length') !== null;
-    var lenAttr = parseInt(object.attr('data-length'));
-    var len = object[0].value.length;
-
-    if (len === 0 && object[0].validity.badInput === false && !object.is(':required')) {
-      if (object.hasClass('validate')) {
-        object.removeClass('valid');
-        object.removeClass('invalid');
-      }
-    } else {
-      if (object.hasClass('validate')) {
-        // Check for character counter attributes
-        if (object.is(':valid') && hasLength && len <= lenAttr || object.is(':valid') && !hasLength) {
-          object.removeClass('invalid');
-          object.addClass('valid');
-        } else {
-          object.removeClass('valid');
-          object.addClass('invalid');
-        }
-      }
-    }
-  };
 
   M.textareaAutoResize = function ($textarea) {
     // Wrap if native element
@@ -7117,34 +7085,19 @@ $jscomp.polyfill = function (e, r, p, m) {
     var fontFamily = $textarea.css('font-family');
     var fontSize = $textarea.css('font-size');
     var lineHeight = $textarea.css('line-height');
-
     // Firefox can't handle padding shorthand.
     var paddingTop = $textarea.css('padding-top');
     var paddingRight = $textarea.css('padding-right');
     var paddingBottom = $textarea.css('padding-bottom');
     var paddingLeft = $textarea.css('padding-left');
 
-    if (fontSize) {
-      hiddenDiv.css('font-size', fontSize);
-    }
-    if (fontFamily) {
-      hiddenDiv.css('font-family', fontFamily);
-    }
-    if (lineHeight) {
-      hiddenDiv.css('line-height', lineHeight);
-    }
-    if (paddingTop) {
-      hiddenDiv.css('padding-top', paddingTop);
-    }
-    if (paddingRight) {
-      hiddenDiv.css('padding-right', paddingRight);
-    }
-    if (paddingBottom) {
-      hiddenDiv.css('padding-bottom', paddingBottom);
-    }
-    if (paddingLeft) {
-      hiddenDiv.css('padding-left', paddingLeft);
-    }
+    if (fontSize) hiddenDiv.css('font-size', fontSize);
+    if (fontFamily) hiddenDiv.css('font-family', fontFamily);
+    if (lineHeight) hiddenDiv.css('line-height', lineHeight);
+    if (paddingTop) hiddenDiv.css('padding-top', paddingTop);
+    if (paddingRight) hiddenDiv.css('padding-right', paddingRight);
+    if (paddingBottom) hiddenDiv.css('padding-bottom', paddingBottom);
+    if (paddingLeft) hiddenDiv.css('padding-left', paddingLeft);
 
     // Set original-height, if none
     if (!$textarea.data('original-height')) {
@@ -7186,68 +7139,6 @@ $jscomp.polyfill = function (e, r, p, m) {
   };
 
   $(document).ready(function () {
-    // Add active if form auto complete
-    $(document).on('change', TEXT_BASED_INPUT_SELECTOR, function () {
-      if (this.value.length !== 0 || $(this).attr('placeholder') !== null) {
-        $(this).siblings('label').addClass('active');
-      }
-      M.validate_field($(this));
-    });
-
-    // Add active if input element has been pre-populated on document ready
-    $(document).ready(function () {
-      M.updateTextFields();
-    });
-
-    // HTML DOM FORM RESET handling
-    $(document).on('reset', function (e) {
-      var formReset = $(e.target);
-      if (formReset.is('form')) {
-        formReset.find(TEXT_BASED_INPUT_SELECTOR).removeClass('valid').removeClass('invalid');
-        formReset.find(TEXT_BASED_INPUT_SELECTOR).each(function (e) {
-          if (this.value.length) {
-            $(this).siblings('label').removeClass('active');
-          }
-        });
-
-        // Reset select (after native reset)
-        setTimeout(function () {
-          formReset.find('select').each(function () {
-            // check if initialized
-            if (this.M_FormSelect) {
-              $(this).trigger('change');
-            }
-          });
-        }, 0);
-      }
-    });
-
-    /**
-     * Add active when element has focus
-     * @param {Event} e
-     */
-    document.addEventListener('focus', function (e) {
-      if ($(e.target).is(TEXT_BASED_INPUT_SELECTOR)) {
-        $(e.target).siblings('label, .prefix').addClass('active');
-      }
-    }, true);
-
-    /**
-     * Remove active when element is blurred
-     * @param {Event} e
-     */
-    document.addEventListener('blur', function (e) {
-      var $inputElement = $(e.target);
-      if ($inputElement.is(TEXT_BASED_INPUT_SELECTOR)) {
-        var selector = '.prefix';
-
-        if ($inputElement[0].value.length === 0 && $inputElement[0].validity.badInput !== true && $inputElement.attr('placeholder') === null) {
-          selector += ', label';
-        }
-        $inputElement.siblings(selector).removeClass('active');
-        M.validate_field($inputElement);
-      }
-    }, true);
 
     // Radio and Checkbox focus class
     var radio_checkbox = 'input[type=radio], input[type=checkbox]';
@@ -11906,7 +11797,14 @@ $jscomp.polyfill = function (e, r, p, m) {
         var _this70 = this;
 
         this.wrapper = document.createElement('div');
-        $(this.wrapper).addClass('select-wrapper ' + this.options.classes);
+        this.wrapper.classList.add('select-wrapper');
+        this.wrapper.classList.add('input-field');
+
+        if (this.options.classes.length > 0) {
+          var customClasses = this.options.classes.split(' ') || [];
+          this.wrapper.classList.add(...customClasses);
+        }
+
         this.$el.before($(this.wrapper));
 
         // Move actual select element into overflow hidden wrapper
@@ -11974,11 +11872,10 @@ $jscomp.polyfill = function (e, r, p, m) {
             this._labelFor = true;
           }
         }
+
         // Tries to find a valid label in parent element
         if (!this.labelEl) {
-          var el = this.el.parentElement;
-          if (el) el = el.getElementsByTagName("label")[0];
-          if (el) this.labelEl = el;
+          this.labelEl = this.el.parentElement.querySelector('label');
         }
         if (this.labelEl && this.labelEl.id == "") {
           this.labelEl.id = "m_select-label-" + M.guid();
@@ -12000,6 +11897,7 @@ $jscomp.polyfill = function (e, r, p, m) {
         this.input.setAttribute("aria-owns", this.dropdownOptions.id);
         this.input.setAttribute("aria-controls", this.dropdownOptions.id);
         this.input.setAttribute("aria-expanded", false);
+        this.input.placeholder = " ";
 
         $(this.wrapper).prepend(this.input);
         this._setValueToInput();
@@ -12047,6 +11945,9 @@ $jscomp.polyfill = function (e, r, p, m) {
         }
         // Add initial selections
         this._setSelectedStates();
+
+        // ! Workaround for Label: move label up again
+        if (this.labelEl) this.input.after(this.labelEl);
       }
     }, {
       key: "_addOptionToValues",

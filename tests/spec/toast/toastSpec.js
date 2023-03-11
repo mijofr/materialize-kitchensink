@@ -49,8 +49,7 @@ describe( 'Toasts:', function() {
       };
       M.toast({html: 'I am a toast', displayLength:100, completeCallback: callback});
       setTimeout(function() {
-        expect(boolObj.wasCalled).toBe(true,
-                                       'because the callback set it to true');
+        expect(boolObj.wasCalled).toBe(true, 'because the callback set it to true');
         done();
       }, 500);
     });
@@ -58,9 +57,7 @@ describe( 'Toasts:', function() {
     it('Apply two custom class to a toast', function(done) {
       M.toast({html:'Hi', displayLength: 400, classes: 'round flat'});
       let toastFlat = document.querySelectorAll('.toast.round.flat');
-      expect(toastFlat.length).toBe(1,
-          'because the class parameter was passed with two classes');
-      
+      expect(toastFlat.length).toBe(1, 'because the class parameter was passed with two classes');      
       setTimeout(function() {
         done();
       }, 490);

@@ -1,5 +1,5 @@
 :root {
-    --surface-color: #ffffff;
+    --surface-color: #eeeeee;
     --background-color: #ffffff;
 
     --font-color-main: rgba(0, 0, 0, 0.87);
@@ -49,6 +49,8 @@
     --secondary-color: #EF5350;
     --secondary-color-hover-solid: #FE625F;
     --secondary-color-focus-solid: #FF7B78;
+
+    --md_sys_color_on-surface: 28, 27, 31;
 }
 
 :root[theme='dark'] {
@@ -91,4 +93,6 @@
     --secondary-color: #CDDC39;
     --secondary-color-hover-solid: #DCEB48;
     --secondary-color-focus-solid: #F5FF61;
+
+    --md_sys_color_on-surface: 230, 225, 229;
 }
