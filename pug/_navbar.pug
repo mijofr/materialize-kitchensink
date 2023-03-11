@@ -1,4 +1,28 @@
 header
+  div.search-results.card
+
+  div.navbar-fixed
+    nav
+      div.nav-wrapper
+        a.sidenav-trigger(href="#" data-target="nav-mobile")
+          i.material-icons menu
+        ul.left.hide-on-small-only
+          li
+            div.searchbar.has-sidebar
+              span.prefix
+                i.material-icons search
+              input#searchbar.search-docs(type="search" required autofocus placeholder="Search..." autocomplete="off")
+        ul.right
+          li
+            a#theme-switch(href='#')
+              i.material-icons dark_mode
+          li
+            a(href="https://github.com/materializecss/materialize" target="_blank" class="ext-link" title="Check out our GitHub")
+              img(src='images/github.svg' style="transform: scale(0.8);")
+          li
+            a(href="https://opencollective.com/materialize" target="_blank" class="ext-link" title="Support us via OpenCollective")
+              img(src='images/opencollective.svg')
+  
   if no_nav == false
     nav.top-nav
       .container
@@ -6,13 +30,16 @@ header
           .row
             .col.s12.m10.offset-m1
               h1.header #{page}
-  .container
-    a.top-nav.sidenav-trigger(href='#', data-target='nav-mobile', class=(no_nav == false ? "full hide-on-large-only" : "" + "waves-effect waves-light circle hide-on-large-only"))
-      i.material-icons menu
+
+  //- .container
+  //-   a.top-nav.sidenav-trigger(href='#', data-target='nav-mobile', class=(no_nav == false ? "full hide-on-large-only" : "" + "waves-effect waves-light circle hide-on-large-only"))
+  //-     i.material-icons menu
+
   ul#nav-mobile.sidenav.sidenav-fixed
     li(class="logo")
       a#logo-container.brand-logo(href='/')
         object#front-page-logo(type='image/svg+xml', data='res/materialize.svg') Your browser does not support SVG
+    
     li.version
       a.dropdown-trigger(href='#' data-target='version-dropdown') 1.2.2
         <svg class="caret" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg>
@@ -24,11 +51,10 @@ header
         li
           a(href='https://archives.materializecss.com/0.100.2/' target='_blank' rel='noopener noreferrer') 0.100.2
 
-    li(class="search")
-      div.search-wrapper.input-field
-        input(id="search", type="search" placeholder="Search" autocomplete="off")
+    li.search.hide-on-med-and-up
+      div.search-wrapper
+        input#search.search-docs(type="search" placeholder="Search" autocomplete="off")
         i.material-icons search
-        div.search-results        
 
     li.bold(class=(page == "About" ? "active" : ""))
       a.waves-effect.waves-primary(href='about.html') About
@@ -154,9 +180,3 @@ header
     li.bold(class=(page == "Mobile" ? "active" : ""))
       a.waves-effect.waves-primary(href='mobile.html') Mobile
 
-    div#theme-switch.switch
-        label
-            | Light
-            input(type='checkbox')
-            span.lever
-            | Dark
