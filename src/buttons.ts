@@ -1,5 +1,4 @@
 import { Component } from "./component";
-import $ from "cash-dom";
 import anim from "animejs";
 
   let _defaults = {
@@ -7,20 +6,13 @@ import anim from "animejs";
     hoverEnabled: true,
     toolbarEnabled: false
   };
-
-  ($.fn as any).reverse = [].reverse;
   
-
-  /**
-   * @class
-   *
-   */
   export class FloatingActionButton extends Component {
     isOpen: boolean;
-    $anchor: any;
-    $menu: any;
-    $floatingBtns: any;
-    $floatingBtnsReverse: any;
+    private _anchor: HTMLAnchorElement;
+    private _menu: HTMLElement|null;
+    private _floatingBtns: HTMLElement[];
+    private _floatingBtnsReverse: HTMLElement[];
     offsetY: number;
     offsetX: number;
     private _handleFABClickBound: any;
@@ -30,44 +22,30 @@ import anim from "animejs";
     btnBottom: number;
     btnLeft: number;
     btnWidth: number;
-    /**
-     * Construct FloatingActionButton instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+
     constructor(el, options) {
       super(FloatingActionButton, el, options);
 
       (this.el as any).M_FloatingActionButton = this;
 
-      /**
-       * Options for the fab
-       * @member FloatingActionButton#options
-       * @prop {Boolean} [direction] - Direction fab menu opens
-       * @prop {Boolean} [hoverEnabled=true] - Enable hover vs click
-       * @prop {Boolean} [toolbarEnabled=false] - Enable toolbar transition
-       */
-      this.options = $.extend({}, FloatingActionButton.defaults, options);
-
+      this.options = {...FloatingActionButton.defaults, ...options};
       this.isOpen = false;
-      this.$anchor = this.$el.children('a').first();
-      this.$menu = this.$el.children('ul').first();
-      this.$floatingBtns = this.$el.find('ul .btn-floating');
-      this.$floatingBtnsReverse = this.$el.find('ul .btn-floating').reverse();
+      this._anchor = this.el.querySelector('a');
+      this._menu = this.el.querySelector('ul');
+      this._floatingBtns = Array.from(this.el.querySelectorAll('ul .btn-floating'));
+      this._floatingBtnsReverse = this._floatingBtns.reverse();
       this.offsetY = 0;
       this.offsetX = 0;
 
-      this.$el.addClass(`direction-${this.options.direction}`);
-      if (this.options.direction === 'top') {
+      this.el.classList.add(`direction-${this.options.direction}`);
+      if (this.options.direction === 'top')
         this.offsetY = 40;
-      } else if (this.options.direction === 'right') {
+      else if (this.options.direction === 'right')
         this.offsetX = -40;
-      } else if (this.options.direction === 'bottom') {
+      else if (this.options.direction === 'bottom')
         this.offsetY = -40;
-      } else {
+      else
         this.offsetX = 40;
-      }
       this._setupEventHandlers();
     }
 
@@ -79,25 +57,16 @@ import anim from "animejs";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_FloatingActionButton;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       this._removeEventHandlers();
       (this.el as any).M_FloatingActionButton = undefined;
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       this._handleFABClickBound = this._handleFABClick.bind(this);
       this._handleOpenBound = this.open.bind(this);
@@ -111,9 +80,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Remove Event Handlers
-     */
     _removeEventHandlers() {
       if (this.options.hoverEnabled && !this.options.toolbarEnabled) {
         this.el.removeEventListener('mouseenter', this._handleOpenBound);
@@ -123,9 +89,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handle FAB Click
-     */
     _handleFABClick() {
       if (this.isOpen) {
         this.close();
@@ -134,58 +97,41 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handle Document Click
-     * @param {Event} e
-     */
     _handleDocumentClick(e) {
-      if (!$(e.target).closest(this.$menu).length) {
+      const elem = <HTMLElement>e.target;
+      if (elem !== this._menu) this.close;
+      /*
+      if (!elem.closest(this.$menu)) {
         this.close();
-      }
+      }*/
     }
 
-    /**
-     * Open FAB
-     */
     open() {
-      if (this.isOpen) {
-        return;
-      }
-
-      if (this.options.toolbarEnabled) {
+      if (this.isOpen) return;
+      if (this.options.toolbarEnabled)
         this._animateInToolbar();
-      } else {
+      else
         this._animateInFAB();
-      }
       this.isOpen = true;
     }
 
-    /**
-     * Close FAB
-     */
     close() {
-      if (!this.isOpen) {
-        return;
-      }
-
+      if (!this.isOpen) return;
       if (this.options.toolbarEnabled) {
         window.removeEventListener('scroll', this._handleCloseBound, true);
         document.body.removeEventListener('click', this._handleDocumentClickBound, true);
         this._animateOutToolbar();
-      } else {
+      }
+      else {
         this._animateOutFAB();
       }
       this.isOpen = false;
     }
 
-    /**
-     * Classic FAB Menu open
-     */
     _animateInFAB() {
-      this.$el.addClass('active');
-
+      this.el.classList.add('active');
       let time = 0;
-      this.$floatingBtnsReverse.each((i, el) => {
+      this._floatingBtnsReverse.forEach((el) => {
         anim({
           targets: el,
           opacity: 1,
@@ -200,11 +146,8 @@ import anim from "animejs";
       });
     }
 
-    /**
-     * Classic FAB Menu close
-     */
     _animateOutFAB() {
-      this.$floatingBtnsReverse.each((i, el) => {
+      this._floatingBtnsReverse.forEach((el) => {
         anim.remove(el);
         anim({
           targets: el,
@@ -221,16 +164,16 @@ import anim from "animejs";
       });
     }
 
-    /**
-     * Toolbar transition Menu open
-     */
+    // Not working for now... => No Material Specs. Is this even used? Remove? 
+
     _animateInToolbar() {
+      /*
       let scaleFactor;
       let windowWidth = window.innerWidth;
       let windowHeight = window.innerHeight;
       let btnRect = this.el.getBoundingClientRect();
-      let backdrop = $('<div class="fab-backdrop"></div>');
-      let fabColor = this.$anchor.css('background-color');
+      let backdrop = null; // $('<div class="fab-backdrop"></div>');
+      //let fabColor = this.$anchor.css('background-color');
       this.$anchor.append(backdrop);
 
       this.offsetX = btnRect.left - windowWidth / 2 + btnRect.width / 2;
@@ -250,25 +193,28 @@ import anim from "animejs";
         transform: 'translateX(' + this.offsetX + 'px)',
         transition: 'none'
       });
-      this.$anchor.css({
-        transform: 'translateY(' + -this.offsetY + 'px)',
+      this.$anchor.setAttribute('style', `
+        transform: 'translateY(${this.offsetY}px)',
         transition: 'none'
-      });
+      `);
+
       backdrop.css({
         'background-color': fabColor
       });
 
       setTimeout(() => {
+
         this.$el.css({
           transform: '',
           transition:
             'transform .2s cubic-bezier(0.550, 0.085, 0.680, 0.530), background-color 0s linear .2s'
         });
-        this.$anchor.css({
-          overflow: 'visible',
-          transform: '',
-          transition: 'transform .2s'
-        });
+
+        // this.$anchor.css({
+        //   overflow: 'visible',
+        //   transform: '',
+        //   transition: 'transform .2s'
+        // });
 
         setTimeout(() => {
           this.$el.css({
@@ -279,12 +225,13 @@ import anim from "animejs";
             transform: 'scale(' + scaleFactor + ')',
             transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
           });
-          this.$menu
-            .children('li')
-            .children('a')
-            .css({
-              opacity: 1
-            });
+
+          // this.$menu
+          //   .children('li')
+          //   .children('a')
+          //   .css({
+          //     opacity: 1
+          //   });
 
           // Scroll to close.
           this._handleDocumentClickBound = this._handleDocumentClick.bind(this);
@@ -292,12 +239,12 @@ import anim from "animejs";
           document.body.addEventListener('click', this._handleDocumentClickBound, true);
         }, 100);
       }, 0);
+      */
     }
 
-    /**
-     * Toolbar transition Menu close
-     */
     _animateOutToolbar() {
+      return;
+      /*
       let windowWidth = window.innerWidth;
       let windowHeight = window.innerHeight;
       let backdrop = this.$el.find('.fab-backdrop');
@@ -312,19 +259,20 @@ import anim from "animejs";
         'background-color': 'transparent',
         transition: 'none'
       });
-      this.$anchor.css({
-        transition: 'none'
-      });
+      // this.$anchor.css({
+      //   transition: 'none'
+      // });
       backdrop.css({
         transform: 'scale(0)',
         'background-color': fabColor
       });
-      this.$menu
-        .children('li')
-        .children('a')
-        .css({
-          opacity: ''
-        });
+
+      // this.$menu
+      //   .children('li')
+      //   .children('a')
+      //   .css({
+      //     opacity: ''
+      //   });
 
       setTimeout(() => {
         backdrop.remove();
@@ -339,22 +287,23 @@ import anim from "animejs";
           'background-color': '',
           transform: 'translate3d(' + -this.offsetX + 'px,0,0)'
         });
-        this.$anchor.css({
-          overflow: '',
-          transform: 'translate3d(0,' + this.offsetY + 'px,0)'
-        });
+        // this.$anchor.css({
+        //   overflow: '',
+        //   transform: 'translate3d(0,' + this.offsetY + 'px,0)'
+        // });
 
         setTimeout(() => {
           this.$el.css({
             transform: 'translate3d(0,0,0)',
             transition: 'transform .2s'
           });
-          this.$anchor.css({
-            transform: 'translate3d(0,0,0)',
-            transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
-          });
+          // this.$anchor.css({
+          //   transform: 'translate3d(0,0,0)',
+          //   transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
+          // });
         }, 20);
       }, 200);
+      */
     }
   }
 
