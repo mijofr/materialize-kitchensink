@@ -1,6 +1,5 @@
 import { Component } from "./component";
 import { M } from "./global";
-import $ from "cash-dom";
 import { Dropdown } from "./dropdown";
 
   let _defaults = {
@@ -14,11 +13,6 @@ import { Dropdown } from "./dropdown";
       coverTrigger: false
     },
     minLength: 1, // Min characters before autocomplete starts
-    sortFunction: function(a, b, inputString) {
-      // Sort function for sorting autocomplete results
-      return a.indexOf(inputString) - b.indexOf(inputString);
-    },
-
     isMultiSelect: false,
     onSearch: function(text, autocomplete) {
       const filteredData = autocomplete.options.data.filter(item => {
@@ -32,17 +26,13 @@ import { Dropdown } from "./dropdown";
     allowUnsafeHTML: false
   };
 
-  /**
-   * @class
-   *
-   */
   export class Autocomplete extends Component {
     private isOpen: boolean;
     private count: number;
     private activeIndex: number;
     private oldVal: any;
     private $inputField: any;
-    private $active: any;
+    private $active: HTMLElement|null;
     private _mousedown: boolean;
     private _handleInputBlurBound: any;
     private _handleInputKeyupAndFocusBound: any;
@@ -50,56 +40,41 @@ import { Dropdown } from "./dropdown";
     private _handleInputClickBound: any;
     private _handleContainerMousedownAndTouchstartBound: any;
     private _handleContainerMouseupAndTouchendBound: any;
-    container: any;
+    container: HTMLElement;
     dropdown: any;
     static _keydown: boolean;
     selectedValues: any[];
     menuItems: any[];
-    /**
-     * Construct Autocomplete instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+
     constructor(el, options) {
       super(Autocomplete, el, options);
-
       (this.el as any).M_Autocomplete = this;
-
-      /**
-       * Options for the autocomplete
-       * @member Autocomplete#options
-       * @prop {Number} duration
-       * @prop {Number} dist
-       * @prop {number} shift
-       * @prop {number} padding
-       * @prop {Boolean} fullWidth
-       * @prop {Boolean} indicators
-       * @prop {Boolean} noWrap
-       * @prop {Function} onCycleTo
-       */
-      this.options = $.extend({}, Autocomplete.defaults, options);
+      this.options = {...Autocomplete.defaults, ...options};
       this.isOpen = false;
       this.count = 0;
       this.activeIndex = -1;
       this.oldVal;
       this.selectedValues = [];
       this.menuItems = [];
-      this.$active = $();
+      this.$active = null;
       this._mousedown = false;
       this._setupDropdown();
       this._setupEventHandlers();
     }
+
     static get defaults() {
       return _defaults;
     }
+
     static init(els, options) {
       return super.init(this, els, options);
     }
+
     static getInstance(el) {
       let domElem = el.jquery ? el[0] : el;
       return domElem.M_Autocomplete;
     }
+
     destroy() {
       this._removeEventHandlers();
       this._removeDropdown();
@@ -135,6 +110,7 @@ import { Dropdown } from "./dropdown";
         this.container.addEventListener('touchend', this._handleContainerMouseupAndTouchendBound);
       }
     }
+
     _removeEventHandlers() {
       this.el.removeEventListener('blur', this._handleInputBlurBound);
       this.el.removeEventListener('keyup', this._handleInputKeyupAndFocusBound);
@@ -158,6 +134,7 @@ import { Dropdown } from "./dropdown";
         );
       }
     }
+
     _setupDropdown() {      
       this.container = document.createElement('ul');
       this.container.style.maxHeight = this.options.maxDropDownHeight;
@@ -169,11 +146,8 @@ import { Dropdown } from "./dropdown";
       this.el.parentElement.appendChild(this.container); 
 
       // Initialize dropdown
-      let dropdownOptions = $.extend(
-        {},
-        Autocomplete.defaults.dropdownOptions,
-        this.options.dropdownOptions
-      );
+      let dropdownOptions = {...Autocomplete.defaults.dropdownOptions, ...this.options.dropdownOptions};
+
       let userOnItemClick = dropdownOptions.onItemClick;
       // Ensuring the select Option call when user passes custom onItemClick function to dropdown
       dropdownOptions.onItemClick = (li) => {
@@ -203,15 +177,18 @@ import { Dropdown } from "./dropdown";
       this.el.parentElement.appendChild(div);      
       this._updateSelectedInfo();
     }
+
     _removeDropdown() {
       this.container.parentNode.removeChild(this.container);
     }
+
     _handleInputBlur() {
       if (!this._mousedown) {
         this.close();
         this._resetAutocomplete();
       }
     }
+
     _handleInputKeyupAndFocus(e) {
       if (e.type === 'keyup') Autocomplete._keydown = false;
       this.count = 0;
@@ -236,18 +213,17 @@ import { Dropdown } from "./dropdown";
       }
       this.oldVal = actualValue;
     }
+
     _handleInputKeydown(e) {
       Autocomplete._keydown = true;
       // Arrow keys and enter key usage
       const keyCode = e.keyCode;
-      const numItems = $(this.container).children('li').length;
+      const numItems = this.container.querySelectorAll('li').length;
       // select element on Enter
-      if (keyCode === M.keys.ENTER && this.activeIndex >= 0) {
-        const liElement = $(this.container)
-          .children('li')
-          .eq(this.activeIndex);
-        if (liElement.length) {
-          this.selectOption(liElement[0].getAttribute('data-id'));
+      if (keyCode === M.keys.ENTER && this.activeIndex >= 0) {        
+        const liElement = this.container.querySelectorAll('li')[this.activeIndex];
+        if (liElement) {
+          this.selectOption(liElement.getAttribute('data-id'));
           e.preventDefault();
         }
         return;
@@ -257,12 +233,10 @@ import { Dropdown } from "./dropdown";
         e.preventDefault();
         if (keyCode === M.keys.ARROW_UP && this.activeIndex > 0) this.activeIndex--;
         if (keyCode === M.keys.ARROW_DOWN && this.activeIndex < numItems - 1) this.activeIndex++;
-        this.$active.removeClass('active');
+        this.$active.classList.remove('active');
         if (this.activeIndex >= 0) {
-          this.$active = $(this.container)
-            .children('li')
-            .eq(this.activeIndex);
-          this.$active.addClass('active');
+          this.$active = this.container.querySelectorAll('li')[this.activeIndex];
+          this.$active.classList.add('active');
           // Focus selected
           this.container.children[this.activeIndex].scrollIntoView({
             behavior: 'smooth',
@@ -272,22 +246,26 @@ import { Dropdown } from "./dropdown";
         }
       }
     }
+
     _handleInputClick(e) {
       this.open();
     }
+
     _handleContainerMousedownAndTouchstart(e) {
       this._mousedown = true;
     }
+
     _handleContainerMouseupAndTouchend(e) {
       this._mousedown = false;
     }
 
     _resetCurrentElementPosition() {
       this.activeIndex = -1;
-      this.$active.removeClass('active');
+      this.$active.classList.remove('active');
     }
+
     _resetAutocomplete() {
-      $(this.container).empty();
+      this.container.replaceChildren();
       this._resetCurrentElementPosition();
       this.oldVal = null;
       this.isOpen = false;
@@ -373,6 +351,7 @@ import { Dropdown } from "./dropdown";
       item.style.gridTemplateColumns = getGridConfig();
       return item;
     }
+
     _renderDropdown() {
       this._resetAutocomplete();
       // Check if Data is empty
@@ -384,6 +363,7 @@ import { Dropdown } from "./dropdown";
         this.container.append(item);
       }
     }
+
     _setStatusLoading() {
       this.el.parentElement.querySelector(
         '.status-info'
@@ -393,6 +373,7 @@ import { Dropdown } from "./dropdown";
       <circle fill="#888c" stroke="none" cx="46" cy="50" r="6"><animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite"  begin="0.3"/></circle>
     </svg></div>`;
     }
+
     _updateSelectedInfo() {
       const statusElement = this.el.parentElement.querySelector('.status-info');
       if (statusElement) {
@@ -401,12 +382,14 @@ import { Dropdown } from "./dropdown";
         else statusElement.innerHTML = '';
       }
     }
+
     _refreshInputText() {
       if (this.selectedValues.length === 1) {
         const entry = this.selectedValues[0];
         (this.el as HTMLInputElement).value = entry.text || entry.id; // Write Text to Input
       }
     }
+
     _triggerChanged() {
       this.$el.trigger('change');
       // Trigger Autocomplete Event
@@ -430,14 +413,17 @@ import { Dropdown } from "./dropdown";
       }
       else this.dropdown.recalculateDimensions(); // Recalculate dropdown when its already open
     }
+
     close() {
       this.dropdown.close();
     }
+
     setMenuItems(menuItems) {
       this.menuItems = menuItems;
       this.open();
       this._updateSelectedInfo();
     }
+
     setValues(entries) {
       this.selectedValues = entries;
       this._updateSelectedInfo();
@@ -446,6 +432,7 @@ import { Dropdown } from "./dropdown";
       }
       this._triggerChanged();
     }
+
     selectOption(id) {
       const entry = this.menuItems.find((item) => item.id == id);
       if (!entry) return;
@@ -453,7 +440,7 @@ import { Dropdown } from "./dropdown";
       const li = this.container.querySelector('li[data-id="'+id+'"]');
       if (!li) return;
       if (this.options.isMultiSelect) {
-        const checkbox = li.querySelector('input[type="checkbox"]');
+        const checkbox = <HTMLInputElement|null>li.querySelector('input[type="checkbox"]');
         checkbox.checked = !checkbox.checked;
         if (checkbox.checked) this.selectedValues.push(entry);
         else

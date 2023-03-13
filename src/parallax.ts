@@ -18,11 +18,6 @@ import { M } from "./global";
 
       (this.el as any).M_Parallax = this;
 
-      /**
-       * Options for the Parallax
-       * @member Parallax#options
-       * @prop {Number} responsiveThreshold
-       */
       this.options = $.extend({}, Parallax.defaults, options);
       this._enabled = window.innerWidth > this.options.responsiveThreshold;
 
@@ -47,17 +42,11 @@ import { M } from "./global";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Parallax;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       Parallax._parallaxes.splice(Parallax._parallaxes.indexOf(this), 1);
       this.$img[0].style.transform = '';
