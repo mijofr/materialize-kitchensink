@@ -1,5 +1,7 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import anim from "animejs";
+import { M } from "./global";
 
   let _defaults = {
     inDuration: 275,
@@ -14,7 +16,29 @@
    * @class
    *
    */
-  class Materialbox extends Component {
+  export class Materialbox extends Component {
+    overlayActive: boolean;
+    doneAnimating: boolean;
+    placeholder: any;
+    originalWidth: number;
+    originalHeight: number;
+    originInlineStyles: any;
+    caption: string;
+    private _handleMaterialboxClickBound: any;
+    ancestorsChanged: any;
+    newHeight: any;
+    newWidth: any;
+    windowWidth: number;
+    windowHeight: number;
+    maxWidth: any;
+    maxHeight: any;
+    attrWidth: any;
+    attrHeight: any;
+    $overlay: any;
+    $photoCaption: any;
+    private _handleWindowScrollBound: any;
+    private _handleWindowResizeBound: any;
+    private _handleWindowEscapeBound: any;
     /**
      * Construct Materialbox instance
      * @constructor
@@ -24,7 +48,7 @@
     constructor(el, options) {
       super(Materialbox, el, options);
 
-      this.el.M_Materialbox = this;
+      (this.el as any).M_Materialbox = this;
 
       /**
        * Options for the modal
@@ -74,7 +98,7 @@
      */
     destroy() {
       this._removeEventHandlers();
-      this.el.M_Materialbox = undefined;
+      (this.el as any).M_Materialbox = undefined;
 
       // Unwrap image
       $(this.placeholder)
@@ -169,6 +193,8 @@
         targets: this.el,
         height: [this.originalHeight, this.newHeight],
         width: [this.originalWidth, this.newWidth],
+        maxHeight: this.newHeight,
+        maxWidth: this.newWidth,
         left:
           M.getDocumentScrollLeft() +
           this.windowWidth / 2 -
@@ -348,7 +374,7 @@
 
       // Add and animate caption if it exists
       if (this.caption !== '') {
-        if (this.$photocaption) {
+        if (this.$photoCaption) {
           anim.remove(this.$photoCaption[0]);
         }
         this.$photoCaption = $('<div class="materialbox-caption"></div>');
@@ -445,9 +471,3 @@
     }
   }
 
-  M.Materialbox = Materialbox;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Materialbox, 'materialbox', 'M_Materialbox');
-  }
-})(cash, M.anime);

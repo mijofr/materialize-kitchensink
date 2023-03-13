@@ -1,5 +1,5 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
 
   let _defaults = {};
 
@@ -7,7 +7,11 @@
    * @class
    *
    */
-  class CharacterCounter extends Component {
+  export class CharacterCounter extends Component {
+    isInvalid: boolean;
+    isValidLength: boolean;
+    private _handleUpdateCounterBound: any;
+    counterEl: HTMLSpanElement;
     /**
      * Construct CharacterCounter instance
      * @constructor
@@ -17,7 +21,7 @@
     constructor(el, options) {
       super(CharacterCounter, el, options);
 
-      this.el.M_CharacterCounter = this;
+      (this.el as any).M_CharacterCounter = this;
 
       /**
        * Options for the character counter
@@ -51,7 +55,7 @@
      */
     destroy() {
       this._removeEventHandlers();
-      this.el.CharacterCounter = undefined;
+      (this.el as any).CharacterCounter = undefined;
       this._removeCounter();
     }
 
@@ -101,9 +105,9 @@
      */
     updateCounter() {
       let maxLength = +this.$el.attr('data-length'),
-        actualLength = this.el.value.length;
+        actualLength = (this.el as HTMLInputElement).value.length;
       this.isValidLength = actualLength <= maxLength;
-      let counterString = actualLength;
+      let counterString = actualLength.toString();
 
       if (maxLength) {
         counterString += '/' + maxLength;
@@ -127,10 +131,3 @@
       }
     }
   }
-
-  M.CharacterCounter = CharacterCounter;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(CharacterCounter, 'characterCounter', 'M_CharacterCounter');
-  }
-})(cash);

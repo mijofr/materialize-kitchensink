@@ -1,68 +1,130 @@
-// Required for Meteor package, the use of window prevents export by Meteor
-(function(window) {
-  if (window.Package) {
-    M = {};
-  } else {
-    window.M = {};
-  }
+import { Autocomplete } from './autocomplete';
+import { Bounding } from './bounding';
+import { FloatingActionButton } from './buttons';
+import { Cards } from './cards';
+import { Carousel } from './carousel';
+import { CharacterCounter } from './characterCounter';
+import { Chips } from './chips';
+import { Collapsible } from './collapsible';
+import { Datepicker } from './datepicker';
+import { Dropdown } from './dropdown';
+import { Edges } from './edges';
+import { Forms } from './forms';
+import { Materialbox } from './materialbox';
+import { Modal } from './modal';
+import { Parallax } from './parallax';
+import { Pushpin } from './pushpin';
+import { ScrollSpy } from './scrollspy';
+import { FormSelect } from './select';
+import { Sidenav } from './sidenav';
+import { Slider } from './slider';
+import { Tabs } from './tabs';
+import { TapTarget } from './tapTarget';
+import { Timepicker } from './timepicker';
+import { Toast } from './toasts';
+import { Tooltip } from './tooltip';
 
-  // Check for jQuery
-  M.jQueryLoaded = !!window.jQuery;
-})(window);
 
-// AMD
-if (typeof define === 'function' && define.amd) {
-  define('M', [], function() {
-    return M;
-  });
+export class M {   
+    static version = '1.2.2';
+    static keys = {
+      TAB: 9,
+      ENTER: 13,
+      ESC: 27,
+      ARROW_UP: 38,
+      ARROW_DOWN: 40
+    };
 
-  // Common JS
-} else if (typeof exports !== 'undefined' && !exports.nodeType) {
-  if (typeof module !== 'undefined' && !module.nodeType && module.exports) {
-    exports = module.exports = M;
-  }
-  exports.default = M;
-}
-
-M.version = '1.2.2';
-
-M.keys = {
-  TAB: 9,
-  ENTER: 13,
-  ESC: 27,
-  ARROW_UP: 38,
-  ARROW_DOWN: 40
-};
+  static Autocomplete: typeof Autocomplete = Autocomplete; 
+  static Tabs: typeof Tabs = Tabs; 
+  static Carousel: typeof Carousel = Carousel; 
+  static Dropdown: typeof Dropdown = Dropdown;
+  static FloatingActionButton: typeof FloatingActionButton = FloatingActionButton;
+  static Chips: typeof Chips = Chips;
+  static Collapsible: typeof Collapsible = Collapsible;
+  static Datepicker: typeof Datepicker = Datepicker;
+  static CharacterCounter: typeof CharacterCounter = CharacterCounter;
+  static FormSelect: typeof FormSelect = FormSelect;
+  static Modal: typeof Modal = Modal;
+  static Pushpin: typeof Pushpin = Pushpin;
+  static Materialbox: typeof Materialbox = Materialbox;
+  static Parallax: typeof Parallax = Parallax;
+  static Slider: typeof Slider = Slider;
+  static Timepicker: typeof Timepicker = Timepicker;
+  static toast: (opt: any) => Toast = (opt) => new Toast(opt) ;
+  static Tooltip: typeof Tooltip = Tooltip;
+  static Sidenav: typeof Sidenav = Sidenav;
+  static TapTarget: typeof TapTarget = TapTarget;
+  static ScrollSpy: typeof ScrollSpy = ScrollSpy;
+  static Range: typeof Range = Range;
 
 /**
  * TabPress Keydown handler
  */
-M.tabPressed = false;
-M.keyDown = false;
-let docHandleKeydown = function(e) {
+static tabPressed:boolean = false;
+static keyDown:boolean = false;
+static docHandleKeydown(e) {
   M.keyDown = true;
   if (e.which === M.keys.TAB || e.which === M.keys.ARROW_DOWN || e.which === M.keys.ARROW_UP) {
     M.tabPressed = true;
   }
 };
-let docHandleKeyup = function(e) {
+static docHandleKeyup(e) {
   M.keyDown = false;
   if (e.which === M.keys.TAB || e.which === M.keys.ARROW_DOWN || e.which === M.keys.ARROW_UP) {
     M.tabPressed = false;
   }
 };
-let docHandleFocus = function(e) {
+static docHandleFocus(e) {
   if (M.keyDown) {
     document.body.classList.add('keyboard-focused');
   }
 };
-let docHandleBlur = function(e) {
+static docHandleBlur(e) {
   document.body.classList.remove('keyboard-focused');
 };
-document.addEventListener('keydown', docHandleKeydown, true);
-document.addEventListener('keyup', docHandleKeyup, true);
-document.addEventListener('focus', docHandleFocus, true);
-document.addEventListener('blur', docHandleBlur, true);
+
+static {
+  document.addEventListener('keydown', this.docHandleKeydown, true);
+  document.addEventListener('keyup', this.docHandleKeyup, true);
+  document.addEventListener('focus', this.docHandleFocus, true);
+  document.addEventListener('blur', this.docHandleBlur, true);  
+ 
+  this.initializeJqueryWrapper(Tabs, 'tabs', 'M_Tabs');  
+  this.initializeJqueryWrapper(Carousel, 'carousel', 'M_Carousel');
+  this.initializeJqueryWrapper(Autocomplete, 'autocomplete', 'M_Autocomplete');
+  this.initializeJqueryWrapper(Dropdown, 'dropdown', 'M_Dropdown');
+  this.initializeJqueryWrapper(
+    FloatingActionButton,
+    'floatingActionButton',
+    'M_FloatingActionButton'
+  );
+  M.initializeJqueryWrapper(Collapsible, 'collapsible', 'M_Collapsible');
+  M.initializeJqueryWrapper(CharacterCounter, 'characterCounter', 'M_CharacterCounter');
+  M.initializeJqueryWrapper(Datepicker, 'datepicker', 'M_Datepicker');  
+  M.initializeJqueryWrapper(FormSelect, 'formSelect', 'M_FormSelect'); 
+  M.initializeJqueryWrapper(Modal, 'modal', 'M_Modal');
+  M.initializeJqueryWrapper(Pushpin, 'pushpin', 'M_Pushpin');
+  M.initializeJqueryWrapper(Materialbox, 'materialbox', 'M_Materialbox'); 
+  M.initializeJqueryWrapper(Parallax, 'parallax', 'M_Parallax');
+  M.initializeJqueryWrapper(Slider, 'slider', 'M_Slider');
+  M.initializeJqueryWrapper(Timepicker, 'timepicker', 'M_Timepicker');
+  M.initializeJqueryWrapper(Tooltip, 'tooltip', 'M_Tooltip');
+  M.initializeJqueryWrapper(TapTarget, 'tapTarget', 'M_TapTarget');
+  M.initializeJqueryWrapper(Sidenav, 'sidenav', 'M_Sidenav');
+  M.initializeJqueryWrapper(ScrollSpy, 'scrollSpy', 'M_ScrollSpy');
+  M.initializeJqueryWrapper(Range, 'range', 'M_Range');
+  M.initializeJqueryWrapper(Chips, 'chips', 'M_Chips');
+  Cards.Init();
+  Forms.Init();
+  Chips.Init();
+}
+
+static jQueryLoaded(): boolean
+{
+  return !!(<any>window).jQuery;      
+}
+ 
 
 /**
  * Initialize jQuery wrapper for plugin
@@ -70,8 +132,12 @@ document.addEventListener('blur', docHandleBlur, true);
  * @param {string} pluginName  jQuery plugin name
  * @param {string} classRef  Class reference name
  */
-M.initializeJqueryWrapper = function(plugin, pluginName, classRef) {
-  jQuery.fn[pluginName] = function(methodOrOptions) {
+static initializeJqueryWrapper(plugin, pluginName, classRef) {
+  if (!this.jQueryLoaded())
+    return;
+  var jq = (<any>window).jQuery;
+  
+  jq.fn[pluginName] = function(methodOrOptions) {
     // Call plugin method if valid method name is passed in
     if (plugin.prototype[methodOrOptions]) {
       let params = Array.prototype.slice.call(arguments, 1);
@@ -95,18 +161,13 @@ M.initializeJqueryWrapper = function(plugin, pluginName, classRef) {
     }
 
     // Return error if an unrecognized  method name is passed in
-    jQuery.error(`Method ${methodOrOptions} does not exist on jQuery.${pluginName}`);
+    jq.error(`Method ${methodOrOptions} does not exist on jQuery.${pluginName}`);
   };
 };
 
-/**
- * Automatically initialize components
- * @param {Element} context  DOM Element to search within for components
- */
-M.AutoInit = function(context) {
-  // Use document.body if no context is given
+static AutoInit(context:Element = null) {        
   let root = !!context ? context : document.body;
-
+  
   let registry = {
     Autocomplete: root.querySelectorAll('.autocomplete:not(.no-autoinit)'),
     Carousel: root.querySelectorAll('.carousel:not(.no-autoinit)'),
@@ -127,19 +188,34 @@ M.AutoInit = function(context) {
     Tooltip: root.querySelectorAll('.tooltipped:not(.no-autoinit)'),
     FloatingActionButton: root.querySelectorAll('.fixed-action-btn:not(.no-autoinit)')
   };
+  M.Autocomplete.init(registry.Autocomplete, null);
+  M.Carousel.init(registry.Carousel, null);  
+  M.Chips.init(registry.Chips, null);  
+  M.Collapsible.init(registry.Collapsible, null);
+  M.Datepicker.init(registry.Datepicker, null);
+  M.Dropdown.init(registry.Dropdown, null);  
+  M.Materialbox.init(registry.Materialbox, null);
+  M.Modal.init(registry.Modal, null);
+  M.Parallax.init(registry.Parallax, null);
+  M.Pushpin.init(registry.Pushpin, null);
+  M.ScrollSpy.init(registry.ScrollSpy, null);
+  M.FormSelect.init(registry.FormSelect, null);
+  M.Sidenav.init(registry.Sidenav, null);
+  M.Tabs.init(registry.Tabs, null);
+  M.TapTarget.init(registry.TapTarget, null);
+  M.Timepicker.init(registry.Timepicker, null);
+  M.Tooltip.init(registry.Tooltip, null);
+  M.FloatingActionButton.init(registry.FloatingActionButton, null);         
 
-  for (let pluginName in registry) {
-    let plugin = M[pluginName];
-    plugin.init(registry[pluginName]);
-  }
 };
+
 
 /**
  * Generate approximated selector string for a jQuery object
  * @param {jQuery} obj  jQuery object to be parsed
  * @returns {string}
  */
-M.objectSelectorString = function(obj) {
+static objectSelectorString(obj) {
   let tagStr = obj.prop('tagName') || '';
   let idStr = obj.attr('id') || '';
   let classStr = obj.attr('class') || '';
@@ -147,32 +223,16 @@ M.objectSelectorString = function(obj) {
 };
 
 // Unique Random ID
-M.guid = (function() {
-  function s4() {
+static guid():string {
+  function s4():string {
     return Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1);
   }
-  return function() {
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  };
-})();
+  
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();      
+}
 
-/**
- * @typedef {Object} Edges
- * @property {Boolean} top  If the top edge was exceeded
- * @property {Boolean} right  If the right edge was exceeded
- * @property {Boolean} bottom  If the bottom edge was exceeded
- * @property {Boolean} left  If the left edge was exceeded
- */
-
-/**
- * @typedef {Object} Bounding
- * @property {Number} left  left offset coordinate
- * @property {Number} top  top offset coordinate
- * @property {Number} width
- * @property {Number} height
- */
 
 /**
  * Escapes hash from special characters
@@ -181,7 +241,7 @@ M.guid = (function() {
  * @param {Number} offset  offset from edge that counts as exceeding
  * @returns {Edges}
  */
-M.checkWithinContainer = function(container, bounding, offset) {
+static checkWithinContainer(container: Element, bounding: Bounding, offset: number):Edges  {
   let edges = {
     top: false,
     right: false,
@@ -228,7 +288,7 @@ M.checkWithinContainer = function(container, bounding, offset) {
   return edges;
 };
 
-M.checkPossibleAlignments = function(el, container, bounding, offset) {
+static checkPossibleAlignments(el, container, bounding, offset) {
   let canAlign = {
     top: true,
     right: true,
@@ -288,7 +348,7 @@ M.checkPossibleAlignments = function(el, container, bounding, offset) {
   return canAlign;
 };
 
-M.getOverflowParent = function(element) {
+static getOverflowParent(element) {
   if (element == null) {
     return null;
   }
@@ -297,7 +357,7 @@ M.getOverflowParent = function(element) {
     return element;
   }
 
-  return M.getOverflowParent(element.parentElement);
+  return this.getOverflowParent(element.parentElement);
 };
 
 /**
@@ -305,7 +365,7 @@ M.getOverflowParent = function(element) {
  * @param {Element} trigger  trigger
  * @returns {string}
  */
-M.getIdFromTrigger = function(trigger) {
+static getIdFromTrigger(trigger: Element):string {
   let id = trigger.getAttribute('data-target');
   if (!id) {
     id = trigger.getAttribute('href');
@@ -322,7 +382,7 @@ M.getIdFromTrigger = function(trigger) {
  * Multi browser support for document scroll top
  * @returns {Number}
  */
-M.getDocumentScrollTop = function() {
+static getDocumentScrollTop():number {
   return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
 };
 
@@ -330,7 +390,7 @@ M.getDocumentScrollTop = function() {
  * Multi browser support for document scroll left
  * @returns {Number}
  */
-M.getDocumentScrollLeft = function() {
+static getDocumentScrollLeft():number {
   return window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
 };
 
@@ -350,70 +410,43 @@ M.getDocumentScrollLeft = function() {
  * @property {Number} height
  */
 
-/**
- * Get time in ms
- * @license https://raw.github.com/jashkenas/underscore/master/LICENSE
- * @type {function}
- * @return {number}
- */
-let getTime =
-  Date.now ||
-  function() {
-    return new Date().getTime();
-  };
 
-/**
- * Returns a function, that, when invoked, will only be triggered at most once
- * during a given window of time. Normally, the throttled function will run
- * as much as it can, without ever going more than once per `wait` duration;
- * but if you'd like to disable the execution on the leading edge, pass
- * `{leading: false}`. To disable execution on the trailing edge, ditto.
- * @license https://raw.github.com/jashkenas/underscore/master/LICENSE
- * @param {function} func
- * @param {number} wait
- * @param {Object=} options
- * @returns {Function}
- */
-M.throttle = function(func, wait, options) {
-  let context, args, result;
-  let timeout = null;
-  let previous = 0;
-  options || (options = {});
-  let later = function() {
-    previous = options.leading === false ? 0 : getTime();
-    timeout = null;
-    result = func.apply(context, args);
-    context = args = null;
-  };
-  return function() {
-    let now = getTime();
-    if (!previous && options.leading === false) previous = now;
-    let remaining = wait - (now - previous);
-    context = this;
-    args = arguments;
-    if (remaining <= 0) {
-      clearTimeout(timeout);
-      timeout = null;
-      previous = now;
-      result = func.apply(context, args);
-      context = args = null;
-    } else if (!timeout && options.trailing !== false) {
-      timeout = setTimeout(later, remaining);
+    public static throttle(func, wait, options = null) {
+      let context, args, result;
+      let timeout = null;
+      let previous = 0;
+      options || (options = {});
+      let later = function() {
+        previous = options.leading === false ? 0 : new Date().getTime();
+        timeout = null;
+        result = func.apply(context, args);
+        context = args = null;
+      };
+      return function() {
+        let now = new Date().getTime();
+        if (!previous && options.leading === false) previous = now;
+        let remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0) {
+          clearTimeout(timeout);
+          timeout = null;
+          previous = now;
+          result = func.apply(context, args);
+          context = args = null;
+        } else if (!timeout && options.trailing !== false) {
+          timeout = setTimeout(later, remaining);
+        }
+        return result;
+      };
     }
-    return result;
-  };
-};
 
-/* Feature detection */
-var passiveIfSupported = false;
-try {
-  window.addEventListener(
-    'test',
-    null,
-    Object.defineProperty({}, 'passive', {
-      get: function() {
-        passiveIfSupported = { passive: false };
-      }
-    })
-  );
-} catch (err) {}
+    getTime(): number {
+      return new Date().getTime();
+    };
+
+          
+}
+
+
+module.exports = M

@@ -1,5 +1,7 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
+
 
   let _defaults = {
     dialRadius: 135,
@@ -35,11 +37,52 @@
    * @class
    *
    */
-  class Timepicker extends Component {
+  export class Timepicker extends Component {
+    id: string;
+    modal: any;
+    modalEl: any;
+    private _handleInputKeydownBound: any;
+    private _handleInputClickBound: any;
+    private _handleClockClickStartBound: any;
+    private _handleDocumentClickMoveBound: any;
+    private _handleDocumentClickEndBound: any;
+    private _inputFromTextFieldBound: any;
+    plate: any;
+    digitalClock: any;
+    inputHours: any;
+    inputMinutes: any;
+    x0: any;
+    y0: any;
+    moved: boolean;
+    dx: number;
+    dy: number;
+    currentView: string;
+    hand: any;
+    minutesView: any;
+    hours: any;
+    minutes: any;
+    time: string;
+    amOrPm: any;
+    $modalEl: any;
+    static _template: any;
+    isOpen: boolean;
+    vibrate: string;
+    _canvas: any;
+    hoursView: any;
+    spanAmPm: any;
+    footer: any;
+    $amBtn: any;
+    $pmBtn: any;
+    bg: Element;
+    bearing: Element;
+    g: Element;
+    toggleViewTimer: string | number | NodeJS.Timeout;
+    canvas: any;
+    vibrateTimer: any;
     constructor(el, options) {
       super(Timepicker, el, options);
 
-      this.el.M_Timepicker = this;
+      (this.el as any).M_Timepicker = this;
 
       this.options = $.extend({}, Timepicker.defaults, options);
 
@@ -104,7 +147,7 @@
       this._removeEventHandlers();
       this.modal.destroy();
       $(this.modalEl).remove();
-      this.el.M_Timepicker = undefined;
+      (this.el as any).M_Timepicker = undefined;
     }
 
     /**
@@ -181,7 +224,7 @@
       let x = clickPos.x - this.x0;
       let y = clickPos.y - this.y0;
       this.moved = true;
-      this.setHand(x, y, false, true);
+      this.setHand(x, y, false);
     }
 
     _handleDocumentClickEnd(e) {
@@ -246,7 +289,7 @@
       this.currentView = 'hours';
       this.vibrate = navigator.vibrate
         ? 'vibrate'
-        : navigator.webkitVibrate
+        : (navigator as any).webkitVibrate
         ? 'webkitVibrate'
         : null;
 
@@ -318,18 +361,18 @@
 
       let svg = Timepicker._createSVGEl('svg');
       svg.setAttribute('class', 'timepicker-svg');
-      svg.setAttribute('width', diameter);
-      svg.setAttribute('height', diameter);
+      svg.setAttribute('width', diameter.toString());
+      svg.setAttribute('height', diameter.toString());
       let g = Timepicker._createSVGEl('g');
       g.setAttribute('transform', 'translate(' + dialRadius + ',' + dialRadius + ')');
       let bearing = Timepicker._createSVGEl('circle');
       bearing.setAttribute('class', 'timepicker-canvas-bearing');
-      bearing.setAttribute('cx', 0);
-      bearing.setAttribute('cy', 0);
-      bearing.setAttribute('r', 4);
+      bearing.setAttribute('cx', '0');
+      bearing.setAttribute('cy', '0');
+      bearing.setAttribute('r', '4');
       let hand = Timepicker._createSVGEl('line');
-      hand.setAttribute('x1', 0);
-      hand.setAttribute('y1', 0);
+      hand.setAttribute('x1', '0');
+      hand.setAttribute('y1', '0');
       let bg = Timepicker._createSVGEl('circle');
       bg.setAttribute('class', 'timepicker-canvas-bg');
       bg.setAttribute('r', tickRadius);
@@ -359,7 +402,7 @@
             top:
               this.options.dialRadius - Math.cos(radian) * radius - this.options.tickRadius + 'px'
           });
-          tick.html(i === 0 ? '00' : i);
+          tick.html(i === 0 ? '00' : i.toString());
           this.hoursView.appendChild(tick[0]);
           // tick.on(mousedownEvent, mousedown);
         }
@@ -375,7 +418,7 @@
             top:
               this.options.dialRadius - Math.cos(radian) * radius - this.options.tickRadius + 'px'
           });
-          tick.html(i === 0 ? '00' : i);
+          tick.html(i === 0 ? '00' : i.toString());
           this.hoursView.appendChild(tick[0]);
           // tick.on(mousedownEvent, mousedown);
         }
@@ -420,7 +463,7 @@
 
     _updateTimeFromInput() {
       // Get the time
-      let value = ((this.el.value || this.options.defaultTime || '') + '').split(':');
+      let value = (((this.el as HTMLInputElement).value || this.options.defaultTime || '') + '').split(':');
       if (this.options.twelveHour && !(typeof value[1] === 'undefined')) {
         if (value[1].toUpperCase().indexOf('AM') > 0) {
           this.amOrPm = 'AM';
@@ -431,9 +474,9 @@
       }
       if (value[0] === 'now') {
         let now = new Date(+new Date() + this.options.fromNow);
-        value = [now.getHours(), now.getMinutes()];
+        value = [now.getHours().toString(), now.getMinutes().toString()];
         if (this.options.twelveHour) {
-          this.amOrPm = value[0] >= 12 && value[0] < 24 ? 'PM' : 'AM';
+          this.amOrPm = parseInt(value[0]) >= 12 && parseInt(value[0]) < 24 ? 'PM' : 'AM';
         }
       }
       this.hours = +value[0] || 0;
@@ -444,7 +487,7 @@
       this._updateAmPmView();
     }
 
-    showView(view, delay) {
+    showView(view, delay: number = null) {
       if (view === 'minutes' && $(this.hoursView).css('visibility') === 'visible') {
         // raiseCallback(this.options.beforeHourSelect);
       }
@@ -543,13 +586,13 @@
         cx2 = Math.sin(radian) * radius,
         cy2 = -Math.cos(radian) * radius;
 
-      this.hand.setAttribute('x2', cx1);
-      this.hand.setAttribute('y2', cy1);
-      this.bg.setAttribute('cx', cx2);
-      this.bg.setAttribute('cy', cy2);
+      this.hand.setAttribute('x2', cx1.toString());
+      this.hand.setAttribute('y2', cy1.toString());
+      this.bg.setAttribute('cx', cx2.toString());
+      this.bg.setAttribute('cy', cy2.toString());
     }
 
-    setHand(x, y, roundBy5) {
+    setHand(x, y, roundBy5: boolean = false) {
       let radian = Math.atan2(x, -y),
         isHours = this.currentView === 'hours',
         unit = Math.PI / (isHours || roundBy5 ? 6 : 30),
@@ -621,10 +664,10 @@
         cy1 = -Math.cos(radian) * (radius - this.options.tickRadius),
         cx2 = Math.sin(radian) * radius,
         cy2 = -Math.cos(radian) * radius;
-      this.hand.setAttribute('x2', cx1);
-      this.hand.setAttribute('y2', cy1);
-      this.bg.setAttribute('cx', cx2);
-      this.bg.setAttribute('cy', cy2);
+      this.hand.setAttribute('x2', cx1.toString());
+      this.hand.setAttribute('y2', cy1.toString());
+      this.bg.setAttribute('cx', cx2.toString());
+      this.bg.setAttribute('cy', cy2.toString());
     }
 
     open() {
@@ -651,9 +694,9 @@
     /**
      * Finish timepicker selection.
      */
-    done(e, clearValue) {
+    done(e = null, clearValue = null) {
       // Set input value
-      let last = this.el.value;
+      let last = (this.el as HTMLInputElement).value;
       let value = clearValue
         ? ''
         : Timepicker._addLeadingZero(this.hours) + ':' + Timepicker._addLeadingZero(this.minutes);
@@ -661,7 +704,7 @@
       if (!clearValue && this.options.twelveHour) {
         value = `${value} ${this.amOrPm}`;
       }
-      this.el.value = value;
+      (this.el as HTMLInputElement).value = value;
 
       // Trigger change event
       if (value !== last) {
@@ -669,44 +712,43 @@
       }
 
       this.close();
-      this.el.focus();
+      (this.el as HTMLElement).focus();
     }
 
     clear() {
       this.done(null, true);
     }
+
+    static {
+      Timepicker._template = [
+        '<div class= "modal timepicker-modal">',
+        '<div class="modal-content timepicker-container">',
+        '<div class="timepicker-digital-display">',
+        '<div class="timepicker-text-container">',
+        '<div class="timepicker-display-column">',
+        '<input type="text" maxlength="2" autofocus class="timepicker-input-hours text-primary" />',
+        ':',
+        '<input type="text" maxlength="2" class="timepicker-input-minutes" />',
+        '</div>',
+        '<div class="timepicker-display-column timepicker-display-am-pm">',
+        '<div class="timepicker-span-am-pm"></div>',
+        '</div>',
+        '</div>',
+        '</div>',
+        '<div class="timepicker-analog-display">',
+        '<div class="timepicker-plate">',
+        '<div class="timepicker-canvas"></div>',
+        '<div class="timepicker-dial timepicker-hours"></div>',
+        '<div class="timepicker-dial timepicker-minutes timepicker-dial-out"></div>',
+        '</div>',
+        '<div class="timepicker-footer"></div>',
+        '</div>',
+        '</div>',
+        '</div>'
+      ].join('');
+    }
   }
 
-  Timepicker._template = [
-    '<div class= "modal timepicker-modal">',
-    '<div class="modal-content timepicker-container">',
-    '<div class="timepicker-digital-display">',
-    '<div class="timepicker-text-container">',
-    '<div class="timepicker-display-column">',
-    '<input type="text" maxlength="2" autofocus class="timepicker-input-hours text-primary" />',
-    ':',
-    '<input type="text" maxlength="2" class="timepicker-input-minutes" />',
-    '</div>',
-    '<div class="timepicker-display-column timepicker-display-am-pm">',
-    '<div class="timepicker-span-am-pm"></div>',
-    '</div>',
-    '</div>',
-    '</div>',
-    '<div class="timepicker-analog-display">',
-    '<div class="timepicker-plate">',
-    '<div class="timepicker-canvas"></div>',
-    '<div class="timepicker-dial timepicker-hours"></div>',
-    '<div class="timepicker-dial timepicker-minutes timepicker-dial-out"></div>',
-    '</div>',
-    '<div class="timepicker-footer"></div>',
-    '</div>',
-    '</div>',
-    '</div>'
-  ].join('');
+ 
 
-  M.Timepicker = Timepicker;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Timepicker, 'timepicker', 'M_Timepicker');
-  }
-})(cash);
+  

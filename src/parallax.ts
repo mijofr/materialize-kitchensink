@@ -1,15 +1,22 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
 
   let _defaults = {
     responsiveThreshold: 0 // breakpoint for swipeable
   };
 
-  class Parallax extends Component {
+  export class Parallax extends Component {
+    _enabled: boolean;
+    $img: any;
+    static _parallaxes: any;
+    private _handleImageLoadBound: any;
+    static _handleScrollThrottled: any;
+    static _handleWindowResizeThrottled: () => any;
     constructor(el, options) {
       super(Parallax, el, options);
 
-      this.el.M_Parallax = this;
+      (this.el as any).M_Parallax = this;
 
       /**
        * Options for the Parallax
@@ -105,7 +112,7 @@
     }
 
     _updateParallax() {
-      let containerHeight = this.$el.height() > 0 ? this.el.parentNode.offsetHeight : 500;
+      let containerHeight = this.$el.height() > 0 ? (this.el.parentNode as any).offsetHeight : 500;
       let imgHeight = this.$img[0].offsetHeight;
       let parallaxDist = imgHeight - containerHeight;
       let bottom = this.$el.offset().top + containerHeight;
@@ -122,17 +129,11 @@
         this.$img[0].style.transform = `translate3D(-50%, ${parallax}px, 0)`;
       }
     }
+
+    static {
+      Parallax._parallaxes = [];
+    }
   }
 
-  /**
-   * @static
-   * @memberof Parallax
-   */
-  Parallax._parallaxes = [];
+  
 
-  M.Parallax = Parallax;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Parallax, 'parallax', 'M_Parallax');
-  }
-})(cash);

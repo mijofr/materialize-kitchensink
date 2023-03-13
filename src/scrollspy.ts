@@ -1,5 +1,7 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
+import anim from "animejs";
 
   let _defaults = {
     throttle: 100,
@@ -14,7 +16,17 @@
    * @class
    *
    */
-  class ScrollSpy extends Component {
+  export class ScrollSpy extends Component {
+    static _elements: any;
+    static _count: any;
+    static _increment: any;
+    tickId: number;
+    id: any;
+    static _elementsInView: any;
+    static _visibleElements: any;
+    private _handleThrottledResizeBound: any;
+    private _handleWindowScrollBound: any;
+    static _ticks: any;
     /**
      * Construct ScrollSpy instance
      * @constructor
@@ -24,7 +36,7 @@
     constructor(el, options) {
       super(ScrollSpy, el, options);
 
-      this.el.M_ScrollSpy = this;
+      (this.el as any).M_ScrollSpy = this;
 
       /**
        * Options for the modal
@@ -72,7 +84,7 @@
       ScrollSpy._count--;
       this._removeEventHandlers();
       $(this.options.getActiveElement(this.$el.attr('id'))).removeClass(this.options.activeClass);
-      this.el.M_ScrollSpy = undefined;
+      (this.el as any).M_ScrollSpy = undefined;
     }
 
     /**
@@ -246,50 +258,52 @@
         }
       }
     }
+
+    static {
+      /**
+         * @static
+         * @memberof ScrollSpy
+         * @type {Array.<ScrollSpy>}
+         */
+      ScrollSpy._elements = [];
+
+      /**
+       * @static
+       * @memberof ScrollSpy
+       * @type {Array.<ScrollSpy>}
+       */
+      ScrollSpy._elementsInView = [];
+
+      /**
+       * @static
+       * @memberof ScrollSpy
+       * @type {Array.<cash>}
+       */
+      ScrollSpy._visibleElements = [];
+
+      /**
+       * @static
+       * @memberof ScrollSpy
+       */
+      ScrollSpy._count = 0;
+
+      /**
+       * @static
+       * @memberof ScrollSpy
+       */
+      ScrollSpy._increment = 0;
+
+      /**
+       * @static
+       * @memberof ScrollSpy
+       */
+      ScrollSpy._ticks = 0;
+
+    }
   }
 
-  /**
-   * @static
-   * @memberof ScrollSpy
-   * @type {Array.<ScrollSpy>}
-   */
-  ScrollSpy._elements = [];
+  
 
-  /**
-   * @static
-   * @memberof ScrollSpy
-   * @type {Array.<ScrollSpy>}
-   */
-  ScrollSpy._elementsInView = [];
+  
 
-  /**
-   * @static
-   * @memberof ScrollSpy
-   * @type {Array.<cash>}
-   */
-  ScrollSpy._visibleElements = [];
-
-  /**
-   * @static
-   * @memberof ScrollSpy
-   */
-  ScrollSpy._count = 0;
-
-  /**
-   * @static
-   * @memberof ScrollSpy
-   */
-  ScrollSpy._increment = 0;
-
-  /**
-   * @static
-   * @memberof ScrollSpy
-   */
-  ScrollSpy._ticks = 0;
-
-  M.ScrollSpy = ScrollSpy;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(ScrollSpy, 'scrollSpy', 'M_ScrollSpy');
-  }
-})(cash, M.anime);
+  

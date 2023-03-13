@@ -1,21 +1,35 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
+import anim from "animejs";
+import { Carousel } from "./carousel";
 
-  let _defaults = {
-    duration: 300,
-    onShow: null,
-    swipeable: false,
-    responsiveThreshold: Infinity // breakpoint for swipeable
-  };
+let _defaults = {
+  duration: 300,
+  onShow: null,
+  swipeable: false,
+  responsiveThreshold: Infinity, // breakpoint for swipeable
+};
 
-  class Tabs extends Component {
+export class Tabs extends Component {
+  _tabLinks: any;
+  _index: number;
+  _indicator: any;
+  _handleWindowResizeBound: (this: Window, ev: UIEvent) => any;
+  _handleTabClickBound: (this: Window, ev: UIEvent) => any;
+  _tabWidth: number;
+  _tabsWidth: number;
+  _tabsCarousel: any;
+  _activeTabLink: any;
+  _content: any;
 
-    constructor(el, options) {
-      super(Tabs, el, options);
-      this.el.M_Tabs = this;
+  constructor(el, options: any) {
+    super(Tabs, el, options);
+      (this.el as any).M_Tabs = this;
+
       this.options = $.extend({}, Tabs.defaults, options);
       this._tabLinks = this.$el[0].querySelectorAll('li.tab > a');
-      this.index = 0;
+      this._index = 0;
       this._setupActiveTabLink();
       if (this.options.swipeable) {
         this._setupSwipeableTabs();
@@ -50,6 +64,7 @@
         this._teardownNormalTabs();
       }
       this.$el[0].M_Tabs = undefined;
+
     }
 
     _setupEventHandlers() {
@@ -66,7 +81,7 @@
 
     _handleWindowResize() {
       this._setTabsAndTabWidth();
-      if (this.tabWidth !== 0 && this.tabsWidth !== 0) {
+      if (this._tabWidth !== 0 && this._tabsWidth !== 0) {
         this._indicator.style.left = this._calcLeftPos(this._activeTabLink)+'px';
         this._indicator.style.right = this._calcRightPos(this._activeTabLink)+'px';
       }
@@ -86,19 +101,21 @@
       if (tabLink.hasAttribute('target')) return;
       // Make the old tab inactive.
       this._activeTabLink.classList.remove('active');
-      const _oldContent = this._content;
+      const _oldContent = this._content;      
       // Update the variables with the new link and content
+
       this._activeTabLink = tabLink;
       this._content = document.querySelector(tabLink.hash);
       this._tabLinks = this.$el[0].querySelectorAll('li.tab > a');
       // Make the tab active
       this._activeTabLink.classList.add('active');
-      const prevIndex = this.index;
-      this.index = Math.max(Array.from(this._tabLinks).indexOf(tabLink), 0);
+      const prevIndex = this._index;
+      this._index = Math.max(Array.from(this._tabLinks).indexOf(tabLink), 0);
+
       // Swap content
       if (this.options.swipeable) {
         if (this._tabsCarousel) {
-          this._tabsCarousel.set(this.index, () => {
+          this._tabsCarousel.set(this._index, () => {
             if (typeof this.options.onShow === 'function')
               this.options.onShow.call(this, this._content);
           });
@@ -132,7 +149,7 @@
 
     _setupActiveTabLink() {
       // If the location.hash matches one of the links, use that as the active tab.
-      this._activeTabLink = Array.from(this._tabLinks).find(a => a.getAttribute('href') === location.hash);
+      this._activeTabLink = Array.from(this._tabLinks).find((a: HTMLAnchorElement) => a.getAttribute('href') === location.hash);
       // If no match is found, use the first link or any with class 'active' as the initial active tab.
       if (!this._activeTabLink) {
         this._activeTabLink = this.$el[0].querySelector('li.tab a.active');
@@ -140,10 +157,10 @@
       if (this._activeTabLink.length === 0) {
         this._activeTabLink = this.$el[0].querySelector('li.tab a');
       }
-      Array.from(this._tabLinks).forEach(a => a.classList.remove('active'));
+      Array.from(this._tabLinks).forEach((a: HTMLAnchorElement) => a.classList.remove('active'));
       this._activeTabLink.classList.add('active');
 
-      this.index = Math.max(Array.from(this._tabLinks).indexOf(this._activeTabLink), 0);
+      this._index = Math.max(Array.from(this._tabLinks).indexOf(this._activeTabLink), 0);
       if (this._activeTabLink) {
         this._content = document.querySelector(this._activeTabLink.hash);
         this._content.classList.add('active');
@@ -177,14 +194,14 @@
       const tab = this._activeTabLink.parentElement;
       const activeTabIndex = Array.from(tab.parentNode.children).indexOf(tab);
 
-      this._tabsCarousel = M.Carousel.init(tabsWrapper, {
+      this._tabsCarousel = Carousel.init(tabsWrapper, {
         fullWidth: true,
         noWrap: true,
         onCycleTo: (item) => {
-          const prevIndex = this.index;
-          this.index = Array.from(item.parentNode.children).indexOf(item);
+          const prevIndex = this._index;
+          this._index = Array.from(item.parentNode.children).indexOf(item);
           this._activeTabLink.classList.remove('active');
-          this._activeTabLink = Array.from(this._tabLinks)[this.index];
+          this._activeTabLink = Array.from(this._tabLinks)[this._index];
           this._activeTabLink.classList.add('active');
           this._animateIndicator(prevIndex);
           if (typeof this.options.onShow === 'function')
@@ -207,9 +224,9 @@
       // Hide Tabs Content
       Array.from(this._tabLinks).forEach(a => {
         if (a === this._activeTabLink) return;
-        if (a.hash) {
-          const currContent = document.querySelector(a.hash);
-          if (currContent) currContent.style.display = 'none';
+        if ((<HTMLAnchorElement>a).hash) {
+          const currContent = document.querySelector((<HTMLAnchorElement>a).hash);
+          if (currContent) (<HTMLElement>currContent).style.display = 'none';
         }
       });
     }
@@ -225,12 +242,12 @@
     }
 
     _setTabsAndTabWidth() {
-      this.tabsWidth = this.$el[0].getBoundingClientRect().width;
-      this.tabWidth = Math.max(this.tabsWidth, this.el.scrollWidth) / this._tabLinks.length;
+      this._tabsWidth = this.$el[0].getBoundingClientRect().width;
+      this._tabWidth = Math.max(this._tabsWidth, this.el.scrollWidth) / this._tabLinks.length;
     }
 
     _calcRightPos(el) {
-      return Math.ceil(this.tabsWidth - el.offsetLeft - el.getBoundingClientRect().width);
+      return Math.ceil(this._tabsWidth - el.offsetLeft - el.getBoundingClientRect().width);
     }
 
     _calcLeftPos(el) {
@@ -239,14 +256,13 @@
 
     updateTabIndicator() {
       this._setTabsAndTabWidth();
-      this._animateIndicator(this.index);
+      this._animateIndicator(this._index);
     }
 
     _animateIndicator(prevIndex) {
-      const leftDelay = 0,
-        rightDelay = 0;
+      let leftDelay = 0, rightDelay = 0;
 
-      if (this.index - prevIndex >= 0)
+      if (this._index - prevIndex >= 0)
         leftDelay = 90;
       else
         rightDelay = 90;
@@ -269,14 +285,7 @@
     }
 
     select(tabId) {
-      const tab = Array.from(this._tabLinks).find(a => a.getAttribute('href') === '#'+tabId);
-      if (tab) tab.click();
+      const tab = Array.from(this._tabLinks).find((a: HTMLAnchorElement) => a.getAttribute('href') === '#'+tabId);
+      if (tab) (<HTMLAnchorElement>tab).click();
     }
   }
-
-  M.Tabs = Tabs;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Tabs, 'tabs', 'M_Tabs');
-  }
-})(cash, M.anime);

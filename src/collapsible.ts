@@ -1,5 +1,6 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import anim from "animejs";
 
   let _defaults = {
     accordion: true,
@@ -15,7 +16,10 @@
    * @class
    *
    */
-  class Collapsible extends Component {
+  export class Collapsible extends Component {
+    $headers: any;
+    private _handleCollapsibleClickBound: any;
+    private _handleCollapsibleKeydownBound: any;
     /**
      * Construct Collapsible instance
      * @constructor
@@ -25,7 +29,7 @@
     constructor(el, options) {
       super(Collapsible, el, options);
 
-      this.el.M_Collapsible = this;
+      (this.el as any).M_Collapsible = this;
 
       /**
        * Options for the collapsible
@@ -78,7 +82,7 @@
      */
     destroy() {
       this._removeEventHandlers();
-      this.el.M_Collapsible = undefined;
+      (this.el as any).M_Collapsible = undefined;
     }
 
     /**
@@ -88,7 +92,7 @@
       this._handleCollapsibleClickBound = this._handleCollapsibleClick.bind(this);
       this._handleCollapsibleKeydownBound = this._handleCollapsibleKeydown.bind(this);
       this.el.addEventListener('click', this._handleCollapsibleClickBound);
-      this.$headers.each((header) => {
+      this.$headers.each((i, header) => {
         header.addEventListener('keydown', this._handleCollapsibleKeydownBound);
       });
     }
@@ -98,7 +102,7 @@
      */
     _removeEventHandlers() {
       this.el.removeEventListener('click', this._handleCollapsibleClickBound);
-      this.$headers.each((header) => {
+      this.$headers.each((i, header) => {
         header.removeEventListener('keydown', this._handleCollapsibleKeydownBound);
       });
     }
@@ -236,7 +240,7 @@
         if (this.options.accordion) {
           let $collapsibleLis = this.$el.children('li');
           let $activeLis = this.$el.children('li.active');
-          $activeLis.each((el) => {
+          $activeLis.each((i, el) => {
             let index = $collapsibleLis.index($(el));
             this.close(index);
           });
@@ -266,10 +270,3 @@
       }
     }
   }
-
-  M.Collapsible = Collapsible;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Collapsible, 'collapsible', 'M_Collapsible');
-  }
-})(cash, M.anime);
