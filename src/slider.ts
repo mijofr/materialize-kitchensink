@@ -1,5 +1,7 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import anim from "animejs";
+import { M } from "./global";
 
   let _defaults = {
     indicators: true,
@@ -11,21 +13,29 @@
     indicatorLabelFunc: null // Function which will generate a label for the indicators (ARIA)
   };
 
-  /**
-   * @class
-   *
-   */
-  class Slider extends Component {
-    /**
-     * Construct Slider instance and set up overlay
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+  export class Slider extends Component {
+    $slider: any;
+    $slides: any;
+    activeIndex: any;
+    $active: any;
+    $indicators: any;
+    private _handleIntervalBound: any;
+    private _handleIndicatorClickBound: any;
+    interval: string | number | NodeJS.Timeout;
+    eventPause: any;
+    _hovered: any;
+    _focused: any;
+    _focusCurrent: any;
+    _sliderId: any;
+    private _handleAutoPauseFocusBound: any;
+    private _handleAutoStartFocusBound: any;
+    private _handleAutoPauseHoverBound: any;
+    private _handleAutoStartHoverBound: any;
+
     constructor(el, options) {
       super(Slider, el, options);
 
-      this.el.M_Slider = this;
+      (this.el as any).M_Slider = this;
 
       /**
        * Options for the modal
@@ -70,12 +80,12 @@
       }
 
       // Set initial positions of captions
-      this.$slides.find('.caption').each((el) => {
+      this.$slides.find('.caption').each((i, el) => {
         this._animateCaptionIn(el, 0);
       });
 
       // Move img src into background-image
-      this.$slides.find('img').each((el) => {
+      this.$slides.find('img').each((i, el) => {
         let placeholderBase64 =
           'data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
         if ($(el).attr('src') !== placeholderBase64) {
@@ -83,6 +93,7 @@
           $(el).attr('src', placeholderBase64);
         }
       });
+
       this.$slides.each((el) => {
         // Sets slide as focusable by code
         if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', -1);
@@ -155,7 +166,7 @@
       this.pause();
       this._removeIndicators();
       this._removeEventHandlers();
-      this.el.M_Slider = undefined;
+      (this.el as any).M_Slider = undefined;
     }
 
     /**
@@ -179,7 +190,9 @@
       }
 
       if (this.options.indicators) {
-        this.$indicators.children().on('click', this._handleIndicatorClickBound);
+        this.$indicators.each((i, el) => {
+          el.addEventListener('click', this._handleIndicatorClickBound);
+        });
       }
     }
 
@@ -196,7 +209,9 @@
         this.el.removeEventListener('mouseleave', this._handleAutoStartHoverBound);
       }
       if (this.options.indicators) {
-        this.$indicators.children().off('click', this._handleIndicatorClickBound);
+        this.$indicators.each((i, el) => {
+          el.removeEventListener('click', this._handleIndicatorClickBound);
+        });
       }
     }
 
@@ -272,6 +287,8 @@
         targets: caption,
         opacity: 0,
         duration: duration,
+        translateX: null,
+        translateY: null,
         easing: 'easeOutQuad'
       };
 
@@ -308,6 +325,7 @@
     _setupIndicators() {
       if (this.options.indicators) {
         this.$indicators = $('<ul class="indicators"></ul>');
+
         this.$slides.each((el, i) => {
           let label = this.options.indicatorLabelFunc
             ? this.options.indicatorLabelFunc.call(this, i + 1, i === 0)
@@ -315,6 +333,7 @@
           let $indicator = $(`<li class="indicator-item">
             <button type="button" class="indicator-item-btn" aria-label="${label}" aria-controls="${this._sliderId}"></button>
           </li>`);
+
           this.$indicators.append($indicator[0]);
         });
         this.$el.append(this.$indicators[0]);
@@ -352,7 +371,7 @@
           duration: this.options.duration,
           easing: 'easeOutQuad',
           complete: () => {
-            this.$slides.not('.active').each((el) => {
+            this.$slides.not('.active').each((i, el) => {
               anim({
                 targets: el,
                 opacity: 0,
@@ -488,10 +507,6 @@
       this.set(newIndex);
     }
   }
+  
 
-  M.Slider = Slider;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Slider, 'slider', 'M_Slider');
-  }
-})(cash, M.anime);
+  

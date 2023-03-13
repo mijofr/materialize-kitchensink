@@ -1,5 +1,7 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
+import anim from "animejs";
 
   let _defaults = {
     exitDelay: 200,
@@ -18,7 +20,19 @@
    * @class
    *
    */
-  class Tooltip extends Component {
+  export class Tooltip extends Component {
+    isOpen: boolean;
+    isHovered: boolean;
+    isFocused: boolean;
+    tooltipEl: any;
+    private _handleMouseEnterBound: any;
+    private _handleMouseLeaveBound: any;
+    private _handleFocusBound: any;
+    private _handleBlurBound: any;
+    private _exitDelayTimeout: string | number | NodeJS.Timeout;
+    private _enterDelayTimeout: string | number | NodeJS.Timeout;
+    xMovement: number;
+    yMovement: number;
     /**
      * Construct Tooltip instance
      * @constructor
@@ -28,7 +42,7 @@
     constructor(el, options) {
       super(Tooltip, el, options);
 
-      this.el.M_Tooltip = this;
+      (this.el as any).M_Tooltip = this;
       this.options = $.extend({}, Tooltip.defaults, options);
 
       this.isOpen = false;
@@ -60,7 +74,7 @@
     destroy() {
       $(this.tooltipEl).remove();
       this._removeEventHandlers();
-      this.el.M_Tooltip = undefined;
+      (this.el as any).M_Tooltip = undefined;
     }
 
     _appendTooltipEl() {
@@ -166,7 +180,7 @@
     }
 
     _positionTooltip() {
-      let origin = this.el,
+      let origin = (this.el as HTMLElement),
         tooltip = this.tooltipEl,
         originHeight = origin.offsetHeight,
         originWidth = origin.offsetWidth,
@@ -302,19 +316,14 @@
       let positionOption = this.el.getAttribute('data-position');
 
       if (tooltipTextOption) {
-        attributeOptions.text = tooltipTextOption;
+        (attributeOptions as any).text = tooltipTextOption;
       }
 
       if (positionOption) {
-        attributeOptions.position = positionOption;
+        (attributeOptions as any).position = positionOption;
       }
       return attributeOptions;
     }
   }
 
-  M.Tooltip = Tooltip;
 
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Tooltip, 'tooltip', 'M_Tooltip');
-  }
-})(cash, M.anime);

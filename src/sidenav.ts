@@ -1,5 +1,7 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
+import anim from "animejs";
 
   let _defaults = {
     edge: 'left',
@@ -17,7 +19,32 @@
   /**
    * @class
    */
-  class Sidenav extends Component {
+  export class Sidenav extends Component {
+    id: any;
+    isOpen: boolean;
+    isFixed: boolean;
+    isDragged: boolean;
+    lastWindowWidth: number;
+    lastWindowHeight: number;
+    static _sidenavs: any;
+    private _overlay: any;
+    dragTarget: Element;
+    private _closeBound: any;
+    private _handleDragTargetDragBound: any;
+    private _handleDragTargetReleaseBound: any;
+    private _handleCloseDragBound: any;
+    private _handleCloseReleaseBound: any;
+    private _handleCloseTriggerClickBound: any;
+    private _handleWindowResizeBound: any;
+    _startingXpos: any;
+    private _xPos: any;
+    private _time: number;
+    private _width: number;
+    private _initialScrollTop: number;
+    private _verticallyScrolling: boolean;
+    deltaX: number;    
+    velocityX: number;
+    percentOpen: number;
     /**
      * Construct Sidenav instance and set up overlay
      * @constructor
@@ -27,7 +54,7 @@
     constructor(el, options) {
       super(Sidenav, el, options);
 
-      this.el.M_Sidenav = this;
+      (this.el as any).M_Sidenav = this;
       this.id = this.$el.attr('id');
 
       /**
@@ -100,8 +127,8 @@
       this._enableBodyScrolling();
       this._overlay.parentNode.removeChild(this._overlay);
       this.dragTarget.parentNode.removeChild(this.dragTarget);
-      this.el.M_Sidenav = undefined;
-      this.el.style.transform = '';
+      (this.el as any).M_Sidenav = undefined;
+      (this.el as HTMLElement).style.transform = '';
 
       let index = Sidenav._sidenavs.indexOf(this);
       if (index >= 0) {
@@ -130,6 +157,7 @@
       this._handleCloseDragBound = this._handleCloseDrag.bind(this);
       this._handleCloseReleaseBound = this._handleCloseRelease.bind(this);
       this._handleCloseTriggerClickBound = this._handleCloseTriggerClick.bind(this);
+      var passiveIfSupported: boolean = null;
 
       this.dragTarget.addEventListener('touchmove', this._handleDragTargetDragBound, passiveIfSupported);
       this.dragTarget.addEventListener('touchend', this._handleDragTargetReleaseBound);
@@ -174,7 +202,7 @@
       if (e.target && $trigger.length) {
         let sidenavId = M.getIdFromTrigger($trigger[0]);
 
-        let sidenavInstance = document.getElementById(sidenavId).M_Sidenav;
+        let sidenavInstance = (document.getElementById(sidenavId) as any).M_Sidenav;
         if (sidenavInstance) {
           sidenavInstance.open($trigger);
         }
@@ -263,7 +291,7 @@
       this.percentOpen = Math.min(1, totalDeltaX / this._width);
 
       // Set transform and opacity styles
-      this.el.style.transform = `${transformPrefix} translateX(${transformX}px)`;
+      (this.el as HTMLElement).style.transform = `${transformPrefix} translateX(${transformX}px)`;
       this._overlay.style.opacity = this.percentOpen;
     }
 
@@ -323,7 +351,7 @@
         this.percentOpen = Math.min(1, 1 - totalDeltaX / this._width);
 
         // Set transform and opacity styles
-        this.el.style.transform = `translateX(${transformX}px)`;
+        (this.el as HTMLElement).style.transform = `translateX(${transformX}px)`;
         this._overlay.style.opacity = this.percentOpen;
       }
     }
@@ -462,7 +490,7 @@
       // Handle fixed Sidenav
       if (this._isCurrentlyFixed()) {
         let transformX = this.options.edge === 'left' ? '-105%' : '105%';
-        this.el.style.transform = `translateX(${transformX})`;
+        (this.el as HTMLElement).style.transform = `translateX(${transformX})`;
 
         // Handle non-fixed Sidenav
       } else {
@@ -566,18 +594,8 @@
         }
       });
     }
+
+    static  {
+      Sidenav._sidenavs = [];
+    }
   }
-
-  /**
-   * @static
-   * @memberof Sidenav
-   * @type {Array.<Sidenav>}
-   */
-  Sidenav._sidenavs = [];
-
-  M.Sidenav = Sidenav;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Sidenav, 'sidenav', 'M_Sidenav');
-  }
-})(cash, M.anime);

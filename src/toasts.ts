@@ -1,7 +1,7 @@
-(function($, anim) {
-  'use strict';
+import $ from "cash-dom";
+import anim from "animejs";
 
-  let _defaults = {
+let _defaults = {
     html: '',
     unsafeHTML: '',
     text: '',
@@ -13,8 +13,20 @@
     activationPercent: 0.8
   };
 
-  class Toast {
-    constructor(options) {
+  export class Toast {
+    static _toasts: any[];
+    static _container: any;
+    static _draggedToast: any;
+    options: any;
+    htmlMessage: any;
+    message: any;
+    panning: boolean;
+    timeRemaining: any;
+    el: HTMLDivElement;
+    $el: any;
+    counterInterval: NodeJS.Timeout;
+    wasSwiped: any;
+    constructor(options: any) {      
       /**
        * Options for the toast
        * @member Toast#options
@@ -50,7 +62,7 @@
       // Create new toast
       Toast._toasts.push(this);
       let toastElement = this._createToast();
-      toastElement.M_Toast = this;
+      (toastElement as any).M_Toast = this;
       this.el = toastElement;
       this.$el = $(toastElement);
       this._animateIn();
@@ -108,7 +120,7 @@
     static _onDragStart(e) {
       if (e.target && $(e.target).closest('.toast').length) {
         let $toast = $(e.target).closest('.toast');
-        let toast = $toast[0].M_Toast;
+        let toast = ($toast[0] as any).M_Toast;
         toast.panning = true;
         Toast._draggedToast = toast;
         toast.el.classList.add('panning');
@@ -196,7 +208,7 @@
       toast.classList.add('toast');
       toast.setAttribute('role', 'alert');
       toast.setAttribute('aria-live', 'assertive');
-      toast.setAttribute('aria-atomic', true);
+      toast.setAttribute('aria-atomic', 'true');
 
       // Add custom classes onto toast
       if (!!this.options.classes.length) {
@@ -273,7 +285,7 @@
       if (this.wasSwiped) {
         this.el.style.transition = 'transform .05s, opacity .05s';
         this.el.style.transform = `translateX(${activationDistance}px)`;
-        this.el.style.opacity = 0;
+        this.el.style.opacity = '0';
       }
 
       anim({
@@ -296,30 +308,28 @@
         }
       });
     }
+
+    static {
+          
+      /**
+       * @static
+       * @memberof Toast
+       * @type {Array.<Toast>}
+       */
+      Toast._toasts = [];
+
+      /**
+       * @static
+       * @memberof Toast
+       */
+      Toast._container = null;
+
+      /**
+       * @static
+       * @memberof Toast
+       * @type {Toast}
+       */
+      Toast._draggedToast = null;
+
+    }
   }
-
-  /**
-   * @static
-   * @memberof Toast
-   * @type {Array.<Toast>}
-   */
-  Toast._toasts = [];
-
-  /**
-   * @static
-   * @memberof Toast
-   */
-  Toast._container = null;
-
-  /**
-   * @static
-   * @memberof Toast
-   * @type {Toast}
-   */
-  Toast._draggedToast = null;
-
-  M.Toast = Toast;
-  M.toast = function(options) {
-    return new Toast(options);
-  };
-})(cash, M.anime);

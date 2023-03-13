@@ -1,5 +1,7 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import { M } from "./global";
+import $ from "cash-dom";
+import anim from "animejs";
 
   let _defaults = {
     alignment: 'left',
@@ -21,11 +23,30 @@
   /**
    * @class
    */
-  class Dropdown extends Component {
+  export class Dropdown extends Component {
+    static _dropdowns: Dropdown[] = [];
+    id: string;
+    dropdownEl: HTMLElement;
+    $dropdownEl: any;
+    isOpen: boolean;
+    isScrollable: boolean;
+    isTouchMoving: boolean;
+    focusedIndex: number;
+    filterQuery: any[];
+    private _resetFilterQueryBound: any;
+    private _handleDocumentClickBound: any;
+    private _handleDocumentTouchmoveBound: any;
+    private _handleDropdownClickBound: any;
+    private _handleDropdownKeydownBound: any;
+    private _handleTriggerKeydownBound: any;
+    private _handleMouseEnterBound: any;
+    private _handleMouseLeaveBound: any;
+    private _handleClickBound: any;
+    filterTimeout: NodeJS.Timeout;
     constructor(el, options) {
       super(Dropdown, el, options);
 
-      this.el.M_Dropdown = this;
+      (this.el as any).M_Dropdown = this;
       Dropdown._dropdowns.push(this);
 
       this.id = M.getIdFromTrigger(el);
@@ -108,7 +129,7 @@
       this._resetDropdownStyles();
       this._removeEventHandlers();
       Dropdown._dropdowns.splice(Dropdown._dropdowns.indexOf(this), 1);
-      this.el.M_Dropdown = undefined;
+      (this.el as any).M_Dropdown = undefined;
     }
 
     /**
@@ -183,8 +204,8 @@
       let $closestTrigger = $(toEl).closest('.dropdown-trigger');
       if (
         $closestTrigger.length &&
-        !!$closestTrigger[0].M_Dropdown &&
-        $closestTrigger[0].M_Dropdown.isOpen
+        !!(<any> $closestTrigger[0]).M_Dropdown &&
+        (<any> $closestTrigger[0]).M_Dropdown.isOpen
       ) {
         leaveToActiveDropdownTrigger = true;
       }
@@ -268,7 +289,7 @@
 
           if (
             !!this.dropdownEl.children[newFocusedIndex] &&
-            this.dropdownEl.children[newFocusedIndex].tabIndex !== -1
+            (<any>this.dropdownEl.children[newFocusedIndex]).tabIndex !== -1
           ) {
             foundNewIndex = true;
             break;
@@ -295,7 +316,9 @@
         if (!!$activatableElement.length) {
           $activatableElement[0].click();
         } else if (!!focusedElement) {
-          focusedElement.click();
+          if (focusedElement instanceof HTMLElement) {
+            focusedElement.click();
+          }          
         }
 
         // Close dropdown on ESC
@@ -313,7 +336,7 @@
         let string = this.filterQuery.join(''),
           newOptionEl = $(this.dropdownEl)
             .find('li')
-            .filter((el) => {
+            .filter((i,el) => {
               return (
                 $(el)
                   .text()
@@ -352,7 +375,7 @@
     }
 
     // Move dropdown after container or trigger
-    _moveDropdown(containerEl) {
+    _moveDropdown(containerEl = null) {
       if (!!this.options.container) {
         $(this.options.container).append(this.dropdownEl);
       } else if (containerEl) {
@@ -371,9 +394,9 @@
       // Only set tabindex if it hasn't been set by user
       $(this.dropdownEl)
         .children()
-        .each(function(el) {
+        .each((i, el)=> {
           if (!el.getAttribute('tabindex')) {
-            el.setAttribute('tabindex', 0);
+            el.setAttribute('tabindex', '0');
           }
         });
     }
@@ -384,7 +407,7 @@
         this.focusedIndex < this.dropdownEl.children.length &&
         this.options.autoFocus
       ) {
-        this.dropdownEl.children[this.focusedIndex].focus({
+        (this.dropdownEl.children[this.focusedIndex] as HTMLElement).focus({
           preventScroll: true
         });
         this.dropdownEl.children[this.focusedIndex].scrollIntoView({
@@ -396,7 +419,7 @@
     }
 
     _getDropdownPosition(closestOverflowParent) {
-      let offsetParentBRect = this.el.offsetParent.getBoundingClientRect();
+      let offsetParentBRect = (<HTMLElement> this.el).offsetParent.getBoundingClientRect();
       let triggerBRect = this.el.getBoundingClientRect();
       let dropdownBRect = this.dropdownEl.getBoundingClientRect();
 
@@ -548,8 +571,8 @@
        * @param {Element} el  Element to find ancestors on
        * @param {Function} condition  Function that given an ancestor element returns true or false
        * @returns {Element} Return closest ancestor or null if none satisfies the condition
-       */
-      const getClosestAncestor = function(el, condition) {
+       */      
+      const getClosestAncestor = function(el, condition):Element {
         let ancestor = el.parentNode;
         while (ancestor !== null && !$(ancestor).is(document)) {
           if (condition(ancestor)) {
@@ -568,7 +591,7 @@
       if (!closestOverflowParent) {
         closestOverflowParent = !!this.dropdownEl.offsetParent
           ? this.dropdownEl.offsetParent
-          : this.dropdownEl.parentNode;
+          : (this.dropdownEl.parentNode as Element);
       }
       if ($(closestOverflowParent).css('position') === 'static')
         $(closestOverflowParent).css('position', 'relative');
@@ -634,7 +657,7 @@
       this._removeTemporaryEventHandlers();
 
       if (this.options.autoFocus) {
-        this.el.focus();
+        (this.el as HTMLElement).focus();
       }
     }
 
@@ -653,17 +676,15 @@
         this._placeDropdown();
       }
     }
-  }
 
+    static {
   /**
    * @static
    * @memberof Dropdown
    */
   Dropdown._dropdowns = [];
+    
+    }
 
-  M.Dropdown = Dropdown;
 
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Dropdown, 'dropdown', 'M_Dropdown');
   }
-})(cash, M.anime);

@@ -1,5 +1,7 @@
-(function($, anim) {
-  'use strict';
+import { Component } from "./component";
+import $, { Selector } from "cash-dom";
+import { M } from "./global";
+import anim from "animejs";
 
   let _defaults = {};
 
@@ -7,7 +9,15 @@
    * @class
    *
    */
-  class Range extends Component {
+  export class Range extends Component {
+    private _mousedown: boolean;
+    private _handleRangeChangeBound: any;
+    private _handleRangeMousedownTouchstartBound: any;
+    private _handleRangeInputMousemoveTouchmoveBound: any;
+    private _handleRangeMouseupTouchendBound: any;
+    private _handleRangeBlurMouseoutTouchleaveBound: any;
+    value: Selector;
+    thumb: Selector;
     /**
      * Construct Range instance
      * @constructor
@@ -17,7 +27,7 @@
     constructor(el, options) {
       super(Range, el, options);
 
-      this.el.M_Range = this;
+      (this.el as any).M_Range = this;
 
       /**
        * Options for the range
@@ -55,7 +65,7 @@
     destroy() {
       this._removeEventHandlers();
       this._removeThumb();
-      this.el.M_Range = undefined;
+      (this.el as any).M_Range = undefined;
     }
 
     /**
@@ -253,11 +263,3 @@
     }
   }
 
-  M.Range = Range;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Range, 'range', 'M_Range');
-  }
-
-  Range.init($('input[type=range]'));
-})(cash, M.anime);

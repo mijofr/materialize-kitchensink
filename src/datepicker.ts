@@ -1,5 +1,7 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
+import { Modal } from "./modal";
 
   let _defaults = {
     // Close when date is selected
@@ -109,7 +111,31 @@
    * @class
    *
    */
-  class Datepicker extends Component {
+  export class Datepicker extends Component {
+    id: string;
+    isOpen: boolean;
+    modal: any;
+    calendarEl: any;
+    clearBtn: any;
+    doneBtn: any;
+    cancelBtn: any;
+    $modalEl: any;
+    modalEl: any;
+    date: any;
+    formats: any;
+    yearTextEl: any;
+    dateTextEl: any;
+    calendars: any;
+    private _y: any;
+    private _m: any;
+    private _handleInputKeydownBound: any;
+    private _handleInputClickBound: any;
+    private _handleInputChangeBound: any;
+    private _handleCalendarClickBound: any;
+    private _finishSelectionBound: any;
+    private _closeBound: any;
+    private _handleClearClickBound: any;
+    static _template: string;
     /**
      * Construct Datepicker instance and set up overlay
      * @constructor
@@ -119,7 +145,7 @@
     constructor(el, options) {
       super(Datepicker, el, options);
 
-      this.el.M_Datepicker = this;
+      (this.el as any).M_Datepicker = this;
 
       this.options = $.extend({}, Datepicker.defaults, options);
 
@@ -141,7 +167,7 @@
       this._setupEventHandlers();
 
       if (!this.options.defaultDate) {
-        this.options.defaultDate = new Date(Date.parse(this.el.value));
+        this.options.defaultDate = new Date(Date.parse((this.el as HTMLInputElement).value));
       }
 
       let defDate = this.options.defaultDate;
@@ -198,11 +224,7 @@
     static _compareDates(a, b) {
       // weak date comparison (use setToStartOfDay(date) to ensure correct result)
       return a.getTime() === b.getTime();
-    }
-
-    static _setToStartOfDay(date) {
-      if (Datepicker._isDate(date)) date.setHours(0, 0, 0, 0);
-    }
+    }  
 
     /**
      * Get Instance
@@ -220,7 +242,7 @@
       this.modal.destroy();
       $(this.modalEl).remove();
       this.destroySelects();
-      this.el.M_Datepicker = undefined;
+      (this.el as any).M_Datepicker = undefined;
     }
 
     destroySelects() {
@@ -255,14 +277,15 @@
 
     _setupModal() {
       this.modalEl.id = 'modal-' + this.id;
-      this.modal = M.Modal.init(this.modalEl, {
+      this.modal = Modal.init(this.modalEl, {
         onCloseEnd: () => {
           this.isOpen = false;
         }
       });
     }
 
-    toString(format) {
+    toString(format: string | ((d: Date) => string) = null) {
+          
       format = format || this.options.format;
       if (typeof format === 'function') {
         return format(this.date);
@@ -285,7 +308,7 @@
       return formattedDate;
     }
 
-    setDate(date, preventOnSelect) {
+    setDate(date, preventOnSelect: boolean = false) {
       if (!date) {
         this.date = null;
         this._renderDateDisplay();
@@ -320,7 +343,7 @@
     }
 
     setInputValue() {
-      this.el.value = this.toString();
+      (this.el as HTMLInputElement).value = this.toString();
       this.$el.trigger('change', { firedBy: this });
     }
 
@@ -656,7 +679,7 @@
     /**
      * refresh the HTML
      */
-    draw(force) {
+    draw(force: boolean = false) {
       if (!this.isOpen && !force) {
         return;
       }
@@ -833,7 +856,7 @@
           $target.hasClass('datepicker-day-button') &&
           !$target.hasClass('is-empty') &&
           !$target.parent().hasClass('is-disabled')
-        ) {
+        ) {          
           this.setDate(
             new Date(
               e.target.getAttribute('data-year'),
@@ -894,9 +917,9 @@
         return;
       }
       if (this.options.parse) {
-        date = this.options.parse(this.el.value, this.options.format);
+        date = this.options.parse((this.el as HTMLInputElement).value, this.options.format);
       } else {
-        date = new Date(Date.parse(this.el.value));
+        date = new Date(Date.parse((this.el as HTMLInputElement).value));
       }
 
       if (Datepicker._isDate(date)) {
@@ -904,7 +927,7 @@
       }
     }
 
-    renderDayName(opts, day, abbr) {
+    renderDayName(opts, day, abbr: boolean = false) {
       day += opts.firstDay;
       while (day >= 7) {
         day -= 7;
@@ -952,32 +975,31 @@
       this.modal.close();
       return this;
     }
+
+    static
+    {
+      Datepicker._template = [
+        '<div class= "modal datepicker-modal">',
+        '<div class="modal-content datepicker-container">',
+        '<div class="datepicker-date-display">',
+        '<span class="year-text"></span>',
+        '<span class="date-text"></span>',
+        '</div>',
+        '<div class="datepicker-calendar-container">',
+        '<div class="datepicker-calendar"></div>',
+        '<div class="datepicker-footer">',
+        '<button class="btn-flat datepicker-clear waves-effect" style="visibility: hidden;" type="button"></button>',
+        '<div class="confirmation-btns">',
+        '<button class="btn-flat datepicker-cancel waves-effect" type="button"></button>',
+        '<button class="btn-flat datepicker-done waves-effect" type="button"></button>',
+        '</div>',
+        '</div>',
+        '</div>',
+        '</div>',
+        '</div>'
+      ].join('');
+
+    }
   }
 
-  Datepicker._template = [
-    '<div class= "modal datepicker-modal">',
-    '<div class="modal-content datepicker-container">',
-    '<div class="datepicker-date-display">',
-    '<span class="year-text"></span>',
-    '<span class="date-text"></span>',
-    '</div>',
-    '<div class="datepicker-calendar-container">',
-    '<div class="datepicker-calendar"></div>',
-    '<div class="datepicker-footer">',
-    '<button class="btn-flat datepicker-clear waves-effect" style="visibility: hidden;" type="button"></button>',
-    '<div class="confirmation-btns">',
-    '<button class="btn-flat datepicker-cancel waves-effect" type="button"></button>',
-    '<button class="btn-flat datepicker-done waves-effect" type="button"></button>',
-    '</div>',
-    '</div>',
-    '</div>',
-    '</div>',
-    '</div>'
-  ].join('');
-
-  M.Datepicker = Datepicker;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Datepicker, 'datepicker', 'M_Datepicker');
-  }
-})(cash);
+  

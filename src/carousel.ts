@@ -1,5 +1,6 @@
-(function($) {
-  'use strict';
+import { Component } from "./component";
+import $ from "cash-dom";
+import { M } from "./global";
 
   let _defaults = {
     duration: 200, // ms
@@ -17,17 +18,51 @@
    * @class
    *
    */
-  class Carousel extends Component {
+  export class Carousel extends Component {
+    hasMultipleSlides: boolean;
+        showIndicators: boolean;
+        noWrap: any;
+        pressed: boolean;
+        dragged: boolean;
+        offset: number;
+        target: number;
+        images: any[];
+        itemWidth: any;
+        itemHeight: any;
+        dim: number;
+        _autoScrollBound: any;
+        _trackBound: any;
+        $indicators: any;
+        count: number;
+        xform: string;
+        private _handleCarouselTapBound: any;
+        private _handleCarouselDragBound: any;
+        private _handleCarouselReleaseBound: any;
+        private _handleCarouselClickBound: any;
+        _handleIndicatorClickBound: any;
+        _handleThrottledResizeBound: any;
+        verticalDragged: boolean;
+        reference: any;
+        referenceY: any;
+        velocity: number;
+        frame: number;
+        timestamp: number;
+        ticker: NodeJS.Timer;
+        amplitude: number;
+        center: number = 0;
+        imageHeight: any;
+        scrollingTimeout: any;
+        oneTimeCallback: any;
     /**
      * Construct Carousel instance
      * @constructor
      * @param {Element} el
      * @param {Object} options
      */
-    constructor(el, options) {
+    constructor(el: Element, options: Object) {
       super(Carousel, el, options);
 
-      this.el.M_Carousel = this;
+      (this.el as any).M_Carousel = this;
 
       /**
        * Options for the carousel
@@ -77,7 +112,7 @@
 
       // Iterate through slides
       this.$indicators = $('<ul class="indicators"></ul>');
-      this.$el.find('.carousel-item').each((el, i) => {
+      this.$el.find('.carousel-item').each((i, el) => {
         this.images.push(el);
         if (this.showIndicators) {
           let $indicator = $('<li class="indicator-item"></li>');
@@ -134,7 +169,7 @@
      */
     destroy() {
       this._removeEventHandlers();
-      this.el.M_Carousel = undefined;
+      (this.el as any).M_Carousel = undefined;
     }
 
     /**
@@ -166,7 +201,7 @@
       }
 
       // Resize
-      let throttledResize = M.throttle(this._handleResize, 200);
+      let throttledResize = M.throttle(this._handleResize, 200, null);
       this._handleThrottledResizeBound = throttledResize.bind(this);
 
       window.addEventListener('resize', this._handleThrottledResizeBound);
@@ -366,7 +401,7 @@
      * Set carousel height based on first slide
      * @param {Booleam} imageOnly - true for image slides
      */
-    _setCarouselHeight(imageOnly) {
+    _setCarouselHeight(imageOnly: boolean = false) {
       let firstSlide = this.$el.find('.carousel-item.active').length
         ? this.$el.find('.carousel-item.active').first()
         : this.$el.find('.carousel-item').first();
@@ -474,7 +509,7 @@
      * Scroll to target
      * @param {Number} x
      */
-    _scroll(x) {
+    _scroll(x: number = 0) {
       // Track scrolling state
       if (!this.$el.hasClass('scrolling')) {
         this.el.classList.add('scrolling');
@@ -622,7 +657,7 @@
      * @param {Number} n
      * @param {Function} callback
      */
-    _cycleTo(n, callback) {
+    _cycleTo(n: number, callback: Function = null) {
       let diff = (this.center % this.count) - n;
 
       // Account for wraparound.
@@ -665,7 +700,7 @@
      * Cycle to next item
      * @param {Number} [n]
      */
-    next(n) {
+    next(n: number = 1) {
       if (n === undefined || isNaN(n)) {
         n = 1;
       }
@@ -685,7 +720,7 @@
      * Cycle to previous item
      * @param {Number} [n]
      */
-    prev(n) {
+    prev(n: number = 1) {
       if (n === undefined || isNaN(n)) {
         n = 1;
       }
@@ -723,10 +758,3 @@
       this._cycleTo(n, callback);
     }
   }
-
-  M.Carousel = Carousel;
-
-  if (M.jQueryLoaded) {
-    M.initializeJqueryWrapper(Carousel, 'carousel', 'M_Carousel');
-  }
-})(cash);
