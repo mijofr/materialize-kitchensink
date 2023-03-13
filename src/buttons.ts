@@ -8,6 +8,7 @@ import anim from "animejs";
   };
   
   export class FloatingActionButton extends Component {
+    el: HTMLElement;
     isOpen: boolean;
     private _anchor: HTMLAnchorElement;
     private _menu: HTMLElement|null;
@@ -164,17 +165,18 @@ import anim from "animejs";
       });
     }
 
-    // Not working for now... => No Material Specs. Is this even used? Remove? 
-
     _animateInToolbar() {
-      /*
       let scaleFactor;
       let windowWidth = window.innerWidth;
       let windowHeight = window.innerHeight;
       let btnRect = this.el.getBoundingClientRect();
-      let backdrop = null; // $('<div class="fab-backdrop"></div>');
-      //let fabColor = this.$anchor.css('background-color');
-      this.$anchor.append(backdrop);
+
+      const backdrop =  document.createElement('div');
+      backdrop.classList.add('fab-backdrop'); //  $('<div class="fab-backdrop"></div>');
+
+      const fabColor = getComputedStyle(this._anchor).backgroundColor; // css('background-color');
+
+      this._anchor.append(backdrop);
 
       this.offsetX = btnRect.left - windowWidth / 2 + btnRect.width / 2;
       this.offsetY = windowHeight - btnRect.bottom;
@@ -184,54 +186,35 @@ import anim from "animejs";
       this.btnWidth = btnRect.width;
 
       // Set initial state
-      this.$el.addClass('active');
-      this.$el.css({
-        'text-align': 'center',
-        width: '100%',
-        bottom: 0,
-        left: 0,
-        transform: 'translateX(' + this.offsetX + 'px)',
-        transition: 'none'
-      });
-      this.$anchor.setAttribute('style', `
-        transform: 'translateY(${this.offsetY}px)',
-        transition: 'none'
-      `);
+      this.el.classList.add('active');
+      this.el.style.textAlign = 'center';
+      this.el.style.width = '100%';
+      this.el.style.bottom = '0';
+      this.el.style.left = '0';
+      this.el.style.transform = 'translateX(' + this.offsetX + 'px)';
+      this.el.style.transition = 'none';
 
-      backdrop.css({
-        'background-color': fabColor
-      });
+      this._anchor.style.transform = `translateY(${this.offsetY}px`;
+      this._anchor.style.transition = 'none';
+
+      (<HTMLElement>backdrop).style.backgroundColor = fabColor;
 
       setTimeout(() => {
+        this.el.style.transform = '';
+        this.el.style.transition  = 'transform .2s cubic-bezier(0.550, 0.085, 0.680, 0.530), background-color 0s linear .2s';
 
-        this.$el.css({
-          transform: '',
-          transition:
-            'transform .2s cubic-bezier(0.550, 0.085, 0.680, 0.530), background-color 0s linear .2s'
-        });
-
-        // this.$anchor.css({
-        //   overflow: 'visible',
-        //   transform: '',
-        //   transition: 'transform .2s'
-        // });
+        this._anchor.style.overflow = 'visible';
+        this._anchor.style.transform = '';
+        this._anchor.style.transition = 'transform .2s';
 
         setTimeout(() => {
-          this.$el.css({
-            overflow: 'hidden',
-            'background-color': fabColor
-          });
-          backdrop.css({
-            transform: 'scale(' + scaleFactor + ')',
-            transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
-          });
+          this.el.style.overflow = 'hidden';
+          this.el.style.backgroundColor = fabColor;
 
-          // this.$menu
-          //   .children('li')
-          //   .children('a')
-          //   .css({
-          //     opacity: 1
-          //   });
+          backdrop.style.transform = 'scale(' + scaleFactor + ')';
+          backdrop.style.transition = 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)';
+
+          this._menu.querySelectorAll('li > a').forEach((a: HTMLAnchorElement) => a.style.opacity = '1');
 
           // Scroll to close.
           this._handleDocumentClickBound = this._handleDocumentClick.bind(this);
@@ -239,8 +222,10 @@ import anim from "animejs";
           document.body.addEventListener('click', this._handleDocumentClickBound, true);
         }, 100);
       }, 0);
-      */
     }
+
+
+
 
     _animateOutToolbar() {
       return;
