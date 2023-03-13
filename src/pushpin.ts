@@ -1,5 +1,4 @@
 import { Component } from "./component";
-import $ from "cash-dom";
 import { M } from "./global";
 
   let _defaults = {
@@ -9,30 +8,14 @@ import { M } from "./global";
     onPositionChange: null
   };
 
-  /**
-   * @class
-   *
-   */
   export class Pushpin extends Component {
     static _pushpins: any[];
     originalOffset: any;
-    /**
-     * Construct Pushpin instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+
     constructor(el, options) {
       super(Pushpin, el, options);
-
       (this.el as any).M_Pushpin = this;
-
-      /**
-       * Options for the modal
-       * @member Pushpin#options
-       */
-      this.options = $.extend({}, Pushpin.defaults, options);
-
+      this.options = {...Pushpin.defaults, ...options};
       this.originalOffset = (this.el as HTMLElement).offsetTop;
       Pushpin._pushpins.push(this);
       this._setupEventHandlers();
@@ -47,21 +30,14 @@ import { M } from "./global";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Pushpin;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       (this.el as HTMLElement).style.top = null;
       this._removePinClasses();
-
       // Remove pushpin Inst
       let index = Pushpin._pushpins.indexOf(this);
       Pushpin._pushpins.splice(index, 1);
