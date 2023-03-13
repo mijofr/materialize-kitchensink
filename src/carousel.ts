@@ -53,7 +53,7 @@ import { M } from "./global";
     constructor(el: Element, options: Object) {
       super(Carousel, el, options);
       (this.el as any).M_Carousel = this;
-      this.options = {...Carousel.defaults, options};
+      this.options = {...Carousel.defaults, ...options};
 
       // Setup
       this.hasMultipleSlides = this.el.querySelectorAll('.carousel-item').length > 1;
@@ -76,7 +76,7 @@ import { M } from "./global";
 
         // Offset fixed items when indicators.
         if (this.showIndicators) {
-          this.el.querySelector('.carousel-fixed-item').classList.add('with-indicators');
+          this.el.querySelector('.carousel-fixed-item')?.classList.add('with-indicators');
         }
       }
 
@@ -429,6 +429,7 @@ import { M } from "./global";
 
       this.offset = typeof x === 'number' ? x : this.offset;
       this.center = Math.floor((this.offset + this.dim / 2) / this.dim);
+
       delta = this.offset - this.center * this.dim;
       dir = delta < 0 ? 1 : -1;
       tween = (-dir * delta * 2) / this.dim;
@@ -451,7 +452,8 @@ import { M } from "./global";
         const activeIndicatorIndex = [...activeIndicator.parentNode.children].indexOf(activeIndicator);
         if (activeIndicatorIndex !== diff) {
           activeIndicator.classList.remove('active');
-          this._indicators.querySelectorAll('.indicator-item')[diff].classList.add('active');
+          const pos = diff < 0 ? this.count + diff : diff;
+          this._indicators.querySelectorAll('.indicator-item')[pos].classList.add('active');
         }
       }
 

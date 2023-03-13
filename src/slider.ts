@@ -1,7 +1,7 @@
 import { Component } from "./component";
+import { M } from "./global";
 import $ from "cash-dom";
 import anim from "animejs";
-import { M } from "./global";
 
   let _defaults = {
     indicators: true,
@@ -34,21 +34,8 @@ import { M } from "./global";
 
     constructor(el, options) {
       super(Slider, el, options);
-
       (this.el as any).M_Slider = this;
-
-      /**
-       * Options for the modal
-       * @member Slider#options
-       * @prop {Boolean} [indicators=true] - Show indicators
-       * @prop {Number} [height=400] - height of slider
-       * @prop {Number} [duration=500] - Length in ms of slide transition
-       * @prop {Number} [interval=6000] - Length in ms of slide interval
-       * @prop {Boolean} [pauseOnFocus=true] - Pauses transition when slider receives keyboard focus
-       * @prop {Boolean} [pauseOnHover=true] - Pauses transition while mouse hovers the slider
-       * @prop {Function} [indicatorLabelFunc=null] - Function used to generate ARIA label to indicators (for accessibility purposes).
-       */
-      this.options = $.extend({}, Slider.defaults, options);
+      this.options = {...Slider.defaults, ...options};
 
       // init props
       this.interval = null;
@@ -60,12 +47,14 @@ import { M } from "./global";
       // setup
       this.$slider = this.$el.find('.slides');
       this.$slides = this.$slider.children('li');
+      
       this.activeIndex = this.$slides
         .filter(function(item) {
           return $(item).hasClass('active');
         })
         .first()
         .index();
+
       if (this.activeIndex != -1) {
         this.$active = this.$slides.eq(this.activeIndex);
       }
@@ -138,7 +127,6 @@ import { M } from "./global";
       });
 
       this._setupEventHandlers();
-
       // auto scroll
       this.start();
     }
@@ -151,17 +139,11 @@ import { M } from "./global";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Slider;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       this.pause();
       this._removeIndicators();
@@ -169,9 +151,6 @@ import { M } from "./global";
       (this.el as any).M_Slider = undefined;
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       this._handleIntervalBound = this._handleInterval.bind(this);
       this._handleIndicatorClickBound = this._handleIndicatorClick.bind(this);
@@ -179,7 +158,6 @@ import { M } from "./global";
       this._handleAutoStartFocusBound = this._handleAutoStartFocus.bind(this);
       this._handleAutoPauseHoverBound = this._handleAutoPauseHover.bind(this);
       this._handleAutoStartHoverBound = this._handleAutoStartHover.bind(this);
-      
       if (this.options.pauseOnFocus) {
         this.el.addEventListener('focusin', this._handleAutoPauseFocusBound);
         this.el.addEventListener('focusout', this._handleAutoStartFocusBound);
@@ -188,7 +166,6 @@ import { M } from "./global";
         this.el.addEventListener('mouseenter', this._handleAutoPauseHoverBound);
         this.el.addEventListener('mouseleave', this._handleAutoStartHoverBound);
       }
-
       if (this.options.indicators) {
         this.$indicators.each((i, el) => {
           el.addEventListener('click', this._handleIndicatorClickBound);
@@ -196,9 +173,6 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * Remove Event Handlers
-     */
     _removeEventHandlers() {
       if (this.options.pauseOnFocus) {
         this.el.removeEventListener('focusin', this._handleAutoPauseFocusBound);
@@ -215,19 +189,12 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * Handle indicator click
-     * @param {Event} e
-     */
     _handleIndicatorClick(e) {
       let currIndex = $(e.target).parent().index();
       this._focusCurrent = true;
       this.set(currIndex);
     }
 
-    /**
-     * Mouse enter event handler
-     */
     _handleAutoPauseHover() {
       this._hovered = true;
       if (this.interval != null) {
@@ -235,9 +202,6 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * Focus in event handler
-     */
     _handleAutoPauseFocus() {
       this._focused = true;
       if (this.interval != null) {
@@ -245,9 +209,6 @@ import { M } from "./global";
       }
     }
 
-    /**
-     *  Mouse enter event handler
-     */
     _handleAutoStartHover() {
       this._hovered = false;
       if (!(this.options.pauseOnFocus && this._focused) && this.eventPause) {
@@ -255,19 +216,13 @@ import { M } from "./global";
       }
     }
 
-    /**
-     *  Focus out leave event handler
-     */
-     _handleAutoStartFocus() {
+    _handleAutoStartFocus() {
       this._focused = false;
       if (!(this.options.pauseOnHover && this._hovered) && this.eventPause) {
         this.start();
       }
     }
 
-    /**
-     * Handle Interval
-     */
     _handleInterval() {
       let newActiveIndex = this.$slider.find('.active').index();
       if (this.$slides.length === newActiveIndex + 1) newActiveIndex = 0;
@@ -277,12 +232,7 @@ import { M } from "./global";
       this.set(newActiveIndex);
     }
 
-    /**
-     * Animate in caption
-     * @param {Element} caption
-     * @param {Number} duration
-     */
-    _animateCaptionIn(caption, duration) {
+    _animateCaptionIn(caption: Element, duration: number) {
       let animOptions = {
         targets: caption,
         opacity: 0,
@@ -291,7 +241,6 @@ import { M } from "./global";
         translateY: null,
         easing: 'easeOutQuad'
       };
-
       if ($(caption).hasClass('center-align')) {
         animOptions.translateY = -100;
       } else if ($(caption).hasClass('right-align')) {
@@ -299,13 +248,9 @@ import { M } from "./global";
       } else if ($(caption).hasClass('left-align')) {
         animOptions.translateX = -100;
       }
-
       anim(animOptions);
     }
 
-    /**
-     * Set height of slider
-     */
     _setSliderHeight() {
       // If fullscreen, do nothing
       if (!this.$el.hasClass('fullscreen')) {
@@ -319,9 +264,6 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * Setup indicators
-     */
     _setupIndicators() {
       if (this.options.indicators) {
         this.$indicators = $('<ul class="indicators"></ul>');
@@ -341,18 +283,11 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * Remove indicators
-     */
     _removeIndicators() {
       this.$el.find('ul.indicators').remove();
     }
 
-    /**
-     * Cycle to nth item
-     * @param {Number} index
-     */
-    set(index) {
+    set(index: number) {
       // Wrap around indices.
       if (index >= this.$slides.length) index = 0;
       else if (index < 0) index = this.$slides.length - 1;
@@ -452,26 +387,16 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * "Protected" function which pauses current interval
-     * @param {boolean} fromEvent Specifies if request came from event
-     */
-    _pause(fromEvent) {
+    _pause(fromEvent: boolean) {
       clearInterval(this.interval);
       this.eventPause = fromEvent;
       this.interval = null;
     }
 
-    /**
-     * Pause slider interval
-     */
     pause() {
       this._pause(false);
     }
 
-    /**
-     * Start slider interval
-     */
     start() {
       clearInterval(this.interval);
       this.interval = setInterval(
@@ -481,29 +406,19 @@ import { M } from "./global";
       this.eventPause = false;
     }
 
-    /**
-     * Move to next slide
-     */
     next() {
       let newIndex = this.activeIndex + 1;
-
       // Wrap around indices.
       if (newIndex >= this.$slides.length) newIndex = 0;
       else if (newIndex < 0) newIndex = this.$slides.length - 1;
-
       this.set(newIndex);
     }
 
-    /**
-     * Move to previous slide
-     */
     prev() {
       let newIndex = this.activeIndex - 1;
-
       // Wrap around indices.
       if (newIndex >= this.$slides.length) newIndex = 0;
       else if (newIndex < 0) newIndex = this.$slides.length - 1;
-
       this.set(newIndex);
     }
   }
