@@ -1,9 +1,6 @@
-import $ from "cash-dom";
 import anim from "animejs";
 
 let _defaults = {
-    html: '',
-    unsafeHTML: '',
     text: '',
     displayLength: 4000,
     inDuration: 300,
@@ -14,57 +11,45 @@ let _defaults = {
   };
 
   export class Toast {
-    static _toasts: any[];
+    static _toasts: Toast[];
     static _container: any;
-    static _draggedToast: any;
+    static _draggedToast: Toast;
     options: any;
-    htmlMessage: any;
-    message: any;
+    message: string;
     panning: boolean;
-    timeRemaining: any;
+    timeRemaining: number;
     el: HTMLDivElement;
-    $el: any;
     counterInterval: NodeJS.Timeout;
     wasSwiped: any;
-    constructor(options: any) {      
-      /**
-       * Options for the toast
-       * @member Toast#options
-       */
-      this.options = $.extend({}, Toast.defaults, options);
-      this.htmlMessage = this.options.html;
+    startingXPos: number;
+    xPos: any;
+    time: number;
+    deltaX: number;
+    velocityX: number;
+
+    constructor(options: any) {
+      this.options = {...Toast.defaults, ...options};
+      //this.htmlMessage = this.options.html;
       // Warn when using html
-      if (!!this.options.html)
-        console.warn(
-          'The html option is deprecated and will be removed in the future. See https://github.com/materializecss/materialize/pull/49'
-        );
+      // if (!!this.options.html)
+      //   console.warn(
+      //     'The html option is deprecated and will be removed in the future. See https://github.com/materializecss/materialize/pull/49'
+      //   );
       // If the new unsafeHTML is used, prefer that
-      if (!!this.options.unsafeHTML) {
-        this.htmlMessage = this.options.unsafeHTML;
-      }
+      // if (!!this.options.unsafeHTML) {
+      //   this.htmlMessage = this.options.unsafeHTML;
+      // }
       this.message = this.options.text;
-
-      /**
-       * Describes current pan state toast
-       * @type {Boolean}
-       */
       this.panning = false;
-
-      /**
-       * Time remaining until toast is removed
-       */
       this.timeRemaining = this.options.displayLength;
-
       if (Toast._toasts.length === 0) {
         Toast._createContainer();
       }
-
       // Create new toast
       Toast._toasts.push(this);
       let toastElement = this._createToast();
       (toastElement as any).M_Toast = this;
       this.el = toastElement;
-      this.$el = $(toastElement);
       this._animateIn();
       this._setTimer();
     }
@@ -73,54 +58,36 @@ let _defaults = {
       return _defaults;
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Toast;
     }
 
-    /**
-     * Append toast container and add event handlers
-     */
     static _createContainer() {
-      let container = document.createElement('div');
+      const container = document.createElement('div');
       container.setAttribute('id', 'toast-container');
-
       // Add event handler
       container.addEventListener('touchstart', Toast._onDragStart);
       container.addEventListener('touchmove', Toast._onDragMove);
       container.addEventListener('touchend', Toast._onDragEnd);
-
       container.addEventListener('mousedown', Toast._onDragStart);
       document.addEventListener('mousemove', Toast._onDragMove);
       document.addEventListener('mouseup', Toast._onDragEnd);
-
       document.body.appendChild(container);
       Toast._container = container;
     }
 
-    /**
-     * Remove toast container and event handlers
-     */
     static _removeContainer() {
-      // Add event handler
       document.removeEventListener('mousemove', Toast._onDragMove);
       document.removeEventListener('mouseup', Toast._onDragEnd);
-
-      $(Toast._container).remove();
+      Toast._container.remove();
       Toast._container = null;
     }
 
-    /**
-     * Begin drag handler
-     * @param {Event} e
-     */
     static _onDragStart(e) {
-      if (e.target && $(e.target).closest('.toast').length) {
-        let $toast = $(e.target).closest('.toast');
-        let toast = ($toast[0] as any).M_Toast;
+      if (e.target && (<HTMLElement>e.target).closest('.toast')) {
+        const toastElem = (<HTMLElement>e.target).closest('.toast');
+        const toast: Toast = (toastElem as any).M_Toast;
         toast.panning = true;
         Toast._draggedToast = toast;
         toast.el.classList.add('panning');
@@ -131,29 +98,22 @@ let _defaults = {
       }
     }
 
-    /**
-     * Drag move handler
-     * @param {Event} e
-     */
     static _onDragMove(e) {
       if (!!Toast._draggedToast) {
         e.preventDefault();
-        let toast = Toast._draggedToast;
+        const toast = Toast._draggedToast;
         toast.deltaX = Math.abs(toast.xPos - Toast._xPos(e));
         toast.xPos = Toast._xPos(e);
         toast.velocityX = toast.deltaX / (Date.now() - toast.time);
         toast.time = Date.now();
 
-        let totalDeltaX = toast.xPos - toast.startingXPos;
-        let activationDistance = toast.el.offsetWidth * toast.options.activationPercent;
+        const totalDeltaX = toast.xPos - toast.startingXPos;
+        const activationDistance = toast.el.offsetWidth * toast.options.activationPercent;
         toast.el.style.transform = `translateX(${totalDeltaX}px)`;
-        toast.el.style.opacity = 1 - Math.abs(totalDeltaX / activationDistance);
+        toast.el.style.opacity = (1 - Math.abs(totalDeltaX / activationDistance)).toString();
       }
     }
 
-    /**
-     * End drag handler
-     */
     static _onDragEnd() {
       if (!!Toast._draggedToast) {
         let toast = Toast._draggedToast;
@@ -168,9 +128,9 @@ let _defaults = {
         if (shouldBeDismissed) {
           toast.wasSwiped = true;
           toast.dismiss();
-
           // Animate toast back to original position
-        } else {
+        }
+        else {
           toast.el.style.transition = 'transform .2s, opacity .2s';
           toast.el.style.transform = '';
           toast.el.style.opacity = '';
@@ -179,10 +139,6 @@ let _defaults = {
       }
     }
 
-    /**
-     * Get x position of mouse or touch event
-     * @param {Event} e
-     */
     static _xPos(e) {
       if (e.targetTouches && e.targetTouches.length >= 1) {
         return e.targetTouches[0].clientX;
@@ -191,59 +147,53 @@ let _defaults = {
       return e.clientX;
     }
 
-    /**
-     * Remove all toasts
-     */
     static dismissAll() {
       for (let toastIndex in Toast._toasts) {
         Toast._toasts[toastIndex].dismiss();
       }
     }
 
-    /**
-     * Create toast and append it to toast container
-     */
     _createToast() {
-      let toast = document.createElement('div');
+      const toast = document.createElement('div');
       toast.classList.add('toast');
       toast.setAttribute('role', 'alert');
       toast.setAttribute('aria-live', 'assertive');
       toast.setAttribute('aria-atomic', 'true');
 
       // Add custom classes onto toast
-      if (!!this.options.classes.length) {
-        $(toast).addClass(this.options.classes);
+      if (this.options.classes.length > 0) {
+        toast.classList.add(...this.options.classes.split(' '));
       }
 
       // Set safe text content
-      toast.textContent = this.message;
-      if (
-        typeof HTMLElement === 'object'
-          ? this.htmlMessage instanceof HTMLElement
-          : this.htmlMessage &&
-            typeof this.htmlMessage === 'object' &&
-            this.htmlMessage !== null &&
-            this.htmlMessage.nodeType === 1 &&
-            typeof this.htmlMessage.nodeName === 'string'
-      ) {
-        //if the htmlMessage is an HTML node, append it directly
-        toast.appendChild(this.htmlMessage);
-      } else if (!!this.htmlMessage.jquery) {
-        // Check if it is jQuery object, append the node
-        $(toast).append(this.htmlMessage[0]);
-      } else {
-        // Append as unsanitized html;
-        $(toast).append(this.htmlMessage);
-      }
+      toast.innerText = this.message;
+
+      // if (
+      //   typeof HTMLElement === 'object'
+      //     ? this.htmlMessage instanceof HTMLElement
+      //     : this.htmlMessage &&
+      //       typeof this.htmlMessage === 'object' &&
+      //       this.htmlMessage !== null &&
+      //       this.htmlMessage.nodeType === 1 &&
+      //       typeof this.htmlMessage.nodeName === 'string'
+      // ) {
+      //   //if the htmlMessage is an HTML node, append it directly
+      //   toast.appendChild(this.htmlMessage);
+      // }
+      // else if (!!this.htmlMessage.jquery) {
+      //   // Check if it is jQuery object, append the node
+      //   $(toast).append(this.htmlMessage[0]);
+      // }
+      // else {
+      //   // Append as unsanitized html;
+      //   $(toast).append(this.htmlMessage);
+      // }
 
       // Append toast
       Toast._container.appendChild(toast);
       return toast;
     }
 
-    /**
-     * Animate in toast
-     */
     _animateIn() {
       // Animate toast in
       anim({
@@ -266,7 +216,6 @@ let _defaults = {
           if (!this.panning) {
             this.timeRemaining -= 20;
           }
-
           // Animate toast out
           if (this.timeRemaining <= 0) {
             this.dismiss();
@@ -300,7 +249,7 @@ let _defaults = {
             this.options.completeCallback();
           }
           // Remove toast from DOM
-          this.$el.remove();
+          this.el.remove();
           Toast._toasts.splice(Toast._toasts.indexOf(this), 1);
           if (Toast._toasts.length === 0) {
             Toast._removeContainer();
@@ -309,27 +258,9 @@ let _defaults = {
       });
     }
 
-    static {
-          
-      /**
-       * @static
-       * @memberof Toast
-       * @type {Array.<Toast>}
-       */
+    static {          
       Toast._toasts = [];
-
-      /**
-       * @static
-       * @memberof Toast
-       */
       Toast._container = null;
-
-      /**
-       * @static
-       * @memberof Toast
-       * @type {Toast}
-       */
       Toast._draggedToast = null;
-
     }
   }
