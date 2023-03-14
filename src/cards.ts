@@ -1,12 +1,12 @@
-import $ from "cash-dom";
+//import $ from "cash-dom";
 import anim from "animejs";
 
-export class Cards {   
+export class Cards {
 
   static Init() {
     $(document).on('click', '.card', function(e) {
       if ($(this).children('.card-reveal').length) {
-        var $card = $(e.target).closest('.card');
+        const $card = $(e.target).closest('.card');
         if ($card.data('initialOverflow') === undefined) {
           $card.data(
             'initialOverflow',
@@ -30,7 +30,8 @@ export class Cards {
               $card.css('overflow', $card.data('initialOverflow'));
             }
           });
-        } else if ($(e.target).is($('.card .activator')) || $(e.target).is($('.card .activator i'))) {
+        }
+        else if ($(e.target).is($('.card .activator')) || $(e.target).is($('.card .activator i'))) {
           $card.css('overflow', 'hidden');
           $cardReveal.css({ display: 'block' });
           anim({

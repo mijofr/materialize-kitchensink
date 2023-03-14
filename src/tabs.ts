@@ -1,8 +1,6 @@
 import { Component } from "./component";
-import $ from "cash-dom";
-import { M } from "./global";
-import anim from "animejs";
 import { Carousel } from "./carousel";
+import anim from "animejs";
 
 let _defaults = {
   duration: 300,
@@ -12,6 +10,7 @@ let _defaults = {
 };
 
 export class Tabs extends Component {
+  el: HTMLElement;
   _tabLinks: any;
   _index: number;
   _indicator: any;
@@ -27,8 +26,8 @@ export class Tabs extends Component {
     super(Tabs, el, options);
       (this.el as any).M_Tabs = this;
 
-      this.options = $.extend({}, Tabs.defaults, options);
-      this._tabLinks = this.$el[0].querySelectorAll('li.tab > a');
+      this.options = {...Tabs.defaults, ...options};
+      this._tabLinks = this.el.querySelectorAll('li.tab > a');
       this._index = 0;
       this._setupActiveTabLink();
       if (this.options.swipeable) {
@@ -60,11 +59,11 @@ export class Tabs extends Component {
       this._indicator.parentNode.removeChild(this._indicator);
       if (this.options.swipeable) {
         this._teardownSwipeableTabs();
-      } else {
+      }
+      else {
         this._teardownNormalTabs();
       }
-      this.$el[0].M_Tabs = undefined;
-
+      (this.el as any).M_Tabs = undefined;
     }
 
     _setupEventHandlers() {
@@ -106,7 +105,7 @@ export class Tabs extends Component {
 
       this._activeTabLink = tabLink;
       this._content = document.querySelector(tabLink.hash);
-      this._tabLinks = this.$el[0].querySelectorAll('li.tab > a');
+      this._tabLinks = this.el.querySelectorAll('li.tab > a');
       // Make the tab active
       this._activeTabLink.classList.add('active');
       const prevIndex = this._index;
@@ -152,10 +151,10 @@ export class Tabs extends Component {
       this._activeTabLink = Array.from(this._tabLinks).find((a: HTMLAnchorElement) => a.getAttribute('href') === location.hash);
       // If no match is found, use the first link or any with class 'active' as the initial active tab.
       if (!this._activeTabLink) {
-        this._activeTabLink = this.$el[0].querySelector('li.tab a.active');
+        this._activeTabLink = this.el.querySelector('li.tab a.active');
       }
       if (this._activeTabLink.length === 0) {
-        this._activeTabLink = this.$el[0].querySelector('li.tab a');
+        this._activeTabLink = this.el.querySelector('li.tab a');
       }
       Array.from(this._tabLinks).forEach((a: HTMLAnchorElement) => a.classList.remove('active'));
       this._activeTabLink.classList.add('active');
@@ -213,11 +212,11 @@ export class Tabs extends Component {
     }
 
     _teardownSwipeableTabs() {
-      const $tabsWrapper = this._tabsCarousel.$el;
+      const tabsWrapper = this._tabsCarousel.el;
       this._tabsCarousel.destroy();
       // Unwrap
-      $tabsWrapper.after($tabsWrapper.children());
-      $tabsWrapper.remove();
+      tabsWrapper.after(tabsWrapper.children);
+      tabsWrapper.remove();
     }
 
     _setupNormalTabs() {
@@ -242,7 +241,7 @@ export class Tabs extends Component {
     }
 
     _setTabsAndTabWidth() {
-      this._tabsWidth = this.$el[0].getBoundingClientRect().width;
+      this._tabsWidth = this.el.getBoundingClientRect().width;
       this._tabWidth = Math.max(this._tabsWidth, this.el.scrollWidth) / this._tabLinks.length;
     }
 
