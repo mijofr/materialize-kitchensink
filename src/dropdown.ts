@@ -20,9 +20,6 @@ import anim from "animejs";
     onItemClick: null
   };
 
-  /**
-   * @class
-   */
   export class Dropdown extends Component {
     static _dropdowns: Dropdown[] = [];
     id: string;
@@ -43,6 +40,7 @@ import anim from "animejs";
     private _handleMouseLeaveBound: any;
     private _handleClickBound: any;
     filterTimeout: NodeJS.Timeout;
+
     constructor(el, options) {
       super(Dropdown, el, options);
 
@@ -53,49 +51,16 @@ import anim from "animejs";
       this.dropdownEl = document.getElementById(this.id);
       this.$dropdownEl = $(this.dropdownEl);
 
-      /**
-       * Options for the dropdown
-       * @member Dropdown#options
-       * @prop {String} [alignment='left'] - Edge which the dropdown is aligned to
-       * @prop {Boolean} [autoFocus=true] - Automatically focus dropdown el for keyboard
-       * @prop {Boolean} [constrainWidth=true] - Constrain width to width of the button
-       * @prop {Element} container - Container element to attach dropdown to (optional)
-       * @prop {Boolean} [coverTrigger=true] - Place dropdown over trigger
-       * @prop {Boolean} [closeOnClick=true] - Close on click of dropdown item
-       * @prop {Boolean} [hover=false] - Open dropdown on hover
-       * @prop {Number} [inDuration=150] - Duration of open animation in ms
-       * @prop {Number} [outDuration=250] - Duration of close animation in ms
-       * @prop {Function} onOpenStart - Function called when dropdown starts opening
-       * @prop {Function} onOpenEnd - Function called when dropdown finishes opening
-       * @prop {Function} onCloseStart - Function called when dropdown starts closing
-       * @prop {Function} onCloseEnd - Function called when dropdown finishes closing
-       */
       this.options = $.extend({}, Dropdown.defaults, options);
 
-      /**
-       * Describes open/close state of dropdown
-       * @type {Boolean}
-       */
       this.isOpen = false;
-
-      /**
-       * Describes if dropdown content is scrollable
-       * @type {Boolean}
-       */
       this.isScrollable = false;
-
-      /**
-       * Describes if touch moving on dropdown content
-       * @type {Boolean}
-       */
       this.isTouchMoving = false;
-
       this.focusedIndex = -1;
       this.filterQuery = [];
 
       // Move dropdown-content after dropdown-trigger
       this._moveDropdown();
-
       this._makeDropdownFocusable();
       this._resetFilterQueryBound = this._resetFilterQuery.bind(this);
       this._handleDocumentClickBound = this._handleDocumentClick.bind(this);
@@ -114,17 +79,11 @@ import anim from "animejs";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Dropdown;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       this._resetDropdownStyles();
       this._removeEventHandlers();
@@ -132,16 +91,11 @@ import anim from "animejs";
       (this.el as any).M_Dropdown = undefined;
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       // Trigger keydown handler
       this.el.addEventListener('keydown', this._handleTriggerKeydownBound);
-
       // Item click handler
       this.dropdownEl.addEventListener('click', this._handleDropdownClickBound);
-
       // Hover event handlers
       if (this.options.hover) {
         this._handleMouseEnterBound = this._handleMouseEnter.bind(this);
@@ -149,7 +103,6 @@ import anim from "animejs";
         this._handleMouseLeaveBound = this._handleMouseLeave.bind(this);
         this.el.addEventListener('mouseleave', this._handleMouseLeaveBound);
         this.dropdownEl.addEventListener('mouseleave', this._handleMouseLeaveBound);
-
         // Click event handlers
       } else {
         this._handleClickBound = this._handleClick.bind(this);
@@ -157,13 +110,9 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Remove Event Handlers
-     */
     _removeEventHandlers() {
       this.el.removeEventListener('keydown', this._handleTriggerKeydownBound);
       this.dropdownEl.removeEventListener('click', this._handleDropdownClickBound);
-
       if (this.options.hover) {
         this.el.removeEventListener('mouseenter', this._handleMouseEnterBound);
         this.el.removeEventListener('mouseleave', this._handleMouseLeaveBound);
@@ -209,7 +158,6 @@ import anim from "animejs";
       ) {
         leaveToActiveDropdownTrigger = true;
       }
-
       // Close hover dropdown if mouse did not leave to either active dropdown-trigger or dropdown-content
       if (!leaveToActiveDropdownTrigger && !leaveToDropdownContent) {
         this.close();
@@ -246,10 +194,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handle Document Touchmove
-     * @param {Event} e
-     */
     _handleDocumentTouchmove(e) {
       let $target = $(e.target);
       if ($target.closest('.dropdown-content').length) {
@@ -257,10 +201,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handle Dropdown Click
-     * @param {Event} e
-     */
     _handleDropdownClick(e) {
       // onItemClick callback
       if (typeof this.options.onItemClick === 'function') {
@@ -269,10 +209,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handle Dropdown Keydown
-     * @param {Event} e
-     */
     _handleDropdownKeydown(e) {
       if (e.which === M.keys.TAB) {
         e.preventDefault();
@@ -350,13 +286,9 @@ import anim from "animejs";
           this._focusFocusedItem();
         }
       }
-
       this.filterTimeout = setTimeout(this._resetFilterQueryBound, 1000);
     }
 
-    /**
-     * Setup dropdown
-     */
     _resetFilterQuery() {
       this.filterQuery = [];
     }
@@ -508,9 +440,6 @@ import anim from "animejs";
       };
     }
 
-    /**
-     * Animate in dropdown
-     */
     _animateIn() {
       anim.remove(this.dropdownEl);
       anim({
@@ -536,9 +465,6 @@ import anim from "animejs";
       });
     }
 
-    /**
-     * Animate out dropdown
-     */
     _animateOut() {
       anim.remove(this.dropdownEl);
       anim({
@@ -562,9 +488,6 @@ import anim from "animejs";
       });
     }
 
-    /**
-     * Place dropdown
-     */
     _placeDropdown() {
       /**
        * Get closest ancestor that satisfies the condition
@@ -614,9 +537,6 @@ import anim from "animejs";
       } ${positionInfo.verticalAlignment === 'top' ? '0' : '100%'}`;
     }
 
-    /**
-     * Open Dropdown
-     */
     open() {
       if (this.isOpen) {
         return;
@@ -637,9 +557,6 @@ import anim from "animejs";
       this._setupTemporaryEventHandlers();
     }
 
-    /**
-     * Close Dropdown
-     */
     close() {
       if (!this.isOpen) {
         return;
@@ -661,9 +578,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Recalculate dimensions
-     */
     recalculateDimensions() {
       if (this.isOpen) {
         this.$dropdownEl.css({
@@ -678,13 +592,7 @@ import anim from "animejs";
     }
 
     static {
-  /**
-   * @static
-   * @memberof Dropdown
-   */
-  Dropdown._dropdowns = [];
-    
+      Dropdown._dropdowns = [];    
     }
-
 
   }
