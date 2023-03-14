@@ -1,4 +1,4 @@
-//import $ from "cash-dom";
+import $ from "cash-dom";
 import anim from "animejs";
 
 export class Cards {

@@ -28,9 +28,9 @@ let _defaults = {
 
 export class Autocomplete extends Component {
   el: HTMLInputElement;
-  private isOpen: boolean;
-  private count: number;
-  private activeIndex: number;
+  isOpen: boolean;
+  count: number;
+  activeIndex: number;
   private oldVal: any;
   private $inputField: any;
   private $active: HTMLElement|null;
