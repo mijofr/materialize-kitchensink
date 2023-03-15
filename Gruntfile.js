@@ -401,62 +401,9 @@ module.exports = function(grunt) {
           'watch:pug',
           'watch:js',
           'watch:sass',
-          'notify:watching',
+          //'notify:watching',
           'server'
         ]
-      }
-    },
-
-    //  Notifications
-    notify: {
-      watching: {
-        options: {
-          enabled: true,
-          message: 'Watching Files!',
-          title: 'Materialize', // defaults to the name in package.json, or will use project directory's name
-          success: true, // whether successful grunt executions should be notified automatically
-          duration: 1 // the duration of notification in seconds, for `notify-send only
-        }
-      },
-
-      sass_compile: {
-        options: {
-          enabled: true,
-          message: 'Sass Compiled!',
-          title: 'Materialize',
-          success: true,
-          duration: 1
-        }
-      },
-
-      js_compile: {
-        options: {
-          enabled: true,
-          message: 'JS Compiled!',
-          title: 'Materialize',
-          success: true,
-          duration: 1
-        }
-      },
-
-      pug_compile: {
-        options: {
-          enabled: true,
-          message: 'Pug Compiled!',
-          title: 'Materialize',
-          success: true,
-          duration: 1
-        }
-      },
-
-      server: {
-        options: {
-          enabled: true,
-          message: 'Server Running!',
-          title: 'Materialize',
-          success: true,
-          duration: 1
-        }
       }
     },
 
@@ -575,7 +522,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-pug');
   grunt.loadNpmTasks('grunt-concurrent');
-  grunt.loadNpmTasks('grunt-notify');
   grunt.loadNpmTasks('grunt-text-replace');
   grunt.loadNpmTasks('grunt-banner');
   grunt.loadNpmTasks('grunt-rename-util');
@@ -608,7 +554,7 @@ module.exports = function(grunt) {
     'clean:temp'
   ]);  
 
-  grunt.registerTask('pug_compile', ['pug', 'notify:pug_compile']);
+  grunt.registerTask('pug_compile', ['pug']); //, 'notify:pug_compile']);
   grunt.registerTask('js_compile', [
     'concat:temp',    
     'webpack',
@@ -619,10 +565,9 @@ module.exports = function(grunt) {
     'sass:gh',
     'sass:bin',
     'postcss:gh',
-    'postcss:bin',
-    'notify:sass_compile'
+    'postcss:bin'
   ]);
-  grunt.registerTask('server', ['browserSync', 'notify:server']);
+  grunt.registerTask('server', ['browserSync']); //, 'notify:server']);
   grunt.registerTask('monitor', ['concurrent:monitor']);
   grunt.registerTask('test', ['js_compile', 'sass_compile', 'connect', 'jasmine']);
   grunt.registerTask('jas_test', ['connect', 'jasmine']);
