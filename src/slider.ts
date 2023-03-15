@@ -1,6 +1,5 @@
 import { Component } from "./component";
 import { M } from "./global";
-import $ from "cash-dom";
 import anim from "animejs";
 
   let _defaults = {
@@ -14,19 +13,20 @@ import anim from "animejs";
   };
 
   export class Slider extends Component {
-    $slider: any;
-    $slides: any;
-    activeIndex: any;
-    $active: any;
-    $indicators: any;
+    el: HTMLElement;
+    _slider: HTMLUListElement;
+    _slides: HTMLLIElement[];
+    activeIndex: number;
+    _activeSlide: HTMLLIElement;
+    _indicators: HTMLLIElement[];
     private _handleIntervalBound: any;
     private _handleIndicatorClickBound: any;
     interval: string | number | NodeJS.Timeout;
     eventPause: any;
-    _hovered: any;
-    _focused: any;
-    _focusCurrent: any;
-    _sliderId: any;
+    _hovered: boolean;
+    _focused: boolean;
+    _focusCurrent: boolean;
+    _sliderId: string;
     private _handleAutoPauseFocusBound: any;
     private _handleAutoStartFocusBound: any;
     private _handleAutoPauseHoverBound: any;
@@ -45,79 +45,77 @@ import anim from "animejs";
       this._focusCurrent = false;
 
       // setup
-      this.$slider = this.$el.find('.slides');
-      this.$slides = this.$slider.children('li');
-      
-      this.activeIndex = this.$slides
-        .filter(function(item) {
-          return $(item).hasClass('active');
-        })
-        .first()
-        .index();
+      this._slider = this.el.querySelector('.slides');
+      this._slides = Array.from(this._slider.querySelectorAll('li'));
+      this.activeIndex = this._slides.findIndex(li => li.classList.contains('active'));
 
-      if (this.activeIndex != -1) {
-        this.$active = this.$slides.eq(this.activeIndex);
+      if (this.activeIndex !== -1) {
+        this._activeSlide = this._slides[this.activeIndex];
       }
 
       this._setSliderHeight();
 
       // Sets element id if it does not have one
-      if (this.$slider.attr('id')) this._sliderId = this.$slider.attr('id');
+      if (this._slider.hasAttribute('id'))
+        this._sliderId = this._slider.getAttribute('id');
       else {
         this._sliderId = 'slider-' + M.guid();
-        this.$slider.attr('id', this._sliderId);
+        this._slider.setAttribute('id', this._sliderId);
       }
 
+      const placeholderBase64 = 'data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
       // Set initial positions of captions
-      this.$slides.find('.caption').each((i, el) => {
-        this._animateCaptionIn(el, 0);
-      });
-
-      // Move img src into background-image
-      this.$slides.find('img').each((i, el) => {
-        let placeholderBase64 =
-          'data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-        if ($(el).attr('src') !== placeholderBase64) {
-          $(el).css('background-image', 'url("' + $(el).attr('src') + '")');
-          $(el).attr('src', placeholderBase64);
+      this._slides.forEach(slide => {
+        // Caption
+        //const caption = <HTMLElement|null>slide.querySelector('.caption');
+        //if (caption) this._animateCaptionIn(caption, 0);
+        // Set Images as Background Images
+        const img = slide.querySelector('img');
+        if (img) {
+          if (img.src !== placeholderBase64) {
+            img.style.backgroundImage = 'url('+ img.src +')';
+            img.src = placeholderBase64;
+          }
         }
-      });
-
-      this.$slides.each((el) => {
         // Sets slide as focusable by code
-        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', -1);
+        if (!slide.hasAttribute('tabindex'))
+          slide.setAttribute('tabindex', '-1');
         // Removes initial visibility from "inactive" slides
-        el.style.visibility = 'hidden';
+        slide.style.visibility = 'hidden';
       });
 
       this._setupIndicators();
 
       // Show active slide
-      if (this.$active) {
-        this.$active.css('display', 'block').css('visibility', 'visible');
-      } else {
-        this.$slides.first().addClass('active');
-        anim({
-          targets: this.$slides.first()[0],
+      if (this._activeSlide) {
+        this._activeSlide.style.display = 'block';
+        this._activeSlide.style.visibility = 'visible';
+      }
+      else {
+        this.activeIndex = 0;
+        this._slides[0].classList.add('active');
+        this._slides[0].style.visibility = 'visible';
+        this._activeSlide = this._slides[0];
+        this._animateSlide(this._slides[0], true);
+        /*anim({
+          targets: this._slides[0],
           opacity: 1,
           duration: this.options.duration,
           easing: 'easeOutQuad'
         });
-        this.$slides.first().css('visibility', 'visible');
-
-        this.activeIndex = 0;
-        this.$active = this.$slides.eq(this.activeIndex);
-
+        */
         // Update indicators
         if (this.options.indicators) {
-          this.$indicators.eq(this.activeIndex).children().first().addClass('active');
+          this._indicators[this.activeIndex].children[0].classList.add('active');
         }
       }
 
       // Adjust height to current slide
-      this.$active.find('img').each((el) => {
+      // TODO: ??? Code does not do what it says in comment
+      /*
+      this._activeSlide.querySelectorAll('img').forEach(el => {
         anim({
-          targets: this.$active.find('.caption')[0],
+          targets: this._activeSlide.querySelector('.caption'),
           opacity: 1,
           translateX: 0,
           translateY: 0,
@@ -125,7 +123,8 @@ import anim from "animejs";
           easing: 'easeOutQuad'
         });
       });
-
+      */
+      
       this._setupEventHandlers();
       // auto scroll
       this.start();
@@ -167,7 +166,7 @@ import anim from "animejs";
         this.el.addEventListener('mouseleave', this._handleAutoStartHoverBound);
       }
       if (this.options.indicators) {
-        this.$indicators.each((i, el) => {
+        this._indicators.forEach((el) => {
           el.addEventListener('click', this._handleIndicatorClickBound);
         });
       }
@@ -183,14 +182,15 @@ import anim from "animejs";
         this.el.removeEventListener('mouseleave', this._handleAutoStartHoverBound);
       }
       if (this.options.indicators) {
-        this.$indicators.each((i, el) => {
+        this._indicators.forEach((el) => {
           el.removeEventListener('click', this._handleIndicatorClickBound);
         });
       }
     }
 
     _handleIndicatorClick(e) {
-      let currIndex = $(e.target).parent().index();
+      const el = (<HTMLElement>e.target).parentElement;
+      const currIndex = [...el.parentNode.children].indexOf(el);
       this._focusCurrent = true;
       this.set(currIndex);
     }
@@ -224,166 +224,154 @@ import anim from "animejs";
     }
 
     _handleInterval() {
-      let newActiveIndex = this.$slider.find('.active').index();
-      if (this.$slides.length === newActiveIndex + 1) newActiveIndex = 0;
-      // loop to start
-      else newActiveIndex += 1;
-
+      const activeElem = this._slider.querySelector('.active');
+      let newActiveIndex = [...activeElem.parentNode.children].indexOf(activeElem);
+      if (this._slides.length === newActiveIndex + 1)
+        newActiveIndex = 0; // loop to start
+      else
+        newActiveIndex += 1;
       this.set(newActiveIndex);
     }
 
-    _animateCaptionIn(caption: Element, duration: number) {
-      let animOptions = {
-        targets: caption,
-        opacity: 0,
-        duration: duration,
-        translateX: null,
-        translateY: null,
+    _animateSlide(slide: HTMLElement, isDirectionIn: boolean): void {
+      let dx = 0, dy = 0;
+      anim({
+        targets: slide,
+        opacity: isDirectionIn ? [0, 1] : [1, 0],
+        duration: this.options.duration,
         easing: 'easeOutQuad'
-      };
-      if ($(caption).hasClass('center-align')) {
-        animOptions.translateY = -100;
-      } else if ($(caption).hasClass('right-align')) {
-        animOptions.translateX = 100;
-      } else if ($(caption).hasClass('left-align')) {
-        animOptions.translateX = -100;
-      }
-      anim(animOptions);
+      });
+
+      const caption = slide.querySelector('.caption');
+      if (!caption) return;
+      if (caption.classList.contains('center-align')) dy = -100;
+      else if (caption.classList.contains('right-align')) dx = 100;
+      else if (caption.classList.contains('left-align')) dx = -100;
+      anim({
+        targets: caption,
+        opacity: isDirectionIn ? [0, 1] : [1, 0],
+        translateX: isDirectionIn ? [dx, 0] : [0, dx],
+        translateY: isDirectionIn ? [dy, 0] : [0, dy],
+        duration: this.options.duration,
+        delay: this.options.duration,
+        easing: 'easeOutQuad'
+      });
     }
 
     _setSliderHeight() {
       // If fullscreen, do nothing
-      if (!this.$el.hasClass('fullscreen')) {
+      if (!this.el.classList.contains('fullscreen')) {
         if (this.options.indicators) {
           // Add height if indicators are present
-          this.$el.css('height', this.options.height + 40 + 'px');
-        } else {
-          this.$el.css('height', this.options.height + 'px');
+          this.el.style.height = (this.options.height + 40)+'px'; //.css('height', this.options.height + 40 + 'px');
         }
-        this.$slider.css('height', this.options.height + 'px');
+        else {
+          this.el.style.height = this.options.height+'px';
+        }
+        this._slider.style.height = this.options.height+'px';
       }
     }
 
     _setupIndicators() {
       if (this.options.indicators) {
-        this.$indicators = $('<ul class="indicators"></ul>');
+        const ul = document.createElement('ul');
+        ul.classList.add('indicators');
 
-        this.$slides.each((el, i) => {
-          let label = this.options.indicatorLabelFunc
+        const arrLi = [];
+        this._slides.forEach((el, i) => {
+          const label = this.options.indicatorLabelFunc
             ? this.options.indicatorLabelFunc.call(this, i + 1, i === 0)
             : `${i + 1}`;
-          let $indicator = $(`<li class="indicator-item">
-            <button type="button" class="indicator-item-btn" aria-label="${label}" aria-controls="${this._sliderId}"></button>
-          </li>`);
+          const li = document.createElement('li');
+          li.classList.add('indicator-item');
+          li.innerHTML = `<button type="button" class="indicator-item-btn" aria-label="${label}" aria-controls="${this._sliderId}"></button>`;
+          arrLi.push(li);
+          ul.append(li);
+        });       
 
-          this.$indicators.append($indicator[0]);
-        });
-        this.$el.append(this.$indicators[0]);
-        this.$indicators = this.$indicators.children('li.indicator-item');
+        this.el.append(ul);
+        this._indicators = arrLi;
       }
     }
 
     _removeIndicators() {
-      this.$el.find('ul.indicators').remove();
+      this.el.querySelector('ul.indicators').remove(); //find('ul.indicators').remove();
     }
 
     set(index: number) {
       // Wrap around indices.
-      if (index >= this.$slides.length) index = 0;
-      else if (index < 0) index = this.$slides.length - 1;
+      if (index >= this._slides.length) index = 0;
+      else if (index < 0) index = this._slides.length - 1;
 
       // Only do if index changes
-      if (this.activeIndex != index) {
-        this.$active = this.$slides.eq(this.activeIndex);
-        let $caption = this.$active.find('.caption');
-        this.$active.removeClass('active');
-        // Enables every slide
-        this.$slides.css('visibility', 'visible');
+      if (this.activeIndex === index) return;
 
-        anim({
-          targets: this.$active[0],
-          opacity: 0,
-          duration: this.options.duration,
-          easing: 'easeOutQuad',
-          complete: () => {
-            this.$slides.not('.active').each((i, el) => {
-              anim({
-                targets: el,
-                opacity: 0,
-                translateX: 0,
-                translateY: 0,
-                duration: 0,
-                easing: 'easeOutQuad'
-              });
-              // Disables invisible slides (for assistive technologies)
-              el.style.visibility = 'hidden';
+      this._activeSlide = this._slides[this.activeIndex];
+      const _caption = <HTMLElement|null>this._activeSlide.querySelector('.caption');
+
+      this._activeSlide.classList.remove('active');
+      // Enables every slide
+      this._slides.forEach(slide => slide.style.visibility = 'visible');
+
+      //--- Hide active Slide + Caption
+      // TODO: What does this do?
+      anim({
+        targets: this._activeSlide,
+        opacity: 0,
+        duration: this.options.duration,
+        easing: 'easeOutQuad',
+        complete: () => {
+          this._slides.forEach(el => {
+            if (el.classList.contains('active')) return;            
+            anim({
+              targets: el,
+              opacity: 0,
+              translateX: 0,
+              translateY: 0,
+              duration: 0, // Animation with duration 0... why use anim at all then?
+              easing: 'easeOutQuad'
             });
-          }
-        });
-
-        this._animateCaptionIn($caption[0], this.options.duration);
-
-        // Update indicators
-        if (this.options.indicators) {
-          let activeIndicator = this.$indicators
-            .eq(this.activeIndex)
-            .children()
-            .first();
-          let nextIndicator = this.$indicators
-            .eq(index)
-            .children()
-            .first();
-          activeIndicator.removeClass('active');
-          nextIndicator.addClass('active');
-          if (typeof this.options.indicatorLabelFunc === "function"){
-            activeIndicator.attr(
-              'aria-label',
-              this.options.indicatorLabelFunc.call(
-                this,
-                this.$indicators.eq(this.activeIndex).index(),
-                false
-              )
-            );
-            nextIndicator.attr(
-              'aria-label',
-              this.options.indicatorLabelFunc.call(
-                this,
-                this.$indicators.eq(index).index(),
-                true
-              )
-            );
-          }
+            // Disables invisible slides (for assistive technologies)
+            el.style.visibility = 'hidden';
+          });
         }
+      });
 
-        anim({
-          targets: this.$slides.eq(index)[0],
-          opacity: 1,
-          duration: this.options.duration,
-          easing: 'easeOutQuad'
-        });
+      // Hide active Caption
+      //this._animateCaptionIn(_caption, this.options.duration);
+      _caption.style.opacity = '0';
 
-        anim({
-          targets: this.$slides.eq(index).find('.caption')[0],
-          opacity: 1,
-          translateX: 0,
-          translateY: 0,
-          duration: this.options.duration,
-          delay: this.options.duration,
-          easing: 'easeOutQuad'
-        });
-
-        this.$slides.eq(index).addClass('active');
-        if (this._focusCurrent) {
-          this.$slides.eq(index)[0].focus();
-          this._focusCurrent = false;
+      // Update indicators
+      if (this.options.indicators) {
+        const activeIndicator = this._indicators[this.activeIndex].children[0];
+        const nextIndicator = this._indicators[index].children[0];
+        activeIndicator.classList.remove('active');
+        nextIndicator.classList.add('active');
+        if (typeof this.options.indicatorLabelFunc === "function"){
+          activeIndicator.ariaLabel = this.options.indicatorLabelFunc.call(this, this.activeIndex, false);
+          nextIndicator.ariaLabel = this.options.indicatorLabelFunc.call(this, index, true);
         }
-        this.activeIndex = index;
+      }
+      
+      //--- Show new Slide + Caption
+      this._animateSlide(this._slides[index], true);
 
-        // Reset interval, if allowed. This check prevents autostart
-        // when slider is paused, since it can be changed though indicators.
-        if (this.interval != null) {
-          this.start();
-        }
+      this._slides[index].classList.add('active');
+
+      // TODO: Why focus? => causes uncontrollable page scroll
+      /*
+      if (this._focusCurrent) {
+        this._slides[index].focus();
+        this._focusCurrent = false;
+      }
+      */
+
+      this.activeIndex = index;
+
+      // Reset interval, if allowed. This check prevents autostart
+      // when slider is paused, since it can be changed though indicators.
+      if (this.interval != null) {
+        this.start();
       }
     }
 
@@ -409,16 +397,16 @@ import anim from "animejs";
     next() {
       let newIndex = this.activeIndex + 1;
       // Wrap around indices.
-      if (newIndex >= this.$slides.length) newIndex = 0;
-      else if (newIndex < 0) newIndex = this.$slides.length - 1;
+      if (newIndex >= this._slides.length) newIndex = 0;
+      else if (newIndex < 0) newIndex = this._slides.length - 1;
       this.set(newIndex);
     }
 
     prev() {
       let newIndex = this.activeIndex - 1;
       // Wrap around indices.
-      if (newIndex >= this.$slides.length) newIndex = 0;
-      else if (newIndex < 0) newIndex = this.$slides.length - 1;
+      if (newIndex >= this._slides.length) newIndex = 0;
+      else if (newIndex < 0) newIndex = this._slides.length - 1;
       this.set(newIndex);
     }
   }
