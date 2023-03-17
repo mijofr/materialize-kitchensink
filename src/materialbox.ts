@@ -3,19 +3,15 @@ import $ from "cash-dom";
 import anim from "animejs";
 import { M } from "./global";
 
-  let _defaults = {
-    inDuration: 275,
-    outDuration: 200,
-    onOpenStart: null,
-    onOpenEnd: null,
-    onCloseStart: null,
-    onCloseEnd: null
-  };
+let _defaults = {
+  inDuration: 275,
+  outDuration: 200,
+  onOpenStart: null,
+  onOpenEnd: null,
+  onCloseStart: null,
+  onCloseEnd: null
+};
 
-  /**
-   * @class
-   *
-   */
   export class Materialbox extends Component {
     overlayActive: boolean;
     doneAnimating: boolean;
@@ -39,27 +35,10 @@ import { M } from "./global";
     private _handleWindowScrollBound: any;
     private _handleWindowResizeBound: any;
     private _handleWindowEscapeBound: any;
-    /**
-     * Construct Materialbox instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+
     constructor(el, options) {
       super(Materialbox, el, options);
-
       (this.el as any).M_Materialbox = this;
-
-      /**
-       * Options for the modal
-       * @member Materialbox#options
-       * @prop {Number} [inDuration=275] - Length in ms of enter transition
-       * @prop {Number} [outDuration=200] - Length in ms of exit transition
-       * @prop {Function} onOpenStart - Callback function called before materialbox is opened
-       * @prop {Function} onOpenEnd - Callback function called after materialbox is opened
-       * @prop {Function} onCloseStart - Callback function called before materialbox is closed
-       * @prop {Function} onCloseEnd - Callback function called after materialbox is closed
-       */
       this.options = $.extend({}, Materialbox.defaults, options);
 
       this.overlayActive = false;
@@ -73,7 +52,6 @@ import { M } from "./global";
       // Wrap
       this.$el.before(this.placeholder);
       this.placeholder.append(this.$el);
-
       this._setupEventHandlers();
     }
 
@@ -85,48 +63,28 @@ import { M } from "./global";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Materialbox;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       this._removeEventHandlers();
       (this.el as any).M_Materialbox = undefined;
-
       // Unwrap image
-      $(this.placeholder)
-        .after(this.el)
-        .remove();
-
+      $(this.placeholder).after(this.el).remove();
       this.$el.removeAttr('style');
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       this._handleMaterialboxClickBound = this._handleMaterialboxClick.bind(this);
       this.el.addEventListener('click', this._handleMaterialboxClickBound);
     }
 
-    /**
-     * Remove Event Handlers
-     */
     _removeEventHandlers() {
       this.el.removeEventListener('click', this._handleMaterialboxClickBound);
     }
 
-    /**
-     * Handle Materialbox Click
-     * @param {Event} e
-     */
     _handleMaterialboxClick(e) {
       // If already modal, return to original
       if (this.doneAnimating === false || (this.overlayActive && this.doneAnimating)) {
@@ -136,28 +94,18 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * Handle Window Scroll
-     */
     _handleWindowScroll() {
       if (this.overlayActive) {
         this.close();
       }
     }
 
-    /**
-     * Handle Window Resize
-     */
     _handleWindowResize() {
       if (this.overlayActive) {
         this.close();
       }
     }
 
-    /**
-     * Handle Window Resize
-     * @param {Event} e
-     */
     _handleWindowEscape(e) {
       // ESC key
       if (e.keyCode === 27 && this.doneAnimating && this.overlayActive) {
@@ -165,9 +113,6 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * Find ancestors with overflow: hidden; and make visible
-     */
     _makeAncestorsOverflowVisible() {
       this.ancestorsChanged = $();
       let ancestor = this.placeholder[0].parentNode;
@@ -185,9 +130,6 @@ import { M } from "./global";
       }
     }
 
-    /**
-     * Animate image in
-     */
     _animateImageIn() {
       let animOptions = {
         targets: this.el,
@@ -230,9 +172,6 @@ import { M } from "./global";
       anim(animOptions);
     }
 
-    /**
-     * Animate image out
-     */
     _animateImageOut() {
       let animOptions = {
         targets: this.el,
@@ -281,18 +220,12 @@ import { M } from "./global";
       anim(animOptions);
     }
 
-    /**
-     * Update open and close vars
-     */
     _updateVars() {
       this.windowWidth = window.innerWidth;
       this.windowHeight = window.innerHeight;
       this.caption = this.el.getAttribute('data-caption') || '';
     }
 
-    /**
-     * Open Materialbox
-     */
     open() {
       this._updateVars();
       this.originalWidth = this.el.getBoundingClientRect().width;
@@ -419,9 +352,6 @@ import { M } from "./global";
       window.addEventListener('keyup', this._handleWindowEscapeBound);
     }
 
-    /**
-     * Close Materialbox
-     */
     close() {
       this._updateVars();
       this.doneAnimating = false;

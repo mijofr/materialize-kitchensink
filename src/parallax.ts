@@ -1,5 +1,4 @@
 import { Component } from "./component";
-import $ from "cash-dom";
 import { M } from "./global";
 
   let _defaults = {
@@ -7,30 +6,22 @@ import { M } from "./global";
   };
 
   export class Parallax extends Component {
-    _enabled: boolean;
-    $img: any;
-    static _parallaxes: any;
+    private _enabled: boolean;
+    private _img: HTMLImageElement;
     private _handleImageLoadBound: any;
+    static _parallaxes: any;
     static _handleScrollThrottled: any;
     static _handleWindowResizeThrottled: () => any;
+
     constructor(el, options) {
       super(Parallax, el, options);
-
       (this.el as any).M_Parallax = this;
-
-      this.options = $.extend({}, Parallax.defaults, options);
+      this.options = {...Parallax.defaults, ...options};
       this._enabled = window.innerWidth > this.options.responsiveThreshold;
-
-      this.$img = this.$el.find('img').first();
-      this.$img.each(function() {
-        let el = this;
-        if (el.complete) $(el).trigger('load');
-      });
-
+      this._img = this.el.querySelector('img');      
       this._updateParallax();
       this._setupEventHandlers();
       this._setupStyles();
-
       Parallax._parallaxes.push(this);
     }
 
@@ -49,10 +40,9 @@ import { M } from "./global";
 
     destroy() {
       Parallax._parallaxes.splice(Parallax._parallaxes.indexOf(this), 1);
-      this.$img[0].style.transform = '';
+      this._img.style.transform = '';
       this._removeEventHandlers();
-
-      this.$el[0].M_Parallax = undefined;
+      (this.el as any).M_Parallax = undefined;
     }
 
     static _handleScroll() {
@@ -72,20 +62,17 @@ import { M } from "./global";
 
     _setupEventHandlers() {
       this._handleImageLoadBound = this._handleImageLoad.bind(this);
-      this.$img[0].addEventListener('load', this._handleImageLoadBound);
-
+      this._img.addEventListener('load', this._handleImageLoadBound);
       if (Parallax._parallaxes.length === 0) {
         Parallax._handleScrollThrottled = M.throttle(Parallax._handleScroll, 5);
         window.addEventListener('scroll', Parallax._handleScrollThrottled);
-
         Parallax._handleWindowResizeThrottled = M.throttle(Parallax._handleWindowResize, 5);
         window.addEventListener('resize', Parallax._handleWindowResizeThrottled);
       }
     }
 
     _removeEventHandlers() {
-      this.$img[0].removeEventListener('load', this._handleImageLoadBound);
-
+      this._img.removeEventListener('load', this._handleImageLoadBound);
       if (Parallax._parallaxes.length === 0) {
         window.removeEventListener('scroll', Parallax._handleScrollThrottled);
         window.removeEventListener('resize', Parallax._handleWindowResizeThrottled);
@@ -93,29 +80,39 @@ import { M } from "./global";
     }
 
     _setupStyles() {
-      this.$img[0].style.opacity = 1;
+      this._img.style.opacity = '1';
     }
 
     _handleImageLoad() {
       this._updateParallax();
     }
 
-    _updateParallax() {
-      let containerHeight = this.$el.height() > 0 ? (this.el.parentNode as any).offsetHeight : 500;
-      let imgHeight = this.$img[0].offsetHeight;
-      let parallaxDist = imgHeight - containerHeight;
-      let bottom = this.$el.offset().top + containerHeight;
-      let top = this.$el.offset().top;
-      let scrollTop = M.getDocumentScrollTop();
-      let windowHeight = window.innerHeight;
-      let windowBottom = scrollTop + windowHeight;
-      let percentScrolled = (windowBottom - top) / (containerHeight + windowHeight);
-      let parallax = parallaxDist * percentScrolled;
+    private _offset(el: Element) {
+      const box = el.getBoundingClientRect();
+      const docElem = document.documentElement;
+      return {
+        top: box.top + window.pageYOffset - docElem.clientTop,
+        left: box.left + window.pageXOffset - docElem.clientLeft
+      };
+    }
 
+    _updateParallax() {
+      const containerHeight = this.el.getBoundingClientRect().height > 0 ? (this.el.parentNode as any).offsetHeight : 500;
+      const imgHeight = this._img.offsetHeight;
+      const parallaxDist = imgHeight - containerHeight;
+      const bottom = this._offset(this.el).top + containerHeight;
+      const top = this._offset(this.el).top;
+      const scrollTop = M.getDocumentScrollTop();
+      const windowHeight = window.innerHeight;
+      const windowBottom = scrollTop + windowHeight;
+      const percentScrolled = (windowBottom - top) / (containerHeight + windowHeight);
+      const parallax = parallaxDist * percentScrolled;
+      
       if (!this._enabled) {
-        this.$img[0].style.transform = '';
-      } else if (bottom > scrollTop && top < scrollTop + windowHeight) {
-        this.$img[0].style.transform = `translate3D(-50%, ${parallax}px, 0)`;
+        this._img.style.transform = '';
+      }
+      else if (bottom > scrollTop && top < scrollTop + windowHeight) {
+        this._img.style.transform = `translate3D(-50%, ${parallax}px, 0)`;
       }
     }
 
