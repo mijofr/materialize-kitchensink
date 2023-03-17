@@ -1,14 +1,14 @@
 import { Component } from "./component";
-import $, { Selector } from "cash-dom";
+import $ from "cash-dom";
 import { M } from "./global";
 
-  let _defaults = {
-    classes: '',
-    dropdownOptions: {}
-  };
+let _defaults = {
+  classes: '',
+  dropdownOptions: {}
+};
 
   export class FormSelect extends Component {
-    isMultiple: any;
+    isMultiple: boolean;
     private _values: any[];
     labelEl: any;
     private _labelFor: boolean;
@@ -20,11 +20,12 @@ import { M } from "./global";
     dropdown: any;
     wrapper: HTMLDivElement;
     $selectOptions: any;
+
     constructor(el, options) {
       super(FormSelect, el, options);
-      if (this.$el.hasClass('browser-default')) return;
+      if (this.el.classList.contains('browser-default')) return;
       (this.el as any).M_FormSelect = this;
-      this.options = $.extend({}, FormSelect.defaults, options);
+      this.options = {...FormSelect.defaults, ...options};
       this.isMultiple = this.$el.prop('multiple');
       (this.el as HTMLElement).tabIndex = -1;
       this._values = [];
@@ -33,16 +34,20 @@ import { M } from "./global";
       this._setupDropdown();
       this._setupEventHandlers();
     }
+
     static get defaults() {
       return _defaults;
     }
+
     static init(els, options) {
       return super.init(this, els, options);
     }
+
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_FormSelect;
     }
+
     destroy() {
       // Returns label to its original owner
       if (this._labelFor) this.labelEl.setAttribute("for", this.el.id);
@@ -50,6 +55,7 @@ import { M } from "./global";
       this._removeDropdown();
       (this.el as any).M_FormSelect = undefined;
     }
+
     _setupEventHandlers() {
       this._handleSelectChangeBound = this._handleSelectChange.bind(this);
       this._handleOptionClickBound = this._handleOptionClick.bind(this);
@@ -65,6 +71,7 @@ import { M } from "./global";
       this.el.addEventListener('change', this._handleSelectChangeBound);
       this.input.addEventListener('click', this._handleInputClickBound);
     }
+
     _removeEventHandlers() {
       $(this.dropdownOptions)
         .find('li:not(.optgroup)')
@@ -74,15 +81,18 @@ import { M } from "./global";
       this.el.removeEventListener('change', this._handleSelectChangeBound);
       this.input.removeEventListener('click', this._handleInputClickBound);
     }
+
     _handleSelectChange(e) {
       this._setValueToInput();
     }
+
     _handleOptionClick(e) {
       e.preventDefault();
       let virtualOption = $(e.target).closest('li')[0];
       this._selectOptionElement(virtualOption);
       e.stopPropagation();
     }
+
     _arraysEqual(a, b) {
       if (a === b) return true;
       if (a == null || b == null) return false;
@@ -90,6 +100,7 @@ import { M } from "./global";
       for (let i = 0; i < a.length; ++i) if (a[i] !== b[i]) return false;
       return true;
     }
+
     _selectOptionElement(virtualOption) {
       if (!$(virtualOption).hasClass('disabled') && !$(virtualOption).hasClass('optgroup')) {
         const value = this._values.filter((value) => value.optionEl === virtualOption)[0];
@@ -114,12 +125,14 @@ import { M } from "./global";
       }
       if (!this.isMultiple) this.dropdown.close();
     }
+
     _handleInputClick() {
       if (this.dropdown && this.dropdown.isOpen) {  
         this._setValueToInput();
         this._setSelectedStates();
       }
     }
+
     _setupDropdown() {
       this.wrapper = document.createElement('div');
       this.wrapper.classList.add('select-wrapper');
@@ -146,8 +159,8 @@ import { M } from "./global";
       $(this.dropdownOptions).addClass(
         'dropdown-content select-dropdown ' + (this.isMultiple ? 'multiple-select-dropdown' : '')
       );
-      this.dropdownOptions.setAttribute("role", "listbox");
-      this.dropdownOptions.setAttribute("aria-multiselectable", this.isMultiple);
+      this.dropdownOptions.role = "listbox";
+      this.dropdownOptions.ariaMultiSelectable = this.isMultiple.toString();
 
       // Create dropdown structure
       if (this.$selectOptions.length) {
@@ -295,9 +308,11 @@ import { M } from "./global";
       // ! Workaround for Label: move label up again
       if (this.labelEl) this.input.after(this.labelEl);
     }
+
     _addOptionToValues(realOption, virtualOption) {
       this._values.push({ el: realOption, optionEl: virtualOption });
     }
+
     _removeDropdown() {
       $(this.wrapper)
         .find('.caret')
@@ -307,6 +322,7 @@ import { M } from "./global";
       $(this.wrapper).before(this.$el);
       $(this.wrapper).remove();
     }
+
     _createAndAppendOptionWithIcon(realOption, type) {
       const li = document.createElement('li');
       li.setAttribute("role", "option");
@@ -343,6 +359,7 @@ import { M } from "./global";
       const checkbox = value.optionEl.querySelector('input[type="checkbox"]');
       if (checkbox) checkbox.checked = true;
     }
+
     _deselectValue(value) {
       value.el.selected = false;
       value.optionEl.classList.remove('selected');
@@ -350,20 +367,24 @@ import { M } from "./global";
       const checkbox = value.optionEl.querySelector('input[type="checkbox"]');
       if (checkbox) checkbox.checked = false;
     }
+
     _deselectAll() {
       this._values.forEach((value) => {
         this._deselectValue(value);
       });
     }
+
     _isValueSelected(value) {
       const realValues = this.getSelectedValues();
       return realValues.some((realValue) => realValue === value.el.value);
     }
+
     _toggleEntryFromArray(value) {
       const isSelected = this._isValueSelected(value);
       if (isSelected) this._deselectValue(value);
       else this._selectValue(value);
     }
+
     _getSelectedOptions() {
       return Array.prototype.filter.call((this.el as any).selectedOptions, (realOption) => realOption);
     }
@@ -382,6 +403,7 @@ import { M } from "./global";
       }
       this.input.value = texts.join(', ');
     }
+
     _setSelectedStates() {
       this._values.forEach((value) => {
         const optionIsSelected = $(value.el).prop('selected');
@@ -396,6 +418,7 @@ import { M } from "./global";
         }
       });
     }
+
     _activateOption(ul, li) {
       if (!li) return;
       if (!this.isMultiple) ul.find('li.selected').removeClass('selected');

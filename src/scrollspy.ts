@@ -1,54 +1,31 @@
 import { Component } from "./component";
-import $ from "cash-dom";
 import { M } from "./global";
 import anim from "animejs";
 
-  let _defaults = {
-    throttle: 100,
-    scrollOffset: 200, // offset - 200 allows elements near bottom of page to scroll
-    activeClass: 'active',
-    getActiveElement: function(id) {
-      return 'a[href="#' + id + '"]';
-    }
-  };
+let _defaults = {
+  throttle: 100,
+  scrollOffset: 200, // offset - 200 allows elements near bottom of page to scroll
+  activeClass: 'active',
+  getActiveElement: (id: string): string => { return 'a[href="#'+id+'"]'; }
+};
 
-  /**
-   * @class
-   *
-   */
   export class ScrollSpy extends Component {
-    static _elements: any;
-    static _count: any;
-    static _increment: any;
+    el: HTMLElement;
+    static _elements: ScrollSpy[];
+    static _count: number;
+    static _increment: number;
     tickId: number;
     id: any;
-    static _elementsInView: any;
-    static _visibleElements: any;
+    static _elementsInView: ScrollSpy[];
+    static _visibleElements: any[];
     private _handleThrottledResizeBound: any;
     private _handleWindowScrollBound: any;
-    static _ticks: any;
-    /**
-     * Construct ScrollSpy instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+    static _ticks: number;
+
     constructor(el, options) {
       super(ScrollSpy, el, options);
-
       (this.el as any).M_ScrollSpy = this;
-
-      /**
-       * Options for the modal
-       * @member Modal#options
-       * @prop {Number} [throttle=100] - Throttle of scroll handler
-       * @prop {Number} [scrollOffset=200] - Offset for centering element when scrolled to
-       * @prop {String} [activeClass='active'] - Class applied to active elements
-       * @prop {Function} [getActiveElement] - Used to find active element
-       */
-      this.options = $.extend({}, ScrollSpy.defaults, options);
-
-      // setup
+      this.options = {...ScrollSpy.defaults, ...options};
       ScrollSpy._elements.push(this);
       ScrollSpy._count++;
       ScrollSpy._increment++;
@@ -66,30 +43,22 @@ import anim from "animejs";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_ScrollSpy;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       ScrollSpy._elements.splice(ScrollSpy._elements.indexOf(this), 1);
       ScrollSpy._elementsInView.splice(ScrollSpy._elementsInView.indexOf(this), 1);
-      ScrollSpy._visibleElements.splice(ScrollSpy._visibleElements.indexOf(this.$el), 1);
+      ScrollSpy._visibleElements.splice(ScrollSpy._visibleElements.indexOf(this.el), 1);
       ScrollSpy._count--;
       this._removeEventHandlers();
-      $(this.options.getActiveElement(this.$el.attr('id'))).removeClass(this.options.activeClass);
+      const actElem = document.querySelector(this.options.getActiveElement(this.el.id));
+      actElem.classList.remove(this.options.activeClass);
       (this.el as any).M_ScrollSpy = undefined;
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       let throttledResize = M.throttle(this._handleWindowScroll, 200);
       this._handleThrottledResizeBound = throttledResize.bind(this);
@@ -101,9 +70,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Remove Event Handlers
-     */
     _removeEventHandlers() {
       if (ScrollSpy._count === 0) {
         window.removeEventListener('scroll', this._handleWindowScrollBound);
@@ -112,17 +78,15 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handle Trigger Click
-     * @param {Event} e
-     */
     _handleTriggerClick(e) {
-      let $trigger = $(e.target);
+      const trigger = e.target;
       for (let i = ScrollSpy._elements.length - 1; i >= 0; i--) {
-        let scrollspy = ScrollSpy._elements[i];
-        if ($trigger.is('a[href="#' + scrollspy.$el.attr('id') + '"]')) {
+        const scrollspy = ScrollSpy._elements[i];
+
+        const x = document.querySelector('a[href="#'+scrollspy.el.id+'"]');
+        if (trigger === x) {
           e.preventDefault();
-          let offset = scrollspy.$el.offset().top + 1;
+          const offset = ScrollSpy._offset(scrollspy.el).top + 1;
 
           anim({
             targets: [document.documentElement, document.body],
@@ -130,14 +94,12 @@ import anim from "animejs";
             duration: 400,
             easing: 'easeOutCubic'
           });
+
           break;
         }
       }
     }
 
-    /**
-     * Handle Window Scroll
-     */
     _handleWindowScroll() {
       // unique tick id
       ScrollSpy._ticks++;
@@ -171,30 +133,30 @@ import anim from "animejs";
           scrollspy.tickId = -1;
         }
       }
-
       // remember elements in view for next tick
       ScrollSpy._elementsInView = intersections;
     }
 
-    /**
-     * Find elements that are within the boundary
-     * @param {number} top
-     * @param {number} right
-     * @param {number} bottom
-     * @param {number} left
-     * @return {Array.<ScrollSpy>}   A collection of elements
-     */
-    static _findElements(top, right, bottom, left) {
+    static _offset(el) {
+      const box = el.getBoundingClientRect();
+      const docElem = document.documentElement;
+      return {
+        top: box.top + window.pageYOffset - docElem.clientTop,
+        left: box.left + window.pageXOffset - docElem.clientLeft
+      };
+    }
+
+    static _findElements(top: number, right: number, bottom: number, left: number): ScrollSpy[] {
       let hits = [];
       for (let i = 0; i < ScrollSpy._elements.length; i++) {
         let scrollspy = ScrollSpy._elements[i];
         let currTop = top + scrollspy.options.scrollOffset || 200;
 
-        if (scrollspy.$el.height() > 0) {
-          let elTop = scrollspy.$el.offset().top,
-            elLeft = scrollspy.$el.offset().left,
-            elRight = elLeft + scrollspy.$el.width(),
-            elBottom = elTop + scrollspy.$el.height();
+        if (scrollspy.el.getBoundingClientRect().height > 0) {
+          let elTop = ScrollSpy._offset(scrollspy.el).top,
+            elLeft = ScrollSpy._offset(scrollspy.el).left,
+            elRight = elLeft + scrollspy.el.getBoundingClientRect().width,
+            elBottom = elTop + scrollspy.el.getBoundingClientRect().height;
 
           let isIntersect = !(
             elLeft > right ||
@@ -212,98 +174,50 @@ import anim from "animejs";
     }
 
     _enter() {
-      ScrollSpy._visibleElements = ScrollSpy._visibleElements.filter(function(value) {
-        return value.height() != 0;
-      });
+      ScrollSpy._visibleElements = ScrollSpy._visibleElements.filter(value => value.getBoundingClientRect().height !== 0);
 
       if (ScrollSpy._visibleElements[0]) {
-        $(this.options.getActiveElement(ScrollSpy._visibleElements[0].attr('id'))).removeClass(
-          this.options.activeClass
-        );
-        if (
-          ScrollSpy._visibleElements[0][0].M_ScrollSpy &&
-          this.id < ScrollSpy._visibleElements[0][0].M_ScrollSpy.id
-        ) {
-          ScrollSpy._visibleElements.unshift(this.$el);
-        } else {
-          ScrollSpy._visibleElements.push(this.$el);
-        }
-      } else {
-        ScrollSpy._visibleElements.push(this.$el);
-      }
+        const actElem = document.querySelector(this.options.getActiveElement(ScrollSpy._visibleElements[0].id));
+        actElem.classList.remove(this.options.activeClass);
 
-      $(this.options.getActiveElement(ScrollSpy._visibleElements[0].attr('id'))).addClass(
-        this.options.activeClass
-      );
+        if (ScrollSpy._visibleElements[0].M_ScrollSpy && this.id < ScrollSpy._visibleElements[0].M_ScrollSpy.id) {
+          ScrollSpy._visibleElements.unshift(this.el);
+        }
+        else {
+          ScrollSpy._visibleElements.push(this.el);
+        }
+      }
+      else {
+        ScrollSpy._visibleElements.push(this.el);
+      }
+      document.querySelector(this.options.getActiveElement(ScrollSpy._visibleElements[0].id))      
+      .classList.add(this.options.activeClass);
     }
 
     _exit() {
-      ScrollSpy._visibleElements = ScrollSpy._visibleElements.filter(function(value) {
-        return value.height() != 0;
-      });
+      ScrollSpy._visibleElements = ScrollSpy._visibleElements.filter(value => value.getBoundingClientRect().height !== 0);
 
       if (ScrollSpy._visibleElements[0]) {
-        $(this.options.getActiveElement(ScrollSpy._visibleElements[0].attr('id'))).removeClass(
-          this.options.activeClass
-        );
+        const actElem = document.querySelector(this.options.getActiveElement(ScrollSpy._visibleElements[0].id));
+        actElem.classList.remove(this.options.activeClass);
 
-        ScrollSpy._visibleElements = ScrollSpy._visibleElements.filter((el) => {
-          return el.attr('id') != this.$el.attr('id');
-        });
+        ScrollSpy._visibleElements = ScrollSpy._visibleElements.filter((x) => x.id != this.el.id);
+
         if (ScrollSpy._visibleElements[0]) {
           // Check if empty
-          $(this.options.getActiveElement(ScrollSpy._visibleElements[0].attr('id'))).addClass(
-            this.options.activeClass
-          );
+          document.querySelector(this.options.getActiveElement(ScrollSpy._visibleElements[0].id))
+          .classList.add(this.options.activeClass);
         }
       }
     }
 
     static {
-      /**
-         * @static
-         * @memberof ScrollSpy
-         * @type {Array.<ScrollSpy>}
-         */
       ScrollSpy._elements = [];
-
-      /**
-       * @static
-       * @memberof ScrollSpy
-       * @type {Array.<ScrollSpy>}
-       */
       ScrollSpy._elementsInView = [];
-
-      /**
-       * @static
-       * @memberof ScrollSpy
-       * @type {Array.<cash>}
-       */
-      ScrollSpy._visibleElements = [];
-
-      /**
-       * @static
-       * @memberof ScrollSpy
-       */
+      ScrollSpy._visibleElements = []; // Array.<cash>
       ScrollSpy._count = 0;
-
-      /**
-       * @static
-       * @memberof ScrollSpy
-       */
       ScrollSpy._increment = 0;
-
-      /**
-       * @static
-       * @memberof ScrollSpy
-       */
       ScrollSpy._ticks = 0;
-
     }
   }
-
-  
-
-  
-
   

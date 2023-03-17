@@ -1,14 +1,14 @@
 import { Component } from "./component";
-import $ from "cash-dom";
 import { M } from "./global";
 import anim from "animejs";
+import { Bounding } from "./bounding";
 
-  let _defaults = {
+  const _defaults = {
     exitDelay: 200,
     enterDelay: 0,
-    html: null,
+    //html: null,
     text: '',
-    unsafeHTML: null,
+    //unsafeHTML: null,
     margin: 5,
     inDuration: 250,
     outDuration: 200,
@@ -20,7 +20,7 @@ import anim from "animejs";
     isOpen: boolean;
     isHovered: boolean;
     isFocused: boolean;
-    tooltipEl: any;
+    tooltipEl: HTMLElement;
     private _handleMouseEnterBound: any;
     private _handleMouseLeaveBound: any;
     private _handleFocusBound: any;
@@ -32,10 +32,8 @@ import anim from "animejs";
 
     constructor(el, options) {
       super(Tooltip, el, options);
-
       (this.el as any).M_Tooltip = this;
-      this.options = $.extend({}, Tooltip.defaults, options);
-
+      this.options = {...Tooltip.defaults, ...options};
       this.isOpen = false;
       this.isHovered = false;
       this.isFocused = false;
@@ -52,29 +50,30 @@ import anim from "animejs";
     }
 
     static getInstance(el) {
-      let domElem = !!el.jquery ? el[0] : el;
+      const domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Tooltip;
     }
 
     destroy() {
-      $(this.tooltipEl).remove();
+      this.tooltipEl.remove();
       this._removeEventHandlers();
       (this.el as any).M_Tooltip = undefined;
     }
 
     _appendTooltipEl() {
-      let tooltipEl = document.createElement('div');
-      tooltipEl.classList.add('material-tooltip');
-      this.tooltipEl = tooltipEl;
-      let tooltipContentEl = document.createElement('div');
+      this.tooltipEl = document.createElement('div');
+      this.tooltipEl.classList.add('material-tooltip');
+
+      const tooltipContentEl = document.createElement('div');
       tooltipContentEl.classList.add('tooltip-content');
       this._setTooltipContent(tooltipContentEl);
-      tooltipEl.appendChild(tooltipContentEl);
-      document.body.appendChild(tooltipEl);
+      this.tooltipEl.appendChild(tooltipContentEl);
+      document.body.appendChild(this.tooltipEl);
     }
 
-    _setTooltipContent(tooltipContentEl) {
-      tooltipContentEl.textContent = this.options.text;
+    _setTooltipContent(tooltipContentEl: HTMLElement) {
+      tooltipContentEl.innerText = this.options.text;
+      /*
       if (!!this.options.html) {
         // Warn when using html
         console.warn(
@@ -85,6 +84,7 @@ import anim from "animejs";
       if (!!this.options.unsafeHTML) {
         $(tooltipContentEl).append(this.options.unsafeHTML);
       }
+      */
     }
 
     _updateTooltipContent() {
@@ -110,22 +110,17 @@ import anim from "animejs";
     }
 
     open(isManual) {
-      if (this.isOpen) {
-        return;
-      }
+      if (this.isOpen) return;
       isManual = isManual === undefined ? true : undefined; // Default value true
       this.isOpen = true;
       // Update tooltip content with HTML attribute options
-      this.options = $.extend({}, this.options, this._getAttributeOptions());
+      this.options = {...this.options, ...this._getAttributeOptions()};
       this._updateTooltipContent();
       this._setEnterDelayTimeout(isManual);
     }
 
     close() {
-      if (!this.isOpen) {
-        return;
-      }
-
+      if (!this.isOpen) return;
       this.isHovered = false;
       this.isFocused = false;
       this.isOpen = false;
@@ -135,9 +130,7 @@ import anim from "animejs";
     _setExitDelayTimeout() {
       clearTimeout(this._exitDelayTimeout);
       this._exitDelayTimeout = setTimeout(() => {
-        if (this.isHovered || this.isFocused) {
-          return;
-        }
+        if (this.isHovered || this.isFocused) return;
         this._animateOut();
       }, this.options.exitDelay);
     }
@@ -145,30 +138,24 @@ import anim from "animejs";
     _setEnterDelayTimeout(isManual) {
       clearTimeout(this._enterDelayTimeout);
       this._enterDelayTimeout = setTimeout(() => {
-        if (!this.isHovered && !this.isFocused && !isManual) {
-          return;
-        }
+        if (!this.isHovered && !this.isFocused && !isManual) return;
         this._animateIn();
       }, this.options.enterDelay);
     }
 
     _positionTooltip() {
-      let origin = (this.el as HTMLElement),
-        tooltip = this.tooltipEl,
+      const tooltip: HTMLElement = this.tooltipEl;
+      const origin = (this.el as HTMLElement),
         originHeight = origin.offsetHeight,
         originWidth = origin.offsetWidth,
         tooltipHeight = tooltip.offsetHeight,
         tooltipWidth = tooltip.offsetWidth,
-        newCoordinates,
-        margin = this.options.margin,
-        targetTop,
-        targetLeft;
+        margin = this.options.margin;
 
       (this.xMovement = 0), (this.yMovement = 0);
 
-      targetTop = origin.getBoundingClientRect().top + M.getDocumentScrollTop();
-      targetLeft = origin.getBoundingClientRect().left + M.getDocumentScrollLeft();
-
+      let targetTop = origin.getBoundingClientRect().top + M.getDocumentScrollTop();
+      let targetLeft = origin.getBoundingClientRect().left + M.getDocumentScrollLeft();
       if (this.options.position === 'top') {
         targetTop += -tooltipHeight - margin;
         targetLeft += originWidth / 2 - tooltipWidth / 2;
@@ -187,46 +174,42 @@ import anim from "animejs";
         this.yMovement = this.options.transitionMovement;
       }
 
-      newCoordinates = this._repositionWithinScreen(
+      const newCoordinates = this._repositionWithinScreen(
         targetLeft,
         targetTop,
         tooltipWidth,
         tooltipHeight
       );
-      $(tooltip).css({
-        top: newCoordinates.y + 'px',
-        left: newCoordinates.x + 'px'
-      });
+        
+      tooltip.style.top = newCoordinates.y+'px';
+      tooltip.style.left = newCoordinates.x+'px';
     }
 
     _repositionWithinScreen(x, y, width, height) {
-      let scrollLeft = M.getDocumentScrollLeft();
-      let scrollTop = M.getDocumentScrollTop();
+      const scrollLeft = M.getDocumentScrollLeft();
+      const scrollTop = M.getDocumentScrollTop();
       let newX = x - scrollLeft;
       let newY = y - scrollTop;
 
-      let bounding = {
+      const bounding: Bounding = {
         left: newX,
         top: newY,
         width: width,
         height: height
       };
-
-      let offset = this.options.margin + this.options.transitionMovement;
-      let edges = M.checkWithinContainer(document.body, bounding, offset);
+      const offset = this.options.margin + this.options.transitionMovement;
+      const edges = M.checkWithinContainer(document.body, bounding, offset);
 
       if (edges.left) {
         newX = offset;
       } else if (edges.right) {
         newX -= newX + width - window.innerWidth;
       }
-
       if (edges.top) {
         newY = offset;
       } else if (edges.bottom) {
         newY -= newY + height - window.innerHeight;
       }
-
       return {
         x: newX + scrollLeft,
         y: newY + scrollTop
@@ -284,9 +267,9 @@ import anim from "animejs";
     }
 
     _getAttributeOptions() {
-      let attributeOptions = {};
-      let tooltipTextOption = this.el.getAttribute('data-tooltip');
-      let positionOption = this.el.getAttribute('data-position');
+      const attributeOptions = {};
+      const tooltipTextOption = this.el.getAttribute('data-tooltip');
+      const positionOption = this.el.getAttribute('data-position');
       if (tooltipTextOption) {
         (attributeOptions as any).text = tooltipTextOption;
       }

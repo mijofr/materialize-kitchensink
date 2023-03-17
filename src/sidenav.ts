@@ -3,22 +3,19 @@ import $ from "cash-dom";
 import { M } from "./global";
 import anim from "animejs";
 
-  let _defaults = {
-    edge: 'left',
-    draggable: true,
-    dragTargetWidth: '10px',
-    inDuration: 250,
-    outDuration: 200,
-    onOpenStart: null,
-    onOpenEnd: null,
-    onCloseStart: null,
-    onCloseEnd: null,
-    preventScrolling: true
-  };
+let _defaults = {
+  edge: 'left',
+  draggable: true,
+  dragTargetWidth: '10px',
+  inDuration: 250,
+  outDuration: 200,
+  onOpenStart: null,
+  onOpenEnd: null,
+  onCloseStart: null,
+  onCloseEnd: null,
+  preventScrolling: true
+};
 
-  /**
-   * @class
-   */
   export class Sidenav extends Component {
     id: any;
     isOpen: boolean;
@@ -45,61 +42,23 @@ import anim from "animejs";
     deltaX: number;    
     velocityX: number;
     percentOpen: number;
-    /**
-     * Construct Sidenav instance and set up overlay
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+
     constructor(el, options) {
       super(Sidenav, el, options);
-
       (this.el as any).M_Sidenav = this;
       this.id = this.$el.attr('id');
-
-      /**
-       * Options for the Sidenav
-       * @member Sidenav#options
-       * @prop {String} [edge='left'] - Side of screen on which Sidenav appears
-       * @prop {Boolean} [draggable=true] - Allow swipe gestures to open/close Sidenav
-       * @prop {String} [dragTargetWidth='10px'] - Width of the area where you can start dragging
-       * @prop {Number} [inDuration=250] - Length in ms of enter transition
-       * @prop {Number} [outDuration=200] - Length in ms of exit transition
-       * @prop {Function} onOpenStart - Function called when sidenav starts entering
-       * @prop {Function} onOpenEnd - Function called when sidenav finishes entering
-       * @prop {Function} onCloseStart - Function called when sidenav starts exiting
-       * @prop {Function} onCloseEnd - Function called when sidenav finishes exiting
-       */
-      this.options = $.extend({}, Sidenav.defaults, options);
-
-      /**
-       * Describes open/close state of Sidenav
-       * @type {Boolean}
-       */
+      this.options = {...Sidenav.defaults, ...options};
       this.isOpen = false;
-
-      /**
-       * Describes if Sidenav is fixed
-       * @type {Boolean}
-       */
       this.isFixed = this.el.classList.contains('sidenav-fixed');
-
-      /**
-       * Describes if Sidenav is being draggeed
-       * @type {Boolean}
-       */
       this.isDragged = false;
-
       // Window size variables for window resize checks
       this.lastWindowWidth = window.innerWidth;
       this.lastWindowHeight = window.innerHeight;
-
       this._createOverlay();
       this._createDragTarget();
       this._setupEventHandlers();
       this._setupClasses();
       this._setupFixed();
-
       Sidenav._sidenavs.push(this);
     }
 
@@ -111,17 +70,11 @@ import anim from "animejs";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Sidenav;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       this._removeEventHandlers();
       this._enableBodyScrolling();
@@ -129,7 +82,6 @@ import anim from "animejs";
       this.dragTarget.parentNode.removeChild(this.dragTarget);
       (this.el as any).M_Sidenav = undefined;
       (this.el as HTMLElement).style.transform = '';
-
       let index = Sidenav._sidenavs.indexOf(this);
       if (index >= 0) {
         Sidenav._sidenavs.splice(index, 1);
@@ -140,9 +92,7 @@ import anim from "animejs";
       let overlay = document.createElement('div');
       this._closeBound = this.close.bind(this);
       overlay.classList.add('sidenav-overlay');
-
       overlay.addEventListener('click', this._closeBound);
-
       document.body.appendChild(overlay);
       this._overlay = overlay;
     }
@@ -151,14 +101,12 @@ import anim from "animejs";
       if (Sidenav._sidenavs.length === 0) {
         document.body.addEventListener('click', this._handleTriggerClick);
       }
-
       this._handleDragTargetDragBound = this._handleDragTargetDrag.bind(this);
       this._handleDragTargetReleaseBound = this._handleDragTargetRelease.bind(this);
       this._handleCloseDragBound = this._handleCloseDrag.bind(this);
       this._handleCloseReleaseBound = this._handleCloseRelease.bind(this);
       this._handleCloseTriggerClickBound = this._handleCloseTriggerClick.bind(this);
       var passiveIfSupported: boolean = null;
-
       this.dragTarget.addEventListener('touchmove', this._handleDragTargetDragBound, passiveIfSupported);
       this.dragTarget.addEventListener('touchend', this._handleDragTargetReleaseBound);
       this._overlay.addEventListener('touchmove', this._handleCloseDragBound, passiveIfSupported);
@@ -166,7 +114,6 @@ import anim from "animejs";
       this.el.addEventListener('touchmove', this._handleCloseDragBound, passiveIfSupported);
       this.el.addEventListener('touchend', this._handleCloseReleaseBound);
       this.el.addEventListener('click', this._handleCloseTriggerClickBound);
-
       // Add resize for side nav fixed
       if (this.isFixed) {
         this._handleWindowResizeBound = this._handleWindowResize.bind(this);
@@ -178,7 +125,6 @@ import anim from "animejs";
       if (Sidenav._sidenavs.length === 1) {
         document.body.removeEventListener('click', this._handleTriggerClick);
       }
-
       this.dragTarget.removeEventListener('touchmove', this._handleDragTargetDragBound);
       this.dragTarget.removeEventListener('touchend', this._handleDragTargetReleaseBound);
       this._overlay.removeEventListener('touchmove', this._handleCloseDragBound);
@@ -193,10 +139,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handle Trigger Click
-     * @param {Event} e
-     */
     _handleTriggerClick(e) {
       let $trigger = $(e.target).closest('.sidenav-trigger');
       if (e.target && $trigger.length) {
@@ -210,11 +152,7 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Set variables needed at the beginning of drag
-     * and stop any current transition.
-     * @param {Event} e
-     */
+    // Set variables needed at the beginning of drag and stop any current transition.
     _startDrag(e) {
       let clientX = e.targetTouches[0].clientX;
       this.isDragged = true;
@@ -229,10 +167,7 @@ import anim from "animejs";
       anim.remove(this._overlay);
     }
 
-    /**
-     * Set variables needed at each drag move update tick
-     * @param {Event} e
-     */
+    //Set variables needed at each drag move update tick
     _dragMoveUpdate(e) {
       let clientX = e.targetTouches[0].clientX;
       let currentScrollTop = this.isOpen ? this.el.scrollTop : M.getDocumentScrollTop();
@@ -245,36 +180,26 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handles Dragging of Sidenav
-     * @param {Event} e
-     */
     _handleDragTargetDrag(e) {
       // Check if draggable
       if (!this.options.draggable || this._isCurrentlyFixed() || this._verticallyScrolling) {
         return;
       }
-
       // If not being dragged, set initial drag start variables
       if (!this.isDragged) {
         this._startDrag(e);
       }
-
       // Run touchmove updates
       this._dragMoveUpdate(e);
-
       // Calculate raw deltaX
       let totalDeltaX = this._xPos - this._startingXpos;
-
       // dragDirection is the attempted user drag direction
       let dragDirection = totalDeltaX > 0 ? 'right' : 'left';
-
       // Don't allow totalDeltaX to exceed Sidenav width or be dragged in the opposite direction
       totalDeltaX = Math.min(this._width, Math.abs(totalDeltaX));
       if (this.options.edge === dragDirection) {
         totalDeltaX = 0;
       }
-
       /**
        * transformX is the drag displacement
        * transformPrefix is the initial transform placement
@@ -286,18 +211,13 @@ import anim from "animejs";
         transformPrefix = 'translateX(100%)';
         transformX = -transformX;
       }
-
       // Calculate open/close percentage of sidenav, with open = 1 and close = 0
       this.percentOpen = Math.min(1, totalDeltaX / this._width);
-
       // Set transform and opacity styles
       (this.el as HTMLElement).style.transform = `${transformPrefix} translateX(${transformX}px)`;
       this._overlay.style.opacity = this.percentOpen;
     }
 
-    /**
-     * Handle Drag Target Release
-     */
     _handleDragTargetRelease() {
       if (this.isDragged) {
         if (this.percentOpen > 0.2) {
@@ -305,60 +225,44 @@ import anim from "animejs";
         } else {
           this._animateOut();
         }
-
         this.isDragged = false;
         this._verticallyScrolling = false;
       }
     }
 
-    /**
-     * Handle Close Drag
-     * @param {Event} e
-     */
     _handleCloseDrag(e) {
       if (this.isOpen) {
         // Check if draggable
         if (!this.options.draggable || this._isCurrentlyFixed() || this._verticallyScrolling) {
           return;
         }
-
         // If not being dragged, set initial drag start variables
         if (!this.isDragged) {
           this._startDrag(e);
         }
-
         // Run touchmove updates
         this._dragMoveUpdate(e);
-
         // Calculate raw deltaX
         let totalDeltaX = this._xPos - this._startingXpos;
-
         // dragDirection is the attempted user drag direction
         let dragDirection = totalDeltaX > 0 ? 'right' : 'left';
-
         // Don't allow totalDeltaX to exceed Sidenav width or be dragged in the opposite direction
         totalDeltaX = Math.min(this._width, Math.abs(totalDeltaX));
         if (this.options.edge !== dragDirection) {
           totalDeltaX = 0;
         }
-
         let transformX = -totalDeltaX;
         if (this.options.edge === 'right') {
           transformX = -transformX;
         }
-
         // Calculate open/close percentage of sidenav, with open = 1 and close = 0
         this.percentOpen = Math.min(1, 1 - totalDeltaX / this._width);
-
         // Set transform and opacity styles
         (this.el as HTMLElement).style.transform = `translateX(${transformX}px)`;
         this._overlay.style.opacity = this.percentOpen;
       }
     }
 
-    /**
-     * Handle Close Release
-     */
     _handleCloseRelease() {
       if (this.isOpen && this.isDragged) {
         if (this.percentOpen > 0.8) {
@@ -366,15 +270,12 @@ import anim from "animejs";
         } else {
           this.close();
         }
-
         this.isDragged = false;
         this._verticallyScrolling = false;
       }
     }
 
-    /**
-     * Handles closing of Sidenav when element with class .sidenav-close
-     */
+    // Handles closing of Sidenav when element with class .sidenav-close
     _handleCloseTriggerClick(e) {
       let $closeTrigger = $(e.target).closest('.sidenav-close');
       if ($closeTrigger.length && !this._isCurrentlyFixed()) {
@@ -382,9 +283,6 @@ import anim from "animejs";
       }
     }
 
-    /**
-     * Handle Window Resize
-     */
     _handleWindowResize() {
       // Only handle horizontal resizes
       if (this.lastWindowWidth !== window.innerWidth) {
@@ -394,7 +292,6 @@ import anim from "animejs";
           this.close();
         }
       }
-
       this.lastWindowWidth = window.innerWidth;
       this.lastWindowHeight = window.innerHeight;
     }
@@ -443,14 +340,11 @@ import anim from "animejs";
       if (this.isOpen === true) {
         return;
       }
-
       this.isOpen = true;
-
       // Run onOpenStart callback
       if (typeof this.options.onOpenStart === 'function') {
         this.options.onOpenStart.call(this, this.el);
       }
-
       // Handle fixed Sidenav
       if (this._isCurrentlyFixed()) {
         anim.remove(this.el);
@@ -462,9 +356,9 @@ import anim from "animejs";
         });
         this._enableBodyScrolling();
         this._overlay.style.display = 'none';
-
-        // Handle non-fixed Sidenav
-      } else {
+      }
+      // Handle non-fixed Sidenav
+      else {
         if (this.options.preventScrolling) {
           this._preventBodyScrolling();
         }
@@ -479,23 +373,19 @@ import anim from "animejs";
       if (this.isOpen === false) {
         return;
       }
-
       this.isOpen = false;
-
       // Run onCloseStart callback
       if (typeof this.options.onCloseStart === 'function') {
         this.options.onCloseStart.call(this, this.el);
       }
-
       // Handle fixed Sidenav
       if (this._isCurrentlyFixed()) {
         let transformX = this.options.edge === 'left' ? '-105%' : '105%';
         (this.el as HTMLElement).style.transform = `translateX(${transformX})`;
-
-        // Handle non-fixed Sidenav
-      } else {
+      }
+      // Handle non-fixed Sidenav
+      else {
         this._enableBodyScrolling();
-
         if (!this.isDragged || this.percentOpen != 0) {
           this._animateOut();
         } else {

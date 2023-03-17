@@ -1,23 +1,23 @@
 import { Component } from "./component";
 import { M } from "./global";
-import $ from "cash-dom";
 
-  let _defaults = {
-    onOpen: undefined,
-    onClose: undefined
-  };
+let _defaults = {
+  onOpen: undefined,
+  onClose: undefined
+};
 
   export class TapTarget extends Component {
+    el: HTMLElement
     isOpen: boolean;
-    wrapper: any;
+    private wrapper: HTMLElement;
     private _handleDocumentClickBound: (this: HTMLElement, ev: MouseEvent) => any;
-    _origin: HTMLElement;
+    private _origin: HTMLElement;
     private _handleTargetClickBound: EventListenerOrEventListenerObject;
-    originEl: any;
+    private originEl: HTMLElement;
     private _handleOriginClickBound: any;
     private _handleThrottledResizeBound: any;
-    waveEl: HTMLElement & Element & Node;
-    contentEl: any;
+    private waveEl: HTMLElement & Element & Node;
+    private contentEl: HTMLElement;
 
     constructor(el, options) {
       super(TapTarget, el, options);
@@ -26,7 +26,6 @@ import $ from "cash-dom";
       this.isOpen = false;
       // setup
       this._origin = document.querySelector('#'+this.el.getAttribute('data-target'));
-      // $('#' + this.$el.attr('data-target'));
       this._setup();
       this._calculatePositioning();
       this._setupEventHandlers();
@@ -90,22 +89,22 @@ import $ from "cash-dom";
 
     _setup() {
       // Creating tap target
-      this.wrapper = this.$el.parent()[0];
-      this.waveEl = $(this.wrapper).find('.tap-target-wave')[0];
-      this.originEl = $(this.wrapper).find('.tap-target-origin')[0];
-      this.contentEl = this.$el.find('.tap-target-content')[0];
+      this.wrapper = this.el.parentElement;
+      this.waveEl = this.wrapper.querySelector('.tap-target-wave');
+      this.originEl = this.wrapper.querySelector('.tap-target-origin');
+      this.contentEl = this.el.querySelector('.tap-target-content');
       // Creating wrapper
-      if (!$(this.wrapper).hasClass('.tap-target-wrapper')) {
+      if (!this.wrapper.classList.contains('.tap-target-wrapper')) {
         this.wrapper = document.createElement('div');
         this.wrapper.classList.add('tap-target-wrapper');
-        this.$el.before($(this.wrapper));
+        this.el.before(this.wrapper);
         this.wrapper.append(this.el);
       }
       // Creating content
       if (!this.contentEl) {
         this.contentEl = document.createElement('div');
         this.contentEl.classList.add('tap-target-content');
-        this.$el.append(this.contentEl);
+        this.el.append(this.contentEl);
       }
       // Creating foreground wave
       if (!this.waveEl) {
@@ -113,11 +112,10 @@ import $ from "cash-dom";
         this.waveEl.classList.add('tap-target-wave');
         // Creating origin
         if (!this.originEl) {
-          this.originEl = this._origin.cloneNode(true); // .clone(true, true);
+          this.originEl = <HTMLElement>this._origin.cloneNode(true); // .clone(true, true);
           this.originEl.classList.add('tap-target-origin');
           this.originEl.removeAttribute('id');
           this.originEl.removeAttribute('style');
-          //this.originEl = this.originEl;
           this.waveEl.append(this.originEl);
         }
         this.wrapper.append(this.waveEl);
@@ -135,92 +133,82 @@ import $ from "cash-dom";
 
     _calculatePositioning() {
       // Element or parent is fixed position?
-      let isFixed = this._origin.style.position === 'fixed';
-      if (!isFixed) {        
+      let isFixed = getComputedStyle(this._origin).position === 'fixed';
+      if (!isFixed) {
+
         let currentElem: any = this._origin;
         const parents = [];
         while ((currentElem = currentElem.parentNode) && currentElem !== document)
           parents.push(currentElem);
+        
         for (let i = 0; i < parents.length; i++) {
-          isFixed = parents[i].style.position == 'fixed';
+          isFixed = getComputedStyle(parents[i]).position === 'fixed';
           if (isFixed) break;
         }
       }
       // Calculating origin
-      let originWidth = this._origin.offsetWidth;
-      let originHeight = this._origin.offsetHeight;
-      let originTop = isFixed
-        ? this._offset(this._origin).top - M.getDocumentScrollTop()
-        : this._offset(this._origin).top;
-      let originLeft = isFixed
-        ? this._offset(this._origin).left - M.getDocumentScrollLeft()
-        : this._offset(this._origin).left;
+      const originWidth = this._origin.offsetWidth;
+      const originHeight = this._origin.offsetHeight;
+      const originTop = isFixed ? this._offset(this._origin).top - M.getDocumentScrollTop() : this._offset(this._origin).top;
+      const originLeft = isFixed ? this._offset(this._origin).left - M.getDocumentScrollLeft() : this._offset(this._origin).left;
+
       // Calculating screen
-      let windowWidth = window.innerWidth;
-      let windowHeight = window.innerHeight;
-      let scrollBarWidth = windowWidth - document.documentElement.clientWidth;
-      let centerX = windowWidth / 2;
-      let centerY = windowHeight / 2;
-      let isLeft = originLeft <= centerX;
-      let isRight = originLeft > centerX;
-      let isTop = originTop <= centerY;
-      let isBottom = originTop > centerY;
-      let isCenterX = originLeft >= windowWidth * 0.25 && originLeft <= windowWidth * 0.75;
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const scrollBarWidth = windowWidth - document.documentElement.clientWidth;
+      const centerX = windowWidth / 2;
+      const centerY = windowHeight / 2;
+      const isLeft = originLeft <= centerX;
+      const isRight = originLeft > centerX;
+      const isTop = originTop <= centerY;
+      const isBottom = originTop > centerY;
+      const isCenterX = originLeft >= windowWidth * 0.25 && originLeft <= windowWidth * 0.75;
+
       // Calculating tap target
-      let tapTargetWidth = this.$el.outerWidth();
-      let tapTargetHeight = this.$el.outerHeight();
-      let tapTargetTop = originTop + originHeight / 2 - tapTargetHeight / 2;
-      let tapTargetLeft = originLeft + originWidth / 2 - tapTargetWidth / 2;
-      let tapTargetPosition = isFixed ? 'fixed' : 'absolute';
+      const tapTargetWidth = this.el.offsetWidth;
+      const tapTargetHeight = this.el.offsetHeight;
+      const tapTargetTop = originTop + originHeight / 2 - tapTargetHeight / 2;
+      const tapTargetLeft = originLeft + originWidth / 2 - tapTargetWidth / 2;
+      const tapTargetPosition = isFixed ? 'fixed' : 'absolute';
+
       // Calculating content
-      let tapTargetTextWidth = isCenterX ? tapTargetWidth : tapTargetWidth / 2 + originWidth;
-      let tapTargetTextHeight = tapTargetHeight / 2;
-      let tapTargetTextTop = isTop ? tapTargetHeight / 2 : 0;
-      let tapTargetTextBottom = 0;
-      let tapTargetTextLeft = isLeft && !isCenterX ? tapTargetWidth / 2 - originWidth : 0;
-      let tapTargetTextRight = 0;
-      let tapTargetTextPadding = originWidth;
-      let tapTargetTextAlign = isBottom ? 'bottom' : 'top';
+      const tapTargetTextWidth = isCenterX ? tapTargetWidth : tapTargetWidth / 2 + originWidth;
+      const tapTargetTextHeight = tapTargetHeight / 2;
+      const tapTargetTextTop = isTop ? tapTargetHeight / 2 : 0;
+      const tapTargetTextBottom = 0;
+      const tapTargetTextLeft = isLeft && !isCenterX ? tapTargetWidth / 2 - originWidth : 0;
+      const tapTargetTextRight = 0;
+      const tapTargetTextPadding = originWidth;
+      const tapTargetTextAlign = isBottom ? 'bottom' : 'top';
+
       // Calculating wave
-      let tapTargetWaveWidth = originWidth > originHeight ? originWidth * 2 : originWidth * 2;
-      let tapTargetWaveHeight = tapTargetWaveWidth;
-      let tapTargetWaveTop = tapTargetHeight / 2 - tapTargetWaveHeight / 2;
-      let tapTargetWaveLeft = tapTargetWidth / 2 - tapTargetWaveWidth / 2;
+      const tapTargetWaveWidth = originWidth > originHeight ? originWidth * 2 : originWidth * 2;
+      const tapTargetWaveHeight = tapTargetWaveWidth;
+      const tapTargetWaveTop = tapTargetHeight / 2 - tapTargetWaveHeight / 2;
+      const tapTargetWaveLeft = tapTargetWidth / 2 - tapTargetWaveWidth / 2;
 
       // Setting tap target
-      let tapTargetWrapperCssObj = {
-        top: isTop ? tapTargetTop + 'px' : '',
-        right: isRight
-          ? windowWidth - tapTargetLeft - tapTargetWidth - scrollBarWidth + 'px'
-          : '',
-        bottom: isBottom
-          ? windowHeight - tapTargetTop - tapTargetHeight + 'px'
-          : '',
-        left: isLeft ? tapTargetLeft + 'px' : '',
-        position: tapTargetPosition
-      };
-                              
-      $(this.wrapper).css(tapTargetWrapperCssObj);
+      this.wrapper.style.top = isTop ? tapTargetTop + 'px' : '';
+      this.wrapper.style.right = isRight ? windowWidth - tapTargetLeft - tapTargetWidth - scrollBarWidth + 'px' : '';
+      this.wrapper.style.bottom = isBottom ? windowHeight - tapTargetTop - tapTargetHeight + 'px' : '';
+      this.wrapper.style.left = isLeft ? tapTargetLeft + 'px' : '';
+      this.wrapper.style.position = tapTargetPosition;
 
       // Setting content
-      $(this.contentEl).css({
-        width: tapTargetTextWidth + 'px',
-        height: tapTargetTextHeight + 'px',
-        top: tapTargetTextTop + 'px',
-        right: tapTargetTextRight + 'px',
-        bottom: tapTargetTextBottom + 'px',
-        left: tapTargetTextLeft + 'px',
-        padding: tapTargetTextPadding + 'px',
-        verticalAlign: tapTargetTextAlign
-      });
+      this.contentEl.style.width = tapTargetTextWidth + 'px';
+      this.contentEl.style.height = tapTargetTextHeight + 'px';
+      this.contentEl.style.top = tapTargetTextTop + 'px';
+      this.contentEl.style.right = tapTargetTextRight + 'px';
+      this.contentEl.style.bottom = tapTargetTextBottom + 'px';
+      this.contentEl.style.left = tapTargetTextLeft + 'px';
+      this.contentEl.style.padding = tapTargetTextPadding + 'px';
+      this.contentEl.style.verticalAlign = tapTargetTextAlign;
 
       // Setting wave
-      $(this.waveEl).css({
-        top: tapTargetWaveTop + 'px',
-        left: tapTargetWaveLeft + 'px',
-        width: tapTargetWaveWidth + 'px',
-        height: tapTargetWaveHeight + 'px'
-      });
+      this.waveEl.style.top = tapTargetWaveTop+'px';
+      this.waveEl.style.left = tapTargetWaveLeft+'px';
+      this.waveEl.style.width = tapTargetWaveWidth+'px';
+      this.waveEl.style.height = tapTargetWaveHeight+'px';
     }
 
     open() {

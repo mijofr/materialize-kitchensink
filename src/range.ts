@@ -1,18 +1,20 @@
 import { Component } from "./component";
-import $, { Selector } from "cash-dom";
 import anim from "animejs";
 
-  let _defaults = {};
+const _defaults = {};
+
+// TODO: !!!!!
 
   export class Range extends Component {
+    el: HTMLInputElement;
     private _mousedown: boolean;
     private _handleRangeChangeBound: any;
     private _handleRangeMousedownTouchstartBound: any;
     private _handleRangeInputMousemoveTouchmoveBound: any;
     private _handleRangeMouseupTouchendBound: any;
     private _handleRangeBlurMouseoutTouchleaveBound: any;
-    value: Selector;
-    thumb: Selector;
+    value: HTMLElement;
+    thumb: HTMLElement;
 
     constructor(el, options) {
       super(Range, el, options);
@@ -32,7 +34,7 @@ import anim from "animejs";
     }
 
     static getInstance(el) {
-      let domElem = !!el.jquery ? el[0] : el;
+      const domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Range;
     }
 
@@ -76,55 +78,55 @@ import anim from "animejs";
     }
 
     _handleRangeChange() {
-      $(this.value).html(this.$el.val());
-      if (!$(this.thumb).hasClass('active')) {
+      //$(this.value).html(this.$el.val());
+      this.value.innerHTML = this.el.value;
+      if (!this.thumb.classList.contains('active')) {
         this._showRangeBubble();
       }
-      let offsetLeft = this._calcRangeOffset();
-      $(this.thumb)
-        .addClass('active')
-        .css('left', offsetLeft + 'px');
+      const offsetLeft = this._calcRangeOffset();
+      this.thumb.classList.add('active');
+      this.thumb.style.left = offsetLeft+'px';
     }
 
     _handleRangeMousedownTouchstart(e) {
       // Set indicator value
-      $(this.value).html(this.$el.val());
+      //$(this.value).html(this.$el.val());
+      this.value.innerHTML = this.el.value;
       this._mousedown = true;
-      this.$el.addClass('active');
-      if (!$(this.thumb).hasClass('active')) {
+      this.el.classList.add('active');
+      if (!this.thumb.classList.contains('active')) {
         this._showRangeBubble();
       }
       if (e.type !== 'input') {
-        let offsetLeft = this._calcRangeOffset();
-        $(this.thumb)
-          .addClass('active')
-          .css('left', offsetLeft + 'px');
+        const offsetLeft = this._calcRangeOffset();
+        this.thumb.classList.add('active');
+        this.thumb.style.left = offsetLeft+'px';
       }
     }
 
     _handleRangeInputMousemoveTouchmove() {
       if (this._mousedown) {
-        if (!$(this.thumb).hasClass('active')) {
+        if (!this.thumb.classList.contains('active')) {
           this._showRangeBubble();
         }
-        let offsetLeft = this._calcRangeOffset();
-        $(this.thumb)
-          .addClass('active')
-          .css('left', offsetLeft + 'px');
-        $(this.value).html(this.$el.val());
+        const offsetLeft = this._calcRangeOffset();
+        this.thumb.classList.add('active');
+        this.thumb.style.left = offsetLeft+'px';
+        //$(this.value).html(this.$el.val());
+        this.value.innerHTML = this.el.value;
       }
     }
 
     _handleRangeMouseupTouchend() {
       this._mousedown = false;
-      this.$el.removeClass('active');
+      this.el.classList.remove('active');
     }
 
     _handleRangeBlurMouseoutTouchleave() {
       if (!this._mousedown) {
-        let paddingLeft = parseInt(this.$el.css('padding-left'));
-        let marginLeft = 7 + paddingLeft + 'px';
-        if ($(this.thumb).hasClass('active')) {
+        const paddingLeft = parseInt(this.$el.css('padding-left'));
+        const marginLeft = 7 + paddingLeft + 'px';
+        if (this.thumb.classList.contains('active')) {
           anim.remove(this.thumb);
           anim({
             targets: this.thumb,
@@ -136,30 +138,26 @@ import anim from "animejs";
             duration: 100
           });
         }
-        $(this.thumb).removeClass('active');
+        this.thumb.classList.remove('active');
       }
     }
 
     _setupThumb() {
       this.thumb = document.createElement('span');
       this.value = document.createElement('span');
-      $(this.thumb).addClass('thumb');
-      $(this.value).addClass('value');
-      $(this.thumb).append(this.value);
-      this.$el.after(this.thumb);
+      this.thumb.classList.add('thumb');
+      this.value.classList.add('value');
+      this.thumb.append(this.value);
+      this.el.after(this.thumb);
     }
 
     _removeThumb() {
-      $(this.thumb).remove();
+      this.thumb.remove();
     }
 
     _showRangeBubble() {
-      let paddingLeft = parseInt(
-        $(this.thumb)
-          .parent()
-          .css('padding-left')
-      );
-      let marginLeft = -7 + paddingLeft + 'px'; // TODO: fix magic number?
+      const paddingLeft = parseInt(getComputedStyle(this.thumb.parentElement).paddingLeft);
+      const marginLeft = -7 + paddingLeft + 'px'; // TODO: fix magic number?
       anim.remove(this.thumb);
       anim({
         targets: this.thumb,
@@ -173,10 +171,10 @@ import anim from "animejs";
     }
 
     _calcRangeOffset(): number {
-      let width = this.$el.width() - 15;
-      let max = parseFloat(this.$el.attr('max')) || 100; // Range default max
-      let min = parseFloat(this.$el.attr('min')) || 0; // Range default min
-      let percent = (parseFloat(this.$el.val()) - min) / (max - min);
+      const width = this.el.getBoundingClientRect().width - 15;
+      const max = parseFloat(this.el.getAttribute('max')) || 100; // Range default max
+      const min = parseFloat(this.el.getAttribute('min')) || 0; // Range default min
+      const percent = (parseFloat(this.el.getAttribute('value')) - min) / (max - min);
       return percent * width;
     }
   }
