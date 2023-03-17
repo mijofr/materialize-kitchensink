@@ -16,10 +16,6 @@ import anim from "animejs";
     transitionMovement: 10
   };
 
-  /**
-   * @class
-   *
-   */
   export class Tooltip extends Component {
     isOpen: boolean;
     isHovered: boolean;
@@ -33,12 +29,7 @@ import anim from "animejs";
     private _enterDelayTimeout: string | number | NodeJS.Timeout;
     xMovement: number;
     yMovement: number;
-    /**
-     * Construct Tooltip instance
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+
     constructor(el, options) {
       super(Tooltip, el, options);
 
@@ -60,17 +51,11 @@ import anim from "animejs";
       return super.init(this, els, options);
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Tooltip;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       $(this.tooltipEl).remove();
       this._removeEventHandlers();
@@ -81,11 +66,9 @@ import anim from "animejs";
       let tooltipEl = document.createElement('div');
       tooltipEl.classList.add('material-tooltip');
       this.tooltipEl = tooltipEl;
-
       let tooltipContentEl = document.createElement('div');
       tooltipContentEl.classList.add('tooltip-content');
       this._setTooltipContent(tooltipContentEl);
-
       tooltipEl.appendChild(tooltipContentEl);
       document.body.appendChild(tooltipEl);
     }
@@ -149,32 +132,22 @@ import anim from "animejs";
       this._setExitDelayTimeout();
     }
 
-    /**
-     * Create timeout which delays when the tooltip closes
-     */
     _setExitDelayTimeout() {
       clearTimeout(this._exitDelayTimeout);
-
       this._exitDelayTimeout = setTimeout(() => {
         if (this.isHovered || this.isFocused) {
           return;
         }
-
         this._animateOut();
       }, this.options.exitDelay);
     }
 
-    /**
-     * Create timeout which delays when the toast closes
-     */
     _setEnterDelayTimeout(isManual) {
       clearTimeout(this._enterDelayTimeout);
-
       this._enterDelayTimeout = setTimeout(() => {
         if (!this.isHovered && !this.isFocused && !isManual) {
           return;
         }
-
         this._animateIn();
       }, this.options.enterDelay);
     }
@@ -314,11 +287,9 @@ import anim from "animejs";
       let attributeOptions = {};
       let tooltipTextOption = this.el.getAttribute('data-tooltip');
       let positionOption = this.el.getAttribute('data-position');
-
       if (tooltipTextOption) {
         (attributeOptions as any).text = tooltipTextOption;
       }
-
       if (positionOption) {
         (attributeOptions as any).position = positionOption;
       }

@@ -2,41 +2,36 @@ import { Component } from "./component";
 import $ from "cash-dom";
 import { M } from "./global";
 
+let _defaults = {
+  dialRadius: 135,
+  outerRadius: 105,
+  innerRadius: 70,
+  tickRadius: 20,
+  duration: 350,
+  container: null,
+  defaultTime: 'now', // default time, 'now' or '13:14' e.g.
+  fromNow: 0, // Millisecond offset from the defaultTime
+  showClearBtn: false,
 
-  let _defaults = {
-    dialRadius: 135,
-    outerRadius: 105,
-    innerRadius: 70,
-    tickRadius: 20,
-    duration: 350,
-    container: null,
-    defaultTime: 'now', // default time, 'now' or '13:14' e.g.
-    fromNow: 0, // Millisecond offset from the defaultTime
-    showClearBtn: false,
+  // internationalization
+  i18n: {
+    cancel: 'Cancel',
+    clear: 'Clear',
+    done: 'Ok'
+  },
 
-    // internationalization
-    i18n: {
-      cancel: 'Cancel',
-      clear: 'Clear',
-      done: 'Ok'
-    },
+  autoClose: false, // auto close when minute is selected
+  twelveHour: true, // change to 12 hour AM/PM clock from 24 hour
+  vibrate: true, // vibrate the device when dragging clock hand
 
-    autoClose: false, // auto close when minute is selected
-    twelveHour: true, // change to 12 hour AM/PM clock from 24 hour
-    vibrate: true, // vibrate the device when dragging clock hand
+  // Callbacks
+  onOpenStart: null,
+  onOpenEnd: null,
+  onCloseStart: null,
+  onCloseEnd: null,
+  onSelect: null
+};
 
-    // Callbacks
-    onOpenStart: null,
-    onOpenEnd: null,
-    onCloseStart: null,
-    onCloseEnd: null,
-    onSelect: null
-  };
-
-  /**
-   * @class
-   *
-   */
   export class Timepicker extends Component {
     id: string;
     modal: any;
@@ -79,11 +74,10 @@ import { M } from "./global";
     toggleViewTimer: string | number | NodeJS.Timeout;
     canvas: any;
     vibrateTimer: any;
+
     constructor(el, options) {
       super(Timepicker, el, options);
-
       (this.el as any).M_Timepicker = this;
-
       this.options = $.extend({}, Timepicker.defaults, options);
 
       this.id = M.guid();
@@ -91,7 +85,6 @@ import { M } from "./global";
       this._setupModal();
       this._setupVariables();
       this._setupEventHandlers();
-
       this._clockSetup();
       this._pickerSetup();
     }
@@ -132,17 +125,11 @@ import { M } from "./global";
       return { x: e.clientX, y: e.clientY };
     }
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Timepicker;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       this._removeEventHandlers();
       this.modal.destroy();
@@ -150,9 +137,6 @@ import { M } from "./global";
       (this.el as any).M_Timepicker = undefined;
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       this._handleInputKeydownBound = this._handleInputKeydown.bind(this);
       this._handleInputClickBound = this._handleInputClick.bind(this);
@@ -160,13 +144,11 @@ import { M } from "./global";
       this._handleDocumentClickMoveBound = this._handleDocumentClickMove.bind(this);
       this._handleDocumentClickEndBound = this._handleDocumentClickEnd.bind(this);
       this._inputFromTextFieldBound = this._handleTimeInputEnterKey.bind(this);
-
       this.el.addEventListener('click', this._handleInputClickBound);
       this.el.addEventListener('keydown', this._handleInputKeydownBound);
       this.plate.addEventListener('mousedown', this._handleClockClickStartBound);
       this.plate.addEventListener('touchstart', this._handleClockClickStartBound);
       this.digitalClock.addEventListener('keyup', this._inputFromTextFieldBound);
-
       $(this.inputHours).on('click', this.showView.bind(this, 'hours'));
       $(this.inputMinutes).on('click', this.showView.bind(this, 'minutes'));
     }
@@ -208,11 +190,9 @@ import { M } from "./global";
 
       // Set clock hands
       this.setHand(this.dx, this.dy, false);
-
       // Mousemove on document
       document.addEventListener('mousemove', this._handleDocumentClickMoveBound);
       document.addEventListener('touchmove', this._handleDocumentClickMoveBound);
-
       // Mouseup on document
       document.addEventListener('mouseup', this._handleDocumentClickEndBound);
       document.addEventListener('touchend', this._handleDocumentClickEndBound);
