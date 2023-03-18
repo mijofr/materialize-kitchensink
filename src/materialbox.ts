@@ -1,9 +1,8 @@
 import { Component } from "./component";
-import $ from "cash-dom";
 import anim from "animejs";
 import { M } from "./global";
 
-let _defaults = {
+const _defaults = {
   inDuration: 275,
   outDuration: 200,
   onOpenStart: null,
@@ -13,25 +12,24 @@ let _defaults = {
 };
 
   export class Materialbox extends Component {
+    el: HTMLElement;
     overlayActive: boolean;
     doneAnimating: boolean;
-    placeholder: any;
+    caption: string;
     originalWidth: number;
     originalHeight: number;
-    originInlineStyles: any;
-    caption: string;
+    private originInlineStyles: string;
+    private placeholder: HTMLElement;
+    private _changedAncestorList: HTMLElement[];
+    private newHeight: number;
+    private newWidth: number;
+    private windowWidth: number;
+    private windowHeight: number;
+    private attrWidth: string;
+    private attrHeight: string;
+    private _overlay: HTMLElement;
+    private _photoCaption: HTMLElement;
     private _handleMaterialboxClickBound: any;
-    ancestorsChanged: any;
-    newHeight: any;
-    newWidth: any;
-    windowWidth: number;
-    windowHeight: number;
-    maxWidth: any;
-    maxHeight: any;
-    attrWidth: any;
-    attrHeight: any;
-    $overlay: any;
-    $photoCaption: any;
     private _handleWindowScrollBound: any;
     private _handleWindowResizeBound: any;
     private _handleWindowEscapeBound: any;
@@ -39,19 +37,18 @@ let _defaults = {
     constructor(el, options) {
       super(Materialbox, el, options);
       (this.el as any).M_Materialbox = this;
-      this.options = $.extend({}, Materialbox.defaults, options);
-
+      this.options = {...Materialbox.defaults, ...options};
       this.overlayActive = false;
       this.doneAnimating = true;
-      this.placeholder = $('<div></div>').addClass('material-placeholder');
+      this.placeholder = document.createElement('div');
+      this.placeholder.classList.add('material-placeholder');
       this.originalWidth = 0;
       this.originalHeight = 0;
-      this.originInlineStyles = this.$el.attr('style');
+      this.originInlineStyles = this.el.getAttribute('style');
       this.caption = this.el.getAttribute('data-caption') || '';
-
       // Wrap
-      this.$el.before(this.placeholder);
-      this.placeholder.append(this.$el);
+      this.el.before(this.placeholder);
+      this.placeholder.append(this.el);
       this._setupEventHandlers();
     }
 
@@ -64,7 +61,7 @@ let _defaults = {
     }
 
     static getInstance(el) {
-      let domElem = !!el.jquery ? el[0] : el;
+      const domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Materialbox;
     }
 
@@ -72,8 +69,9 @@ let _defaults = {
       this._removeEventHandlers();
       (this.el as any).M_Materialbox = undefined;
       // Unwrap image
-      $(this.placeholder).after(this.el).remove();
-      this.$el.removeAttr('style');
+      //this.placeholder.after(this.el).remove();
+      this.placeholder.remove();
+      this.el.removeAttribute('style');
     }
 
     _setupEventHandlers() {
@@ -87,93 +85,88 @@ let _defaults = {
 
     _handleMaterialboxClick(e) {
       // If already modal, return to original
-      if (this.doneAnimating === false || (this.overlayActive && this.doneAnimating)) {
+      if (this.doneAnimating === false || (this.overlayActive && this.doneAnimating))
         this.close();
-      } else {
+      else
         this.open();
-      }
     }
 
     _handleWindowScroll() {
-      if (this.overlayActive) {
-        this.close();
-      }
+      if (this.overlayActive) this.close();
     }
 
     _handleWindowResize() {
-      if (this.overlayActive) {
-        this.close();
-      }
+      if (this.overlayActive) this.close();
     }
 
     _handleWindowEscape(e) {
       // ESC key
-      if (e.keyCode === 27 && this.doneAnimating && this.overlayActive) {
-        this.close();
-      }
+      if (e.keyCode === 27 && this.doneAnimating && this.overlayActive) this.close();
     }
 
     _makeAncestorsOverflowVisible() {
-      this.ancestorsChanged = $();
-      let ancestor = this.placeholder[0].parentNode;
-      while (ancestor !== null && !$(ancestor).is(document)) {
-        let curr = $(ancestor);
-        if (curr.css('overflow') !== 'visible') {
-          curr.css('overflow', 'visible');
-          if (this.ancestorsChanged === undefined) {
-            this.ancestorsChanged = curr;
-          } else {
-            this.ancestorsChanged = this.ancestorsChanged.add(curr);
-          }
+      this._changedAncestorList = [];
+      let ancestor = this.placeholder.parentNode;
+      while (ancestor !== null && ancestor !== document) {
+        const curr = <HTMLElement>ancestor;
+        if (curr.style.overflow !== 'visible') {
+          curr.style.overflow = 'visible';
+          this._changedAncestorList.push(curr);
         }
         ancestor = ancestor.parentNode;
       }
     }
 
-    _animateImageIn() {
-      let animOptions = {
-        targets: this.el,
+    private _offset(el) {
+      const box = el.getBoundingClientRect();
+      const docElem = document.documentElement;
+      return {
+        top: box.top + window.pageYOffset - docElem.clientTop,
+        left: box.left + window.pageXOffset - docElem.clientLeft
+      };
+    }
+
+    _animateImageIn() {      
+      this.el.style.maxHeight = this.newHeight.toString()+'px';
+      this.el.style.maxWidth = this.newWidth.toString()+'px';
+
+      const animOptions = {
+        targets: this.el, // image
         height: [this.originalHeight, this.newHeight],
         width: [this.originalWidth, this.newWidth],
-        maxHeight: this.newHeight,
-        maxWidth: this.newWidth,
         left:
           M.getDocumentScrollLeft() +
           this.windowWidth / 2 -
-          this.placeholder.offset().left -
+          this._offset(this.placeholder).left -
           this.newWidth / 2,
         top:
           M.getDocumentScrollTop() +
           this.windowHeight / 2 -
-          this.placeholder.offset().top -
+          this._offset(this.placeholder).top -
           this.newHeight / 2,
         duration: this.options.inDuration,
         easing: 'easeOutQuad',
         complete: () => {
           this.doneAnimating = true;
-
           // onOpenEnd callback
           if (typeof this.options.onOpenEnd === 'function') {
             this.options.onOpenEnd.call(this, this.el);
           }
         }
       };
-
       // Override max-width or max-height if needed
-      this.maxWidth = this.$el.css('max-width');
-      this.maxHeight = this.$el.css('max-height');
-      if (this.maxWidth !== 'none') {
-        animOptions.maxWidth = this.newWidth;
-      }
-      if (this.maxHeight !== 'none') {
-        animOptions.maxHeight = this.newHeight;
-      }
-
+      //const elStyle = this.el.style;
+      //console.log('mh', elStyle.maxHeight, '->', this.newHeight);
+      //console.log('mw', elStyle.maxWidth, '->', this.newWidth);
+      //if (elStyle.maxWidth !== 'none') animOptions.maxWidth = this.newWidth;
+      //if (elStyle.maxHeight !== 'none') animOptions.maxHeight = this.newHeight;
+      //console.log('>>> animate');
+      //console.log(JSON.stringify(animOptions));
       anim(animOptions);
     }
 
     _animateImageOut() {
-      let animOptions = {
+      const animOptions = {
         targets: this.el,
         width: this.originalWidth,
         height: this.originalHeight,
@@ -182,41 +175,27 @@ let _defaults = {
         duration: this.options.outDuration,
         easing: 'easeOutQuad',
         complete: () => {
-          this.placeholder.css({
-            height: '',
-            width: '',
-            position: '',
-            top: '',
-            left: ''
-          });
-
+          this.placeholder.style.height = '';
+          this.placeholder.style.width = '';
+          this.placeholder.style.position = '';
+          this.placeholder.style.top = '';
+          this.placeholder.style.left = '';
           // Revert to width or height attribute
-          if (this.attrWidth) {
-            this.$el.attr('width', this.attrWidth);
-          }
-          if (this.attrHeight) {
-            this.$el.attr('height', this.attrHeight);
-          }
-
-          this.$el.removeAttr('style');
-          this.originInlineStyles && this.$el.attr('style', this.originInlineStyles);
-
+          if (this.attrWidth) this.el.setAttribute('width', this.attrWidth.toString());
+          if (this.attrHeight) this.el.setAttribute('height', this.attrHeight.toString());
+          this.el.removeAttribute('style');
+          this.originInlineStyles && this.el.setAttribute('style', this.originInlineStyles);
           // Remove class
-          this.$el.removeClass('active');
+          this.el.classList.remove('active');
           this.doneAnimating = true;
-
           // Remove overflow overrides on ancestors
-          if (this.ancestorsChanged.length) {
-            this.ancestorsChanged.css('overflow', '');
-          }
-
+          this._changedAncestorList.forEach(anchestor => anchestor.style.overflow = '');
           // onCloseEnd callback
           if (typeof this.options.onCloseEnd === 'function') {
             this.options.onCloseEnd.call(this, this.el);
           }
         }
       };
-
       anim(animOptions);
     }
 
@@ -230,93 +209,70 @@ let _defaults = {
       this._updateVars();
       this.originalWidth = this.el.getBoundingClientRect().width;
       this.originalHeight = this.el.getBoundingClientRect().height;
-
       // Set states
       this.doneAnimating = false;
-      this.$el.addClass('active');
+      this.el.classList.add('active');
       this.overlayActive = true;
-
       // onOpenStart callback
       if (typeof this.options.onOpenStart === 'function') {
         this.options.onOpenStart.call(this, this.el);
       }
-
       // Set positioning for placeholder
-      this.placeholder.css({
-        width: this.placeholder[0].getBoundingClientRect().width + 'px',
-        height: this.placeholder[0].getBoundingClientRect().height + 'px',
-        position: 'relative',
-        top: 0,
-        left: 0
-      });
-
+      this.placeholder.style.width = this.placeholder.getBoundingClientRect().width+'px';
+      this.placeholder.style.height = this.placeholder.getBoundingClientRect().height+'px';
+      this.placeholder.style.position = 'relative';
+      this.placeholder.style.top = '0';
+      this.placeholder.style.left = '0';
       this._makeAncestorsOverflowVisible();
-
       // Set css on origin
-      this.$el.css({
-        position: 'absolute',
-        'z-index': 1000,
-        'will-change': 'left, top, width, height'
-      });
-
+      this.el.style.position = 'absolute';
+      this.el.style.zIndex = '1000';
+      this.el.style.willChange = 'left, top, width, height';
       // Change from width or height attribute to css
-      this.attrWidth = this.$el.attr('width');
-      this.attrHeight = this.$el.attr('height');
+      this.attrWidth = this.el.getAttribute('width');
+      this.attrHeight = this.el.getAttribute('height');
       if (this.attrWidth) {
-        this.$el.css('width', this.attrWidth + 'px');
-        this.$el.removeAttr('width');
+        this.el.style.width = this.attrWidth+'px';
+        this.el.removeAttribute('width');
       }
       if (this.attrHeight) {
-        this.$el.css('width', this.attrHeight + 'px');
-        this.$el.removeAttr('height');
+        this.el.style.width = this.attrHeight+'px';
+        this.el.removeAttribute('height');
       }
-
       // Add overlay
-      this.$overlay = $('<div id="materialbox-overlay"></div>')
-        .css({
-          opacity: 0
-        })
-        .one('click', () => {
-          if (this.doneAnimating) {
-            this.close();
-          }
-        });
-
+      this._overlay = document.createElement('div');
+      this._overlay.id = 'materialbox-overlay';
+      this._overlay.style.opacity = '0';
+      this._overlay.addEventListener('click', e => {
+        if (this.doneAnimating) this.close();
+      }, {once: true});
       // Put before in origin image to preserve z-index layering.
-      this.$el.before(this.$overlay);
-
+      this.el.before(this._overlay);
       // Set dimensions if needed
-      let overlayOffset = this.$overlay[0].getBoundingClientRect();
-      this.$overlay.css({
-        width: this.windowWidth + 'px',
-        height: this.windowHeight + 'px',
-        left: -1 * overlayOffset.left + 'px',
-        top: -1 * overlayOffset.top + 'px'
-      });
-
+      const overlayOffset = this._overlay.getBoundingClientRect();
+      this._overlay.style.width = this.windowWidth+'px';
+      this._overlay.style.height = this.windowHeight+'px';
+      this._overlay.style.left = -1 * overlayOffset.left+'px';
+      this._overlay.style.top = -1 * overlayOffset.top+'px';
       anim.remove(this.el);
-      anim.remove(this.$overlay[0]);
-
+      anim.remove(this._overlay);
       // Animate Overlay
       anim({
-        targets: this.$overlay[0],
+        targets: this._overlay,
         opacity: 1,
         duration: this.options.inDuration,
         easing: 'easeOutQuad'
       });
-
       // Add and animate caption if it exists
-      if (this.caption !== '') {
-        if (this.$photoCaption) {
-          anim.remove(this.$photoCaption[0]);
-        }
-        this.$photoCaption = $('<div class="materialbox-caption"></div>');
-        this.$photoCaption.text(this.caption);
-        $('body').append(this.$photoCaption);
-        this.$photoCaption.css({ display: 'inline' });
-
+      if (this.caption !== '') {        
+        if (this._photoCaption) anim.remove(this._photoCaption);
+        this._photoCaption = document.createElement('div');
+        this._photoCaption.classList.add('materialbox-caption');
+        this._photoCaption.innerText = this.caption;
+        document.body.append(this._photoCaption);
+        this._photoCaption.style.display = 'inline';
         anim({
-          targets: this.$photoCaption[0],
+          targets: this._photoCaption,
           opacity: 1,
           duration: this.options.inDuration,
           easing: 'easeOutQuad'
@@ -324,29 +280,28 @@ let _defaults = {
       }
 
       // Resize Image
-      let ratio = 0;
-      let widthPercent = this.originalWidth / this.windowWidth;
-      let heightPercent = this.originalHeight / this.windowHeight;
+      const widthPercent = this.originalWidth / this.windowWidth;
+      const heightPercent = this.originalHeight / this.windowHeight;
       this.newWidth = 0;
-      this.newHeight = 0;
-
+      this.newHeight = 0;      
       if (widthPercent > heightPercent) {
-        ratio = this.originalHeight / this.originalWidth;
+        // Width first
+        const ratio = this.originalHeight / this.originalWidth;
         this.newWidth = this.windowWidth * 0.9;
         this.newHeight = this.windowWidth * 0.9 * ratio;
-      } else {
-        ratio = this.originalWidth / this.originalHeight;
+      }
+      else {
+        // Height first
+        const ratio = this.originalWidth / this.originalHeight;
         this.newWidth = this.windowHeight * 0.9 * ratio;
         this.newHeight = this.windowHeight * 0.9;
       }
-
       this._animateImageIn();
 
       // Handle Exit triggers
       this._handleWindowScrollBound = this._handleWindowScroll.bind(this);
       this._handleWindowResizeBound = this._handleWindowResize.bind(this);
       this._handleWindowEscapeBound = this._handleWindowEscape.bind(this);
-
       window.addEventListener('scroll', this._handleWindowScrollBound);
       window.addEventListener('resize', this._handleWindowResizeBound);
       window.addEventListener('keyup', this._handleWindowEscapeBound);
@@ -355,49 +310,39 @@ let _defaults = {
     close() {
       this._updateVars();
       this.doneAnimating = false;
-
       // onCloseStart callback
       if (typeof this.options.onCloseStart === 'function') {
         this.options.onCloseStart.call(this, this.el);
       }
-
       anim.remove(this.el);
-      anim.remove(this.$overlay[0]);
-
-      if (this.caption !== '') {
-        anim.remove(this.$photoCaption[0]);
-      }
-
+      anim.remove(this._overlay);
+      if (this.caption !== '') anim.remove(this._photoCaption);      
       // disable exit handlers
       window.removeEventListener('scroll', this._handleWindowScrollBound);
       window.removeEventListener('resize', this._handleWindowResizeBound);
       window.removeEventListener('keyup', this._handleWindowEscapeBound);
-
       anim({
-        targets: this.$overlay[0],
+        targets: this._overlay,
         opacity: 0,
         duration: this.options.outDuration,
         easing: 'easeOutQuad',
         complete: () => {
           this.overlayActive = false;
-          this.$overlay.remove();
+          this._overlay.remove();
         }
       });
-
       this._animateImageOut();
-
       // Remove Caption + reset css settings on image
       if (this.caption !== '') {
         anim({
-          targets: this.$photoCaption[0],
+          targets: this._photoCaption,
           opacity: 0,
           duration: this.options.outDuration,
           easing: 'easeOutQuad',
           complete: () => {
-            this.$photoCaption.remove();
+            this._photoCaption.remove();
           }
         });
       }
     }
   }
-

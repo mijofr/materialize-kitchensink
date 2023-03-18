@@ -369,7 +369,7 @@ module.exports = function(grunt) {
       },
 
       js: {
-        files: ['js/**/*', '!js/init.js'],
+        files: ['src/**/*', '!js/init.js'],
         tasks: ['js_compile'],
         options: {
           interrupt: false,
