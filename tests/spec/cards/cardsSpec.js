@@ -1,8 +1,8 @@
-describe( "Cards", function () {
+describe("Cards", function() {
+
   beforeEach(async function() {
     await XloadFixtures(['cards/cardsFixture.html']);
   });
-
   afterEach(function(){
     XunloadFixtures();
   });
@@ -35,7 +35,8 @@ describe( "Cards", function () {
           expect(revealDivPositions.left).toEqual(revealCardPositions.left, 'activator was not as in the same x as reveal card.');
 
           done();
-        }, 400);
+        }, 500);
+
       }, 400);
 
     });

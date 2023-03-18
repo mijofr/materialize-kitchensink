@@ -94,11 +94,7 @@ export class M {
     this.initializeJqueryWrapper(Carousel, 'carousel', 'M_Carousel');
     this.initializeJqueryWrapper(Autocomplete, 'autocomplete', 'M_Autocomplete');
     this.initializeJqueryWrapper(Dropdown, 'dropdown', 'M_Dropdown');
-    this.initializeJqueryWrapper(
-      FloatingActionButton,
-      'floatingActionButton',
-      'M_FloatingActionButton'
-    );
+    this.initializeJqueryWrapper(FloatingActionButton, 'floatingActionButton', 'M_FloatingActionButton');
     M.initializeJqueryWrapper(Collapsible, 'collapsible', 'M_Collapsible');
     M.initializeJqueryWrapper(CharacterCounter, 'characterCounter', 'M_CharacterCounter');
     M.initializeJqueryWrapper(Datepicker, 'datepicker', 'M_Datepicker');  

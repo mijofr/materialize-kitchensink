@@ -1,130 +1,106 @@
 import { Component } from "./component";
-import $ from "cash-dom";
 import { M } from "./global";
 import { Modal } from "./modal";
 
-  let _defaults = {
-    // Close when date is selected
-    autoClose: false,
+let _defaults = {
+  // Close when date is selected
+  autoClose: false,
+  // the default output format for the input field value
+  format: 'mmm dd, yyyy',
+  // Used to create date object from current input string
+  parse: null,
+  // The initial date to view when first opened
+  defaultDate: null,
+  // Make the `defaultDate` the initial selected value
+  setDefaultDate: false,
+  disableWeekends: false,
+  disableDayFn: null,
+  // First day of week (0: Sunday, 1: Monday etc)
+  firstDay: 0,
+  // The earliest date that can be selected
+  minDate: null,
+  // Thelatest date that can be selected
+  maxDate: null,
+  // Number of years either side, or array of upper/lower range
+  yearRange: 10,
+  // used internally (don't config outside)
+  minYear: 0,
+  maxYear: 9999,
+  minMonth: undefined,
+  maxMonth: undefined,
+  startRange: null,
+  endRange: null,
+  isRTL: false,
+  // Render the month after year in the calendar title
+  showMonthAfterYear: false,
+  // Render days of the calendar grid that fall in the next or previous month
+  showDaysInNextAndPreviousMonths: false,
+  // Specify a DOM element to render the calendar in
+  container: null,
+  // Show clear button
+  showClearBtn: false,
+  // internationalization
+  i18n: {
+    cancel: 'Cancel',
+    clear: 'Clear',
+    done: 'Ok',
+    previousMonth: '‹',
+    nextMonth: '›',
+    months: [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ],
+    monthsShort: [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ],
+    weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    weekdaysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    weekdaysAbbrev: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+  },
+  // events array
+  events: [],
+  // callback function
+  onSelect: null,
+  onOpen: null,
+  onClose: null,
+  onDraw: null
+};
 
-    // the default output format for the input field value
-    format: 'mmm dd, yyyy',
-
-    // Used to create date object from current input string
-    parse: null,
-
-    // The initial date to view when first opened
-    defaultDate: null,
-
-    // Make the `defaultDate` the initial selected value
-    setDefaultDate: false,
-
-    disableWeekends: false,
-
-    disableDayFn: null,
-
-    // First day of week (0: Sunday, 1: Monday etc)
-    firstDay: 0,
-
-    // The earliest date that can be selected
-    minDate: null,
-    // Thelatest date that can be selected
-    maxDate: null,
-
-    // Number of years either side, or array of upper/lower range
-    yearRange: 10,
-
-    // used internally (don't config outside)
-    minYear: 0,
-    maxYear: 9999,
-    minMonth: undefined,
-    maxMonth: undefined,
-
-    startRange: null,
-    endRange: null,
-
-    isRTL: false,
-
-    // Render the month after year in the calendar title
-    showMonthAfterYear: false,
-
-    // Render days of the calendar grid that fall in the next or previous month
-    showDaysInNextAndPreviousMonths: false,
-
-    // Specify a DOM element to render the calendar in
-    container: null,
-
-    // Show clear button
-    showClearBtn: false,
-
-    // internationalization
-    i18n: {
-      cancel: 'Cancel',
-      clear: 'Clear',
-      done: 'Ok',
-      previousMonth: '‹',
-      nextMonth: '›',
-      months: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
-      ],
-      monthsShort: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec'
-      ],
-      weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      weekdaysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-      weekdaysAbbrev: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-    },
-
-    // events array
-    events: [],
-
-    // callback function
-    onSelect: null,
-    onOpen: null,
-    onClose: null,
-    onDraw: null
-  };
-
-  /**
-   * @class
-   *
-   */
   export class Datepicker extends Component {
+    el: HTMLInputElement
     id: string;
     isOpen: boolean;
-    modal: any;
-    calendarEl: any;
-    clearBtn: any;
-    doneBtn: any;
-    cancelBtn: any;
-    $modalEl: any;
-    modalEl: any;
+    modal: Modal;
+    calendarEl: HTMLElement;
+    clearBtn: HTMLElement;
+    doneBtn: HTMLElement;
+    cancelBtn: HTMLElement;
+    modalEl: HTMLElement;
+    yearTextEl: HTMLElement;
+    dateTextEl: HTMLElement;
     date: any;
     formats: any;
-    yearTextEl: any;
-    dateTextEl: any;
     calendars: any;
     private _y: any;
     private _m: any;
@@ -136,22 +112,15 @@ import { Modal } from "./modal";
     private _closeBound: any;
     private _handleClearClickBound: any;
     static _template: string;
-    /**
-     * Construct Datepicker instance and set up overlay
-     * @constructor
-     * @param {Element} el
-     * @param {Object} options
-     */
+
     constructor(el, options) {
       super(Datepicker, el, options);
-
       (this.el as any).M_Datepicker = this;
-
-      this.options = $.extend({}, Datepicker.defaults, options);
+      this.options = {...Datepicker.defaults, ...options};
 
       // make sure i18n defaults are not lost when only few i18n option properties are passed
       if (!!options && options.hasOwnProperty('i18n') && typeof options.i18n === 'object') {
-        this.options.i18n = $.extend({}, Datepicker.defaults.i18n, options.i18n);
+        this.options.i18n = {...Datepicker.defaults.i18n, ...options.i18n};
       }
 
       // Remove time component from minDate and maxDate options
@@ -163,11 +132,10 @@ import { Modal } from "./modal";
       this._setupVariables();
       this._insertHTMLIntoDOM();
       this._setupModal();
-
       this._setupEventHandlers();
 
       if (!this.options.defaultDate) {
-        this.options.defaultDate = new Date(Date.parse((this.el as HTMLInputElement).value));
+        this.options.defaultDate = new Date(Date.parse(this.el.value));
       }
 
       let defDate = this.options.defaultDate;
@@ -175,17 +143,14 @@ import { Modal } from "./modal";
         if (this.options.setDefaultDate) {
           this.setDate(defDate, true);
           this.setInputValue();
-        } else {
+        }
+        else {
           this.gotoDate(defDate);
         }
-      } else {
+      }
+      else {
         this.gotoDate(new Date());
       }
-
-      /**
-       * Describes open/close state of datepicker
-       * @type {Boolean}
-       */
       this.isOpen = false;
     }
 
@@ -226,21 +191,15 @@ import { Modal } from "./modal";
       return a.getTime() === b.getTime();
     }  
 
-    /**
-     * Get Instance
-     */
     static getInstance(el) {
       let domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Datepicker;
     }
 
-    /**
-     * Teardown component
-     */
     destroy() {
       this._removeEventHandlers();
       this.modal.destroy();
-      $(this.modalEl).remove();
+      this.modalEl.remove();
       this.destroySelects();
       (this.el as any).M_Datepicker = undefined;
     }
@@ -258,20 +217,21 @@ import { Modal } from "./modal";
 
     _insertHTMLIntoDOM() {
       if (this.options.showClearBtn) {
-        $(this.clearBtn).css({ visibility: '' });
-        this.clearBtn.innerHTML = this.options.i18n.clear;
+        this.clearBtn.style.visibility = '';
+        this.clearBtn.innerText = this.options.i18n.clear;
       }
-
-      this.doneBtn.innerHTML = this.options.i18n.done;
-      this.cancelBtn.innerHTML = this.options.i18n.cancel;
+      this.doneBtn.innerText = this.options.i18n.done;
+      this.cancelBtn.innerText = this.options.i18n.cancel;
 
       if (this.options.container) {
         const optEl = this.options.container;
         this.options.container =
           optEl instanceof HTMLElement ? optEl : document.querySelector(optEl);
-        this.$modalEl.appendTo(this.options.container);
-      } else {
-        this.$modalEl.insertBefore(this.el);
+        this.options.container.append(this.modalEl);
+      }
+      else {
+        //this.modalEl.before(this.el);
+        this.el.parentElement.appendChild(this.modalEl);
       }
     }
 
@@ -284,26 +244,14 @@ import { Modal } from "./modal";
       });
     }
 
-    toString(format: string | ((d: Date) => string) = null) {
-          
+    toString(format: string | ((d: Date) => string) = null): string {
       format = format || this.options.format;
-      if (typeof format === 'function') {
-        return format(this.date);
-      }
-
-      if (!Datepicker._isDate(this.date)) {
-        return '';
-      }
-
-      let formatArray = format.split(/(d{1,4}|m{1,4}|y{4}|yy|!.)/g);
-      let formattedDate = formatArray
-        .map((label) => {
-          if (this.formats[label]) {
-            return this.formats[label]();
-          }
-
-          return label;
-        })
+      if (typeof format === 'function') return format(this.date);
+      if (!Datepicker._isDate(this.date)) return '';
+      // String Format
+      const formatArray = format.split(/(d{1,4}|m{1,4}|y{4}|yy|!.)/g);
+      const formattedDate = formatArray
+        .map(label => this.formats[label] ? this.formats[label]() : label)
         .join('');
       return formattedDate;
     }
@@ -320,31 +268,26 @@ import { Modal } from "./modal";
       if (!Datepicker._isDate(date)) {
         return;
       }
-
       let min = this.options.minDate,
         max = this.options.maxDate;
-
       if (Datepicker._isDate(min) && date < min) {
         date = min;
-      } else if (Datepicker._isDate(max) && date > max) {
+      }
+      else if (Datepicker._isDate(max) && date > max) {
         date = max;
       }
-
       this.date = new Date(date.getTime());
-
       this._renderDateDisplay();
-
       Datepicker._setToStartOfDay(this.date);
       this.gotoDate(this.date);
-
       if (!preventOnSelect && typeof this.options.onSelect === 'function') {
         this.options.onSelect.call(this, this.date);
       }
     }
 
     setInputValue() {
-      (this.el as HTMLInputElement).value = this.toString();
-      this.$el.trigger('change', { firedBy: this });
+      this.el.value = this.toString();
+      this.el.dispatchEvent(new CustomEvent('change', {detail: {firedBy: this}}));
     }
 
     _renderDateDisplay() {
@@ -357,16 +300,11 @@ import { Modal } from "./modal";
       this.dateTextEl.innerHTML = `${day}, ${month} ${date}`;
     }
 
-    /**
-     * change view to a specific date
-     */
     gotoDate(date) {
       let newCalendar = true;
-
       if (!Datepicker._isDate(date)) {
         return;
       }
-
       if (this.calendars) {
         let firstVisibleDate = new Date(this.calendars[0].year, this.calendars[0].month, 1),
           lastVisibleDate = new Date(
@@ -381,7 +319,6 @@ import { Modal } from "./modal";
         newCalendar =
           visibleDate < firstVisibleDate.getTime() || lastVisibleDate.getTime() < visibleDate;
       }
-
       if (newCalendar) {
         this.calendars = [
           {
@@ -390,7 +327,6 @@ import { Modal } from "./modal";
           }
         ];
       }
-
       this.adjustCalendars();
     }
 
@@ -619,15 +555,13 @@ import { Modal } from "./modal";
         );
       }
 
-      monthHtml =
-        '<select class="datepicker-select orig-select-month" tabindex="-1">' +
-        arr.join('') +
-        '</select>';
+      monthHtml = '<select class="datepicker-select orig-select-month" tabindex="-1">'+arr.join('')+'</select>';
 
-      if ($.isArray(opts.yearRange)) {
+      if (Array.isArray(opts.yearRange)) {
         i = opts.yearRange[0];
         j = opts.yearRange[1] + 1;
-      } else {
+      }
+      else {
         i = year - opts.yearRange;
         j = 1 + year + opts.yearRange;
       }
@@ -637,13 +571,9 @@ import { Modal } from "./modal";
           arr.push(`<option value="${i}" ${i === year ? 'selected="selected"' : ''}>${i}</option>`);
         }
       }
-      if (opts.yearRangeReverse) {
-        arr.reverse();
-      }
+      if (opts.yearRangeReverse) arr.reverse();
 
-      yearHtml = `<select class="datepicker-select orig-select-year" tabindex="-1">${arr.join(
-        ''
-      )}</select>`;
+      yearHtml = `<select class="datepicker-select orig-select-year" tabindex="-1">${arr.join('')}</select>`;
 
       let leftArrow =
         '<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/><path d="M0-.5h24v24H0z" fill="none"/></svg>';
@@ -676,13 +606,9 @@ import { Modal } from "./modal";
       return (html += '</div>');
     }
 
-    /**
-     * refresh the HTML
-     */
+    // refresh HTML
     draw(force: boolean = false) {
-      if (!this.isOpen && !force) {
-        return;
-      }
+      if (!this.isOpen && !force) return;
       let opts = this.options,
         minYear = opts.minYear,
         maxYear = opts.maxYear,
@@ -749,9 +675,6 @@ import { Modal } from "./modal";
       }
     }
 
-    /**
-     * Setup Event Handlers
-     */
     _setupEventHandlers() {
       this._handleInputKeydownBound = this._handleInputKeydown.bind(this);
       this._handleInputClickBound = this._handleInputClick.bind(this);
@@ -775,11 +698,11 @@ import { Modal } from "./modal";
     }
 
     _setupVariables() {
-      this.$modalEl = $(Datepicker._template);
-      this.modalEl = this.$modalEl[0];
+      const template = document.createElement('template');
+      template.innerHTML = Datepicker._template.trim();
+      this.modalEl = <HTMLElement>template.content.firstChild;
 
       this.calendarEl = this.modalEl.querySelector('.datepicker-calendar');
-
       this.yearTextEl = this.modalEl.querySelector('.year-text');
       this.dateTextEl = this.modalEl.querySelector('.date-text');
       if (this.options.showClearBtn) {
@@ -824,9 +747,6 @@ import { Modal } from "./modal";
       };
     }
 
-    /**
-     * Remove Event Handlers
-     */
     _removeEventHandlers() {
       this.el.removeEventListener('click', this._handleInputClickBound);
       this.el.removeEventListener('keydown', this._handleInputKeydownBound);
@@ -846,16 +766,13 @@ import { Modal } from "./modal";
     }
 
     _handleCalendarClick(e) {
-      if (!this.isOpen) {
-        return;
-      }
-
-      let $target = $(e.target);
-      if (!$target.hasClass('is-disabled')) {
+      if (!this.isOpen) return;
+      const target = <HTMLElement>(e.target);
+      if (!target.classList.contains('is-disabled')) {
         if (
-          $target.hasClass('datepicker-day-button') &&
-          !$target.hasClass('is-empty') &&
-          !$target.parent().hasClass('is-disabled')
+          target.classList.contains('datepicker-day-button') &&
+          !target.classList.contains('is-empty') &&
+          !target.parentElement.classList.contains('is-disabled')
         ) {          
           this.setDate(
             new Date(
@@ -867,9 +784,11 @@ import { Modal } from "./modal";
           if (this.options.autoClose) {
             this._finishSelection();
           }
-        } else if ($target.closest('.month-prev').length) {
+        }
+        else if (target.closest('.month-prev')) {
           this.prevMonth();
-        } else if ($target.closest('.month-next').length) {
+        }
+        else if (target.closest('.month-next')) {
           this.nextMonth();
         }
       }
@@ -889,9 +808,7 @@ import { Modal } from "./modal";
       this.gotoYear(e.target.value);
     }
 
-    /**
-     * change view to a specific month (zero-index, e.g. 0: January)
-     */
+    // change view to a specific month (zero-index, e.g. 0: January)
     gotoMonth(month) {
       if (!isNaN(month)) {
         this.calendars[0].month = parseInt(month, 10);
@@ -899,9 +816,7 @@ import { Modal } from "./modal";
       }
     }
 
-    /**
-     * change view to a specific full year (e.g. "2012")
-     */
+    // change view to a specific full year (e.g. "2012")
     gotoYear(year) {
       if (!isNaN(year)) {
         this.calendars[0].year = parseInt(year, 10);
@@ -909,22 +824,17 @@ import { Modal } from "./modal";
       }
     }
 
-    _handleInputChange(e) {
+    _handleInputChange(e: Event) {
       let date;
-
       // Prevent change event from being fired when triggered by the plugin
-      if (e.firedBy === this) {
-        return;
-      }
+      if (e['detail']?.firedBy === this) return;
       if (this.options.parse) {
-        date = this.options.parse((this.el as HTMLInputElement).value, this.options.format);
-      } else {
-        date = new Date(Date.parse((this.el as HTMLInputElement).value));
+        date = this.options.parse(this.el.value, this.options.format);
       }
-
-      if (Datepicker._isDate(date)) {
-        this.setDate(date);
+      else {
+        date = new Date(Date.parse(this.el.value));
       }
+      if (Datepicker._isDate(date)) this.setDate(date);
     }
 
     renderDayName(opts, day, abbr: boolean = false) {
@@ -935,39 +845,25 @@ import { Modal } from "./modal";
       return abbr ? opts.i18n.weekdaysAbbrev[day] : opts.i18n.weekdays[day];
     }
 
-    /**
-     * Set input value to the selected date and close Datepicker
-     */
+    // Set input value to the selected date and close Datepicker
     _finishSelection() {
       this.setInputValue();
       this.close();
     }
 
-    /**
-     * Open Datepicker
-     */
     open() {
-      if (this.isOpen) {
-        return;
-      }
-
+      if (this.isOpen) return;
       this.isOpen = true;
       if (typeof this.options.onOpen === 'function') {
         this.options.onOpen.call(this);
       }
       this.draw();
-      this.modal.open();
+      this.modal.open(undefined);
       return this;
     }
 
-    /**
-     * Close Datepicker
-     */
     close() {
-      if (!this.isOpen) {
-        return;
-      }
-
+      if (!this.isOpen) return;
       this.isOpen = false;
       if (typeof this.options.onClose === 'function') {
         this.options.onClose.call(this);
@@ -976,30 +872,25 @@ import { Modal } from "./modal";
       return this;
     }
 
-    static
-    {
-      Datepicker._template = [
-        '<div class= "modal datepicker-modal">',
-        '<div class="modal-content datepicker-container">',
-        '<div class="datepicker-date-display">',
-        '<span class="year-text"></span>',
-        '<span class="date-text"></span>',
-        '</div>',
-        '<div class="datepicker-calendar-container">',
-        '<div class="datepicker-calendar"></div>',
-        '<div class="datepicker-footer">',
-        '<button class="btn-flat datepicker-clear waves-effect" style="visibility: hidden;" type="button"></button>',
-        '<div class="confirmation-btns">',
-        '<button class="btn-flat datepicker-cancel waves-effect" type="button"></button>',
-        '<button class="btn-flat datepicker-done waves-effect" type="button"></button>',
-        '</div>',
-        '</div>',
-        '</div>',
-        '</div>',
-        '</div>'
-      ].join('');
-
+    static {
+      Datepicker._template = `
+        <div class="modal datepicker-modal">
+          <div class="modal-content datepicker-container">
+            <div class="datepicker-date-display">
+              <span class="year-text"></span>
+              <span class="date-text"></span>
+            </div>
+            <div class="datepicker-calendar-container">
+              <div class="datepicker-calendar"></div>
+              <div class="datepicker-footer">
+                <button class="btn-flat datepicker-clear waves-effect" style="visibility: hidden;" type="button"></button>
+                <div class="confirmation-btns">
+                  <button class="btn-flat datepicker-cancel waves-effect" type="button"></button>
+                  <button class="btn-flat datepicker-done waves-effect" type="button"></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
     }
-  }
-
-  
+  }  
