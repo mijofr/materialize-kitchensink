@@ -1,9 +1,8 @@
 import { Component } from "./component";
 import { M } from "./global";
-import $ from "cash-dom";
 import anim from "animejs";
 
-  let _defaults = {
+  const _defaults = {
     alignment: 'left',
     autoFocus: true,
     constrainWidth: true,
@@ -21,10 +20,10 @@ import anim from "animejs";
   };
 
   export class Dropdown extends Component {
+    el: HTMLElement;
     static _dropdowns: Dropdown[] = [];
     id: string;
     dropdownEl: HTMLElement;
-    $dropdownEl: any;
     isOpen: boolean;
     isScrollable: boolean;
     isTouchMoving: boolean;
@@ -43,15 +42,12 @@ import anim from "animejs";
 
     constructor(el, options) {
       super(Dropdown, el, options);
-
       (this.el as any).M_Dropdown = this;
       Dropdown._dropdowns.push(this);
-
       this.id = M.getIdFromTrigger(el);
       this.dropdownEl = document.getElementById(this.id);
-      this.$dropdownEl = $(this.dropdownEl);
-
-      this.options = $.extend({}, Dropdown.defaults, options);
+      //this.$dropdownEl = $(this.dropdownEl);
+      this.options = {...Dropdown.defaults, ...options};
 
       this.isOpen = false;
       this.isScrollable = false;
@@ -80,7 +76,7 @@ import anim from "animejs";
     }
 
     static getInstance(el) {
-      let domElem = !!el.jquery ? el[0] : el;
+      const domElem = !!el.jquery ? el[0] : el;
       return domElem.M_Dropdown;
     }
 
@@ -146,15 +142,14 @@ import anim from "animejs";
     }
 
     _handleMouseLeave(e) {
-      let toEl = e.toElement || e.relatedTarget;
-      let leaveToDropdownContent = !!$(toEl).closest('.dropdown-content').length;
+      const toEl = e.toElement || e.relatedTarget;
+      const leaveToDropdownContent = !!toEl.closest('.dropdown-content');
       let leaveToActiveDropdownTrigger = false;
-
-      let $closestTrigger = $(toEl).closest('.dropdown-trigger');
+      const closestTrigger = toEl.closest('.dropdown-trigger');
       if (
-        $closestTrigger.length &&
-        !!(<any> $closestTrigger[0]).M_Dropdown &&
-        (<any> $closestTrigger[0]).M_Dropdown.isOpen
+        closestTrigger &&
+        !!(<any>closestTrigger).M_Dropdown &&
+        (<any>closestTrigger).M_Dropdown.isOpen
       ) {
         leaveToActiveDropdownTrigger = true;
       }
@@ -165,23 +160,24 @@ import anim from "animejs";
     }
 
     _handleDocumentClick(e) {
-      let $target = $(e.target);
+      const target = <HTMLElement>e.target;
       if (
         this.options.closeOnClick &&
-        $target.closest('.dropdown-content').length &&
+        target.closest('.dropdown-content') &&
         !this.isTouchMoving
       ) {
         // isTouchMoving to check if scrolling on mobile.
-        setTimeout(() => {
-          this.close();
-        }, 0);
-      } else if (
-        $target.closest('.dropdown-trigger').length ||
-        !$target.closest('.dropdown-content').length
+        //setTimeout(() => {
+        this.close();
+        //}, 0);
+      }
+      else if (
+        target.closest('.dropdown-trigger') ||
+        !target.closest('.dropdown-content')
       ) {
-        setTimeout(() => {
-          this.close();
-        }, 0);
+        //setTimeout(() => {
+        this.close();
+        //}, 0);
       }
       this.isTouchMoving = false;
     }
@@ -195,8 +191,8 @@ import anim from "animejs";
     }
 
     _handleDocumentTouchmove(e) {
-      let $target = $(e.target);
-      if ($target.closest('.dropdown-content').length) {
+      const target = <HTMLElement>e.target;
+      if (target.closest('.dropdown-content')) {
         this.isTouchMoving = true;
       }
     }
@@ -204,7 +200,7 @@ import anim from "animejs";
     _handleDropdownClick(e) {
       // onItemClick callback
       if (typeof this.options.onItemClick === 'function') {
-        let itemEl = $(e.target).closest('li')[0];
+        const itemEl = <HTMLElement>e.target.closest('li');
         this.options.onItemClick.call(this, itemEl);
       }
     }
@@ -213,76 +209,63 @@ import anim from "animejs";
       if (e.which === M.keys.TAB) {
         e.preventDefault();
         this.close();
-
-        // Navigate down dropdown list
-      } else if ((e.which === M.keys.ARROW_DOWN || e.which === M.keys.ARROW_UP) && this.isOpen) {
+      }
+      // Navigate down dropdown list
+      else if ((e.which === M.keys.ARROW_DOWN || e.which === M.keys.ARROW_UP) && this.isOpen) {
         e.preventDefault();
-        let direction = e.which === M.keys.ARROW_DOWN ? 1 : -1;
+        const direction = e.which === M.keys.ARROW_DOWN ? 1 : -1;
         let newFocusedIndex = this.focusedIndex;
-        let foundNewIndex = false;
+        let hasFoundNewIndex = false;
         do {
           newFocusedIndex = newFocusedIndex + direction;
-
           if (
             !!this.dropdownEl.children[newFocusedIndex] &&
             (<any>this.dropdownEl.children[newFocusedIndex]).tabIndex !== -1
           ) {
-            foundNewIndex = true;
+            hasFoundNewIndex = true;
             break;
           }
         } while (newFocusedIndex < this.dropdownEl.children.length && newFocusedIndex >= 0);
 
-        if (foundNewIndex) {
+        if (hasFoundNewIndex) {
           // Remove active class from old element
           if (this.focusedIndex >= 0)
             this.dropdownEl.children[this.focusedIndex].classList.remove('active');
           this.focusedIndex = newFocusedIndex;
           this._focusFocusedItem();
         }
-
-        // ENTER selects choice on focused item
-      } else if (e.which === M.keys.ENTER && this.isOpen) {
+      }
+      // ENTER selects choice on focused item
+      else if (e.which === M.keys.ENTER && this.isOpen) {
         // Search for <a> and <button>
-        let focusedElement = this.dropdownEl.children[this.focusedIndex];
-        let $activatableElement = $(focusedElement)
-          .find('a, button')
-          .first();
-
+        const focusedElement = this.dropdownEl.children[this.focusedIndex];
+        const activatableElement = <HTMLElement>focusedElement.querySelector('a, button');
         // Click a or button tag if exists, otherwise click li tag
-        if (!!$activatableElement.length) {
-          $activatableElement[0].click();
-        } else if (!!focusedElement) {
+        if (!!activatableElement) {
+          activatableElement.click();
+        }
+        else if (!!focusedElement) {
           if (focusedElement instanceof HTMLElement) {
             focusedElement.click();
           }          
         }
-
-        // Close dropdown on ESC
-      } else if (e.which === M.keys.ESC && this.isOpen) {
+      }
+      // Close dropdown on ESC
+      else if (e.which === M.keys.ESC && this.isOpen) {
         e.preventDefault();
         this.close();
       }
 
       // CASE WHEN USER TYPE LETTERS
-      let letter = String.fromCharCode(e.which).toLowerCase(),
-        nonLetters = [9, 13, 27, 38, 40];
+      const letter = String.fromCharCode(e.which).toLowerCase();
+      const nonLetters = [9, 13, 27, 38, 40];
       if (letter && nonLetters.indexOf(e.which) === -1) {
         this.filterQuery.push(letter);
-
-        let string = this.filterQuery.join(''),
-          newOptionEl = $(this.dropdownEl)
-            .find('li')
-            .filter((i,el) => {
-              return (
-                $(el)
-                  .text()
-                  .toLowerCase()
-                  .indexOf(string) === 0
-              );
-            })[0];
-
+        const string = this.filterQuery.join('');
+        const newOptionEl = Array.from(this.dropdownEl.querySelectorAll('li'))
+          .find((el) => el.innerText.toLowerCase().indexOf(string) === 0);
         if (newOptionEl) {
-          this.focusedIndex = $(newOptionEl).index();
+          this.focusedIndex = [...newOptionEl.parentNode.children].indexOf(newOptionEl);
           this._focusFocusedItem();
         }
       }
@@ -294,43 +277,39 @@ import anim from "animejs";
     }
 
     _resetDropdownStyles() {
-      this.$dropdownEl.css({
-        display: '',
-        width: '',
-        height: '',
-        left: '',
-        top: '',
-        'transform-origin': '',
-        transform: '',
-        opacity: ''
-      });
+      this.dropdownEl.style.display = '';
+      this.dropdownEl.style.width = '';
+      this.dropdownEl.style.height = '';
+      this.dropdownEl.style.left = '';
+      this.dropdownEl.style.top = '';
+      this.dropdownEl.style.transformOrigin = '';
+      this.dropdownEl.style.transform = '';
+      this.dropdownEl.style.opacity = '';
     }
 
     // Move dropdown after container or trigger
     _moveDropdown(containerEl = null) {
       if (!!this.options.container) {
-        $(this.options.container).append(this.dropdownEl);
-      } else if (containerEl) {
+        this.options.container.append(this.dropdownEl);
+      }
+      else if (containerEl) {
         if (!containerEl.contains(this.dropdownEl)) {
-          $(containerEl).append(this.dropdownEl);
+          containerEl.append(this.dropdownEl);
         }
-      } else {
-        this.$el.after(this.dropdownEl);
+      }
+      else {
+        this.el.after(this.dropdownEl);
       }
     }
 
     _makeDropdownFocusable() {
       // Needed for arrow key navigation
       this.dropdownEl.tabIndex = 0;
-
       // Only set tabindex if it hasn't been set by user
-      $(this.dropdownEl)
-        .children()
-        .each((i, el)=> {
-          if (!el.getAttribute('tabindex')) {
-            el.setAttribute('tabindex', '0');
-          }
-        });
+      Array.from(this.dropdownEl.children).forEach((el)=> {
+        if (!el.getAttribute('tabindex')) 
+          el.setAttribute('tabindex', '0');
+      });
     }
 
     _focusFocusedItem() {
@@ -351,23 +330,23 @@ import anim from "animejs";
     }
 
     _getDropdownPosition(closestOverflowParent) {
-      let offsetParentBRect = (<HTMLElement> this.el).offsetParent.getBoundingClientRect();
-      let triggerBRect = this.el.getBoundingClientRect();
-      let dropdownBRect = this.dropdownEl.getBoundingClientRect();
+      const offsetParentBRect = this.el.offsetParent.getBoundingClientRect();
+      const triggerBRect = this.el.getBoundingClientRect();
+      const dropdownBRect = this.dropdownEl.getBoundingClientRect();
 
       let idealHeight = dropdownBRect.height;
       let idealWidth = dropdownBRect.width;
       let idealXPos = triggerBRect.left - dropdownBRect.left;
       let idealYPos = triggerBRect.top - dropdownBRect.top;
 
-      let dropdownBounds = {
+      const dropdownBounds = {
         left: idealXPos,
         top: idealYPos,
         height: idealHeight,
         width: idealWidth
       };
 
-      let alignments = M.checkPossibleAlignments(
+      const alignments = M.checkPossibleAlignments(
         this.el,
         closestOverflowParent,
         dropdownBounds,
@@ -407,7 +386,7 @@ import anim from "animejs";
 
       // If preferred horizontal alignment is possible
       if (!alignments[horizontalAlignment]) {
-        let oppositeAlignment = horizontalAlignment === 'left' ? 'right' : 'left';
+        const oppositeAlignment = horizontalAlignment === 'left' ? 'right' : 'left';
         if (alignments[oppositeAlignment]) {
           horizontalAlignment = oppositeAlignment;
         } else {
@@ -453,10 +432,7 @@ import anim from "animejs";
         duration: this.options.inDuration,
         easing: 'easeOutQuint',
         complete: (anim) => {
-          if (this.options.autoFocus) {
-            this.dropdownEl.focus();
-          }
-
+          if (this.options.autoFocus) this.dropdownEl.focus();
           // onOpenEnd callback
           if (typeof this.options.onOpenEnd === 'function') {
             this.options.onOpenEnd.call(this, this.el);
@@ -479,7 +455,6 @@ import anim from "animejs";
         easing: 'easeOutQuint',
         complete: (anim) => {
           this._resetDropdownStyles();
-
           // onCloseEnd callback
           if (typeof this.options.onCloseEnd === 'function') {
             this.options.onCloseEnd.call(this, this.el);
@@ -488,46 +463,41 @@ import anim from "animejs";
       });
     }
 
-    _placeDropdown() {
-      /**
-       * Get closest ancestor that satisfies the condition
-       * @param {Element} el  Element to find ancestors on
-       * @param {Function} condition  Function that given an ancestor element returns true or false
-       * @returns {Element} Return closest ancestor or null if none satisfies the condition
-       */      
-      const getClosestAncestor = function(el, condition):Element {
-        let ancestor = el.parentNode;
-        while (ancestor !== null && !$(ancestor).is(document)) {
-          if (condition(ancestor)) {
-            return ancestor;
-          }
-          ancestor = ancestor.parentNode;
+    private _getClosestAncestor(el: Element, condition: Function): Element {
+      let ancestor = el.parentNode;
+      while (ancestor !== null && ancestor !== document) {
+        if (condition(ancestor)) {
+          return <Element>ancestor;
         }
-        return null;
-      };
+        ancestor = ancestor.parentNode;
+      }
+      return null;
+    };
 
+    _placeDropdown() {
       // Container here will be closest ancestor with overflow: hidden
-      let closestOverflowParent = getClosestAncestor(this.dropdownEl, (ancestor) => {
-        return !$(ancestor).is('html,body') && $(ancestor).css('overflow') !== 'visible';
+      let closestOverflowParent: HTMLElement = <HTMLElement>this._getClosestAncestor(this.dropdownEl, (ancestor: HTMLElement) => {
+        return !['HTML','BODY'].includes(ancestor.tagName) && getComputedStyle(ancestor).overflow !== 'visible';
       });
       // Fallback
       if (!closestOverflowParent) {
-        closestOverflowParent = !!this.dropdownEl.offsetParent
+        closestOverflowParent = <HTMLElement>(!!this.dropdownEl.offsetParent
           ? this.dropdownEl.offsetParent
-          : (this.dropdownEl.parentNode as Element);
+          : this.dropdownEl.parentNode);
       }
-      if ($(closestOverflowParent).css('position') === 'static')
-        $(closestOverflowParent).css('position', 'relative');
+
+      if (getComputedStyle(closestOverflowParent).position === 'static')
+        closestOverflowParent.style.position = 'relative';
 
       this._moveDropdown(closestOverflowParent);
 
       // Set width before calculating positionInfo
-      let idealWidth = this.options.constrainWidth
+      const idealWidth = this.options.constrainWidth
         ? this.el.getBoundingClientRect().width
         : this.dropdownEl.getBoundingClientRect().width;
       this.dropdownEl.style.width = idealWidth + 'px';
 
-      let positionInfo = this._getDropdownPosition(closestOverflowParent);
+      const positionInfo = this._getDropdownPosition(closestOverflowParent);
       this.dropdownEl.style.left = positionInfo.x + 'px';
       this.dropdownEl.style.top = positionInfo.y + 'px';
       this.dropdownEl.style.height = positionInfo.height + 'px';
@@ -538,55 +508,42 @@ import anim from "animejs";
     }
 
     open() {
-      if (this.isOpen) {
-        return;
-      }
+      if (this.isOpen) return;
       this.isOpen = true;
-
       // onOpenStart callback
       if (typeof this.options.onOpenStart === 'function') {
         this.options.onOpenStart.call(this, this.el);
       }
-
       // Reset styles
       this._resetDropdownStyles();
       this.dropdownEl.style.display = 'block';
-
       this._placeDropdown();
       this._animateIn();
       this._setupTemporaryEventHandlers();
     }
 
     close() {
-      if (!this.isOpen) {
-        return;
-      }
-
+      if (!this.isOpen) return;
       this.isOpen = false;
       this.focusedIndex = -1;
-
       // onCloseStart callback
       if (typeof this.options.onCloseStart === 'function') {
         this.options.onCloseStart.call(this, this.el);
       }
-
       this._animateOut();
       this._removeTemporaryEventHandlers();
-
       if (this.options.autoFocus) {
-        (this.el as HTMLElement).focus();
+        this.el.focus();
       }
     }
 
     recalculateDimensions() {
       if (this.isOpen) {
-        this.$dropdownEl.css({
-          width: '',
-          height: '',
-          left: '',
-          top: '',
-          'transform-origin': ''
-        });
+        this.dropdownEl.style.width = '';
+        this.dropdownEl.style.height = '';
+        this.dropdownEl.style.left = '';
+        this.dropdownEl.style.top = '';
+        this.dropdownEl.style.transformOrigin = '';
         this._placeDropdown();
       }
     }
@@ -594,5 +551,4 @@ import anim from "animejs";
     static {
       Dropdown._dropdowns = [];    
     }
-
   }

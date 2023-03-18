@@ -196,6 +196,8 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   M.Dropdown.init(document.querySelectorAll('.dropdown-trigger'), {});
+  M.Dropdown.init(document.querySelector('#left'), {alignment: 'left', constrainWidth: false});
+  M.Dropdown.init(document.querySelector('#right'), {alignment: 'right', constrainWidth: false});
 
   M.Parallax.init(document.querySelectorAll('.parallax'), {});
   
