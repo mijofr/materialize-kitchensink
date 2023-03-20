@@ -1,278 +1,111 @@
 import { M } from "./global";
-import $ from "cash-dom";
 
-  const TEXT_BASED_INPUT_SELECTOR = [
-    'input:not([type])',
-    'input[type=text]',
-    'input[type=password]',
-    'input[type=email]',
-    'input[type=url]',
-    'input[type=tel]',
-    'input[type=number]',
-    'input[type=search]',
-    'input[type=date]',
-    'input[type=time]',
-    'input[type=month]',
-    'input[type=datetime-local]',
-    'textarea'
-  ].join(',');
+// TODO: !!!
 
-export class Forms {   
-  // Function to update labels of text fields
-  static updateTextFields () {
-    $(TEXT_BASED_INPUT_SELECTOR).each(function(index, element) {
-      let $this = $(this);
-      if (
-        (element as HTMLInputElement).value.length > 0 ||
-        $(element).is(':focus') ||
-        element.autofocus ||
-        $this.attr('placeholder') !== undefined
-      ) {
-        $this.siblings('label').addClass('active');
-      } else if ((element as HTMLInputElement).validity) {
-        $this.siblings('label').toggleClass('active', (element as HTMLInputElement).validity.badInput === true);
-      } else {
-        $this.siblings('label').removeClass('active');
-      }
-    });
-  };
+export class Forms {
 
-  static validate_field (object) {
-    let hasLength = object.attr('data-length') !== undefined;
-    let lenAttr = parseInt(object.attr('data-length'));
-    let len = object[0].value.length;
-
-    if (len === 0 && object[0].validity.badInput === false && !object.is(':required')) {
-      if (object.hasClass('validate')) {
-        object.removeClass('valid');
-        object.removeClass('invalid');
-      }
-    } else {
-      if (object.hasClass('validate')) {
-        // Check for character counter attributes
-        if (
-          (object.is(':valid') && hasLength && len <= lenAttr) ||
-          (object.is(':valid') && !hasLength)
-        ) {
-          object.removeClass('invalid');
-          object.addClass('valid');
-        } else {
-          object.removeClass('valid');
-          object.addClass('invalid');
-        }
-      }
-    }
-  };
-
-  static textareaAutoResize ($textarea) {
-    // Wrap if native element
-    if ($textarea instanceof Element) {
-      $textarea = $($textarea);
-    }
-
-    if (!$textarea.length) {
+  static textareaAutoResize(textarea: HTMLTextAreaElement) {
+    if (!textarea) {
       console.error('No textarea element found');
       return;
     }
-
     // Textarea Auto Resize
-    let hiddenDiv = $('.hiddendiv').first();
-    if (!hiddenDiv.length) {
-      hiddenDiv = $('<div class="hiddendiv common"></div>');
-      $('body').append(hiddenDiv);
+    let hiddenDiv: HTMLDivElement = document.querySelector('.hiddendiv');
+    if (!hiddenDiv) {
+      hiddenDiv = document.createElement('div');
+      hiddenDiv.classList.add('hiddendiv', 'common');
+      document.body.append(hiddenDiv);
     }
-
+    const style = getComputedStyle(textarea);
     // Set font properties of hiddenDiv
-    let fontFamily = $textarea.css('font-family');
-    let fontSize = $textarea.css('font-size');
-    let lineHeight = $textarea.css('line-height');
-
+    const fontFamily = style.fontFamily; //textarea.css('font-family');
+    const fontSize = style.fontSize; //textarea.css('font-size');
+    const lineHeight = style.lineHeight; //textarea.css('line-height');
     // Firefox can't handle padding shorthand.
-    let paddingTop = $textarea.css('padding-top');
-    let paddingRight = $textarea.css('padding-right');
-    let paddingBottom = $textarea.css('padding-bottom');
-    let paddingLeft = $textarea.css('padding-left');
+    const paddingTop = style.paddingTop; //getComputedStyle(textarea).css('padding-top');
+    const paddingRight = style.paddingRight; //textarea.css('padding-right');
+    const paddingBottom = style.paddingBottom; //textarea.css('padding-bottom');
+    const paddingLeft = style.paddingLeft; //textarea.css('padding-left');
 
-    if (fontSize) {
-      hiddenDiv.css('font-size', fontSize);
-    }
-    if (fontFamily) {
-      hiddenDiv.css('font-family', fontFamily);
-    }
-    if (lineHeight) {
-      hiddenDiv.css('line-height', lineHeight);
-    }
-    if (paddingTop) {
-      hiddenDiv.css('padding-top', paddingTop);
-    }
-    if (paddingRight) {
-      hiddenDiv.css('padding-right', paddingRight);
-    }
-    if (paddingBottom) {
-      hiddenDiv.css('padding-bottom', paddingBottom);
-    }
-    if (paddingLeft) {
-      hiddenDiv.css('padding-left', paddingLeft);
-    }
+    if (fontSize) hiddenDiv.style.fontSize = fontSize; //('font-size', fontSize);
+    if (fontFamily) hiddenDiv.style.fontFamily = fontFamily; //css('font-family', fontFamily);
+    if (lineHeight) hiddenDiv.style.lineHeight = lineHeight; //css('line-height', lineHeight);    
+    if (paddingTop) hiddenDiv.style.paddingTop = paddingTop; //ss('padding-top', paddingTop);    
+    if (paddingRight) hiddenDiv.style.paddingRight = paddingRight; //css('padding-right', paddingRight);    
+    if (paddingBottom) hiddenDiv.style.paddingBottom = paddingBottom; //css('padding-bottom', paddingBottom);    
+    if (paddingLeft) hiddenDiv.style.paddingLeft = paddingLeft; //css('padding-left', paddingLeft);    
 
     // Set original-height, if none
-    if (!$textarea.data('original-height')) {
-      $textarea.data('original-height', $textarea.height());
+    //if (!textarea.data('original-height')) textarea.data('original-height', textarea.height());
+
+    if (textarea.getAttribute('wrap') === 'off') {
+      hiddenDiv.style.overflowWrap = 'normal'; // ('overflow-wrap', 'normal')
+      hiddenDiv.style.whiteSpace = 'pre';  //.css('white-space', 'pre');
     }
 
-    if ($textarea.attr('wrap') === 'off') {
-      hiddenDiv.css('overflow-wrap', 'normal').css('white-space', 'pre');
-    }
+    hiddenDiv.innerText = textarea.value + '\n';
 
-    hiddenDiv.text($textarea[0].value + '\n');
-    let content = hiddenDiv.html().replace(/\n/g, '<br>');
-    hiddenDiv.html(content);
+    const content = hiddenDiv.innerHTML.replace(/\n/g, '<br>');
+    hiddenDiv.innerHTML = content;
 
     // When textarea is hidden, width goes crazy.
     // Approximate with half of window size
 
-    if ($textarea[0].offsetWidth > 0 && $textarea[0].offsetHeight > 0) {
-      hiddenDiv.css('width', $textarea.width() + 'px');
-    } else {
-      hiddenDiv.css('width', window.innerWidth / 2 + 'px');
-    }
+    // if (textarea.offsetWidth > 0 && textarea.offsetHeight > 0) {
+    //   hiddenDiv.css('width', textarea.width() + 'px');
+    // }
+    // else {
+    //   hiddenDiv.css('width', window.innerWidth / 2 + 'px');
+    // }
 
     /**
      * Resize if the new height is greater than the
      * original height of the textarea
      */
-    if ($textarea.data('original-height') <= hiddenDiv.innerHeight()) {
-      $textarea.css('height', hiddenDiv.innerHeight() + 'px');
-    } else if ($textarea[0].value.length < $textarea.data('previous-length')) {
-      /**
-       * In case the new height is less than original height, it
-       * means the textarea has less text than before
-       * So we set the height to the original one
-       */
-      $textarea.css('height', $textarea.data('original-height') + 'px');
-    }
-    $textarea.data('previous-length', $textarea[0].value.length);
+
+    // if (textarea.data('original-height') <= hiddenDiv.innerHeight()) {
+    //   textarea.css('height', hiddenDiv.innerHeight() + 'px');
+    // }
+    // else if (textarea[0].value.length < textarea.data('previous-length')) {
+    //   /**
+    //    * In case the new height is less than original height, it
+    //    * means the textarea has less text than before
+    //    * So we set the height to the original one
+    //    */
+    //   textarea.css('height', textarea.data('original-height') + 'px');
+    // }
+    // textarea.data('previous-length', textarea[0].value.length);
+
   };
 
+
   static Init(){
-    $(document).ready(function() {
-      // Add active if form auto complete
-      $(document).on('change', TEXT_BASED_INPUT_SELECTOR, function() {
-        if (this.value.length !== 0 || $(this).attr('placeholder') != undefined) {
-          $(this)
-            .siblings('label')
-            .addClass('active');
-        }
-        Forms.validate_field($(this));
-      });
-  
-      // Add active if input element has been pre-populated on document ready
-      $(document).ready(function() {
-        Forms.updateTextFields();
-      });
-  
-      // HTML DOM FORM RESET handling
-      $(document).on('reset', function(e) {
-        let formReset = $(e.target);
-        if (formReset.is('form')) {
-          formReset
-            .find(TEXT_BASED_INPUT_SELECTOR)
-            .removeClass('valid')
-            .removeClass('invalid');
-          formReset.find(TEXT_BASED_INPUT_SELECTOR).each(function(e) {
-            if ((this as HTMLInputElement).value.length) {
-              $(this)
-                .siblings('label')
-                .removeClass('active');
-            }
-          });
-  
-          // Reset select (after native reset)
-          setTimeout(function() {
-            formReset.find('select').each(function() {
-              // check if initialized
-              if ((this as any).M_FormSelect) {
-                $(this).trigger('change');
-              }
-            });
-          }, 0);
-        }
-      });
-  
-      /**
-       * Add active when element has focus
-       * @param {Event} e
-       */
-      document.addEventListener(
-        'focus',
-        function(e: any) {
-          if ($(e.target).is(TEXT_BASED_INPUT_SELECTOR)) {
-            $(e.target)
-              .siblings('label, .prefix')
-              .addClass('active');
+    document.addEventListener("DOMContentLoaded", () => {
+
+      document.addEventListener('keyup', e => {
+        const target = <HTMLInputElement>e.target;
+
+        // Radio and Checkbox focus class
+        if (target instanceof HTMLInputElement && ['radio','checkbox'].includes(target.type)) {
+          // TAB, check if tabbing to radio or checkbox.
+          if (e.which === M.keys.TAB) {
+            target.classList.add('tabbed');
+            target.addEventListener('blur', e => target.classList.remove('tabbed'), {once: true});
           }
-        },
-        true
-      );
-  
-      /**
-       * Remove active when element is blurred
-       * @param {Event} e
-       */
-      document.addEventListener(
-        'blur',
-        function(e: any) {
-          let $inputElement = $(e.target);
-          if ($inputElement.is(TEXT_BASED_INPUT_SELECTOR)) {
-            let selector = '.prefix';
-  
-            if (
-              ($inputElement[0] as HTMLInputElement).value.length === 0 &&
-              ($inputElement[0] as HTMLInputElement).validity.badInput !== true &&
-              $inputElement.attr('placeholder') === undefined
-            ) {
-              selector += ', label';
-            }
-            $inputElement.siblings(selector).removeClass('active');
-            Forms.validate_field($inputElement);
-          }
-        },
-        true
-      );
-  
-      // Radio and Checkbox focus class
-      let radio_checkbox = 'input[type=radio], input[type=checkbox]';
-      $(document).on('keyup', radio_checkbox, function(e) {
-        // TAB, check if tabbing to radio or checkbox.
-        if (e.which === M.keys.TAB) {
-          $(this).addClass('tabbed');
-          let $this = $(this);
-          $this.one('blur', function(e) {
-            $(this).removeClass('tabbed');
-          });
-          return;
         }
+
+      });  
+
+      /*
+      document.querySelectorAll('.materialize-textarea').forEach((textArea: HTMLTextAreaElement) => {
+        textArea.data('original-height', textArea.height);
+        textArea.data('previous-length', textArea.value.length);
+        Forms.textareaAutoResize(textArea);
       });
+      $(document).on('keyup', text_area_selector, () => Forms.textareaAutoResize($(this)));
+      $(document).on('keydown', text_area_selector, () => Forms.textareaAutoResize($(this)));
   
-      let text_area_selector = '.materialize-textarea';
-      $(text_area_selector).each(function() {
-        let $textarea = $(this);
-        /**
-         * Resize textarea on document load after storing
-         * the original height and the original length
-         */
-        $textarea.data('original-height', $textarea.height());
-        $textarea.data('previous-length', (this as HTMLInputElement).value.length);
-        Forms.textareaAutoResize($textarea);
-      });
-  
-      $(document).on('keyup', text_area_selector, function() {
-        Forms.textareaAutoResize($(this));
-      });
-      $(document).on('keydown', text_area_selector, function() {
-        Forms.textareaAutoResize($(this));
-      });
-  
+
       // File Input Path
       $(document).on('change', '.file-field input[type="file"]', function() {
         let file_field = $(this).closest('.file-field');
@@ -285,9 +118,9 @@ export class Forms {
         (path_input[0] as HTMLInputElement).value = file_names.join(', ');
         path_input.trigger('change');
       });
-    }); // End of $(document).ready
-  
-  
+      */
+
+    });
   }
 }
 

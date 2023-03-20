@@ -78,7 +78,6 @@ const _defaults = {};
     }
 
     _handleRangeChange() {
-      //$(this.value).html(this.$el.val());
       this.value.innerHTML = this.el.value;
       if (!this.thumb.classList.contains('active')) {
         this._showRangeBubble();
@@ -90,7 +89,6 @@ const _defaults = {};
 
     _handleRangeMousedownTouchstart(e) {
       // Set indicator value
-      //$(this.value).html(this.$el.val());
       this.value.innerHTML = this.el.value;
       this._mousedown = true;
       this.el.classList.add('active');
@@ -112,7 +110,6 @@ const _defaults = {};
         const offsetLeft = this._calcRangeOffset();
         this.thumb.classList.add('active');
         this.thumb.style.left = offsetLeft+'px';
-        //$(this.value).html(this.$el.val());
         this.value.innerHTML = this.el.value;
       }
     }
@@ -124,7 +121,7 @@ const _defaults = {};
 
     _handleRangeBlurMouseoutTouchleave() {
       if (!this._mousedown) {
-        const paddingLeft = parseInt(this.$el.css('padding-left'));
+        const paddingLeft = parseInt(getComputedStyle(this.el).paddingLeft);
         const marginLeft = 7 + paddingLeft + 'px';
         if (this.thumb.classList.contains('active')) {
           anim.remove(this.thumb);

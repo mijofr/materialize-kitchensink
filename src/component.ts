@@ -1,7 +1,5 @@
-import cash from "cash-dom";
 
 export class Component {
-  $el: any;
 
   constructor(classDef, protected el: Element, protected options) {
     // Display error if el is valid HTML Element
@@ -14,7 +12,6 @@ export class Component {
       ins.destroy();
     }
     this.el = el;
-    this.$el = cash(el);
   }
 
   static init(classDef, els, options) {

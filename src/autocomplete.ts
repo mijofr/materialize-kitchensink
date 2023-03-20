@@ -42,7 +42,7 @@ export class Autocomplete extends Component {
   private _handleContainerMousedownAndTouchstartBound: any;
   private _handleContainerMouseupAndTouchendBound: any;
   container: HTMLElement;
-  dropdown: any;
+  dropdown: Dropdown;
   static _keydown: boolean;
   selectedValues: any[];
   menuItems: any[];
@@ -389,7 +389,7 @@ export class Autocomplete extends Component {
   }
 
   _triggerChanged() {
-    this.$el.trigger('change');
+    this.el.dispatchEvent(new Event('change'));
     // Trigger Autocomplete Event
     if (typeof this.options.onAutocomplete === 'function')
       this.options.onAutocomplete.call(this, this.selectedValues);

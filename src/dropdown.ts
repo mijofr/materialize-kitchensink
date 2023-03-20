@@ -37,7 +37,7 @@ import anim from "animejs";
     private _handleTriggerKeydownBound: any;
     private _handleMouseEnterBound: any;
     private _handleMouseLeaveBound: any;
-    private _handleClickBound: any;
+    _handleClickBound: any;
     filterTimeout: NodeJS.Timeout;
 
     constructor(el, options) {

@@ -667,7 +667,7 @@ type Point = {
       this.el.value = value;
       // Trigger change event
       if (value !== last) {
-        this.$el.trigger('change');
+        this.el.dispatchEvent(new Event('change'));
       }
       this.close();
       this.el.focus();

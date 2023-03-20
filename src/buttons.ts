@@ -159,7 +159,7 @@ import anim from "animejs";
           duration: 175,
           easing: 'easeOutQuad',
           complete: () => {
-            this.$el.removeClass('active');
+            this.el.classList.remove('active');
           }
         });
       });
