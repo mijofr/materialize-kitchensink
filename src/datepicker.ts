@@ -1,6 +1,7 @@
 import { Component } from "./component";
 import { M } from "./global";
 import { Modal } from "./modal";
+import { FormSelect } from "./select";
 
 let _defaults = {
   // Close when date is selected
@@ -207,11 +208,11 @@ let _defaults = {
     destroySelects() {
       let oldYearSelect = this.calendarEl.querySelector('.orig-select-year');
       if (oldYearSelect) {
-        M.FormSelect.getInstance(oldYearSelect).destroy();
+        FormSelect.getInstance(oldYearSelect).destroy();
       }
       let oldMonthSelect = this.calendarEl.querySelector('.orig-select-month');
       if (oldMonthSelect) {
-        M.FormSelect.getInstance(oldMonthSelect).destroy();
+        FormSelect.getInstance(oldMonthSelect).destroy();
       }
     }
 
@@ -657,11 +658,11 @@ let _defaults = {
       // Init Materialize Select
       let yearSelect = this.calendarEl.querySelector('.orig-select-year');
       let monthSelect = this.calendarEl.querySelector('.orig-select-month');
-      M.FormSelect.init(yearSelect, {
+      FormSelect.init(yearSelect, {
         classes: 'select-year',
         dropdownOptions: { container: document.body, constrainWidth: false }
       });
-      M.FormSelect.init(monthSelect, {
+      FormSelect.init(monthSelect, {
         classes: 'select-month',
         dropdownOptions: { container: document.body, constrainWidth: false }
       });
