@@ -30,6 +30,6 @@ module.exports = {
     filename: 'materialize.js',
     path: path.resolve(__dirname, 'bin'),
     libraryTarget: 'var',
-    library: 'M'    
+    library: 'M'
   }
 };
