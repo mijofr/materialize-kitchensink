@@ -4,7 +4,6 @@ const webpackConfig = require('./webpack.config.js');
 module.exports = function(grunt) {
   // configure the tasks
   const config = {
-    //  Jasmine
     jasmine: {
       components: {
         src: ['bin/materialize.js'],
@@ -28,13 +27,11 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Sass
     sass: {
       // Global options
       options: {
         implementation: sass
       },
-
       // Task
       expanded: {
         // Target options
@@ -80,7 +77,6 @@ module.exports = function(grunt) {
       }
     },
 
-    // PostCss Autoprefixer
     postcss: {
       options: {
         processors: [
@@ -108,10 +104,11 @@ module.exports = function(grunt) {
         src: 'bin/materialize.css'
       }
     },
+
     webpack: {
       myConfig: webpackConfig,
     },       
-    // Browser Sync integration
+
     browserSync: {
       bsFiles: ['bin/*', 'css/ghpages-materialize.css', '!**/node_modules/**/*'],
       options: {
@@ -129,7 +126,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Uglify
     uglify: {
       options: {
         // Use these options when debugging
@@ -154,7 +150,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Compress
     compress: {
       main: {
         options: {
@@ -273,14 +268,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Clean
-    clean: {
-      temp: {
-        src: ['temp/']
-      }
-    },
-
-    //  Pug
     pug: {
       compile: {
         options: {
@@ -301,7 +288,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Watch Files
     watch: {
       pug: {
         files: ['pug/**/*'],
@@ -331,7 +317,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Concurrent
     concurrent: {
       options: {
         logConcurrentOutput: true,
@@ -345,7 +330,6 @@ module.exports = function(grunt) {
           'watch:pug',
           'watch:js',
           'watch:sass',
-          //'notify:watching',
           'server'
         ]
       }
@@ -407,14 +391,14 @@ module.exports = function(grunt) {
     // Rename files
     rename: {
       rename_src: {
-        src: 'bin/materialize-src' + '.zip',
+        src: 'bin/materialize-src.zip',
         dest: 'bin/materialize-src-v' + grunt.option('newver') + '.zip',
         options: {
           ignore: true
         }
       },
       rename_compiled: {
-        src: 'bin/materialize' + '.zip',
+        src: 'bin/materialize.zip',
         dest: 'bin/materialize-v' + grunt.option('newver') + '.zip',
         options: {
           ignore: true
@@ -462,7 +446,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-compress');
-  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-pug');
   grunt.loadNpmTasks('grunt-concurrent');
   grunt.loadNpmTasks('grunt-text-replace');
@@ -493,13 +476,11 @@ module.exports = function(grunt) {
     'replace:package_json',
     'rename:rename_src',
     'rename:rename_compiled',
-    'clean:temp'
   ]);  
 
   grunt.registerTask('pug_compile', ['pug']);
   grunt.registerTask('js_compile', [
     'webpack',
-    'clean:temp',
     'copy:docs_js'
   ]);
   grunt.registerTask('sass_compile', [
