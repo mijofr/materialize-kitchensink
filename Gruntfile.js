@@ -2,7 +2,8 @@ const sass = require('sass');
 const webpackConfig = require('./webpack.config.js');
 
 module.exports = function(grunt) {
-  const concatFile = 'temp/js/materialize_concat.js.map';
+  //const concatFile = 'temp/js/materialize_concat.js.map';
+  /*
   const jsFiles = [
     'js/cash.js',
     'js/waves.js',
@@ -34,6 +35,7 @@ module.exports = function(grunt) {
     'js/select.js',
     'js/range.js'
   ];
+  */
 
   // configure the tasks
   const config = {
@@ -163,6 +165,7 @@ module.exports = function(grunt) {
     },
 
     //  Concat
+    /*
     concat: {
       options: {
         separator: ';'
@@ -184,6 +187,7 @@ module.exports = function(grunt) {
         dest: 'temp/js/materialize_concat.js'
       }
     },
+    */
 
     //  Uglify
     uglify: {
@@ -516,7 +520,7 @@ module.exports = function(grunt) {
   // grunt.loadNpmTasks('grunt-gitinfo');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-sass');
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  //grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -538,7 +542,7 @@ module.exports = function(grunt) {
     'sass:min',
     'postcss:expanded',
     'postcss:min',
-    'concat:dist',
+    //'concat:dist',
     'webpack',
     // 'uglify:dist',
     // 'uglify:extras',
@@ -554,9 +558,9 @@ module.exports = function(grunt) {
     'clean:temp'
   ]);  
 
-  grunt.registerTask('pug_compile', ['pug']); //, 'notify:pug_compile']);
+  grunt.registerTask('pug_compile', ['pug']);
   grunt.registerTask('js_compile', [
-    'concat:temp',    
+    //'concat:temp',
     'webpack',
     'clean:temp',
     'copy:docs_js'
@@ -567,7 +571,7 @@ module.exports = function(grunt) {
     'postcss:gh',
     'postcss:bin'
   ]);
-  grunt.registerTask('server', ['browserSync']); //, 'notify:server']);
+  grunt.registerTask('server', ['browserSync']);
   grunt.registerTask('monitor', ['concurrent:monitor']);
   grunt.registerTask('test', ['js_compile', 'sass_compile', 'connect', 'jasmine']);
   grunt.registerTask('jas_test', ['connect', 'jasmine']);
@@ -577,7 +581,6 @@ module.exports = function(grunt) {
     for (let i = 0; i < n; i++) {
       tasks.push('jasmine');
     }
-
     grunt.task.run(tasks);
   });
   grunt.registerTask('docs', [
