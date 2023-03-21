@@ -50,11 +50,9 @@ export class Waves {
   static Init() {
     document.addEventListener("DOMContentLoaded", () => {
       document.body.addEventListener('click', e => {
-        console.log('click... WAVES');
         const trigger = <HTMLElement>e.target;
         const el = <HTMLElement>trigger.closest('.waves-effect');
         if (el && el.contains(trigger)) {
-          console.log('yess!');
           const isCircular = el.classList.contains('waves-circle');
           const x = e.pageX - Waves._offset(el).left;
           const y = e.pageY - Waves._offset(el).top;

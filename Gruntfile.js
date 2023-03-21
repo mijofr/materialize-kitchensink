@@ -2,41 +2,6 @@ const sass = require('sass');
 const webpackConfig = require('./webpack.config.js');
 
 module.exports = function(grunt) {
-  //const concatFile = 'temp/js/materialize_concat.js.map';
-  /*
-  const jsFiles = [
-    'js/cash.js',
-    'js/waves.js',
-    'js/component.js',
-    'js/global.js',
-    'js/anime.min.js',
-    'js/collapsible.js',
-    'js/dropdown.js',
-    'js/modal.js',
-    'js/materialbox.js',
-    'js/parallax.js',
-    'js/tabs.js',
-    'js/tooltip.js',
-    'js/toasts.js',
-    'js/sidenav.js',
-    'js/scrollspy.js',
-    'js/autocomplete.js',
-    'js/forms.js',
-    'js/slider.js',
-    'js/cards.js',
-    'js/chips.js',
-    'js/pushpin.js',
-    'js/buttons.js',
-    'js/datepicker.js',
-    'js/timepicker.js',
-    'js/characterCounter.js',
-    'js/carousel.js',
-    'js/tapTarget.js',
-    'js/select.js',
-    'js/range.js'
-  ];
-  */
-
   // configure the tasks
   const config = {
     //  Jasmine
@@ -163,31 +128,6 @@ module.exports = function(grunt) {
         open: false
       }
     },
-
-    //  Concat
-    /*
-    concat: {
-      options: {
-        separator: ';'
-      },
-      dist: {
-        // the files to concatenate
-        src: jsFiles,
-        // the location of the resulting JS file
-        dest: 'temp/js/materialize.js'
-      },
-      temp: {
-        // the files to concatenate
-        options: {
-          sourceMap: true,
-          sourceMapStyle: 'link'
-        },
-        src: jsFiles,
-        // the location of the resulting JS file
-        dest: 'temp/js/materialize_concat.js'
-      }
-    },
-    */
 
     //  Uglify
     uglify: {
@@ -520,7 +460,6 @@ module.exports = function(grunt) {
   // grunt.loadNpmTasks('grunt-gitinfo');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-sass');
-  //grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -542,7 +481,6 @@ module.exports = function(grunt) {
     'sass:min',
     'postcss:expanded',
     'postcss:min',
-    //'concat:dist',
     'webpack',
     // 'uglify:dist',
     // 'uglify:extras',
@@ -560,7 +498,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('pug_compile', ['pug']);
   grunt.registerTask('js_compile', [
-    //'concat:temp',
     'webpack',
     'clean:temp',
     'copy:docs_js'
