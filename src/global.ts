@@ -23,6 +23,7 @@ import { TapTarget } from './tapTarget';
 import { Timepicker } from './timepicker';
 import { Toast } from './toasts';
 import { Tooltip } from './tooltip';
+import { Waves } from './waves';
 
 export class M {
   static version = '1.2.2';
@@ -57,6 +58,7 @@ export class M {
   static TapTarget: typeof TapTarget = TapTarget;
   static ScrollSpy: typeof ScrollSpy = ScrollSpy;
   static Range: typeof Range = Range;
+  static Waves: typeof Waves = Waves;
 
   static tabPressed:boolean = false;
   static keyDown:boolean = false;
@@ -114,12 +116,13 @@ export class M {
     Cards.Init();
     Forms.Init();
     Chips.Init();
+    Waves.Init();
   }
 
+  //--- TODO: Remove!
   static jQueryLoaded(): boolean {
     return !!(<any>window).jQuery;      
   }
-  
   static initializeJqueryWrapper(plugin: any, pluginName: string, classRef: string) {
     if (!this.jQueryLoaded())
       return;
@@ -148,6 +151,8 @@ export class M {
       jq.error(`Method ${methodOrOptions} does not exist on jQuery.${pluginName}`);
     };
   }
+  //---
+
 
   static AutoInit(context:Element = null) {
     let root = !!context ? context : document.body;
@@ -373,10 +378,6 @@ export class M {
       }
       return result;
     };
-  }
-
-  getTime(): number {
-    return new Date().getTime();
   }
 }
 
