@@ -170,9 +170,13 @@ const _defaults = {};
     _calcRangeOffset(): number {
       const width = this.el.getBoundingClientRect().width - 15;
       const max = parseFloat(this.el.getAttribute('max')) || 100; // Range default max
-      const min = parseFloat(this.el.getAttribute('min')) || 0; // Range default min
-      const percent = (parseFloat(this.el.getAttribute('value')) - min) / (max - min);
+      const min = parseFloat(this.el.getAttribute('min')) || 0; // Range default min      
+      const percent = (parseFloat(this.el.value) - min) / (max - min);
       return percent * width;
+    }
+
+    static Init(){
+      Range.init(document.querySelectorAll('input[type=range]'), {});
     }
   }
 

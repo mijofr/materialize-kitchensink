@@ -24,6 +24,7 @@ import { Timepicker } from './timepicker';
 import { Toast } from './toasts';
 import { Tooltip } from './tooltip';
 import { Waves } from './waves';
+import { Range } from './range';
 
 export class M {
   static version = '1.2.2';
@@ -117,6 +118,7 @@ export class M {
     Forms.Init();
     Chips.Init();
     Waves.Init();
+    Range.Init();
   }
 
   //--- TODO: Remove!
@@ -153,7 +155,6 @@ export class M {
   }
   //---
 
-
   static AutoInit(context:Element = null) {
     let root = !!context ? context : document.body;
     let registry = {
@@ -174,7 +175,7 @@ export class M {
       TapTarget: root.querySelectorAll('.tap-target:not(.no-autoinit)'),
       Timepicker: root.querySelectorAll('.timepicker:not(.no-autoinit)'),
       Tooltip: root.querySelectorAll('.tooltipped:not(.no-autoinit)'),
-      FloatingActionButton: root.querySelectorAll('.fixed-action-btn:not(.no-autoinit)')
+      FloatingActionButton: root.querySelectorAll('.fixed-action-btn:not(.no-autoinit)'),
     };
     M.Autocomplete.init(registry.Autocomplete, null);
     M.Carousel.init(registry.Carousel, null);  
@@ -193,7 +194,7 @@ export class M {
     M.TapTarget.init(registry.TapTarget, null);
     M.Timepicker.init(registry.Timepicker, null);
     M.Tooltip.init(registry.Tooltip, null);
-    M.FloatingActionButton.init(registry.FloatingActionButton, null);         
+    M.FloatingActionButton.init(registry.FloatingActionButton, null);
   }
 
   static objectSelectorString(obj: any): string {
