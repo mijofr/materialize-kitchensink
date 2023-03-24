@@ -1,7 +1,5 @@
 import { M } from "./global";
 
-// TODO: !!!
-
 export class Forms {
 
   static textareaAutoResize(textarea: HTMLTextAreaElement) {
@@ -35,8 +33,9 @@ export class Forms {
     if (paddingBottom) hiddenDiv.style.paddingBottom = paddingBottom; //css('padding-bottom', paddingBottom);    
     if (paddingLeft) hiddenDiv.style.paddingLeft = paddingLeft; //css('padding-left', paddingLeft);    
 
-    // Set original-height, if none
-    //if (!textarea.data('original-height')) textarea.data('original-height', textarea.height());
+    // Set original-height, if none    
+    if (!textarea.hasAttribute('original-height'))
+      textarea.setAttribute('original-height', textarea.getBoundingClientRect().height.toString());
 
     if (textarea.getAttribute('wrap') === 'off') {
       hiddenDiv.style.overflowWrap = 'normal'; // ('overflow-wrap', 'normal')
@@ -50,41 +49,35 @@ export class Forms {
 
     // When textarea is hidden, width goes crazy.
     // Approximate with half of window size
+    if (textarea.offsetWidth > 0 && textarea.offsetHeight > 0) {
+      hiddenDiv.style.width = textarea.getBoundingClientRect().width +'px'; // ('width', textarea.width() + 'px');
+    }
+    else {
+      hiddenDiv.style.width = (window.innerWidth / 2)+'px' //css('width', window.innerWidth / 2 + 'px');
+    }
 
-    // if (textarea.offsetWidth > 0 && textarea.offsetHeight > 0) {
-    //   hiddenDiv.css('width', textarea.width() + 'px');
-    // }
-    // else {
-    //   hiddenDiv.css('width', window.innerWidth / 2 + 'px');
-    // }
-
-    /**
-     * Resize if the new height is greater than the
-     * original height of the textarea
-     */
-
-    // if (textarea.data('original-height') <= hiddenDiv.innerHeight()) {
-    //   textarea.css('height', hiddenDiv.innerHeight() + 'px');
-    // }
-    // else if (textarea[0].value.length < textarea.data('previous-length')) {
-    //   /**
-    //    * In case the new height is less than original height, it
-    //    * means the textarea has less text than before
-    //    * So we set the height to the original one
-    //    */
-    //   textarea.css('height', textarea.data('original-height') + 'px');
-    // }
-    // textarea.data('previous-length', textarea[0].value.length);
-
+    // Resize if the new height is greater than the
+    // original height of the textarea
+    const originalHeight = parseInt(textarea.getAttribute('original-height'));
+    const prevLength = parseInt(textarea.getAttribute('previous-length'));
+    if (isNaN(originalHeight)) return;
+    if (originalHeight <= hiddenDiv.clientHeight) {
+      textarea.style.height = hiddenDiv.clientHeight+'px';  //css('height', hiddenDiv.innerHeight() + 'px');
+    }
+    else if (textarea.value.length < prevLength) {
+    // In case the new height is less than original height, it
+    // means the textarea has less text than before
+    // So we set the height to the original one
+      textarea.style.height = originalHeight+'px';
+    }
+    textarea.setAttribute('previous-length', textarea.value.length.toString());
   };
-
 
   static Init(){
     document.addEventListener("DOMContentLoaded", () => {
 
       document.addEventListener('keyup', e => {
         const target = <HTMLInputElement>e.target;
-
         // Radio and Checkbox focus class
         if (target instanceof HTMLInputElement && ['radio','checkbox'].includes(target.type)) {
           // TAB, check if tabbing to radio or checkbox.
@@ -93,33 +86,33 @@ export class Forms {
             target.addEventListener('blur', e => target.classList.remove('tabbed'), {once: true});
           }
         }
+      });
 
-      });  
-
-      /*
       document.querySelectorAll('.materialize-textarea').forEach((textArea: HTMLTextAreaElement) => {
-        textArea.data('original-height', textArea.height);
-        textArea.data('previous-length', textArea.value.length);
+        // Save Data in Element
+        textArea.setAttribute('original-height', textArea.getBoundingClientRect().height.toString());
+        textArea.setAttribute('previous-length', textArea.value.length.toString());
         Forms.textareaAutoResize(textArea);
+
+        textArea.addEventListener('keyup', e => Forms.textareaAutoResize(textArea));
+        textArea.addEventListener('keydown', e => Forms.textareaAutoResize(textArea));
       });
-      $(document).on('keyup', text_area_selector, () => Forms.textareaAutoResize($(this)));
-      $(document).on('keydown', text_area_selector, () => Forms.textareaAutoResize($(this)));
   
-
       // File Input Path
-      $(document).on('change', '.file-field input[type="file"]', function() {
-        let file_field = $(this).closest('.file-field');
-        let path_input = file_field.find('input.file-path');
-        let files = ($(this)[0] as HTMLInputElement).files;
-        let file_names = [];
-        for (let i = 0; i < files.length; i++) {
-          file_names.push(files[i].name);
-        }
-        (path_input[0] as HTMLInputElement).value = file_names.join(', ');
-        path_input.trigger('change');
+      document.querySelectorAll('.file-field input[type="file"]').forEach((fileInput: HTMLInputElement) => {
+        fileInput.addEventListener('change', e => {
+          const fileField = fileInput.closest('.file-field');
+          const pathInput = <HTMLInputElement>fileField.querySelector('input.file-path');
+          const files = fileInput.files;
+          const filenames = [];
+          for (let i = 0; i < files.length; i++) {
+            filenames.push(files[i].name);
+          }
+          pathInput.value = filenames.join(', ');
+          pathInput.dispatchEvent(new Event('change'));
+        });
       });
-      */
-
+  
     });
   }
 }
