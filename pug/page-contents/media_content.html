@@ -24,14 +24,6 @@
       // specify options here
     });
   });
-
-  // Or with jQuery
-
-  $(document).ready(function() {
-    $('.materialboxed').materialbox({
-      // specify options here
-    });
-  });
         </code></pre>
         <br>
         <br>
@@ -91,18 +83,9 @@
 
         <h4>Methods</h4>
         <blockquote>
-          <p>Because jQuery is no longer a dependency, all the methods are called on the plugin instance. You can get the plugin
-            instance like this: </p>
+          <p>All the methods are called on the plugin instance. You can get the plugin instance like this: </p>
           <pre><code class="language-javascript col s12">
     var instance = M.Materialbox.getInstance(elem);
-
-    /* jQuery Method Calls
-      You can still use the old jQuery plugin method calls.
-      But you won't be able to access instance properties.
-
-      $('.materialboxed').materialbox('methodName');
-      $('.materialboxed').materialbox('methodName', paramName);
-    */
           </code></pre>
         </blockquote>
         <h5 class="method-header">
@@ -291,22 +274,6 @@
       }
     });
   });
-
-  // Or with jQuery
-
-  $(document).ready(function() {
-    $('.slider').slider({
-      // specify options here
-      /** Optional function which generates ARIA label for each indicator */
-      indicatorLabelFunc: (idx, current) => {
-        let label = "Go to slide " + idx;
-        if (current) {
-          label = label + " (Current)";
-        }
-        return label;
-      }
-    });
-  });
         </code></pre>
         <br>
 
@@ -382,18 +349,9 @@
         <p>We have methods to pause, start, move to next and move to previous slide.</p>
 
         <blockquote>
-          <p>Because jQuery is no longer a dependency, all the methods are called on the plugin instance. You can get the plugin
-            instance like this: </p>
+          <p>All the methods are called on the plugin instance. You can get the plugin instance like this: </p>
           <pre><code class="language-javascript col s12">
     var instance = M.Slider.getInstance(elem);
-
-    /* jQuery Method Calls
-      You can still use the old jQuery plugin method calls.
-      But you won't be able to access instance properties.
-
-      $('.slider').slider('methodName');
-      $('.slider').slider('methodName', paramName);
-    */
           </code></pre>
         </blockquote>
 

@@ -13,15 +13,20 @@
         <br>
         <h5>Demo Code</h5>
         <pre><code class="language-javascript">
-  $('.pushpin-demo-nav').each(function() {
-    var $this = $(this);
-    var $target = $('#' + $(this).attr('data-target'));
-    $this.pushpin({
-      top: $target.offset().top,
-      bottom: $target.offset().top + $target.outerHeight() - $this.height()
-    });
+// Pushpin Demo Init
+const pushPinDemoNavElems = document.querySelectorAll('.pushpin-demo-nav');
+pushPinDemoNavElems.forEach(navElem => {
+  const navBox = navElem.getBoundingClientRect();    
+  const contentElem = document.querySelector('#'+navElem.getAttribute('data-target'));
+  const contentBox = contentElem.getBoundingClientRect();
+  const offsetTop = Math.floor(contentBox.top + window.scrollY - document.documentElement.clientTop);
+  M.Pushpin.init(navElem, {
+    top: offsetTop,
+    bottom: offsetTop + contentBox.height - navBox.height
   });
-        </code></pre>
+});
+
+</code></pre>
         <pre><code class="language-css">
   // Only necessary for window height sized blocks.
   html, body {
@@ -38,14 +43,6 @@
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.pushpin');
     var instances = M.Pushpin.init(elems, {
-      // specify options here
-    });
-  });
-
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('.pushpin').pushpin({
       // specify options here
     });
   });
@@ -96,18 +93,9 @@
       <div id="methods" class="scrollspy section">
         <h3 class="header">Methods</h3>
         <blockquote>
-          <p>Because jQuery is no longer a dependency, all the methods are called on the plugin instance. You can get the plugin
-            instance like this: </p>
+          <p>All the methods are called on the plugin instance. You can get the plugin instance like this: </p>
           <pre><code class="language-javascript col s12">
   var instance = M.Pushpin.getInstance(elem);
-
-  /* jQuery Method Calls
-    You can still use the old jQuery plugin method calls.
-    But you won't be able to access instance properties.
-
-    $('.target').pushpin('methodName');
-    $('.target').pushpin('methodName', paramName);
-  */
         </code></pre>
         </blockquote>
 

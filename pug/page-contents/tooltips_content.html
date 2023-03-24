@@ -33,14 +33,6 @@
       // specify options here
     });
   });
-
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('.tooltipped').tooltip({
-      // specify options here
-    });
-  });
         </code></pre>
       </div>
 
@@ -144,18 +136,9 @@
       <div id="methods" class="section scrollspy">
         <h3 class="header">Methods</h3>
         <blockquote>
-          <p>Because jQuery is no longer a dependency, all the methods are called on the plugin instance. You can get the plugin
-            instance like this: </p>
+          <p>All the methods are called on the plugin instance. You can get the plugin instance like this: </p>
           <pre><code class="language-javascript col s12">
   var instance = M.Tooltip.getInstance(elem);
-
-  /* jQuery Method Calls
-    You can still use the old jQuery plugin method calls.
-    But you won't be able to access instance properties.
-
-    $('.tooltip').tooltip('methodName');
-    $('.tooltip').tooltip('methodName', paramName);
-  */
           </code></pre>
         </blockquote>
         <h5 class="method-header">

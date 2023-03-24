@@ -5,8 +5,7 @@
 
       <div id="introduction" class="section scrollspy">
         <p> Select allows user input through specified options. Make sure you wrap it in a
-          <code class="language-markup">.input-field</code> for proper alignment with other text fields. Remember that this is a jQuery plugin so make sure you
-          <a href="#initialization">initialize</a> this in your document ready. </p>
+          <code class="language-markup">.input-field</code> for proper alignment with other text fields.</p>
 
         <div class="row">
           <form class="col s12">
@@ -172,14 +171,6 @@
       // specify options here
     });
   });
-
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('select').formSelect({
-      // specify options here
-    });
-  });
         </code></pre>
         <br>
       </div>
@@ -217,18 +208,9 @@
       <div id="methods" class="scrollspy section">
         <h3 class="header">Methods</h3>
         <blockquote>
-          <p>Because jQuery is no longer a dependency, all the methods are called on the plugin instance. You can get the plugin
-            instance like this: </p>
+          <p>All the methods are called on the plugin instance. You can get the plugin instance like this: </p>
           <pre><code class="language-javascript col s12">
   var instance = M.FormSelect.getInstance(elem);
-
-  /* jQuery Method Calls
-    You can still use the old jQuery plugin method calls.
-    But you won't be able to access instance properties.
-
-    $('select').formSelect('methodName');
-    $('select').formSelect('methodName', paramName);
-  */
         </code></pre>
         </blockquote>
 

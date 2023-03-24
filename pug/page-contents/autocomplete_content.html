@@ -109,20 +109,6 @@
       }
     });
   });
-
-
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('input.autocomplete').autocomplete({
-      // specify options here
-      data: [
-        {id: 12, text: "Apple"},
-        {id: 13, text: "Microsoft"},
-        {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
-      ]
-    });
-  });
           </code>
         </pre>
       </div>
@@ -219,21 +205,13 @@ onSearch: function(text, autocomplete) {
       <div id="methods" class="scrollspy section">
         <h3 class="header">Methods</h3>
         <blockquote>
-          <p>Because jQuery is no longer a dependency, all the methods are called on the plugin instance. You can get the plugin
-            instance like this: </p>
+          <p>All the methods are called on the plugin instance. You can get the plugin instance like this: </p>
             <pre style="padding-top: 0px;">
               <span class="copyMessage">Copied!</span>
               <i class="material-icons copyButton">content_copy</i>
               <code class="language-javascript col s12 copiedText">
   var instance = M.Autocomplete.getInstance(elem);
-
-  /* jQuery Method Calls
-    You can still use the old jQuery plugin method calls.
-    But you won't be able to access instance properties.
-
-    $('.autocomplete').autocomplete('methodName');
-    $('.autocomplete').autocomplete('methodName', paramName);
-  */
+  instance.open();
               </code>
             </pre>
         </blockquote>
