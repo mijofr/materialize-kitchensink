@@ -112,6 +112,10 @@ module.exports = function(grunt) {
       },
 
       dev: Object.assign({}, webpackConfig, {
+        mode: 'development'
+      }),
+
+      dev_watch: Object.assign({}, webpackConfig, {
         mode: 'development',
         watch: true,
       }),
@@ -296,10 +300,9 @@ module.exports = function(grunt) {
       },
       monitor: {
         tasks: [
-          'webpack:dev',
+          'webpack:dev_watch',
           'pug_compile',
           'sass_compile',
-          //'js_compile',
           'watch:pug',
           'watch:sass',
           'watch:copydocs',
@@ -451,9 +454,7 @@ module.exports = function(grunt) {
   grunt.registerTask('js_compile', ['webpack:dev', 'copy:docs_js']);
   grunt.registerTask('sass_compile', ['sass:gh', 'sass:bin', 'postcss:gh', 'postcss:bin']);
   grunt.registerTask('server', ['browserSync']);
-
   grunt.registerTask('monitor', ['concurrent:monitor']); // DEV
-
   grunt.registerTask('test', ['js_compile', 'sass_compile', 'connect', 'jasmine']);
   grunt.registerTask('jas_test', ['connect', 'jasmine']);
   grunt.registerTask('test_repeat', function() {
