@@ -178,7 +178,7 @@ let _defaults = {
 
       if (ScrollSpy._visibleElements[0]) {
         const actElem = document.querySelector(this.options.getActiveElement(ScrollSpy._visibleElements[0].id));
-        actElem.classList.remove(this.options.activeClass);
+        actElem?.classList.remove(this.options.activeClass);
 
         if (ScrollSpy._visibleElements[0].M_ScrollSpy && this.id < ScrollSpy._visibleElements[0].M_ScrollSpy.id) {
           ScrollSpy._visibleElements.unshift(this.el);
@@ -190,8 +190,8 @@ let _defaults = {
       else {
         ScrollSpy._visibleElements.push(this.el);
       }
-      document.querySelector(this.options.getActiveElement(ScrollSpy._visibleElements[0].id))      
-      .classList.add(this.options.activeClass);
+      const selector = this.options.getActiveElement(ScrollSpy._visibleElements[0].id);
+      document.querySelector(selector)?.classList.add(this.options.activeClass);
     }
 
     _exit() {
@@ -199,14 +199,14 @@ let _defaults = {
 
       if (ScrollSpy._visibleElements[0]) {
         const actElem = document.querySelector(this.options.getActiveElement(ScrollSpy._visibleElements[0].id));
-        actElem.classList.remove(this.options.activeClass);
+        actElem?.classList.remove(this.options.activeClass);
 
         ScrollSpy._visibleElements = ScrollSpy._visibleElements.filter((x) => x.id != this.el.id);
 
         if (ScrollSpy._visibleElements[0]) {
           // Check if empty
-          document.querySelector(this.options.getActiveElement(ScrollSpy._visibleElements[0].id))
-          .classList.add(this.options.activeClass);
+          const selector = this.options.getActiveElement(ScrollSpy._visibleElements[0].id);          
+          document.querySelector(selector)?.classList.add(this.options.activeClass);
         }
       }
     }

@@ -91,7 +91,7 @@ import anim from "animejs";
       // Trigger keydown handler
       this.el.addEventListener('keydown', this._handleTriggerKeydownBound);
       // Item click handler
-      this.dropdownEl.addEventListener('click', this._handleDropdownClickBound);
+      this.dropdownEl?.addEventListener('click', this._handleDropdownClickBound);
       // Hover event handlers
       if (this.options.hover) {
         this._handleMouseEnterBound = this._handleMouseEnter.bind(this);
@@ -303,6 +303,7 @@ import anim from "animejs";
     }
 
     _makeDropdownFocusable() {
+      if (!this.dropdownEl) return;
       // Needed for arrow key navigation
       this.dropdownEl.tabIndex = 0;
       // Only set tabindex if it hasn't been set by user
