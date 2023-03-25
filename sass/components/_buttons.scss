@@ -9,6 +9,7 @@
   padding: $button-padding;
   text-transform: uppercase;
   vertical-align: middle;
+  user-select: none;
   -webkit-tap-highlight-color: transparent; // Gets rid of tap active state
 }
 
