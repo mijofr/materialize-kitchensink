@@ -338,18 +338,19 @@ a.sidenav-trigger.top-nav {
 
 // Grid doc styles
 
-.col.grid-example {
+.grid-example {
   border: 1px solid $border-color;
-  margin: 7px 0;
   text-align: center;
-  line-height: 50px;
-  font-size: 28px;
-  background-color: tomato;
+  font-size: 26px;
+  background-color: lightcoral;
   color: white;
-  padding: 0;
+  //margin: 7px 0;
+  // line-height: 50px;
+  // font-weight: bold;
+  // padding: 0;
 
   span {
-    font-weight: 100;
+    //font-weight: 100;
     line-height: 50px;
   }
 }
@@ -583,6 +584,7 @@ ul.table-of-contents {
   margin-top: 0;
   padding-top: 48px;
   font-size: 1rem;
+  margin-left: 4rem;
 }
 
 // Prism Styling

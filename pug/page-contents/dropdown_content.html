@@ -53,6 +53,7 @@
 
       <div id="initialization" class="section scrollspy">
         <h3 class="header">Initialization</h3>
+
         <pre style="padding-top: 0px;">
           <span class="copyMessage">Copied!</span>
           <i class="material-icons copyButton">content_copy</i>
@@ -195,38 +196,37 @@
 
           <script>
             document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.dropdown-trigger')[0];
-            var instances = M.Dropdown.init(elems, {
-              // the dropdown is aligned to left
-              alignment: 'left',
-              // enabled for example to be visible
-              constrainWidth: false,
+              var elems = document.querySelectorAll('.dropdown-trigger')[0];
+              var instances = M.Dropdown.init(elems, {
+                // the dropdown is aligned to left
+                alignment: 'left',
+                // enabled for example to be visible
+                constrainWidth: false,
+              });
             });
-          });
-
-          document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.dropdown-trigger')[1];
-            var instances = M.Dropdown.init(elems, {
-              // the dropdown is aligned to left
-              alignment: 'right',
-              // enabled for example to be visible
-              constrainWidth: false,
+            document.addEventListener('DOMContentLoaded', function() {
+              var elems = document.querySelectorAll('.dropdown-trigger')[1];
+              var instances = M.Dropdown.init(elems, {
+                // the dropdown is aligned to left
+                alignment: 'right',
+                // enabled for example to be visible
+                constrainWidth: false,
+              });
             });
-          });
-
           </script>
           
-          <code class="language-javascript col s12 copiedText">
-            document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.dropdown-trigger')[0];
-            var instances = M.Dropdown.init(elems, {
-              // the dropdown is aligned to left
-              alignment: 'left',
-              // enabled for example to be visible
-              constrainWidth: false,
-            });
-          });
-          </code>
+          <pre>
+            <code class="language-javascript copiedText">
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.dropdown-trigger')[0];
+    var instances = M.Dropdown.init(elems, {
+      // the dropdown is aligned to left
+      alignment: 'left',
+      // enabled for example to be visible
+      constrainWidth: false,
+    });
+  });</code>
+          </pre>
           
         </div>
       </div>
@@ -238,7 +238,7 @@
             <pre style="padding-top: 0px;">
               <span class="copyMessage">Copied!</span>
               <i class="material-icons copyButton">content_copy</i>
-              <code class="language-javascript col s12 copiedText">
+              <code class="language-javascript copiedText">
     var instance = M.Dropdown.getInstance(elem);
               </code>
             </pre>
@@ -334,7 +334,7 @@
     </div>
 
     <!-- Table of Contents -->
-    <div class="col hide-on-small-only m3 xl3 offset-xl1">
+    <div class="col hide-on-small-only m3 xl3">
       <div class="toc-wrapper">
 
         <div style="height: 1px;">
