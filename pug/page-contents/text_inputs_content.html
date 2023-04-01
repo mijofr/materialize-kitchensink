@@ -11,7 +11,7 @@
         <h3 class="header">Input fields</h3>
         <p>Text fields allow user input. The border should light up simply and clearly indicating which field the user is currently editing. You must have a <code class="language-markup">.input-field</code> div wrapping your input and label. This is only used in our Input and Textarea form elements.</p>
         <p>The validate class leverages HTML5 validation and will add a <code class="language-markup">valid</code> and <code class="language-markup">invalid</code> class accordingly. If you don't want the Green and Red validation states, just remove the <code class="language-markup">validate</code> class from your inputs.</p>
-        <br>
+        
           <form>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-bottom: 3em;">
@@ -123,7 +123,7 @@
       &lt;/div>
     &lt;/form>
   &lt;/div>
-        </code></pre><br>
+        </code></pre>
         <h5>Floating Labels with CSS only</h5>
         <p>There should not be any problems with initializing the inputs properly, since the floating Labels are rendered with CSS only. The CSS Technique requires to use an empty placeholder in the HTML. You have to put an emtpy space in the placeholder. Putting an empty string wont work.</p>
           <div class="input-field outline">
@@ -139,7 +139,7 @@
         </code></pre>
 
         <h5>Icon Prefixes</h5>
-        <p>You can add an icon prefix to make the form input label even more clear. Just add an icon with the class <code class="language-markup">prefix</code> before the input and label.</p><br>
+        <p>You can add an icon prefix to make the form input label even more clear. Just add an icon with the class <code class="language-markup">prefix</code> before the input and label.</p>
         <div class="row">
           <form class="col s12">
             <div class="row">
@@ -175,10 +175,10 @@
     &lt;/form>
   &lt;/div>
         </code></pre>
-        <br>
+        
 
         <h5>Icon Suffixes</h5>
-        <p>You can also add an icon suffix. Just add an icon with the class <code class="language-markup">suffix</code> before the input and label.</p><br>
+        <p>You can also add an icon suffix. Just add an icon with the class <code class="language-markup">suffix</code> before the input and label.</p>
         <div class="row">
           <form class="col s12">
             <div class="row">
@@ -214,10 +214,10 @@
     &lt;/form>
   &lt;/div>
         </code></pre>
-        <br>
+        
 
         <h5>Custom Error or Success Messages</h5>
-        <p>You can add custom validation messages by adding either <code class="language-markup">data-error</code> or <code class="language-markup">data-success</code> attributes to your helper text element.</p><br>
+        <p>You can add custom validation messages by adding either <code class="language-markup">data-error</code> or <code class="language-markup">data-success</code> attributes to your helper text element.</p>
         <div class="row">
           <form class="col s12">
             <div class="row">
@@ -243,7 +243,7 @@
     &lt;/form>
   &lt;/div>
         </code></pre>
-        <br>
+        
 
         <h5>Changing colors</h5>
         <p>Here is a CSS template for modifying input fields in CSS. With Sass, you can achieve this by just changing a variable. The CSS shown below is unprefixed. Depending on what you use, you may have to change the type attribute selector.</p>
@@ -313,10 +313,10 @@
   $('#textarea1').val('New Text');
   M.textareaAutoResize($('#textarea1'));
         </code></pre>
-        <br>
+        
 
         <h5>Icon Prefixes</h5>
-        <p>You can add an icon prefix to make the form input label even more clear. Just add an icon with the class <code class="language-markup">prefix</code> before the input and label.</p><br>
+        <p>You can add an icon prefix to make the form input label even more clear. Just add an icon with the class <code class="language-markup">prefix</code> before the input and label.</p>
         <div class="row">
           <form class="col s12">
             <div class="row">
@@ -412,7 +412,6 @@
                 <label for="input_text">Input text</label>
               </div>
             </div>
-            <br/>
             <div class="row">
               <div class="input-field col s12">
                 <textarea id="textarea2" class="materialize-textarea" data-length="120"></textarea>
@@ -439,7 +438,7 @@
       &lt;/form>
     &lt;/div>
           </code></pre>
-        <br>
+        
 
         <h5>Initialization</h5>
         <p>There are no options for this plugin, but if you are adding these dynamically, you can use this to initialize them.</p>
