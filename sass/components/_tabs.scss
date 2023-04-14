@@ -1,4 +1,7 @@
 .tabs {
+  padding-left: 0;
+  list-style-type: none;
+
   &.tabs-transparent {
     background-color: transparent;
 
@@ -8,7 +11,7 @@
 
     .tab.disabled a,
     .tab.disabled a:hover,
-    .tab.disabled a:focus, {
+    .tab.disabled a:focus {
       color: $font-on-primary-color-disabled;
     }
 
@@ -34,7 +37,6 @@
 
   &.tabs-fixed-width {
     display: flex;
-
     .tab {
       flex-grow: 1;
     }
@@ -50,13 +52,14 @@
   white-space: nowrap;
 
   .tab {
+    padding-left: 0;
+    list-style-type: none;
     display: inline-block;
     text-align: center;
     line-height: 48px;
     height: 48px;
     padding: 0;
     margin: 0;
-    text-transform: uppercase;
 
     a {
       &.active {

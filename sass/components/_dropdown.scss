@@ -1,8 +1,10 @@
 .dropdown-content {
+  padding-left: 0;
+  list-style-type: none;
+
   &:focus {
     outline: 0;
   }
-
 
   @extend .z-depth-1;
   background-color: $dropdown-bg-color;

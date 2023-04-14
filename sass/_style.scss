@@ -79,6 +79,21 @@ footer.example {
   Index Page Styles
 ********************/
 
+ul.sidenav {
+  padding-left: 0;
+  list-style-type: none;
+  ul {
+    padding-left: 0;
+  }
+  li {
+    list-style-type: none;
+    padding-left: 0;
+    a {
+      padding-left: 1rem;
+    }
+  }
+}
+
 // custom styled sidebar
 ul.sidenav.sidenav-fixed li.logo {
   text-align: center;
@@ -149,11 +164,18 @@ ul.sidenav.sidenav-fixed {
 }
 
 .current-version-number {
+  font-size: 1.5rem;
+  font-weight: 500;
   color: $font-color-medium;
 }
 
 .intro #logo {
   height: 150px;
+}
+.intro h2 {
+  font-size: 2rem;
+  line-height: 1.25;
+  margin-bottom: 2rem;
 }
 
 .call-to-action > .btn { border: 1px solid $primary-color; }
@@ -189,7 +211,7 @@ a.sidenav-trigger.top-nav {
   height: 48px;
   width: 48px;
   top: 28px;
-  float: none;
+  //float: none;
   margin-left: 1.5rem;
   color: $primary-color;
   font-size: 36px;
@@ -301,12 +323,12 @@ a.sidenav-trigger.top-nav {
   }
 }
 
+/*
 #download-button,
 #upgrade-button {
   &:hover {
     background-color: $primary-color-when-hovered-solid;
   }
-
   background-color: $primary-color;
   width: 260px;
   height: 70px;
@@ -316,6 +338,7 @@ a.sidenav-trigger.top-nav {
   font-size: 18px;
   font-weight: 400;
 }
+*/
 
 .promo {
   width: 100%;
@@ -530,10 +553,8 @@ $height: auto;
   text-align: center;
   width: 150px;
   height: 115px;
-
   float: left;
   margin: 0 0px 15px 0px;
-
   p {
     margin: 0 0;
   }
@@ -581,6 +602,9 @@ $height: auto;
 
 // Table of contents
 ul.table-of-contents {
+  padding-left: 0;
+  list-style-type: none;
+
   margin-top: 0;
   padding-top: 48px;
   font-size: 1rem;

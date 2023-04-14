@@ -11,7 +11,7 @@
 
 .card {
   position: relative;
-  margin: $element-top-margin 0 $element-bottom-margin 0;
+  //margin: $element-top-margin 0 $element-bottom-margin 0;
   background-color: $card-bg-color;
   transition: box-shadow .25s;
   border-radius: 12px;
@@ -173,7 +173,6 @@
     a:not(.btn):not(.btn-large):not(.btn-floating) {
       color: $card-link-color;
       transition: color .3s ease;
-      text-transform: uppercase;
 
       &:hover {
         background-color: $primary-color-hover-opaque;

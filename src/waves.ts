@@ -24,7 +24,7 @@ export class Waves {
 
   public static renderWaveEffect(targetElement: HTMLElement, position: Position|null = null, color: RGBColor|null = null): void {
     const isCentered = position === null;
-    const duration = 1000;
+    const duration = 500;
     let animationFrame, animationStart;          
     const animationStep = function(timestamp) {
       if (!animationStart) {
