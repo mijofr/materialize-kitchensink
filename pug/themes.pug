@@ -1,0 +1,18 @@
+- var no_nav = false
+- var page = "Themes"
+
+doctype html
+html(lang="en")
+  head
+    include _head.pug
+  body
+    include _navbar.pug
+    main
+      div.container
+        div.row
+          div.s12.m8.offset-m1.xl7.offset-xl1
+            div.section.scrollspy#introduction
+              include:markdown-it content/themes.md
+
+    include _footer.html
+    include _scripts.html
