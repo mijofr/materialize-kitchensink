@@ -257,7 +257,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: 'pug/',
-          src: ['*.pug'],
+          src: ['*.pug', '!**/pug/includes/*.*'],
           dest: 'docs/',
           rename: function (dest, src) {
             return dest + src.split('.', 2)[0] + '.html';
