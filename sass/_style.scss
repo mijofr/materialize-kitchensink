@@ -798,15 +798,17 @@ body.parallax-demo footer {
 
 // Thanks for Downloading
 #download-thanks {
-  border-radius: 5px;
   transition: all 0.3s ease-in-out;
   overflow: hidden;
   max-height: 300px;
   opacity: 1;
+  margin: 1rem 0;
+  padding: 1rem;
 }
 #download-thanks .header {
   font-size: 1.75em;
   color: $primary-color;
+  margin: 0;
 }
 #download-thanks.is-closed {
   opacity: 0;
