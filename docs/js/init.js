@@ -196,6 +196,8 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   M.Dropdown.init(document.querySelectorAll('.dropdown-trigger'), {});
+  M.Dropdown.init(document.querySelector('#dropdown-demo-left'), {alignment: 'left', constrainWidth: false});
+  M.Dropdown.init(document.querySelector('#dropdown-demo-right'), {alignment: 'right', constrainWidth: false});
 
   M.Parallax.init(document.querySelectorAll('.parallax'), {});
   
@@ -218,7 +220,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
   M.Sidenav.init(document.querySelectorAll('.sidenav'), {});
   
-  M.TapTarget.init(document.querySelectorAll('.tap-target'), {});
+  const tts = M.TapTarget.init(document.querySelectorAll('.tap-target'), {});
+  document.querySelector('#open-taptarget')?.addEventListener('click', e => tts[0].open());
+  document.querySelector('#close-taptarget')?.addEventListener('click', e => tts[0].close());
 
   M.FormSelect.init(document.querySelectorAll('select:not(.disabled)'), {});
 

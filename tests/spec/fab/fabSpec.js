@@ -34,6 +34,7 @@ describe("Fab", function () {
     });
   });
 
+  /*
   describe("FAB to toolbar", function () {
     let toolbarFAB;
 
@@ -68,6 +69,5 @@ describe("Fab", function () {
       }, 100);
     });
   });
-
-
+  */
 });

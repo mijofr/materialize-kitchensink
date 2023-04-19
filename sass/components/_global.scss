@@ -1,5 +1,3 @@
-//Default styles
-
 html {
   box-sizing: border-box;
 }
@@ -16,25 +14,12 @@ textarea {
   font-family: $font-stack;
 }
 
-ul {
-  &:not(.browser-default) {
-    padding-left: 0;
-    list-style-type: none;
-
-    & > li {
-      list-style-type: none;
-    }
-  }
-}
-
 a {
   color: $link-color;
   text-decoration: none;
-
   // Gets rid of tap active state
   -webkit-tap-highlight-color: transparent;
 }
-
 
 // Positioning
 .valign-wrapper {
@@ -42,12 +27,10 @@ a {
   align-items: center;
 }
 
-
 // classic clearfix
 .clearfix {
   clear: both;
 }
-
 
 // Z-levels
 .z-depth-0 {
@@ -102,7 +85,6 @@ a {
 }
 
 // Dividers
-
 .divider {
   height: 1px;
   overflow: hidden;
@@ -111,7 +93,6 @@ a {
 
 
 //  Blockquote
-
 blockquote {
   margin: 20px 0;
   padding-left: 1.5rem;
@@ -119,7 +100,6 @@ blockquote {
 }
 
 // Icon Styles
-
 i {
   line-height: inherit;
 
@@ -157,9 +137,7 @@ video.responsive-video {
   height: auto;
 }
 
-
 // Pagination
-
 .pagination {
 
   li {
@@ -186,7 +164,7 @@ video.responsive-video {
     }
 
     &.active,
-    &.active:hover, {
+    &.active:hover {
       background-color: $primary-color;
     }
 
@@ -233,7 +211,7 @@ video.responsive-video {
   i,
   [class^="mdi-"], [class*="mdi-"],
   i.material-icons {
-    display: inline-block;
+    display: block;
     float: left;
     font-size: 24px;
   }
@@ -650,50 +628,40 @@ td, th {
 .hide {
   display: none !important;
 }
-
 // Text Align
 .left-align {
   text-align: left;
 }
-
 .right-align {
   text-align: right
 }
-
 .center, .center-align {
   text-align: center;
 }
-
 .left {
   float: left !important;
 }
-
 .right {
   float: right !important;
 }
-
 // No Text Select
 .no-select {
   user-select: none;
 }
-
 .circle {
   border-radius: 50%;
 }
-
 .center-block {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
-
 .truncate {
   display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .no-padding {
   padding: 0 !important;
 }

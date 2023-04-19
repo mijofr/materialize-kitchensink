@@ -1,0 +1,18 @@
+{    
+  "compilerOptions": {
+    //"outDir": "./bin/",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "target": "ES6",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,        
+    "sourceMap": true
+  },
+  "include": [
+    "test",
+    "src"
+  ]
+}

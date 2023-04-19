@@ -4,27 +4,10 @@
 doctype html
 html(lang="en")
   head
-    include _head.pug
-    link(href='/extras/noUiSlider/nouislider.css', rel='stylesheet')
+    include includes/_head.pug
   body
-    include _navbar.pug
+    include includes/_navbar.pug
     main
-      include page-contents/range_content.html
-    include _footer.html
-    include _scripts.html
-    script(src="/extras/noUiSlider/nouislider.js")
-    script(type='text/javascript').
-      var slider = document.getElementById('range-input');
-      noUiSlider.create(slider, {
-       start: [20, 80],
-       connect: true,
-       step: 1,
-       orientation: 'horizontal',
-       range: {
-         'min': 0,
-         'max': 100
-       },
-       format: wNumb({
-         decimals: 0
-       })
-      });
+      include contents/range_content.html
+    include includes/_footer.pug
+    include includes/_scripts.pug
