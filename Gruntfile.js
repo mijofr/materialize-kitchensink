@@ -1,42 +1,10 @@
+const path = require('path');
 const sass = require('sass');
+const webpackConfig = require('./webpack.config.js');
 
 module.exports = function(grunt) {
-  const concatFile = 'temp/js/materialize_concat.js.map';
-  const jsFiles = [
-    'js/cash.js',
-    'js/waves.js',
-    'js/component.js',
-    'js/global.js',
-    'js/anime.min.js',
-    'js/collapsible.js',
-    'js/dropdown.js',
-    'js/modal.js',
-    'js/materialbox.js',
-    'js/parallax.js',
-    'js/tabs.js',
-    'js/tooltip.js',
-    'js/toasts.js',
-    'js/sidenav.js',
-    'js/scrollspy.js',
-    'js/autocomplete.js',
-    'js/forms.js',
-    'js/slider.js',
-    'js/cards.js',
-    'js/chips.js',
-    'js/pushpin.js',
-    'js/buttons.js',
-    'js/datepicker.js',
-    'js/timepicker.js',
-    'js/characterCounter.js',
-    'js/carousel.js',
-    'js/tapTarget.js',
-    'js/select.js',
-    'js/range.js'
-  ];
-
   // configure the tasks
   const config = {
-    //  Jasmine
     jasmine: {
       components: {
         src: ['bin/materialize.js'],
@@ -60,13 +28,11 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Sass
     sass: {
       // Global options
       options: {
         implementation: sass
       },
-
       // Task
       expanded: {
         // Target options
@@ -112,7 +78,6 @@ module.exports = function(grunt) {
       }
     },
 
-    // PostCss Autoprefixer
     postcss: {
       options: {
         processors: [
@@ -141,34 +106,46 @@ module.exports = function(grunt) {
       }
     },
 
-    babel: {
+    webpack: {
       options: {
-        sourceMap: false,
-        plugins: [
-          'transform-es2015-arrow-functions',
-          'transform-es2015-block-scoping',
-          'transform-es2015-classes',
-          'transform-es2015-template-literals',
-          'transform-es2015-object-super',
-          'babel-plugin-transform-object-rest-spread'
-        ]
+        /*stats: !process.env.NODE_ENV || process.env.NODE_ENV === "development",*/
       },
-      bin: {
-        options: {
-          sourceMap: true
-        },
-        files: {
-          'bin/materialize.js': 'temp/js/materialize_concat.js'
-        }
-      },
-      dist: {
-        files: {
-          'dist/js/materialize.js': 'temp/js/materialize.js'
-        }
-      }
-    },
 
-    // Browser Sync integration
+      dev: Object.assign({}, webpackConfig, {
+        mode: 'development'
+      }),
+
+      dev_watch: Object.assign({}, webpackConfig, {
+        mode: 'development',
+        watch: true,
+      }),
+      
+      dev_dist: Object.assign({}, webpackConfig, {
+        mode: 'development',
+        devtool: false,
+        optimization: {
+          minimize: false
+        },
+        output: {
+          filename: 'materialize.js',
+          path: path.resolve(__dirname, 'dist/js'),
+          libraryTarget: 'var',
+          library: 'M'
+        }
+      }),
+
+      prod_min: Object.assign({}, webpackConfig, {
+        mode: 'production',
+        devtool: 'source-map',
+        output: {
+          filename: 'materialize.min.js',
+          path: path.resolve(__dirname, 'dist/js'),
+          libraryTarget: 'var',
+          library: 'M'
+        }
+      }),
+    },       
+
     browserSync: {
       bsFiles: ['bin/*', 'css/ghpages-materialize.css', '!**/node_modules/**/*'],
       options: {
@@ -186,55 +163,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Concat
-    concat: {
-      options: {
-        separator: ';'
-      },
-      dist: {
-        // the files to concatenate
-        src: jsFiles,
-        // the location of the resulting JS file
-        dest: 'temp/js/materialize.js'
-      },
-      temp: {
-        // the files to concatenate
-        options: {
-          sourceMap: true,
-          sourceMapStyle: 'link'
-        },
-        src: jsFiles,
-        // the location of the resulting JS file
-        dest: 'temp/js/materialize_concat.js'
-      }
-    },
-
-    //  Uglify
-    uglify: {
-      options: {
-        // Use these options when debugging
-        // mangle: false,
-        // compress: false,
-        // beautify: true
-      },
-      dist: {
-        files: {
-          'dist/js/materialize.min.js': ['dist/js/materialize.js']
-        }
-      },
-      bin: {
-        files: {
-          'bin/materialize.min.js': ['bin/materialize.js']
-        }
-      },
-      extras: {
-        files: {
-          'extras/noUiSlider/nouislider.min.js': ['extras/noUiSlider/nouislider.js']
-        }
-      }
-    },
-
-    //  Compress
     compress: {
       main: {
         options: {
@@ -255,42 +183,7 @@ module.exports = function(grunt) {
         files: [
           { expand: true, cwd: 'sass/', src: ['materialize.scss'], dest: 'materialize-src/sass/' },
           { expand: true, cwd: 'sass/', src: ['components/**/*'], dest: 'materialize-src/sass/' },
-          {
-            expand: true,
-            cwd: 'js/',
-            src: [
-              'anime.min.js',
-              'cash.js',
-              'component.js',
-              'global.js',
-              'collapsible.js',
-              'dropdown.js',
-              'modal.js',
-              'materialbox.js',
-              'parallax.js',
-              'tabs.js',
-              'tooltip.js',
-              'waves.js',
-              'toasts.js',
-              'sidenav.js',
-              'scrollspy.js',
-              'autocomplete.js',
-              'forms.js',
-              'slider.js',
-              'cards.js',
-              'chips.js',
-              'pushpin.js',
-              'buttons.js',
-              'datepicker.js',
-              'timepicker.js',
-              'characterCounter.js',
-              'carousel.js',
-              'tapTarget.js',
-              'select.js',
-              'range.js'
-            ],
-            dest: 'materialize-src/js/'
-          },
+          { expand: true, cwd: 'src/',  src: ['**/*'], dest: 'materialize-src/ts/' },
           { expand: true, cwd: 'dist/js/', src: ['**/*'], dest: 'materialize-src/js/bin/' },
           { expand: true, cwd: './', src: ['LICENSE', 'README.md'], dest: 'materialize-src/' }
         ]
@@ -353,14 +246,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Clean
-    clean: {
-      temp: {
-        src: ['temp/']
-      }
-    },
-
-    //  Pug
     pug: {
       compile: {
         options: {
@@ -372,7 +257,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: 'pug/',
-          src: ['*.pug'],
+          src: ['*.pug', '!**/pug/includes/*.*'],
           dest: 'docs/',
           rename: function (dest, src) {
             return dest + src.split('.', 2)[0] + '.html';
@@ -381,7 +266,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Watch Files
     watch: {
       pug: {
         files: ['pug/**/*'],
@@ -391,16 +275,14 @@ module.exports = function(grunt) {
           spawn: false
         }
       },
-
-      js: {
-        files: ['js/**/*', '!js/init.js'],
-        tasks: ['js_compile'],
+      copydocs: {
+        files: ['bin/*.js'],
+        tasks: ['copy:docs_js'],
         options: {
           interrupt: false,
           spawn: false
         }
       },
-
       sass: {
         files: ['sass/**/*'],
         tasks: ['sass_compile'],
@@ -411,7 +293,6 @@ module.exports = function(grunt) {
       }
     },
 
-    //  Concurrent
     concurrent: {
       options: {
         logConcurrentOutput: true,
@@ -419,68 +300,14 @@ module.exports = function(grunt) {
       },
       monitor: {
         tasks: [
+          'webpack:dev_watch',
           'pug_compile',
           'sass_compile',
-          'js_compile',
           'watch:pug',
-          'watch:js',
           'watch:sass',
-          'notify:watching',
+          'watch:copydocs',
           'server'
         ]
-      }
-    },
-
-    //  Notifications
-    notify: {
-      watching: {
-        options: {
-          enabled: true,
-          message: 'Watching Files!',
-          title: 'Materialize', // defaults to the name in package.json, or will use project directory's name
-          success: true, // whether successful grunt executions should be notified automatically
-          duration: 1 // the duration of notification in seconds, for `notify-send only
-        }
-      },
-
-      sass_compile: {
-        options: {
-          enabled: true,
-          message: 'Sass Compiled!',
-          title: 'Materialize',
-          success: true,
-          duration: 1
-        }
-      },
-
-      js_compile: {
-        options: {
-          enabled: true,
-          message: 'JS Compiled!',
-          title: 'Materialize',
-          success: true,
-          duration: 1
-        }
-      },
-
-      pug_compile: {
-        options: {
-          enabled: true,
-          message: 'Pug Compiled!',
-          title: 'Materialize',
-          success: true,
-          duration: 1
-        }
-      },
-
-      server: {
-        options: {
-          enabled: true,
-          message: 'Server Running!',
-          title: 'Materialize',
-          success: true,
-          duration: 1
-        }
       }
     },
 
@@ -537,17 +364,16 @@ module.exports = function(grunt) {
       }
     },
 
-    // Rename files
     rename: {
       rename_src: {
-        src: 'bin/materialize-src' + '.zip',
+        src: 'bin/materialize-src.zip',
         dest: 'bin/materialize-src-v' + grunt.option('newver') + '.zip',
         options: {
           ignore: true
         }
       },
       rename_compiled: {
-        src: 'bin/materialize' + '.zip',
+        src: 'bin/materialize.zip',
         dest: 'bin/materialize-v' + grunt.option('newver') + '.zip',
         options: {
           ignore: true
@@ -593,20 +419,16 @@ module.exports = function(grunt) {
   // grunt.loadNpmTasks('grunt-gitinfo');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-sass');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-compress');
-  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-pug');
   grunt.loadNpmTasks('grunt-concurrent');
-  grunt.loadNpmTasks('grunt-notify');
   grunt.loadNpmTasks('grunt-text-replace');
   grunt.loadNpmTasks('grunt-banner');
   grunt.loadNpmTasks('grunt-rename-util');
   grunt.loadNpmTasks('grunt-browser-sync');
   grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-postcss');
-  grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-webpack');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
@@ -616,10 +438,8 @@ module.exports = function(grunt) {
     'sass:min',
     'postcss:expanded',
     'postcss:min',
-    'concat:dist',
-    'babel:dist',
-    'uglify:dist',
-    'uglify:extras',
+    'webpack:dev_dist',
+    'webpack:prod_min',
     'usebanner:release',
     'compress:main',
     'compress:src',
@@ -629,30 +449,12 @@ module.exports = function(grunt) {
     'replace:package_json',
     'rename:rename_src',
     'rename:rename_compiled',
-    'clean:temp'
   ]);
-
-  grunt.task.registerTask('configureBabel', 'configures babel options', function() {
-    config.babel.bin.options.inputSourceMap = grunt.file.readJSON(concatFile);
-  });
-
-  grunt.registerTask('pug_compile', ['pug', 'notify:pug_compile']);
-  grunt.registerTask('js_compile', [
-    'concat:temp',
-    'configureBabel',
-    'babel:bin',
-    'clean:temp',
-    'copy:docs_js'
-  ]);
-  grunt.registerTask('sass_compile', [
-    'sass:gh',
-    'sass:bin',
-    'postcss:gh',
-    'postcss:bin',
-    'notify:sass_compile'
-  ]);
-  grunt.registerTask('server', ['browserSync', 'notify:server']);
-  grunt.registerTask('monitor', ['concurrent:monitor']);
+  grunt.registerTask('pug_compile', ['pug']);
+  grunt.registerTask('js_compile', ['webpack:dev', 'copy:docs_js']);
+  grunt.registerTask('sass_compile', ['sass:gh', 'sass:bin', 'postcss:gh', 'postcss:bin']);
+  grunt.registerTask('server', ['browserSync']);
+  grunt.registerTask('monitor', ['concurrent:monitor']); // DEV
   grunt.registerTask('test', ['js_compile', 'sass_compile', 'connect', 'jasmine']);
   grunt.registerTask('jas_test', ['connect', 'jasmine']);
   grunt.registerTask('test_repeat', function() {
@@ -661,7 +463,6 @@ module.exports = function(grunt) {
     for (let i = 0; i < n; i++) {
       tasks.push('jasmine');
     }
-
     grunt.task.run(tasks);
   });
   grunt.registerTask('docs', [

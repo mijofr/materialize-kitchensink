@@ -4,10 +4,10 @@
 doctype html
 html(lang="en")
   head
-    include _head.pug
+    include includes/_head.pug
   body
-    include _navbar.pug
+    include includes/_navbar.pug
     main
-      include page-contents/featureDiscovery_content.html
-    include _footer.html
-    include _scripts.html
+      include contents/featureDiscovery_content.html
+    include includes/_footer.pug
+    include includes/_scripts.pug

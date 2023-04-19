@@ -187,7 +187,7 @@ describe("Select Plugin", function () {
       let optgroups = optDropdown.querySelectorAll('li.optgroup');
       let browerSelectOptgroups = browserSelect.querySelectorAll('optgroup');
 
-      for (let i = 0; i < browerSelectOptgroups.length; i++) {
+      for (let i = 0; i < optgroups.length; i++) {
         expect(optgroups[i].getAttribute("role")).toBe("group", "Should behave as group.");
       }
       for (let i = 0; i < browerSelectOptgroups.length; i++) {

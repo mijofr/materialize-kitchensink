@@ -4,10 +4,10 @@
   </a>
 </p>
 
-<h3 align="center">MaterializeCSS</h3>
+<h3 align="center">Materialize</h3>
 
 <p align="center">
-  Materialize, a CSS Framework based on material design.
+  Materialize, a CSS Framework based on Material Design.
   <br>
   <a href="https://materializecss.github.io/materialize/"><strong>-- Browse the docs --</strong></a>
   <br>

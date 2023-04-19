@@ -4,7 +4,7 @@
 doctype html
 html(lang="en")
   head
-    include _head.pug
+    include includes/_head.pug
     style.
       html, body, .block {
         height: 100%;
@@ -16,6 +16,6 @@ html(lang="en")
         padding-left: 0;
       }
   body
-    include page-contents/pushpin_demo_content.html
-    include _footer.html
-    include _scripts.html
+    include contents/pushpin_demo_content.html
+    include includes/_footer.pug
+    include includes/_scripts.pug

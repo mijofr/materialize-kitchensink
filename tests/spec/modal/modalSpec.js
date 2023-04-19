@@ -27,15 +27,15 @@ describe( 'Modal:', function() {
         expect(modal1).toHaveClass('open', 'Modal should have class open');
 
         // Check overlay is attached
-        let overlay = M.Modal.getInstance(modal1).$overlay;
-        let overlayInDOM = document.contains(overlay[0]);
+        let overlay = M.Modal.getInstance(modal1)._overlay;
+        let overlayInDOM = document.contains(overlay);
         expect(overlayInDOM).toEqual(true, 'Overlay should be attached on open');
 
-        click(overlay[0]);
+        click(overlay);
         setTimeout(function() {
           expect(modal1).toNotHaveClass('open', 'Modal should have class open removed');
 
-          let overlayInDOM = document.contains(overlay[0]);
+          let overlayInDOM = document.contains(overlay);
           expect(overlayInDOM).toEqual(false, 'Overlay should be removed on close');
 
           done();
@@ -54,15 +54,15 @@ describe( 'Modal:', function() {
         expect(modal1).toHaveClass('open',  'Modal should have class open');
 
         // Check overlay is attached
-        let overlay = M.Modal.getInstance(modal1).$overlay;
-        let overlayInDOM = document.contains(overlay[0]);
+        let overlay = M.Modal.getInstance(modal1)._overlay;
+        let overlayInDOM = document.contains(overlay);
         expect(overlayInDOM).toEqual(true, 'Overlay should be attached on open');
 
-        click(overlay[0]);
+        click(overlay);
         setTimeout(function() {
           expect(modal1).toNotHaveClass('open', 'Modal should have class open removed');
 
-          let overlayInDOM = document.contains(overlay[0]);
+          let overlayInDOM = document.contains(overlay);
           expect(overlayInDOM).toEqual(false, 'Overlay should be removed on close');
 
           done();
@@ -78,14 +78,14 @@ describe( 'Modal:', function() {
       click(trigger1);
       setTimeout(function() {
         expect(modal1).toBeVisible('Modal should be shown');
-        let overlay = M.Modal.getInstance(modal1).$overlay;
-        let overlayInDOM = document.contains(overlay[0]);
+        let overlay = M.Modal.getInstance(modal1)._overlay;
+        let overlayInDOM = document.contains(overlay);
         expect(overlayInDOM).toEqual(true, 'Overlay should be attached on open');
 
-        click(overlay[0]);
+        click(overlay);
         setTimeout(function() {
           expect(modal1).toBeVisible('Modal should be shown');
-          let overlayInDOM = document.contains(overlay[0]);
+          let overlayInDOM = document.contains(overlay);
           expect(overlayInDOM).toEqual(true, 'modal should not be dismissable');
 
           done();
@@ -113,8 +113,8 @@ describe( 'Modal:', function() {
         expect(readyTest).toEqual(true, 'callback fired');
         expect(completeTest).toEqual(false, 'callback not yet fired');
 
-        let overlay = M.Modal.getInstance(modal1).$overlay;
-        click(overlay[0]);
+        let overlay = M.Modal.getInstance(modal1)._overlay;
+        click(overlay);
         setTimeout(function() {
           expect(readyTest).toEqual(true, 'callback fired');
           expect(completeTest).toEqual(true, 'callback fired');
