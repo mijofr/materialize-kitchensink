@@ -314,7 +314,7 @@ module.exports = function(grunt) {
     // Replace text to update the version string
     replace: {
       version: {
-        src: ['bower.json', 'package.js', 'pug/**/*.html', 'pug/_navbar.pug', 'js/global.js'],
+        src: ['bower.json', 'package.js', 'pug/**/*.html', 'pug/_navbar.pug', 'src/global.ts'],
         overwrite: true,
         replacements: [
           {
