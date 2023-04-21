@@ -314,7 +314,7 @@ module.exports = function(grunt) {
     // Replace text to update the version string
     replace: {
       version: {
-        src: ['bower.json', 'package.js', 'pug/**/*.html', 'pug/_navbar.pug', 'src/global.ts'],
+        src: ['bower.json', 'package.js', 'pug/**/*.html', 'pug/includes/_navbar.pug', 'src/global.ts'],
         overwrite: true,
         replacements: [
           {
@@ -434,6 +434,7 @@ module.exports = function(grunt) {
 
   // define the tasks
   grunt.registerTask('release', [
+    'replace:version',
     'sass:expanded',
     'sass:min',
     'postcss:expanded',
@@ -445,7 +446,6 @@ module.exports = function(grunt) {
     'compress:src',
     'compress:starter_template',
     'compress:parallax_template',
-    'replace:version',
     'replace:package_json',
     'rename:rename_src',
     'rename:rename_compiled',
