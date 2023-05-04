@@ -129,8 +129,8 @@ module.exports = function(grunt) {
         output: {
           filename: 'materialize.js',
           path: path.resolve(__dirname, 'dist/js'),
-          libraryTarget: 'var',
-          library: 'M'
+          libraryTarget: 'umd',        
+          globalObject: 'this'          
         }
       }),
 
@@ -140,8 +140,8 @@ module.exports = function(grunt) {
         output: {
           filename: 'materialize.min.js',
           path: path.resolve(__dirname, 'dist/js'),
-          libraryTarget: 'var',
-          library: 'M'
+          libraryTarget: 'umd',        
+          globalObject: 'this'        
         }
       }),
     },       
