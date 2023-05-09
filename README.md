@@ -24,6 +24,9 @@
   <a href="https://gitter.im/materializecss/materialize">
     <img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter badge">
   </a>
+  <a href="https://opencollective.com/materialize">
+    <img alt="Open Collective backers and sponsors" src="https://img.shields.io/opencollective/all/materialize">
+  </a>
 </p>
 
 ## Table of Contents
