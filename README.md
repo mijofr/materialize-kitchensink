@@ -29,16 +29,6 @@
   </a>
 </p>
 
-## Table of Contents
-- [Quickstart](#quickstart)
-- [Documentation](#documentation)
-- [Build](#build)
-- [Supported Browsers](#supported-browsers)
-- [Changelog](#changelog)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [Copyright and license](#copyright-and-license)
-
 ## Quickstart:
 Read the [getting started guide](https://materializecss.github.io/materialize/getting-started.html) for more information on how to use materialize.
 
