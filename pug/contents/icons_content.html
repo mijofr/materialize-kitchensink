@@ -3,14 +3,26 @@
     <div class="col s12 m8 offset-m1 xl7 offset-xl1">
 
     <div id="usage" class="scrollspy">
-            <p class="caption">We use Google Material Icons by Google. They provide a <a href="https://jossef.github.io/material-design-icons-iconfont/">searchable list</a> (which we do not include in the documentation here), which will also show you the relevant icon names for the CSS classes. You can download the icons directly from the <a href="https://google.github.io/material-design-icons/#icon-font-for-the-web">Material Design specs</a>.</p>
+            <p class="caption">We use Google Material Icons by Google. They provide a <a href="https://fonts.google.com/icons?icon.set=Material+Icons">searchable list</a> (which we do not include in the documentation here), which will also show you the relevant icon names for the CSS classes. You can download the icons directly from the <a href="https://google.github.io/material-design-icons/#icon-font-for-the-web">Material Design specs</a>.</p>
+            <p class="caption">In addition to Material Icons, we also provide support to every variation of <a href="https://fonts.google.com/icons?icon.set=Material+Symbols">Material Symbols</a> set (outlined, rounded and sharp).</p>
             <h3 class="header">Usage</h3>
-            <p>To be able to use these icons, you must include this line in the <code class="language-markup">&lt;head></code>portion of your HTML code</p>
+            <p>To be able to use these icons, you must include one of the following lines in the <code class="language-markup">&lt;head></code>portion of your HTML code</p>
             <pre><code class="language-markup">
-  &lt;link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></code></pre>
-            <p>To use these icons, use the material-icons class on an element and provide the ligature as the text content.</p>
+  &lt;-- Material Icons --&gt;
+  &lt;link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  &lt;-- Material Symbols - Outlined Set --&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  &lt;-- Material Symbols - Rounded Set --&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
+  &lt;-- Material Symbols - Sharp Set --&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp" rel="stylesheet" /></code></pre>
+            <p>To use these icons, use either the material-icons class or the corresponding material-symbols set class on an element and provide the ligature as the text content.</p>
             <pre><code class="language-markup">
   &lt;i class="material-icons">add&lt;/i>
+  &lt;-- Use one of the following if opted by material symbols --&gt;
+  &lt;i class="material-symbols-outlined">add&lt;/i>
+  &lt;i class="material-symbols-rounded">add&lt;/i>
+  &lt;i class="material-symbols-sharp">add&lt;/i>
             </code></pre>
 
             <h5>Sizes</h5>
@@ -34,7 +46,12 @@
   medium: 4rem
   large: 6rem
   -->
+  &lt;-- Material Icons --&gt;
   &lt;i class="large material-icons">insert_chart&lt;/i>
+  &lt;-- Material Symbols --&gt;
+  &lt;i class="large material-symbols-outlined">insert_chart&lt;/i>
+  &lt;i class="large material-symbols-rounded">insert_chart&lt;/i>
+  &lt;i class="large material-symbols-sharp">insert_chart&lt;/i>
             </code></pre>
         </div>
     </div>
@@ -47,7 +64,8 @@
         <div style="height: 1px;">
           <ul class="section table-of-contents">
             <li><a href="#usage">Usage</a></li>
-            <li><a href="https://jossef.github.io/material-design-icons-iconfont/">Search Google's Icons</a></li>
+            <li><a href="https://fonts.google.com/icons?icon.set=Material+Icons">Search Google's Material Icons</a></li>
+            <li><a href="https://fonts.google.com/icons?icon.set=Material+Symbols">Search Google's Material Symbols</a></li>
           </ul>
         </div>
       </div>
