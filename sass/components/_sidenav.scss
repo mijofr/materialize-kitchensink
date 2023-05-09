@@ -59,7 +59,8 @@
 
     & > i,
     & > [class^="mdi-"], li > a > [class*="mdi-"],
-    & > i.material-icons {
+    & > i.material-icons, & > i.material-symbols-outlined,
+    & > i.material-symbols-rounded, & > i.material-symbols-sharp {
       float: left;
       height: $sidenav-item-height;
       line-height: $sidenav-line-height;
