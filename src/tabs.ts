@@ -104,7 +104,8 @@ export class Tabs extends Component {
       // Update the variables with the new link and content
 
       this._activeTabLink = tabLink;
-      this._content = document.querySelector(tabLink.hash);
+      if (tabLink.hash)
+        this._content = document.querySelector(tabLink.hash);
       this._tabLinks = this.el.querySelectorAll('li.tab > a');
       // Make the tab active
       this._activeTabLink.classList.add('active');
@@ -160,7 +161,7 @@ export class Tabs extends Component {
       this._activeTabLink.classList.add('active');
 
       this._index = Math.max(Array.from(this._tabLinks).indexOf(this._activeTabLink), 0);
-      if (this._activeTabLink) {
+      if (this._activeTabLink && this._activeTabLink.hash) {
         this._content = document.querySelector(this._activeTabLink.hash);
         this._content.classList.add('active');
       }
@@ -173,9 +174,11 @@ export class Tabs extends Component {
 
       const tabsContent = [];
       this._tabLinks.forEach(a => {
-        const currContent = document.querySelector(a.hash);
-        currContent.classList.add('carousel-item');
-        tabsContent.push(currContent);
+        if (a.hash) {
+          const currContent = document.querySelector(a.hash);
+          currContent.classList.add('carousel-item');
+          tabsContent.push(currContent);  
+        }
       });
 
       // Create Carousel-Wrapper around Tab-Contents
