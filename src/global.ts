@@ -382,4 +382,4 @@ export class M {
   }
 }
 
-module.exports = M
+export default M;
