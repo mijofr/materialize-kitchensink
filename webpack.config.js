@@ -29,7 +29,10 @@ module.exports = {
   output: {
     filename: 'materialize.js',
     path: path.resolve(__dirname, 'bin'),
-    libraryTarget: 'var',
-    library: 'M'
+    libraryTarget: 'umd',        
+    globalObject: 'this'
+  }, 
+  optimization: {
+    minimize: false,
   }
 };
