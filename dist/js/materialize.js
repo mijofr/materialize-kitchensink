@@ -1,10 +1,19 @@
 /*!
- * Materialize v2.0.0-alpha (https://materializecss.github.io/materialize)
+ * Materialize v2.0.1-alpha (https://materializecss.github.io/materialize)
  * Copyright 2014-2023 Materialize
  * MIT License (https://raw.githubusercontent.com/materializecss/materialize/master/LICENSE)
  */
-var M;
-/******/ (() => { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(this, () => {
+return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
@@ -4589,7 +4598,7 @@ exports.Forms = Forms;
 /*!***********************!*\
   !*** ./src/global.ts ***!
   \***********************/
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 var _a;
@@ -4876,7 +4885,7 @@ class M {
 }
 exports.M = M;
 _a = M;
-M.version = '2.0.0-alpha';
+M.version = '2.0.1-alpha';
 M.keys = {
     TAB: 9,
     ENTER: 13,
@@ -4941,7 +4950,7 @@ M.keyDown = false;
     waves_1.Waves.Init();
     range_1.Range.Init();
 })();
-module.exports = M;
+exports["default"] = M;
 
 
 /***/ }),
@@ -7424,7 +7433,8 @@ class Tabs extends component_1.Component {
         const _oldContent = this._content;
         // Update the variables with the new link and content
         this._activeTabLink = tabLink;
-        this._content = document.querySelector(tabLink.hash);
+        if (tabLink.hash)
+            this._content = document.querySelector(tabLink.hash);
         this._tabLinks = this.el.querySelectorAll('li.tab > a');
         // Make the tab active
         this._activeTabLink.classList.add('active');
@@ -7477,7 +7487,7 @@ class Tabs extends component_1.Component {
         Array.from(this._tabLinks).forEach((a) => a.classList.remove('active'));
         this._activeTabLink.classList.add('active');
         this._index = Math.max(Array.from(this._tabLinks).indexOf(this._activeTabLink), 0);
-        if (this._activeTabLink) {
+        if (this._activeTabLink && this._activeTabLink.hash) {
             this._content = document.querySelector(this._activeTabLink.hash);
             this._content.classList.add('active');
         }
@@ -7488,9 +7498,11 @@ class Tabs extends component_1.Component {
             this.options.swipeable = false;
         const tabsContent = [];
         this._tabLinks.forEach(a => {
-            const currContent = document.querySelector(a.hash);
-            currContent.classList.add('carousel-item');
-            tabsContent.push(currContent);
+            if (a.hash) {
+                const currContent = document.querySelector(a.hash);
+                currContent.classList.add('carousel-item');
+                tabsContent.push(currContent);
+            }
         });
         // Create Carousel-Wrapper around Tab-Contents
         const tabsWrapper = document.createElement('div');
@@ -9036,7 +9048,8 @@ exports.Waves = Waves;
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
 /******/ 	var __webpack_exports__ = __webpack_require__("./src/global.ts");
-/******/ 	M = __webpack_exports__;
 /******/ 	
+/******/ 	return __webpack_exports__;
 /******/ })()
 ;
+});
