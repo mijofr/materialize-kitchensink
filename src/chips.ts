@@ -6,6 +6,7 @@ let _defaults = {
   data: [],
   placeholder: '',
   secondaryPlaceholder: '',
+  closeIconClass: 'material-icons',
   autocompleteOptions: {},
   autocompleteOnly: false,
   limit: Infinity,
@@ -231,7 +232,7 @@ export class Chips extends Component {
     renderedChip.innerText = chip.text || chip.id;
     renderedChip.setAttribute('tabindex', "0");
     const closeIcon = document.createElement('i');
-    closeIcon.classList.add('material-icons', 'close');
+    closeIcon.classList.add(this.options.closeIconClass, 'close');
     closeIcon.innerText = 'close';
     // attach image if needed
     if (chip.image) {

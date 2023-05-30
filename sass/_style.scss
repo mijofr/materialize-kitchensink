@@ -530,7 +530,8 @@ $height: auto;
 }
 
 // Icons
-.material-icons.icon-demo {
+.material-icons.icon-demo, .material-symbols-outlined.icon-demo,
+.material-symbols-rounded.icon-demo, .material-symbols-sharp.icon-demo {
   line-height: 50px;
 }
 
@@ -886,7 +887,8 @@ body.parallax-demo footer {
       height: 32px;
     }
 
-    i.material-icons {
+    i.material-icons, i.material-symbols-outlined,
+    i.material-symbols-rounded, i.material-symbols-sharp {
       position: absolute;
       top: 4px;
       right: 34px;

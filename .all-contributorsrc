@@ -4,7 +4,7 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
-    "pug/about/about_content.html"
+    "pug/contents/about_content.html"
   ],
   "imageSize": 100,
   "commit": false,

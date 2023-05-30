@@ -314,7 +314,7 @@ module.exports = function(grunt) {
     // Replace text to update the version string
     replace: {
       version: {
-        src: ['bower.json', 'package.js', 'pug/**/*.html', 'pug/_navbar.pug', 'js/global.js'],
+        src: ['bower.json', 'package.js', 'pug/**/*.html', 'pug/includes/_navbar.pug', 'src/global.ts'],
         overwrite: true,
         replacements: [
           {
@@ -415,8 +415,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig(config);
 
-  // load the tasks
-  // grunt.loadNpmTasks('grunt-gitinfo');
+  // load tasks
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-compress');
@@ -432,8 +431,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
-  // define the tasks
+  // define tasks
   grunt.registerTask('release', [
+    'replace:version', // before webpack
     'sass:expanded',
     'sass:min',
     'postcss:expanded',
@@ -445,11 +445,11 @@ module.exports = function(grunt) {
     'compress:src',
     'compress:starter_template',
     'compress:parallax_template',
-    'replace:version',
+    'replace:version', // again because of cdn
     'replace:package_json',
     'rename:rename_src',
     'rename:rename_compiled',
-  ]);
+  ]);  
   grunt.registerTask('pug_compile', ['pug']);
   grunt.registerTask('js_compile', ['webpack:dev', 'copy:docs_js']);
   grunt.registerTask('sass_compile', ['sass:gh', 'sass:bin', 'postcss:gh', 'postcss:bin']);
