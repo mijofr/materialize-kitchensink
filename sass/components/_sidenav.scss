@@ -1,7 +1,7 @@
 /* Nested Indenting */
-li > ul {
-  padding-left: 1rem;
-}
+// li > ul {
+//   padding-left: 0.5rem;
+// }
 
 /* This should be an UL-Element*/
 .sidenav {
@@ -40,19 +40,14 @@ li > ul {
     background-color: $button-flat-hover-background-color;
   }
 
-  // > li a:hover {
-  //   background-color: $button-flat-hover-background-color;
-  // }
-
   li {    
     list-style: none;
     display: grid;
     align-content: center;
   }
   li > a {
-    // padding: 0 ($sidenav-padding * 2);
     /* https://stackoverflow.com/questions/5848090/full-width-hover-background-for-nested-lists */
-    padding-left: calc(100% + $sidenav-padding * 2);
+    padding-left: calc(100% + $sidenav-padding);
     margin-left: -100%;
 
     display: flex;
@@ -60,12 +55,7 @@ li > ul {
     font-size: $sidenav-font-size;
     font-weight: 500;
     align-items: center;
-    overflow: hidden;    
-
-    /* Transparency Overlays! */
-    // &:hover {
-    //   background-color: $button-flat-hover-background-color;
-    // }
+    overflow: hidden;
 
     &:not(.btn):not(.btn-flat):not(.btn-large):not(.btn-floating) {
       color: $sidenav-font-color;
@@ -75,13 +65,13 @@ li > ul {
       margin: 10px 15px;
     }
 
+    /* TODO: Use special class in future like "mw-icon" */
     & > .material-icons, & > .material-symbols-outlined,
     & > .material-symbols-rounded, & > .material-symbols-sharp {
       display: inline-flex;
       vertical-align: middle;
       color: $sidenav-icon-color;
     }
-
   }
 
   .divider {
@@ -89,9 +79,6 @@ li > ul {
   }
 
   .subheader {
-    // &:hover {
-    //   background-color: transparent;
-    // }
     cursor: initial;
     pointer-events: none;
     color: $sidenav-subheader-color;
@@ -100,7 +87,7 @@ li > ul {
     line-height: $sidenav-line-height;
   }
 
-  // Remove this?
+  // Remove this? is very custom
   .user-view {
     position: relative;
     padding: ($sidenav-padding * 2) ($sidenav-padding * 2) 0;
@@ -158,7 +145,6 @@ li > ul {
   &.right-aligned {
     right: 0;
   }
-
   height: 100%;
   position: fixed;
   top: 0;
@@ -200,7 +186,6 @@ li > ul {
 .sidenav .collapsible-body > ul:not(.collapsible) > li.active,
 .sidenav.sidenav-fixed .collapsible-body > ul:not(.collapsible) > li.active {
   background-color: $primary-color;
-
   a:not(.btn) {
     color: $font-on-primary-color-main;
   }
@@ -222,38 +207,18 @@ li > ul {
   display: none;
 }
 
-//------------------------------------- From Collapsible.scss
-// Sidenav collapsible styling
+// Sidenav collapsible styling (Taken from Collapsible.scss)
 .sidenav,
 .sidenav.sidenav-fixed {
-
   .collapsible {
     border: none;
     box-shadow: none;
-    // li {
-    //   padding: 0;
-    // }
   }
-  // > li:hover,
-  // > li.active {
-  //   background-color: transparent;
-  // }
   .collapsible-header {
     border: none;
-    //padding: 0;
-    // background-color: transparent;
-    // line-height: inherit;
-    // height: inherit;
-    // padding: 0 $sidenav-padding;
-    // i {
-    //   line-height: inherit;
-    // }
   }
   .collapsible-body {
     border: none;
     background-color: $collapsible-bg-color;
-    // li a {
-    //   padding: 0 (7.5px + $sidenav-padding) 0 (15px + $sidenav-padding);
-    // }
   }
 }
