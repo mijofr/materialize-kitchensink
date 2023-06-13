@@ -1,3 +1,4 @@
+/* This should be an UL-Element*/
 .sidenav {
   position: fixed;
   width: $sidenav-width;
@@ -6,13 +7,13 @@
   margin: 0;
   transform: translateX(-100%);
   height: 100vh;
-  padding-bottom: 60px;
+  padding: 0;
   background-color: $sidenav-bg-color;
   z-index: 999;
   overflow-y: auto;
   will-change: transform;
   backface-visibility: hidden;
-  transform: translateX(-105%);
+  transform: translateX(-105%); 
 
   @extend .z-depth-1;
 
@@ -28,26 +29,38 @@
     margin: 0;
   }
 
-  li {
-    float: none;
-    line-height: $sidenav-line-height;
+  ul {
+    padding: 0;
+  }
 
-    &:hover {
-      background-color: $button-flat-hover-background-color;
-    }
-
+  li {    
+    list-style: none;
+    display: grid;
+    align-content: center;
+    // overflow: hidden;
+    // &:hover {
+    //   background-color: $button-flat-hover-background-color;
+    // }
     &.active {
       background-color: $button-flat-focus-background-color;
     }
   }
 
   li > a {
-    display: block;
+    display: flex;
+    height: $sidenav-item-height;
     font-size: $sidenav-font-size;
     font-weight: 500;
-    height: $sidenav-item-height;
-    line-height: $sidenav-line-height;
+    align-items: center;
+    overflow: hidden;
+    // vertical-align: middle;
+    // line-height: $sidenav-line-height;
+    
     padding: 0 ($sidenav-padding * 2);
+
+    &:hover {
+      background-color: $button-flat-hover-background-color;
+    }
 
     &:not(.btn):not(.btn-flat):not(.btn-large):not(.btn-floating) {
       color: $sidenav-font-color;
@@ -57,19 +70,14 @@
       margin: 10px 15px;
     }
 
-    & > i,
-    & > [class^="mdi-"], li > a > [class*="mdi-"],
-    & > i.material-icons, & > i.material-symbols-outlined,
-    & > i.material-symbols-rounded, & > i.material-symbols-sharp {
-      float: left;
-      height: $sidenav-item-height;
-      line-height: $sidenav-line-height;
-      margin: 0 ($sidenav-padding * 2) 0 0;
-      width: $sidenav-item-height * 0.5;
+    & > .material-icons, & > .material-symbols-outlined,
+    & > .material-symbols-rounded, & > .material-symbols-sharp {
+      display: inline-flex;
+      vertical-align: middle;
       color: $sidenav-icon-color;
     }
-  }
 
+  }
 
   .divider {
     margin: ($sidenav-padding * 0.5) 0 0 0;
@@ -79,7 +87,6 @@
     &:hover {
       background-color: transparent;
     }
-
     cursor: initial;
     pointer-events: none;
     color: $sidenav-subheader-color;
@@ -88,6 +95,7 @@
     line-height: $sidenav-line-height;
   }
 
+  // Remove this?
   .user-view {
     position: relative;
     padding: ($sidenav-padding * 2) ($sidenav-padding * 2) 0;
@@ -139,7 +147,6 @@
   }
 }
 
-
 // Touch interaction
 .drag-target {
   // Right Align
@@ -154,7 +161,6 @@
   z-index: 998;
 }
 
-
 // Fixed Sidenav shown
 .sidenav.sidenav-fixed {
   // Right Align
@@ -162,7 +168,6 @@
     right: 0;
     left: auto;
   }
-
   left: 0;
   transform: translateX(0);
   position: fixed;
@@ -178,17 +183,14 @@
         transform: translateX(105%);
       }
     }
-
     > a {
       padding: 0 $sidenav-padding;
     }
-
     .user-view {
       padding: $sidenav-padding $sidenav-padding 0;
     }
   }
 }
-
 
 .sidenav .collapsible-body > ul:not(.collapsible) > li.active,
 .sidenav.sidenav-fixed .collapsible-body > ul:not(.collapsible) > li.active {
@@ -213,4 +215,40 @@
   background-color: rgba(0, 0, 0, .5);
   z-index: 997;
   display: none;
+}
+
+//------------------------------------- From Collapsible.scss
+// Sidenav collapsible styling
+.sidenav,
+.sidenav.sidenav-fixed {
+
+  .collapsible {
+    border: none;
+    box-shadow: none;
+    li {
+      padding: 0;
+    }
+  }
+  // > li:hover,
+  // > li.active {
+  //   background-color: transparent;
+  // }
+  .collapsible-header {
+    border: none;
+    padding: 0;
+    // background-color: transparent;
+    // line-height: inherit;
+    // height: inherit;
+    // padding: 0 $sidenav-padding;
+    // i {
+    //   line-height: inherit;
+    // }
+  }
+  .collapsible-body {
+    border: none;
+    background-color: $collapsible-bg-color;
+    // li a {
+    //   padding: 0 (7.5px + $sidenav-padding) 0 (15px + $sidenav-padding);
+    // }
+  }
 }
