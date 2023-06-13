@@ -97,66 +97,54 @@ We like feature requests but make sure that it can be seen within the goals of t
 
 Good pull requests - patches, improvements, new features - are a fantastic help. Thanks for taking the time to contribute.
 
-**Please ask first** before working on any significant pull request, otherwise you risk spending a lot of time working on something that the project's developers might not want to merge into the project.
+**Please ask first** and open a new issue before working on any significant pull request, otherwise you risk spending a lot of time working on something that the project's developers might not want to merge into the project.
 
 **Do not edit `materialize.css`, or `materialize.js`
-directly!** Those files are automatically generated. You should edit the
-source files in [`/materialize/sass/`](https://github.com/materializecss/materialize/tree/main/sass)
-and/or [`/materialize/js/`](https://github.com/materializecss/materialize/tree/main/js) instead.
+directly!** Those files are automatically generated. You should edit the source files in [`sass`](https://github.com/materializecss/materialize/tree/v2-dev/sass) and [`src`](https://github.com/materializecss/materialize/tree/v2-dev/src) instead.
 
 ### Documentation
 
-When contributing to Materialize's documentation, you should edit the documentation source files in
-[the `/materialize/pug/page-contents/` directory of the `main` branch](https://github.com/materializecss/materialize/tree/main/pug).
-**Do not edit the `gh-pages` branch.** That branch is generated from the documentation source files and is managed separately by the Materialize maintainers.
+When contributing to the documentation, you should edit the documentation source files in the [`pug/page-contents/`](https://github.com/materializecss/materialize/tree/v2-dev/pug) directory of the `v2-dev` branch.
 
-### Submitting Your Pull Request
+**Do not edit the `gh-pages` branch directly.** That branch is generated from the documentation source files and is managed separately by the Materialize maintainers.
+
+---
+
+### Submitting your Pull Request
 
 Adhering to the following process is the best way to get your work included in the project:
 
-1. [Fork](https://help.github.com/fork-a-repo/) the project, clone your fork,
-   and configure the remotes:
-   ```bash
-   # Clone your fork of the repo into the current directory
-   git clone https://github.com/<your-username>/materialize.git
-   # Navigate to the newly cloned directory
-   cd materialize
-   # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/materializecss/materialize.git
-   ```
-
-2. Go to Starting Branch and get latest changes:
-First make yourself clear what you want to provide: Bugfix or Feature? The principle for both types of changes is the same: "First update, then work"
-
-    2.1. Bugfix
-
-    Get the latest changes from upstream main-branch:
+1. [Fork](https://help.github.com/fork-a-repo/) the project, clone your fork, and configure the remotes:
     ```bash
-    git checkout main # go to the main branch
-    git pull upstream main # pull from the community-repo main-branch
+    # Clone your fork of the repo into the current directory
+    git clone https://github.com/<your-username>/materialize.git
+    # Navigate to the newly cloned directory
+    cd materialize
+    # Assign the original repo to a remote called "upstream"
+    git remote add upstream https://github.com/materializecss/materialize.git
     ```
 
-   2.2. Feature
+2. Get latest changes ("First update, then work")
 
-    Get the latest changes from upstream development-branch:
+    Pull from upstream development-branch:
     ```bash
-    git checkout v2-dev # go to the dev branch
-    git pull upstream v2-dev # pull from the community-repo dev-branch
+    # go to local dev branch
+    git checkout v2-dev
+    # pull from online-repo dev-branch
+    git pull upstream v2-dev
     ```
 
 3. Create a new topic branch to contain your work:
-   ```bash
-   git checkout -b <topic-branch-name>
-   ```
+    ```bash
+    git checkout -b <topic-branch-name>
+    ```
 
-4. Commit your changes in logical chunks with messages written in English. Please adhere to these [git commit message guidelines](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) and use [conventional commit format](https://github.com/conventional-changelog/commitlint/#what-is-commitlint) in your commit messages. Failing to do this makes your commits unlikely to be merged into the main project.
-   > You can use `npm run commit` to help you formatting the message, or use [commitlint.io](https://commitlint.io) if you are not editing locally
+4. Commit your changes in logical chunks with messages in english. Please adhere to these [git commit message guidelines](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) and use [conventional commit format](https://github.com/conventional-changelog/commitlint/#what-is-commitlint) in your commit messages. Failing to do this makes your commits unlikely to be merged.
+    > You can use `npm run commit` to help you formatting the message, or use [commitlint.io](https://commitlint.io) if you are not editing locally
 
-5. Locally merge (or rebase) the upstream branch into your topic branch.
-If in the meantime anything has changed in the community-repo you can add this changes locally into your repo.
+5. Locally merge (or rebase) the upstream branch into your topic branch. If in the meantime anything has changed in the online-repo you can add this changes locally into your repo.
    ```bash
-   git pull [--rebase] upstream main # bugfix
-   git pull [--rebase] upstream v2-dev # feature
+   git pull [--rebase] upstream v2-dev
    ```
 
 6. Push your topic branch up to your fork:

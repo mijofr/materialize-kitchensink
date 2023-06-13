@@ -27,7 +27,7 @@ import { Waves } from './waves';
 import { Range } from './range';
 
 export class M {
-  static version = '2.0.0-alpha';
+  static version = '2.0.1-alpha';
 
   static keys = {
     TAB: 9,
@@ -382,4 +382,4 @@ export class M {
   }
 }
 
-module.exports = M
+export default M;

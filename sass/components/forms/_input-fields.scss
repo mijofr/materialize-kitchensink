@@ -271,15 +271,6 @@ textarea.materialize-textarea {
     transform: none;
     left: 1rem;
   }
-  & ~ .mdi-navigation-close,
-  & ~ .material-icons {
-    position: absolute;
-    top: 0;
-    right: 1rem;
-    color: transparent;
-    cursor: pointer;
-    font-size: $input-icon-size;
-  }
 }
 */
 
