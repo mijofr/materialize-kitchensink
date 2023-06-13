@@ -1,3 +1,8 @@
+/* Nested Indenting */
+li > ul {
+  padding-left: 1rem;
+}
+
 /* This should be an UL-Element*/
 .sidenav {
   position: fixed;
@@ -14,6 +19,7 @@
   will-change: transform;
   backface-visibility: hidden;
   transform: translateX(-105%); 
+  user-select: none;
 
   @extend .z-depth-1;
 
@@ -29,38 +35,37 @@
     margin: 0;
   }
 
-  ul {
-    padding: 0;
+  /* Hover only on top row */
+  a:hover {
+    background-color: $button-flat-hover-background-color;
   }
+
+  // > li a:hover {
+  //   background-color: $button-flat-hover-background-color;
+  // }
 
   li {    
     list-style: none;
     display: grid;
     align-content: center;
-    // overflow: hidden;
-    // &:hover {
-    //   background-color: $button-flat-hover-background-color;
-    // }
-    &.active {
-      background-color: $button-flat-focus-background-color;
-    }
   }
-
   li > a {
+    // padding: 0 ($sidenav-padding * 2);
+    /* https://stackoverflow.com/questions/5848090/full-width-hover-background-for-nested-lists */
+    padding-left: calc(100% + $sidenav-padding * 2);
+    margin-left: -100%;
+
     display: flex;
     height: $sidenav-item-height;
     font-size: $sidenav-font-size;
     font-weight: 500;
     align-items: center;
-    overflow: hidden;
-    // vertical-align: middle;
-    // line-height: $sidenav-line-height;
-    
-    padding: 0 ($sidenav-padding * 2);
+    overflow: hidden;    
 
-    &:hover {
-      background-color: $button-flat-hover-background-color;
-    }
+    /* Transparency Overlays! */
+    // &:hover {
+    //   background-color: $button-flat-hover-background-color;
+    // }
 
     &:not(.btn):not(.btn-flat):not(.btn-large):not(.btn-floating) {
       color: $sidenav-font-color;
@@ -84,9 +89,9 @@
   }
 
   .subheader {
-    &:hover {
-      background-color: transparent;
-    }
+    // &:hover {
+    //   background-color: transparent;
+    // }
     cursor: initial;
     pointer-events: none;
     color: $sidenav-subheader-color;
@@ -225,9 +230,9 @@
   .collapsible {
     border: none;
     box-shadow: none;
-    li {
-      padding: 0;
-    }
+    // li {
+    //   padding: 0;
+    // }
   }
   // > li:hover,
   // > li.active {
@@ -235,7 +240,7 @@
   // }
   .collapsible-header {
     border: none;
-    padding: 0;
+    //padding: 0;
     // background-color: transparent;
     // line-height: inherit;
     // height: inherit;
