@@ -27,7 +27,8 @@ nav {
 
   i,
   [class^="mdi-"], [class*="mdi-"],
-  i.material-icons {
+  i.material-icons, i.material-symbols-outlined,
+  i.material-symbols-rounded, i.material-symbols-sharp {
     display: block;
     font-size: 24px;
     height: $navbar-height-mobile;
@@ -97,7 +98,8 @@ nav {
 
     i,
     [class^="mdi-"], [class*="mdi-"],
-    i.material-icons {
+    i.material-icons, i.material-symbols-outlined,
+    i.material-symbols-rounded, i.material-symbols-sharp {
       float: left;
       margin-right: 15px;
     }
@@ -145,7 +147,8 @@ nav {
         margin-right: 15px;
         display: inline-block;
 
-        & > .material-icons {
+        & > .material-icons, & > .material-symbols-outlined,
+        & > .material-symbols-rounded, & > .material-symbols-sharp {
           height: inherit;
           line-height: inherit;
         }
