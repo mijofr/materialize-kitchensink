@@ -107,7 +107,7 @@ export class Chips extends Component {
     this._input.removeEventListener('keydown', this._handleInputKeydown);
   }
 
-  _handleChipClick = (e) => {
+  _handleChipClick = (e: Event) => {
     const _chip = (<HTMLElement>e.target).closest('.chip');
     const clickedClose = (<HTMLElement>e.target).classList.contains('close');
     if (_chip) {
@@ -126,7 +126,7 @@ export class Chips extends Component {
     }
   }
 
-  static _handleChipsKeydown(e) {
+  static _handleChipsKeydown(e: KeyboardEvent) {
     Chips._keydown = true;
     const chips = (<HTMLElement>e.target).closest('.chips');
     const chipsKeydown = e.target && chips;
@@ -136,8 +136,8 @@ export class Chips extends Component {
     if (tag === 'INPUT' || tag === 'TEXTAREA' || !chipsKeydown) return;
 
     const currChips: Chips = (chips as any).M_Chips;
-    // backspace and delete
-    if (e.keyCode === 8 || e.keyCode === 46) {
+
+    if (M.keys.BACKSPACE.includes(e.key) || M.keys.DELETE.includes(e.key)) {
       e.preventDefault();
       let selectIndex = currChips.chipsData.length;
       if (currChips._selectedChip) {
@@ -152,16 +152,14 @@ export class Chips extends Component {
       else
         currChips._input.focus();
     }
-    // left arrow key
-    else if (e.keyCode === 37) {
+    else if (M.keys.ARROW_LEFT.includes(e.key)) {
       if (currChips._selectedChip) {
         const selectIndex = gGetIndex(currChips._selectedChip) - 1;
         if (selectIndex < 0) return;
         currChips.selectChip(selectIndex);
       }
     }
-    // right arrow key
-    else if (e.keyCode === 39) {
+    else if (M.keys.ARROW_RIGHT.includes(e.key)) {
       if (currChips._selectedChip) {
         const selectIndex = gGetIndex(currChips._selectedChip) + 1;
         if (selectIndex >= currChips.chipsData.length)
@@ -172,11 +170,11 @@ export class Chips extends Component {
     }
   }
 
-  static _handleChipsKeyup(e) {
+  static _handleChipsKeyup(e: Event) {
     Chips._keydown = false;
   }
 
-  static _handleChipsBlur(e) {
+  static _handleChipsBlur(e: Event) {
     if (!Chips._keydown && document.hidden) {
       const chips = (<HTMLElement>e.target).closest('.chips');
       const currChips: Chips = (chips as any).M_Chips;
@@ -192,10 +190,9 @@ export class Chips extends Component {
     this.el.classList.remove('focus');
   }
 
-  _handleInputKeydown = (e) => {
+  _handleInputKeydown = (e: KeyboardEvent) => {
     Chips._keydown = true;
-    // enter
-    if (e.keyCode === 13) {
+    if (M.keys.ENTER.includes(e.key)) {
       // Override enter if autocompleting.
       if (this.hasAutocomplete && this.autocomplete && this.autocomplete.isOpen) {
         return;
@@ -205,10 +202,9 @@ export class Chips extends Component {
         this.addChip({id: this._input.value});
       }
       this._input.value = '';
-      // delete or left
     }
-    else if (
-      (e.keyCode === 8 || e.keyCode === 37) &&
+    else if (      
+      (M.keys.BACKSPACE.includes(e.key) || M.keys.ARROW_LEFT.includes(e.key)) &&
       this._input.value === '' &&
       this.chipsData.length
     ) {

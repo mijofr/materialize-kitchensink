@@ -1,3 +1,4 @@
+import { M } from "./global";
 import { Component } from "./component";
 import anim from "animejs";
 
@@ -56,7 +57,7 @@ export class Collapsible extends Component {
 
   destroy() {
     this._removeEventHandlers();
-    (this.el as any).M_Collapsible = undefined;
+    this.el['M_Collapsible'].M_Collapsible = undefined;
   }
 
   _setupEventHandlers() {
@@ -86,8 +87,8 @@ export class Collapsible extends Component {
     }
   }
 
-  _handleCollapsibleKeydown = (e) => {
-    if (e.keyCode === 13) {
+  _handleCollapsibleKeydown = (e: KeyboardEvent) => {
+    if (M.keys.ENTER.includes(e.key)) {
       this._handleCollapsibleClick(e);
     }
   }

@@ -76,12 +76,12 @@ export class Forms {
   static Init(){
     document.addEventListener("DOMContentLoaded", () => {
 
-      document.addEventListener('keyup', e => {
+      document.addEventListener('keyup', (e: KeyboardEvent) => {
         const target = <HTMLInputElement>e.target;
         // Radio and Checkbox focus class
         if (target instanceof HTMLInputElement && ['radio','checkbox'].includes(target.type)) {
           // TAB, check if tabbing to radio or checkbox.
-          if (e.which === M.keys.TAB) {
+          if (M.keys.TAB.includes(e.key)) {
             target.classList.add('tabbed');
             target.addEventListener('blur', e => target.classList.remove('tabbed'), {once: true});
           }

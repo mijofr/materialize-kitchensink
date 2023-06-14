@@ -743,8 +743,8 @@ export class Datepicker extends Component {
     this.open();
   }
 
-  _handleInputKeydown = (e) => {
-    if (e.which === M.keys.ENTER) {
+  _handleInputKeydown = (e: KeyboardEvent) => {
+    if (M.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this.open();
     }

@@ -94,9 +94,8 @@ export class Materialbox extends Component {
     if (this.overlayActive) this.close();
   }
 
-  _handleWindowEscape = (e) => {
-    // ESC key
-    if (e.keyCode === 27 && this.doneAnimating && this.overlayActive) this.close();
+  _handleWindowEscape = (e: KeyboardEvent) => {
+    if (M.keys.ESC.includes(e.key) && this.doneAnimating && this.overlayActive) this.close();
   }
 
   _makeAncestorsOverflowVisible() {
