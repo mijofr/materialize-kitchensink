@@ -310,20 +310,12 @@ beforeEach(function () {
     }));
   }
 
-  window.keyup = function (el, keycode) {
+  window.keyup = function (targetElement, keycode) {
     targetElement.dispatchEvent(new KeyboardEvent("keyup", {
       key: KEYMAP[keycode],
       keyCode: keycode,
       which: keycode,
     }));
-    /*
-    let ev = document.createEvent("Events");
-    ev.initEvent("keyup", true, true);
-    ev.keyCode = keycode;
-    ev.which = keycode;
-    ev.key = KEYMAP[keycode];
-    el.dispatchEvent(ev);
-    */
   }
 
   window.focus = function (el) {
