@@ -140,15 +140,15 @@ export class Timepicker extends Component {
     this.open();
   }
 
-  _handleInputKeydown = (e) => {
-    if (e.which === M.keys.ENTER) {
+  _handleInputKeydown = (e: KeyboardEvent) => {
+    if (M.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this.open();
     }
   }
 
-  _handleTimeInputEnterKey = (e) => {
-    if (e.which === M.keys.ENTER) {
+  _handleTimeInputEnterKey = (e: KeyboardEvent) => {
+    if (M.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this._inputFromTextField();
     }

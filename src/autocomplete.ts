@@ -172,12 +172,12 @@ export class Autocomplete extends Component {
     }
   }
 
-  _handleInputKeyupAndFocus = (e) => {
+  _handleInputKeyupAndFocus = (e: KeyboardEvent) => {
     if (e.type === 'keyup') Autocomplete._keydown = false;
     this.count = 0;
     const actualValue = this.el.value.toLowerCase();
     // Don't capture enter or arrow key usage.
-    if (e.keyCode === 13 || e.keyCode === 38 || e.keyCode === 40) return;
+    if (M.keys.ENTER.includes(e.key) || M.keys.ARROW_UP.includes(e.key) || M.keys.ARROW_DOWN.includes(e.key)) return;
     // Check if the input isn't empty
     // Check if focus triggered by tab
     if (this.oldVal !== actualValue && (M.tabPressed || e.type !== 'focus')) {
@@ -196,13 +196,12 @@ export class Autocomplete extends Component {
     this.oldVal = actualValue;
   }
 
-  _handleInputKeydown = (e) => {
+  _handleInputKeydown = (e: KeyboardEvent) => {
     Autocomplete._keydown = true;
     // Arrow keys and enter key usage
-    const keyCode = e.keyCode;
     const numItems = this.container.querySelectorAll('li').length;
     // select element on Enter
-    if (keyCode === M.keys.ENTER && this.activeIndex >= 0) {
+    if (M.keys.ENTER.includes(e.key) && this.activeIndex >= 0) {
       const liElement = this.container.querySelectorAll('li')[this.activeIndex];
       if (liElement) {
         this.selectOption(liElement.getAttribute('data-id'));
@@ -211,10 +210,10 @@ export class Autocomplete extends Component {
       return;
     }
     // Capture up and down key
-    if (keyCode === M.keys.ARROW_UP || keyCode === M.keys.ARROW_DOWN) {
+    if (M.keys.ARROW_UP.includes(e.key) || M.keys.ARROW_DOWN.includes(e.key)) {
       e.preventDefault();
-      if (keyCode === M.keys.ARROW_UP && this.activeIndex > 0) this.activeIndex--;
-      if (keyCode === M.keys.ARROW_DOWN && this.activeIndex < numItems - 1) this.activeIndex++;
+      if (M.keys.ARROW_UP.includes(e.key) && this.activeIndex > 0) this.activeIndex--;
+      if (M.keys.ARROW_DOWN.includes(e.key) && this.activeIndex < numItems - 1) this.activeIndex++;
       this.$active?.classList.remove('active');
       if (this.activeIndex >= 0) {
         this.$active = this.container.querySelectorAll('li')[this.activeIndex];

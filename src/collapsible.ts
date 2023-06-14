@@ -1,11 +1,22 @@
+import { M } from "./global";
 import { Component } from "./component";
 import anim from "animejs";
 
-const _defaults = {
+interface CollapsibleOptions {
+  accordion: boolean;
+  onOpenStart: Function|undefined;
+  onOpenEnd: Function|undefined;
+  onCloseStart: Function|undefined;
+  onCloseEnd: Function|undefined;
+  inDuration: number;
+  outDuration: number;
+}
+
+const _defaults: CollapsibleOptions = {
   accordion: true,
   onOpenStart: undefined,
   onOpenEnd: undefined,
-  onCloseStart: undefined,
+  onCloseStart: undefined,  
   onCloseEnd: undefined,
   inDuration: 300,
   outDuration: 300
@@ -14,9 +25,9 @@ const _defaults = {
 export class Collapsible extends Component {
   private _headers: HTMLElement[];
 
-  constructor(el, options) {
+  constructor(el: HTMLElement, options: CollapsibleOptions) {
     super(Collapsible, el, options);
-    (this.el as any).M_Collapsible = this;
+    this.el['M_Collapsible'] = this;
     this.options = {...Collapsible.defaults, ...options};
     // Setup tab indices
     this._headers = Array.from(this.el.querySelectorAll('li > .collapsible-header'));
@@ -46,7 +57,7 @@ export class Collapsible extends Component {
 
   destroy() {
     this._removeEventHandlers();
-    (this.el as any).M_Collapsible = undefined;
+    this.el['M_Collapsible'].M_Collapsible = undefined;
   }
 
   _setupEventHandlers() {
@@ -76,8 +87,8 @@ export class Collapsible extends Component {
     }
   }
 
-  _handleCollapsibleKeydown = (e) => {
-    if (e.keyCode === 13) {
+  _handleCollapsibleKeydown = (e: KeyboardEvent) => {
+    if (M.keys.ENTER.includes(e.key)) {
       this._handleCollapsibleClick(e);
     }
   }

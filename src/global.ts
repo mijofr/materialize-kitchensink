@@ -30,11 +30,15 @@ export class M {
   static version = '2.0.1-alpha';
 
   static keys = {
-    TAB: 9,
-    ENTER: 13,
-    ESC: 27,
-    ARROW_UP: 38,
-    ARROW_DOWN: 40
+    TAB: ['Tab'],
+    ENTER: ['Enter'],
+    ESC: ['Escape', 'Esc'],
+    BACKSPACE: ['Backspace'],
+    ARROW_UP: ['ArrowUp', 'Up'],
+    ARROW_DOWN: ['ArrowDown', 'Down'],
+    ARROW_LEFT: ['ArrowLeft', 'Left'],
+    ARROW_RIGHT: ['ArrowRight', 'Right'],
+    DELETE: ['Delete', 'Del'],
   };
 
   static Autocomplete: typeof Autocomplete = Autocomplete;
@@ -61,19 +65,19 @@ export class M {
   static Range: typeof Range = Range;
   static Waves: typeof Waves = Waves;
 
-  static tabPressed:boolean = false;
-  static keyDown:boolean = false;
+  static tabPressed: boolean = false;
+  static keyDown: boolean = false;
 
-  static docHandleKeydown(e) {
+  static docHandleKeydown(e: KeyboardEvent) {
     M.keyDown = true;
-    if (e.which === M.keys.TAB || e.which === M.keys.ARROW_DOWN || e.which === M.keys.ARROW_UP) {
+    if ([...M.keys.TAB, ...M.keys.ARROW_DOWN, ...M.keys.ARROW_UP].includes(e.key)) {
       M.tabPressed = true;
     }
   }
 
-  static docHandleKeyup(e) {
+  static docHandleKeyup(e: KeyboardEvent) {
     M.keyDown = false;
-    if (e.which === M.keys.TAB || e.which === M.keys.ARROW_DOWN || e.which === M.keys.ARROW_UP) {
+    if ([...M.keys.TAB, ...M.keys.ARROW_DOWN, ...M.keys.ARROW_UP].includes(e.key)) {
       M.tabPressed = false;
     }
   }

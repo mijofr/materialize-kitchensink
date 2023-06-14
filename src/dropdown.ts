@@ -164,9 +164,10 @@ export class Dropdown extends Component {
     this.isTouchMoving = false;
   }
 
-  _handleTriggerKeydown = (e) => {
+  _handleTriggerKeydown = (e: KeyboardEvent) => {
     // ARROW DOWN OR ENTER WHEN SELECT IS CLOSED - open Dropdown
-    if ((e.which === M.keys.ARROW_DOWN || e.which === M.keys.ENTER) && !this.isOpen) {
+    const arrowDownOrEnter = M.keys.ARROW_DOWN.includes(e.key) || M.keys.ENTER.includes(e.key);
+    if (arrowDownOrEnter && !this.isOpen) {
       e.preventDefault();
       this.open();
     }
@@ -187,15 +188,16 @@ export class Dropdown extends Component {
     }
   }
 
-  _handleDropdownKeydown = (e) => {
-    if (e.which === M.keys.TAB) {
+  _handleDropdownKeydown = (e: KeyboardEvent) => {
+    const arrowUpOrDown = M.keys.ARROW_DOWN.includes(e.key) || M.keys.ARROW_UP.includes(e.key);
+    if (M.keys.TAB.includes(e.key)) {
       e.preventDefault();
       this.close();
     }
     // Navigate down dropdown list
-    else if ((e.which === M.keys.ARROW_DOWN || e.which === M.keys.ARROW_UP) && this.isOpen) {
+    else if (arrowUpOrDown && this.isOpen) {
       e.preventDefault();
-      const direction = e.which === M.keys.ARROW_DOWN ? 1 : -1;
+      const direction = M.keys.ARROW_DOWN.includes(e.key) ? 1 : -1;
       let newFocusedIndex = this.focusedIndex;
       let hasFoundNewIndex = false;
       do {
@@ -218,7 +220,7 @@ export class Dropdown extends Component {
       }
     }
     // ENTER selects choice on focused item
-    else if (e.which === M.keys.ENTER && this.isOpen) {
+    else if (M.keys.ENTER.includes(e.key) && this.isOpen) {
       // Search for <a> and <button>
       const focusedElement = this.dropdownEl.children[this.focusedIndex];
       const activatableElement = <HTMLElement>focusedElement.querySelector('a, button');
@@ -233,16 +235,17 @@ export class Dropdown extends Component {
       }
     }
     // Close dropdown on ESC
-    else if (e.which === M.keys.ESC && this.isOpen) {
+    else if (M.keys.ESC.includes(e.key) && this.isOpen) {
       e.preventDefault();
       this.close();
     }
 
-    // CASE WHEN USER TYPE LETTERS
-    const letter = String.fromCharCode(e.which).toLowerCase();
-    const nonLetters = [9, 13, 27, 38, 40];
-    if (letter && nonLetters.indexOf(e.which) === -1) {
-      this.filterQuery.push(letter);
+    // CASE WHEN USER TYPE LTTERS
+    const keyText = e.key.toLowerCase();
+    const isLetter = /[a-zA-Z0-9-_]/.test(keyText);
+    const specialKeys = [...M.keys.ARROW_DOWN, ...M.keys.ARROW_UP, ...M.keys.ENTER, ...M.keys.ESC, ...M.keys.TAB];
+    if (isLetter && !specialKeys.includes(e.key)) {
+      this.filterQuery.push(keyText);
       const string = this.filterQuery.join('');
       const newOptionEl = Array.from(this.dropdownEl.querySelectorAll('li'))
         .find((el) => el.innerText.toLowerCase().indexOf(string) === 0);

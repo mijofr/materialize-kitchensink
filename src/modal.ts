@@ -96,9 +96,8 @@ export class Modal extends Component {
     if (closeTrigger) this.close();
   }
 
-  _handleKeydown = (e) => {
-    // ESC key
-    if (e.keyCode === 27 && this.options.dismissible) this.close();
+  _handleKeydown = (e: KeyboardEvent) => {
+    if (M.keys.ESC.includes(e.key) && this.options.dismissible) this.close();
   }
 
   _handleFocus = (e) => {
