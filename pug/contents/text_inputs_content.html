@@ -405,16 +405,23 @@
         <h3 class="header">Character Counter</h3>
         <p class="caption">Use a character counter in fields where a character restriction is in place.</p>
         <div class="row">
+          <div class="col s12">
+            <div class="card-panel yellow black-text">
+              <strong><b>Important:</b></strong> The "data-length" attribute has been depracated in favour of "maxlength" in v2.x.
+            </div>
+          </div>
+        </div>
+        <div class="row">
           <form class="col s12">
             <div class="row">
               <div class="input-field col s6">
-                <input id="input_text" type="text" data-length="10">
+                <input id="input_text" type="text" maxlength="10">
                 <label for="input_text">Input text</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <textarea id="textarea2" class="materialize-textarea" data-length="120"></textarea>
+                <textarea id="textarea2" class="materialize-textarea" maxlength="120"></textarea>
                 <label for="textarea2">Textarea</label>
               </div>
             </div>
@@ -425,13 +432,13 @@
       &lt;form class="col s12">
         &lt;div class="row">
           &lt;div class="input-field col s6">
-            &lt;input id="input_text" type="text" data-length="10">
+            &lt;input id="input_text" type="text" maxlength="10">
             &lt;label for="input_text">Input text&lt;/label>
           &lt;/div>
         &lt;/div>
         &lt;div class="row">
           &lt;div class="input-field col s12">
-            &lt;textarea id="textarea2" class="materialize-textarea" data-length="120">&lt;/textarea>
+            &lt;textarea id="textarea2" class="materialize-textarea" maxlength="120">&lt;/textarea>
             &lt;label for="textarea2">Textarea&lt;/label>
           &lt;/div>
         &lt;/div>
@@ -443,8 +450,9 @@
         <h5>Initialization</h5>
         <p>There are no options for this plugin, but if you are adding these dynamically, you can use this to initialize them.</p>
         <pre><code class="language-javascript">
-  $(document).ready(function() {
-    $('input#input_text, textarea#textarea2').characterCounter();
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('input#input_text, textarea#textarea2');
+    var instances = M.CharacterCounter.init(elems);
   });
         </code></pre>
       </div>
