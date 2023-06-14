@@ -1,6 +1,7 @@
 describe('Forms:', function() {
   beforeEach(async function() {
     await XloadFixtures(['forms/formsFixture.html']);
+    M.CharacterCounter.init(document.querySelector("#character-counter"));
   });
 
   afterEach(function(){
@@ -11,8 +12,26 @@ describe('Forms:', function() {
 
   beforeEach(function() {
     inputs = document.querySelectorAll('input');
-    inputs.forEach(input => input.blur())
+    inputs.forEach((input) => {
+      input.focus();
+      input.blur();
+    });
     window.location.hash = "";
+  });
+
+  describe("CharacterCounter", () => {
+
+    it("Should initialize", () => {
+      let el = document.querySelector("#character-counter");
+      expect(() => M.CharacterCounter.getInstance(el)).not.toThrow();
+      expect(M.CharacterCounter.getInstance(el)).toBeTruthy();
+    });
+
+    it("Should exhibit counter", () => {
+      let counter = document.querySelector("#character-counter ~ .character-counter");
+      expect(counter.textContent).toBe("0/10");
+    });
+
   });
 
   // No active class added, because it is now a css feature only
