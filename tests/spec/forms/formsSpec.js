@@ -15,6 +15,22 @@ describe('Forms:', function() {
     window.location.hash = "";
   });
 
+  describe('TextArea Resize', () => {
+    it("Should resize", () => {
+      const el = document.querySelector("#textarea");
+      const pHeight = el.clientHeight;
+      el.value = `
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eleifend urna orci, vitae sagittis ligula maximus quis. Duis eleifend ipsum vitae facilisis tincidunt. Aliquam condimentum consequat ex, ut commodo purus tristique at. Donec malesuada fringilla libero vel sodales. Nulla finibus volutpat lectus a varius. Praesent consequat ornare pulvinar. Quisque nec massa diam.
+        Nunc commodo tempus suscipit. Phasellus iaculis at lorem sit amet venenatis. Curabitur quis felis elementum enim fermentum dapibus. In pretium finibus mollis. Nam aliquet tristique diam sit amet ullamcorper. Suspendisse interdum, est sed aliquam dignissim, dolor augue tristique dui, non luctus felis dolor a dui. Suspendisse lacinia lorem nec enim ultricies maximus. Aenean quam erat, finibus non aliquam nec, pharetra vel metus. Nulla dignissim maximus cursus.
+        Integer massa est, semper eget sem quis, bibendum scelerisque odio. Nam sit amet urna auctor, luctus odio in, semper dui. Sed ut gravida libero, ac consectetur sem. Etiam pharetra pulvinar leo, eget imperdiet purus faucibus in. Cras blandit mi ullamcorper nulla viverra posuere. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec pretium euismod tortor a lacinia. Vivamus ultrices vulputate purus et blandit. Fusce mi quam, consequat vitae pretium sed, tempus at ligula.
+        Suspendisse sodales et dolor vitae sollicitudin. Curabitur sed vestibulum sapien. Integer porttitor pulvinar ullamcorper. Sed ultrices varius augue, at bibendum magna congue sit amet. Nam enim purus, fermentum sed feugiat viverra, accumsan nec diam. Donec a auctor est. Aenean non ante metus. Pellentesque ante ligula, varius vel dignissim in, euismod vel diam. Donec est ante, rhoncus at eros sed, cursus pulvinar enim. In pellentesque, erat eu egestas tempor, ipsum turpis ornare dui, sed fringilla sem lorem in ligula.
+        Integer facilisis arcu eu posuere placerat. Nam vel leo magna. Proin mattis feugiat nisi, quis tincidunt magna pulvinar tincidunt. Aliquam eget nunc sapien. Maecenas vitae orci nunc. Nulla condimentum sapien quis sapien varius suscipit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non finibus nisl, et venenatis massa.
+      `.trim();
+      M.Forms.textareaAutoResize(el);
+      expect(el.clientHeight).toBeGreaterThan(pHeight);
+    });
+  });
+
   // No active class added, because it is now a css feature only
   /*
   it("should keep label active while focusing on input", function () {
