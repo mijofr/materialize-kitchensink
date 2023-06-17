@@ -124,17 +124,46 @@
     &lt;/form>
   &lt;/div>
         </code></pre>
-        <h5>Floating Labels with CSS only</h5>
-        <p>There should not be any problems with initializing the inputs properly, since the floating Labels are rendered with CSS only. The CSS Technique requires to use an empty placeholder in the HTML. You have to put an emtpy space in the placeholder. Putting an empty string wont work.</p>
-          <div class="input-field outline">
-            <input value="Daniel" id="first_name2" type="text" class="validate" placeholder=" ">
-            <label class="active" for="first_name2">First Name</label>
+        <h5 id="floating-labels">Floating Labels</h5>
+        <p>
+          Since <b>MaterializeCSS v2</b>, floating Labels are rendered with CSS only by default.
+          However, it is required to use a placeholder with a single white space (" ") in the HTML
+          (providing an empty string will not work!).
+        </p>
+        <p>
+          <strong><b>Important:</b></strong> If you provide a value different than a single white space,
+          the CSS rules will treat it as a "important" placeholder value and will always render the
+          labels in "active" state.
+        </p>
+          <div class="row">
+            <div class="col s12 m6">
+              <div class="input-field outlined" style="margin: 0 4px;">
+                <input id="first_name2" type="text" class="validate" placeholder=" ">
+                <label class="active" for="first_name2">First Name</label>
+              </div>
+            </div>
+            <div class="col s12 m6">
+              <div class="input-field outlined" style="margin: 0 4px;">
+                <input id="last_name2" type="text" class="validate" placeholder="Doe...">
+                <label class="active" for="last_name2">Last Name</label>
+              </div>
+            </div>
           </div>
 
         <pre><code class="language-markup">
-&lt;div class="input-field">
-  &lt;input value="Daniel" id="first_name2" type="text" class="validate" placeholder=" ">
-  &lt;label class="active" for="first_name2">First Name&lt;/label>
+&lt;div class="row">
+  &lt;div class="col s12 m6">
+    &lt;div class="input-field outlined" style="margin: 0 4px;">
+      &lt;input id="first_name2" type="text" class="validate" placeholder=" ">
+      &lt;label class="active" for="first_name2">First Name&lt;/label>
+    &lt;/div>
+  &lt;/div>
+  &lt;div class="col s12 m6">
+    &lt;div class="input-field outlined" style="margin: 0 4px;">
+      &lt;input id="last_name2" type="text" class="validate" placeholder="Doe...">
+      &lt;label class="active" for="last_name2">Last Name&lt;/label>
+    &lt;/div>
+  &lt;/div>
 &lt;/div>
         </code></pre>
 
