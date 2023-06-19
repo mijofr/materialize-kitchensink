@@ -13,13 +13,14 @@ let _defaults = {
   },
   minLength: 1, // Min characters before autocomplete starts
   isMultiSelect: false,
-  onSearch: function(text, autocomplete) {
-    const filteredData = autocomplete.options.data.filter(item => {
-      return Object.keys(item)
-        .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
-        .some(isMatch => isMatch);
-    });
-    autocomplete.setMenuItems(filteredData);
+  onSearch: (text: string, autocomplete) => {
+    const normSearch = text.toLocaleLowerCase();
+    autocomplete.setMenuItems(
+      autocomplete.options.data.filter((option) => 
+        option.id.toString().toLocaleLowerCase().includes(normSearch)
+          || option.text?.toLocaleLowerCase().includes(normSearch)
+      )
+    );
   },
   maxDropDownHeight: '300px',
   allowUnsafeHTML: false
@@ -175,7 +176,7 @@ export class Autocomplete extends Component {
   _handleInputKeyupAndFocus = (e: KeyboardEvent) => {
     if (e.type === 'keyup') Autocomplete._keydown = false;
     this.count = 0;
-    const actualValue = this.el.value.toLowerCase();
+    const actualValue = this.el.value.toLocaleLowerCase();
     // Don't capture enter or arrow key usage.
     if (M.keys.ENTER.includes(e.key) || M.keys.ARROW_UP.includes(e.key) || M.keys.ARROW_DOWN.includes(e.key)) return;
     // Check if the input isn't empty
@@ -254,7 +255,7 @@ export class Autocomplete extends Component {
   }
 
   _highlightPartialText(input, label) {
-    const start = label.toLowerCase().indexOf('' + input.toLowerCase() + '');
+    const start = label.toLocaleLowerCase().indexOf('' + input.toLocaleLowerCase() + '');
     const end = start + input.length - 1;
     //custom filters may return results where the string does not match any part
     if (start == -1 || end == -1) {
@@ -288,7 +289,7 @@ export class Autocomplete extends Component {
     }
 
     // Text
-    const inputText = this.el.value.toLowerCase();
+    const inputText = this.el.value.toLocaleLowerCase();
     const parts = this._highlightPartialText(inputText, (entry.text || entry.id).toString());
     const div = document.createElement('div');
     div.setAttribute('style', 'line-height:1.2;font-weight:500;');
@@ -378,7 +379,7 @@ export class Autocomplete extends Component {
   }
 
   open() {
-    const inputText = this.el.value.toLowerCase();
+    const inputText = this.el.value.toLocaleLowerCase();
     this._resetAutocomplete();
     if (inputText.length >= this.options.minLength) {
       this.isOpen = true;
