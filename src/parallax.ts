@@ -1,21 +1,34 @@
-import { Component } from "./component";
 import { M } from "./global";
+import { Component, BaseOptions, InitElements } from "./component";
 
-let _defaults = {
+export interface ParallaxOptions extends BaseOptions {
+  /**
+   * The minimum width of the screen, in pixels, where the parallax functionality starts working.
+   * @default 0
+   */
+  responsiveThreshold: number;
+}
+
+let _defaults: ParallaxOptions = {
   responsiveThreshold: 0 // breakpoint for swipeable
 };
 
-export class Parallax extends Component {
+export class Parallax extends Component<ParallaxOptions> {
   private _enabled: boolean;
   private _img: HTMLImageElement;
   static _parallaxes: Parallax[] = [];
   static _handleScrollThrottled: () => any;
   static _handleWindowResizeThrottled: () => any;
 
-  constructor(el, options) {
-    super(Parallax, el, options);
+  constructor(el: HTMLElement, options: Partial<ParallaxOptions>) {
+    super(el, options, Parallax);
     (this.el as any).M_Parallax = this;
-    this.options = {...Parallax.defaults, ...options};
+
+    this.options = {
+      ...Parallax.defaults,
+      ...options
+    };
+    
     this._enabled = window.innerWidth > this.options.responsiveThreshold;
     this._img = this.el.querySelector('img');
     this._updateParallax();
@@ -24,17 +37,33 @@ export class Parallax extends Component {
     Parallax._parallaxes.push(this);
   }
 
-  static get defaults() {
+  static get defaults(): ParallaxOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Parallax.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options: Partial<ParallaxOptions>): Parallax;
+  /**
+   * Initializes instances of Parallax.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLElement>, options: Partial<ParallaxOptions>): Parallax[];
+  /**
+   * Initializes instances of Parallax.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<ParallaxOptions>): Parallax | Parallax[] {
+    return super.init(els, options, Parallax);
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Parallax;
+  static getInstance(el: HTMLElement): Parallax {
+    return (el as any).M_Parallax;
   }
 
   destroy() {

@@ -1,8 +1,50 @@
-import { Component } from "./component";
-import { M } from "./global";
 import anim from "animejs";
 
-let _defaults = {
+import { M } from "./global";
+import { Component, BaseOptions, InitElements } from "./component";
+
+export interface SliderOptions extends BaseOptions {
+  /**
+   * Set to false to hide slide indicators.
+   * @default true
+   */
+  indicators: boolean;
+  /**
+   * Set height of slider.
+   * @default 400
+   */
+  height: number;
+  /**
+   * Set the duration of the transition animation in ms.
+   * @default 500
+   */
+  duration: number;
+  /**
+   * Set the duration between transitions in ms.
+   * @default 6000
+   */
+  interval: number;
+  /**
+   * If slider should pause when keyboard focus is received.
+   * @default true
+   */
+  pauseOnFocus: boolean;
+  /**
+   * If slider should pause when is hovered by a pointer.
+   * @default true
+   */
+  pauseOnHover: boolean;
+  /**
+   * Optional function used to generate ARIA label to indicators (for accessibility purposes).
+   * @param index Current index, starting from "1".
+   * @param current A which indicates whether it is the current element or not
+   * @returns a string to be used as label indicator.
+   * @default null
+   */
+  indicatorLabelFunc: (index: number, current: boolean) => string
+}
+
+let _defaults: SliderOptions = {
   indicators: true,
   height: 400,
   duration: 500,
@@ -12,24 +54,28 @@ let _defaults = {
   indicatorLabelFunc: null // Function which will generate a label for the indicators (ARIA)
 };
 
-export class Slider extends Component {
-  el: HTMLElement;
-  _slider: HTMLUListElement;
-  _slides: HTMLLIElement[];
+export class Slider extends Component<SliderOptions> {
+  /** Index of current slide. */
   activeIndex: number;
-  _activeSlide: HTMLLIElement;
-  _indicators: HTMLLIElement[];
   interval: string | number | NodeJS.Timeout;
   eventPause: any;
+  _slider: HTMLUListElement;
+  _slides: HTMLLIElement[];
+  _activeSlide: HTMLLIElement;
+  _indicators: HTMLLIElement[];
   _hovered: boolean;
   _focused: boolean;
   _focusCurrent: boolean;
   _sliderId: string;
 
-  constructor(el, options) {
-    super(Slider, el, options);
+  constructor(el: HTMLElement, options: Partial<SliderOptions>) {
+    super(el, options, Slider);
     (this.el as any).M_Slider = this;
-    this.options = {...Slider.defaults, ...options};
+
+    this.options = {
+      ...Slider.defaults,
+      ...options
+    };
 
     // init props
     this.interval = null;
@@ -128,13 +174,29 @@ export class Slider extends Component {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Slider.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options: Partial<SliderOptions>): Slider;
+  /**
+   * Initializes instances of Slider.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLElement>, options: Partial<SliderOptions>): Slider[];
+  /**
+   * Initializes instances of Slider.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<SliderOptions>): Slider | Slider[] {
+    return super.init(els, options, Slider);
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Slider;
+  static getInstance(el: HTMLElement): Slider {
+    return (el as any).M_Slider;
   }
 
   destroy() {
@@ -176,7 +238,7 @@ export class Slider extends Component {
     }
   }
 
-  _handleIndicatorClick = (e) => {
+  _handleIndicatorClick = (e: MouseEvent) => {
     const el = (<HTMLElement>e.target).parentElement;
     const currIndex = [...el.parentNode.children].indexOf(el);
     this._focusCurrent = true;
@@ -369,11 +431,17 @@ export class Slider extends Component {
     this.interval = null;
   }
 
-  pause() {
+  /**
+   * Pause slider autoslide.
+   */
+  pause = () => {
     this._pause(false);
   }
 
-  start() {
+  /**
+   * Start slider autoslide.
+   */
+  start = () => {
     clearInterval(this.interval);
     this.interval = setInterval(
       this._handleInterval,
@@ -382,7 +450,10 @@ export class Slider extends Component {
     this.eventPause = false;
   }
 
-  next() {
+  /**
+   * Move to next slider.
+   */
+  next = () => {
     let newIndex = this.activeIndex + 1;
     // Wrap around indices.
     if (newIndex >= this._slides.length) newIndex = 0;
@@ -390,7 +461,10 @@ export class Slider extends Component {
     this.set(newIndex);
   }
 
-  prev() {
+  /**
+   * Move to prev slider.
+   */
+  prev = () => {
     let newIndex = this.activeIndex - 1;
     // Wrap around indices.
     if (newIndex >= this._slides.length) newIndex = 0;

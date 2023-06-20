@@ -1,5 +1,31 @@
-import { Component } from "./component";
 import { M } from "./global";
+import { Component, BaseOptions, InitElements } from "./component";
+
+export interface PushpinOptions extends BaseOptions {
+  /**
+   * The distance in pixels from the top of the page where
+   * the element becomes fixed.
+   * @default 0
+   */
+  top: number;
+  /**
+   * The distance in pixels from the top of the page where
+   * the elements stops being fixed.
+   * @default Infinity
+   */
+  bottom: number;
+  /**
+   * The offset from the top the element will be fixed at.
+   * @default 0
+   */
+  offset: number;
+  /**
+   * Callback function called when pushpin position changes.
+   * You are provided with a position string.
+   * @default null
+   */
+  onPositionChange: (position: "pinned" | "pin-top" | "pin-bottom") => void;
+}
 
 let _defaults = {
   top: 0,
@@ -8,31 +34,52 @@ let _defaults = {
   onPositionChange: null
 };
 
-export class Pushpin extends Component {
+export class Pushpin extends Component<PushpinOptions> {
   static _pushpins: any[];
   originalOffset: any;
 
-  constructor(el, options) {
-    super(Pushpin, el, options);
+  constructor(el: HTMLElement, options: Partial<PushpinOptions>) {
+    super(el, options, Pushpin);
     (this.el as any).M_Pushpin = this;
-    this.options = {...Pushpin.defaults, ...options};
+
+    this.options = {
+      ...Pushpin.defaults,
+      ...options
+    };
+
     this.originalOffset = (this.el as HTMLElement).offsetTop;
     Pushpin._pushpins.push(this);
     this._setupEventHandlers();
     this._updatePosition();
   }
 
-  static get defaults() {
+  static get defaults(): PushpinOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Pushpin.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options: Partial<PushpinOptions>): Pushpin;
+  /**
+   * Initializes instances of Pushpin.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLElement>, options: Partial<PushpinOptions>): Pushpin[];
+  /**
+   * Initializes instances of Pushpin.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<PushpinOptions>): Pushpin | Pushpin[] {
+    return super.init(els, options, Pushpin);
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Pushpin;
+  static getInstance(el: HTMLElement): Pushpin {
+    return (el as any).M_Pushpin;
   }
 
   destroy() {
