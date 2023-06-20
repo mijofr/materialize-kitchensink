@@ -1,7 +1,55 @@
-import { Component } from "./component";
 import { M } from "./global";
+import { Component, BaseOptions, InitElements } from "./component";
 
-let _defaults = {
+export interface CarouselOptions extends BaseOptions{
+  /**
+   * Transition duration in milliseconds.
+   * @default 200
+   */
+  duration: number;
+  /**
+   * Perspective zoom. If 0, all items are the same size.
+   * @default -100
+   */
+  dist: number;
+  /**
+   * Set the spacing of the center item.
+   * @default 0
+   */
+  shift: number;
+  /**
+   * Set the padding between non center items.
+   * @default 0
+   */
+  padding: number;
+  /**
+   * Set the number of visible items.
+   * @default 5
+   */
+  numVisible: number;
+  /**
+   * Make the carousel a full width slider like the second example.
+   * @default false
+   */
+  fullWidth: boolean;
+  /**
+   * Set to true to show indicators.
+   * @default false
+   */
+  indicators: boolean;
+  /**
+   * Don't wrap around and cycle through items.
+   * @default false
+   */
+  noWrap: boolean;
+  /**
+   * Callback for when a new slide is cycled to.
+   * @default null
+   */
+  onCycleTo: (current: Element, dragged: boolean) => void;
+}
+
+let _defaults: CarouselOptions = {
   duration: 200, // ms
   dist: -100, // zoom scale TODO: make this more intuitive as an option
   shift: 0, // spacing for center image
@@ -13,12 +61,13 @@ let _defaults = {
   onCycleTo: null // Callback for when a new slide is cycled to.
 };
 
-export class Carousel extends Component {
-  el: HTMLElement;
+export class Carousel extends Component<CarouselOptions> {
   hasMultipleSlides: boolean;
   showIndicators: boolean;
-  noWrap: any;
+  noWrap: boolean;
+  /** If the carousel is being clicked or tapped. */
   pressed: boolean;
+  /** If the carousel is currently being dragged. */
   dragged: boolean;
   offset: number;
   target: number;
@@ -37,15 +86,20 @@ export class Carousel extends Component {
   timestamp: number;
   ticker: NodeJS.Timer;
   amplitude: number;
+  /** The index of the center carousel item. */
   center: number = 0;
   imageHeight: any;
   scrollingTimeout: any;
   oneTimeCallback: any;
 
-  constructor(el: Element, options: Object) {
-    super(Carousel, el, options);
+  constructor(el: HTMLElement, options: Partial<CarouselOptions>) {
+    super(el, options, Carousel);
     (this.el as any).M_Carousel = this;
-    this.options = {...Carousel.defaults, ...options};
+
+    this.options = {
+      ...Carousel.defaults,
+      ...options
+    };
 
     // Setup
     this.hasMultipleSlides = this.el.querySelectorAll('.carousel-item').length > 1;
@@ -109,17 +163,33 @@ export class Carousel extends Component {
     this._scroll(this.offset);
   }
 
-  static get defaults() {
+  static get defaults(): CarouselOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Carousel.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options: Partial<CarouselOptions>): Carousel;
+  /**
+   * Initializes instances of Carousel.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLElement>, options: Partial<CarouselOptions>): Carousel[];
+  /**
+   * Initializes instances of Carousel.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<CarouselOptions>): Carousel | Carousel[] {
+    return super.init(els, options, Carousel);
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Carousel;
+  static getInstance(el: HTMLElement): Carousel {
+    return (el as any).M_Carousel;
   }
 
   destroy() {
@@ -168,7 +238,7 @@ export class Carousel extends Component {
 
   _handleThrottledResize = (() => M.throttle(function(){ this._handleResize(); }, 200, null).bind(this))();
 
-  _handleCarouselTap = (e) => {
+  _handleCarouselTap = (e: MouseEvent | TouchEvent) => {
     // Fixes firefox draggable image bug
     if (e.type === 'mousedown' && (<HTMLElement>e.target).tagName === 'IMG') {
       e.preventDefault();
@@ -186,8 +256,8 @@ export class Carousel extends Component {
     this.ticker = setInterval(this._track, 100);
   }
 
-  _handleCarouselDrag = (e) => {
-    let x, y, delta, deltaY;
+  _handleCarouselDrag = (e: MouseEvent | TouchEvent) => {
+    let x: number, y: number, delta: number, deltaY: number;
     if (this.pressed) {
       x = this._xpos(e);
       y = this._ypos(e);
@@ -218,7 +288,7 @@ export class Carousel extends Component {
     }
   }
 
-  _handleCarouselRelease = (e) => {
+  _handleCarouselRelease = (e: MouseEvent | TouchEvent) => {
     if (this.pressed) {
       this.pressed = false;
     } else {
@@ -249,7 +319,7 @@ export class Carousel extends Component {
     return false;
   }
 
-  _handleCarouselClick = (e) => {
+  _handleCarouselClick = (e: MouseEvent | TouchEvent) => {
     // Disable clicks if carousel was dragged.
     if (this.dragged) {
       e.preventDefault();
@@ -268,7 +338,7 @@ export class Carousel extends Component {
       // fixes https://github.com/materializecss/materialize/issues/180
       if (clickedIndex < 0) {
         // relative X position > center of carousel = clicked at the right part of the carousel
-        if (e.clientX - e.target.getBoundingClientRect().left > this.el.clientWidth / 2) {
+        if ((e as MouseEvent).clientX - (e.target as HTMLElement).getBoundingClientRect().left > this.el.clientWidth / 2) {
           this.next();
         } else {
           this.prev();
@@ -335,22 +405,22 @@ export class Carousel extends Component {
     }
   }
 
-  _xpos(e) {
+  _xpos(e: MouseEvent | TouchEvent) {
     // touch event
-    if (e.targetTouches && e.targetTouches.length >= 1) {
+    if (e instanceof TouchEvent && e.targetTouches.length >= 1) {
       return e.targetTouches[0].clientX;
     }
     // mouse event
-    return e.clientX;
+    return (e as MouseEvent).clientX;
   }
 
-  _ypos(e) {
+  _ypos(e: MouseEvent | TouchEvent) {
     // touch event
-    if (e.targetTouches && e.targetTouches.length >= 1) {
+    if (e instanceof TouchEvent && e.targetTouches.length >= 1) {
       return e.targetTouches[0].clientY;
     }
     // mouse event
-    return e.clientY;
+    return (e as MouseEvent).clientY;
   }
 
   _wrap(x: number) {
@@ -362,7 +432,7 @@ export class Carousel extends Component {
   }
 
   _track = () => {
-    let now, elapsed, delta, v;
+    let now: number, elapsed: number, delta: number, v: number;
     now = Date.now();
     elapsed = now - this.timestamp;
     this.timestamp = now;
@@ -373,7 +443,7 @@ export class Carousel extends Component {
   }
 
   _autoScroll = () => {
-    let elapsed, delta;
+    let elapsed: number, delta: number;
     if (this.amplitude) {
       elapsed = Date.now() - this.timestamp;
       delta = this.amplitude * Math.exp(-elapsed / this.options.duration);
@@ -399,16 +469,16 @@ export class Carousel extends Component {
     }, this.options.duration);
 
     // Start actual scroll
-    let i,
-      half,
-      delta,
-      dir,
-      tween,
-      el,
-      alignment,
-      zTranslation,
-      tweenedOpacity,
-      centerTweenedOpacity;
+    let i: number,
+      half: number,
+      delta: number,
+      dir: number,
+      tween: number,
+      el: HTMLElement,
+      alignment: string,
+      zTranslation: number,
+      tweenedOpacity: number,
+      centerTweenedOpacity: number;
     let lastCenter = this.center;
     let numVisibleOffset = 1 / this.options.numVisible;
 
@@ -521,7 +591,7 @@ export class Carousel extends Component {
     el.style.visibility = 'visible';
   }
 
-  _cycleTo(n: number, callback: Function = null) {
+  _cycleTo(n: number, callback: CarouselOptions["onCycleTo"] = null) {
     let diff = (this.center % this.count) - n;
     // Account for wraparound.
     if (!this.noWrap) {
@@ -555,6 +625,10 @@ export class Carousel extends Component {
     }
   }
 
+  /**
+   * Move carousel to next slide or go forward a given amount of slides.
+   * @param n How many times the carousel slides.
+   */
   next(n: number = 1) {
     if (n === undefined || isNaN(n)) {
       n = 1;
@@ -567,6 +641,10 @@ export class Carousel extends Component {
     this._cycleTo(index);
   }
 
+  /**
+   * Move carousel to previous slide or go back a given amount of slides.
+   * @param n How many times the carousel slides.
+   */
   prev(n: number = 1) {
     if (n === undefined || isNaN(n)) {
       n = 1;
@@ -579,7 +657,12 @@ export class Carousel extends Component {
     this._cycleTo(index);
   }
 
-  set(n: number, callback: Function) {
+  /**
+   * Move carousel to nth slide.
+   * @param n Index of slide.
+   * @param callback "onCycleTo" optional callback.
+   */
+  set(n: number, callback?: CarouselOptions["onCycleTo"]) {
     if (n === undefined || isNaN(n)) {
       n = 0;
     }

@@ -1,16 +1,39 @@
-import { Component } from "./component";
-import { M } from "./global";
 import anim from "animejs";
 
-let _defaults = {
+import { M } from "./global";
+import { Component, BaseOptions, InitElements } from "./component";
+
+export interface ScrollSpyOptions extends BaseOptions {
+  /**
+   * Throttle of scroll handler.
+   * @default 100
+   */
+  throttle: number;
+  /**
+   * Offset for centering element when scrolled to.
+   * @default 200
+   */
+  scrollOffset: number;
+  /**
+   * Class applied to active elements.
+   * @default 'active'
+   */
+  activeClass: string;
+  /**
+   * Used to find active element.
+   * @default id => 'a[href="#' + id + '"]'
+   */
+  getActiveElement: (id: string) => string;
+};
+
+let _defaults: ScrollSpyOptions = {
   throttle: 100,
   scrollOffset: 200, // offset - 200 allows elements near bottom of page to scroll
   activeClass: 'active',
   getActiveElement: (id: string): string => { return 'a[href="#'+id+'"]'; }
 };
 
-export class ScrollSpy extends Component {
-  el: HTMLElement;
+export class ScrollSpy extends Component<ScrollSpyOptions> {
   static _elements: ScrollSpy[];
   static _count: number;
   static _increment: number;
@@ -20,10 +43,15 @@ export class ScrollSpy extends Component {
   static _visibleElements: any[];
   static _ticks: number;
 
-  constructor(el, options) {
-    super(ScrollSpy, el, options);
+  constructor(el: HTMLElement, options: Partial<ScrollSpyOptions>) {
+    super(el, options, ScrollSpy);
     (this.el as any).M_ScrollSpy = this;
-    this.options = {...ScrollSpy.defaults, ...options};
+
+    this.options = {
+      ...ScrollSpy.defaults,
+      ...options
+    };
+
     ScrollSpy._elements.push(this);
     ScrollSpy._count++;
     ScrollSpy._increment++;
@@ -33,17 +61,33 @@ export class ScrollSpy extends Component {
     this._handleWindowScroll();
   }
 
-  static get defaults() {
+  static get defaults(): ScrollSpyOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of ScrollSpy.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options: Partial<ScrollSpyOptions>): ScrollSpy;
+  /**
+   * Initializes instances of ScrollSpy.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLElement>, options: Partial<ScrollSpyOptions>): ScrollSpy[];
+  /**
+   * Initializes instances of ScrollSpy.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<ScrollSpyOptions>): ScrollSpy | ScrollSpy[] {
+    return super.init(els, options, ScrollSpy);
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_ScrollSpy;
+  static getInstance(el: HTMLElement): ScrollSpy {
+    return (el as any).M_ScrollSpy;
   }
 
   destroy() {
@@ -75,7 +119,7 @@ export class ScrollSpy extends Component {
 
   _handleThrottledResize = (() => M.throttle(function(){ this._handleWindowScroll(); }, 200).bind(this))(); 
 
-  _handleTriggerClick = (e) => {
+  _handleTriggerClick = (e: MouseEvent) => {
     const trigger = e.target;
     for (let i = ScrollSpy._elements.length - 1; i >= 0; i--) {
       const scrollspy = ScrollSpy._elements[i];

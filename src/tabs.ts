@@ -1,17 +1,42 @@
-import { Component } from "./component";
-import { Carousel } from "./carousel";
 import anim from "animejs";
 
-let _defaults = {
+import { Carousel } from "./carousel";
+import { Component, BaseOptions, InitElements } from "./component";
+
+export interface TabsOptions extends BaseOptions {
+  /**
+   * Transition duration in milliseconds.
+   * @default 300
+   */
+  duration: number;
+  /**
+   * Callback for when a new tab content is shown.
+   * @default null
+   */
+  onShow: (newContent: Element) => void;
+  /**
+   * Set to true to enable swipeable tabs.
+   * This also uses the responsiveThreshold option.
+   * @default false
+   */
+  swipeable: boolean;
+  /**
+   * The maximum width of the screen, in pixels,
+   * where the swipeable functionality initializes.
+   * @default infinity
+   */
+  responsiveThreshold: number;
+};
+
+let _defaults: TabsOptions = {
   duration: 300,
   onShow: null,
   swipeable: false,
-  responsiveThreshold: Infinity, // breakpoint for swipeable
+  responsiveThreshold: Infinity // breakpoint for swipeable
 };
 
-export class Tabs extends Component {
-  el: HTMLElement;
-  _tabLinks: any;
+export class Tabs extends Component<TabsOptions> {
+  _tabLinks: NodeListOf<HTMLAnchorElement>;
   _index: number;
   _indicator: any;
   _tabWidth: number;
@@ -20,11 +45,15 @@ export class Tabs extends Component {
   _activeTabLink: any;
   _content: any;
 
-  constructor(el, options: any) {
-    super(Tabs, el, options);
+  constructor(el: HTMLElement, options: Partial<TabsOptions>) {
+    super(el, options, Tabs);
     (this.el as any).M_Tabs = this;
 
-    this.options = {...Tabs.defaults, ...options};
+    this.options = {
+      ...Tabs.defaults,
+      ...options
+    };
+
     this._tabLinks = this.el.querySelectorAll('li.tab > a');
     this._index = 0;
     this._setupActiveTabLink();
@@ -39,17 +68,33 @@ export class Tabs extends Component {
     this._setupEventHandlers();
   }
 
-  static get defaults() {
+  static get defaults(): TabsOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Tabs.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options: Partial<TabsOptions>): Tabs;
+  /**
+   * Initializes instances of Tabs.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLElement>, options: Partial<TabsOptions>): Tabs[];
+  /**
+   * Initializes instances of Tabs.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<TabsOptions>): Tabs | Tabs[] {
+    return super.init(els, options, Tabs);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Tabs;
+  static getInstance(el: HTMLElement): Tabs {
+    return (el as any).M_Tabs;
   }
 
   destroy() {
@@ -63,6 +108,11 @@ export class Tabs extends Component {
     }
     (this.el as any).M_Tabs = undefined;
   }
+
+  /**
+   * The index of tab that is currently shown.
+   */
+  get index(){ return this._index; }
 
   _setupEventHandlers() {
     window.addEventListener('resize', this._handleWindowResize);
@@ -82,8 +132,8 @@ export class Tabs extends Component {
     }
   }
 
-  _handleTabClick = (e) => {
-    const tabLink = e.target;
+  _handleTabClick = (e: MouseEvent) => {
+    const tabLink = e.target as HTMLAnchorElement;
     const tab = tabLink.parentElement;
     // Handle click on tab link only
     if (!tabLink || !tab.classList.contains('tab')) return;
@@ -231,9 +281,9 @@ export class Tabs extends Component {
 
   _teardownNormalTabs() {
     // show Tabs Content
-    this._tabLinks.forEach(a => {
+    this._tabLinks.forEach((a) => {
       if (a.hash) {
-        const currContent = document.querySelector(a.hash);
+        const currContent = document.querySelector(a.hash) as HTMLElement;
         if (currContent) currContent.style.display = '';
       }
     });
@@ -252,6 +302,10 @@ export class Tabs extends Component {
     return Math.floor(el.offsetLeft);
   }
 
+  /**
+   * Recalculate tab indicator position. This is useful when
+   * the indicator position is not correct.
+   */
   updateTabIndicator() {
     this._setTabsAndTabWidth();
     this._animateIndicator(this._index);
@@ -282,7 +336,11 @@ export class Tabs extends Component {
     anim(animOptions);
   }
 
-  select(tabId) {
+  /**
+   * Show tab content that corresponds to the tab with the id.
+   * @param tabId The id of the tab that you want to switch to.
+   */
+  select(tabId: string) {
     const tab = Array.from(this._tabLinks).find((a: HTMLAnchorElement) => a.getAttribute('href') === '#'+tabId);
     if (tab) (<HTMLAnchorElement>tab).click();
   }

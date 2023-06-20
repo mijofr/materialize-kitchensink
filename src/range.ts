@@ -1,36 +1,60 @@
-import { Component } from "./component";
 import anim from "animejs";
 
-const _defaults = {};
+import { Component, BaseOptions, InitElements } from "./component";
+
+export interface RangeOptions extends BaseOptions {};
+
+const _defaults: RangeOptions = {};
 
 // TODO: !!!!!
 
-export class Range extends Component {
-  el: HTMLInputElement;
+export class Range extends Component<RangeOptions> {
+  declare el: HTMLInputElement;
   private _mousedown: boolean;
   value: HTMLElement;
   thumb: HTMLElement;
 
-  constructor(el, options) {
-    super(Range, el, options);
+  constructor(el: HTMLInputElement, options: Partial<RangeOptions>) {
+    super(el, options, Range);
     (this.el as any).M_Range = this;
-    this.options = {...Range.defaults, ...options};
+
+    this.options = {
+      ...Range.defaults,
+      ...options
+    };
+
     this._mousedown = false;
     this._setupThumb();
     this._setupEventHandlers();
   }
 
-  static get defaults() {
+  static get defaults(): RangeOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Range.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLInputElement, options: Partial<RangeOptions>): Range;
+  /**
+   * Initializes instances of Range.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLInputElement>, options: Partial<RangeOptions>): Range[];
+  /**
+   * Initializes instances of Range.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLInputElement | InitElements<HTMLInputElement>, options: Partial<RangeOptions>): Range | Range[] {
+    return super.init(els, options, Range);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Range;
+  static getInstance(el: HTMLInputElement): Range {
+    return (el as any).M_Range;
   }
 
   destroy() {
@@ -77,7 +101,7 @@ export class Range extends Component {
     this.thumb.style.left = offsetLeft+'px';
   }
 
-  _handleRangeMousedownTouchstart = (e) => {
+  _handleRangeMousedownTouchstart = (e: MouseEvent | TouchEvent) => {
     // Set indicator value
     this.value.innerHTML = this.el.value;
     this._mousedown = true;
@@ -165,7 +189,10 @@ export class Range extends Component {
     return percent * width;
   }
 
+  /**
+   * Initializes every range input in the current document.
+   */
   static Init(){
-    Range.init(document.querySelectorAll('input[type=range]'), {});
+    Range.init((document.querySelectorAll('input[type=range]')) as NodeListOf<HTMLInputElement>, {});
   }
 }

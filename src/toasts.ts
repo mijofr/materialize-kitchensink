@@ -1,6 +1,47 @@
 import anim from "animejs";
 
-let _defaults = {
+import { BaseOptions, InitElements } from "./component";
+
+export interface ToastOptions extends BaseOptions {
+  /**
+   * The content of the Toast.
+   * @default ""
+   */
+  text: string;
+  /**
+   * Length in ms the Toast stays before dismissal.
+   * @default 4000
+   */
+  displayLength: number;
+  /**
+   * Transition in duration in milliseconds.
+   * @default 300
+   */
+  inDuration: number;
+  /**
+   * Transition out duration in milliseconds.
+   * @default 375
+   */
+  outDuration: number;
+  /**
+   * Classes to be added to the toast element.
+   * @default ""
+   */
+  classes: string;
+  /**
+   * Callback function called when toast is dismissed.
+   * @default null
+   */
+  completeCallback: () => void;
+  /**
+   * The percentage of the toast's width it takes fora drag
+   * to dismiss a Toast.
+   * @default 0.8
+   */
+  activationPercent: number;
+}
+
+let _defaults: ToastOptions = {
   text: '',
   displayLength: 4000,
   inDuration: 300,
@@ -11,34 +52,36 @@ let _defaults = {
 };
 
 export class Toast {
-  static _toasts: Toast[];
-  static _container: any;
-  static _draggedToast: Toast;
-  options: any;
-  message: string;
-  panning: boolean;
-  timeRemaining: number;
+  /** The toast element. */
   el: HTMLDivElement;
+  /**
+   * The remaining amount of time in ms that the toast
+   * will stay before dismissal.
+   */
+  timeRemaining: number;
+  /**
+   * Describes the current pan state of the Toast.
+   */
+  panning: boolean;
+  options: ToastOptions;
+  message: string;
   counterInterval: NodeJS.Timeout;
-  wasSwiped: any;
+  wasSwiped: boolean;
   startingXPos: number;
-  xPos: any;
+  xPos: number;
   time: number;
   deltaX: number;
   velocityX: number;
 
-  constructor(options: any) {
-    this.options = {...Toast.defaults, ...options};
-    //this.htmlMessage = this.options.html;
-    // Warn when using html
-    // if (!!this.options.html)
-    //   console.warn(
-    //     'The html option is deprecated and will be removed in the future. See https://github.com/materializecss/materialize/pull/49'
-    //   );
-    // If the new unsafeHTML is used, prefer that
-    // if (!!this.options.unsafeHTML) {
-    //   this.htmlMessage = this.options.unsafeHTML;
-    // }
+  static _toasts: Toast[];
+  static _container: any;
+  static _draggedToast: Toast;
+
+  constructor(options: Partial<ToastOptions>) {
+    this.options = {
+      ...Toast.defaults,
+      ...options
+    };
     this.message = this.options.text;
     this.panning = false;
     this.timeRemaining = this.options.displayLength;
@@ -54,13 +97,12 @@ export class Toast {
     this._setTimer();
   }
 
-  static get defaults() {
+  static get defaults(): ToastOptions {
     return _defaults;
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Toast;
+  static getInstance(el: HTMLElement): Toast {
+    return (el as any).M_Toast;
   }
 
   static _createContainer() {
@@ -84,7 +126,7 @@ export class Toast {
     Toast._container = null;
   }
 
-  static _onDragStart(e) {
+  static _onDragStart(e: TouchEvent | MouseEvent) {
     if (e.target && (<HTMLElement>e.target).closest('.toast')) {
       const toastElem = (<HTMLElement>e.target).closest('.toast');
       const toast: Toast = (toastElem as any).M_Toast;
@@ -98,7 +140,7 @@ export class Toast {
     }
   }
 
-  static _onDragMove(e) {
+  static _onDragMove(e: TouchEvent | MouseEvent) {
     if (!!Toast._draggedToast) {
       e.preventDefault();
       const toast = Toast._draggedToast;
@@ -139,14 +181,17 @@ export class Toast {
     }
   }
 
-  static _xPos(e) {
-    if (e.targetTouches && e.targetTouches.length >= 1) {
+  static _xPos(e: TouchEvent | MouseEvent) {
+    if (e instanceof TouchEvent && e.targetTouches.length >= 1) {
       return e.targetTouches[0].clientX;
     }
     // mouse event
-    return e.clientX;
+    return (e as MouseEvent).clientX;
   }
 
+  /**
+   * dismiss all toasts.
+   */
   static dismissAll() {
     for (let toastIndex in Toast._toasts) {
       Toast._toasts[toastIndex].dismiss();
@@ -165,29 +210,8 @@ export class Toast {
       toast.classList.add(...this.options.classes.split(' '));
     }
 
-    // Set safe text content
-    toast.innerText = this.message;
-
-    // if (
-    //   typeof HTMLElement === 'object'
-    //     ? this.htmlMessage instanceof HTMLElement
-    //     : this.htmlMessage &&
-    //       typeof this.htmlMessage === 'object' &&
-    //       this.htmlMessage !== null &&
-    //       this.htmlMessage.nodeType === 1 &&
-    //       typeof this.htmlMessage.nodeName === 'string'
-    // ) {
-    //   //if the htmlMessage is an HTML node, append it directly
-    //   toast.appendChild(this.htmlMessage);
-    // }
-    // else if (!!this.htmlMessage.jquery) {
-    //   // Check if it is jQuery object, append the node
-    //   $(toast).append(this.htmlMessage[0]);
-    // }
-    // else {
-    //   // Append as unsanitized html;
-    //   $(toast).append(this.htmlMessage);
-    // }
+    // Set text content
+    else toast.innerText = this.message;
 
     // Append toast
     Toast._container.appendChild(toast);
@@ -207,7 +231,7 @@ export class Toast {
 
   /**
    * Create setInterval which automatically removes toast when timeRemaining >= 0
-   * has been reached
+   * has been reached.
    */
   _setTimer() {
     if (this.timeRemaining !== Infinity) {
@@ -225,7 +249,7 @@ export class Toast {
   }
 
   /**
-   * Dismiss toast with animation
+   * Dismiss toast with animation.
    */
   dismiss() {
     window.clearInterval(this.counterInterval);

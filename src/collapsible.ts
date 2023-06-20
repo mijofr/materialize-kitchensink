@@ -1,34 +1,68 @@
-import { M } from "./global";
-import { Component } from "./component";
 import anim from "animejs";
 
-interface CollapsibleOptions {
+import { M } from "./global";
+import { Component, BaseOptions, InitElements } from "./component";
+
+export interface CollapsibleOptions extends BaseOptions {
+  /**
+   * If accordion versus collapsible.
+   * @default true
+   */
   accordion: boolean;
-  onOpenStart: Function|undefined;
-  onOpenEnd: Function|undefined;
-  onCloseStart: Function|undefined;
-  onCloseEnd: Function|undefined;
+  /**
+   * Transition in duration in milliseconds.
+   * @default 300
+   */
   inDuration: number;
+  /**
+   * Transition out duration in milliseconds.
+   * @default 300
+   */
   outDuration: number;
+  /**
+   * Callback function called before collapsible is opened.
+   * @default null
+   */
+  onOpenStart: (el: Element) => void;
+  /**
+   * Callback function called after collapsible is opened.
+   * @default null
+   */
+  onOpenEnd: (el: Element) => void;
+  /**
+   * Callback function called before collapsible is closed.
+   * @default null
+   */
+  onCloseStart: (el: Element) => void;
+  /**
+   * Callback function called after collapsible is closed.
+   * @default null
+   */
+  onCloseEnd: (el: Element) => void;
 }
 
 const _defaults: CollapsibleOptions = {
   accordion: true,
-  onOpenStart: undefined,
-  onOpenEnd: undefined,
-  onCloseStart: undefined,  
-  onCloseEnd: undefined,
+  onOpenStart: null,
+  onOpenEnd: null,
+  onCloseStart: null,  
+  onCloseEnd: null,
   inDuration: 300,
   outDuration: 300
 };
 
-export class Collapsible extends Component {
+export class Collapsible extends Component<CollapsibleOptions> {
   private _headers: HTMLElement[];
 
-  constructor(el: HTMLElement, options: CollapsibleOptions) {
-    super(Collapsible, el, options);
-    this.el['M_Collapsible'] = this;
-    this.options = {...Collapsible.defaults, ...options};
+  constructor(el: HTMLElement, options: Partial<CollapsibleOptions>) {
+    super(el, options, Collapsible);
+    (this.el as any).M_Collapsible = this;
+
+    this.options = {
+      ...Collapsible.defaults,
+      ...options
+    };
+
     // Setup tab indices
     this._headers = Array.from(this.el.querySelectorAll('li > .collapsible-header'));
     this._headers.forEach(el => el.tabIndex = 0);
@@ -42,22 +76,38 @@ export class Collapsible extends Component {
       activeBodies.forEach(el => el.style.display = 'block'); // Expandables
   }
 
-  static get defaults() {
+  static get defaults(): CollapsibleOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Collapsible.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options: Partial<CollapsibleOptions>): Collapsible;
+  /**
+   * Initializes instances of Collapsible.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLElement>, options: Partial<CollapsibleOptions>): Collapsible[];
+  /**
+   * Initializes instances of Collapsible.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<CollapsibleOptions>): Collapsible | Collapsible[] {
+    return super.init(els, options, Collapsible);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Collapsible;
+  static getInstance(el: HTMLElement): Collapsible {
+    return (el as any).M_Collapsible;
   }
 
   destroy() {
     this._removeEventHandlers();
-    this.el['M_Collapsible'].M_Collapsible = undefined;
+    (this.el as any).M_Collapsible = undefined;
   }
 
   _setupEventHandlers() {
@@ -70,8 +120,8 @@ export class Collapsible extends Component {
     this._headers.forEach(header => header.removeEventListener('keydown', this._handleCollapsibleKeydown));
   }
 
-  _handleCollapsibleClick = (e) => {
-    const header = e.target.closest('.collapsible-header');
+  _handleCollapsibleClick = (e: MouseEvent | KeyboardEvent) => {
+    const header = (e.target as HTMLElement).closest('.collapsible-header');
     if (e.target && header) {
       const collapsible = header.closest('.collapsible');
       if (collapsible !== this.el) return;
@@ -154,7 +204,11 @@ export class Collapsible extends Component {
     });
   }
 
-  open(index: number) {
+  /**
+   * Open collapsible section.
+   * @param n Nth section to open.
+   */
+  open = (index: number) => {
     const listItems = Array.from(this.el.children).filter(c => c.tagName === 'LI');
     const li = listItems[index];
     if (li && !li.classList.contains('active')) {
@@ -176,7 +230,11 @@ export class Collapsible extends Component {
     }
   }
 
-  close(index: number) {
+  /**
+   * Close collapsible section.
+   * @param n Nth section to close.
+   */
+  close = (index: number) => {
     const li = Array.from(this.el.children).filter(c => c.tagName === 'LI')[index];
     if (li && li.classList.contains('active')) {
       // onCloseStart callback

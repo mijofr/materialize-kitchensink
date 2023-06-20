@@ -159,46 +159,50 @@ export class M {
   }
   //---
 
-  static AutoInit(context:Element = null) {
-    let root = !!context ? context : document.body;
+  /**
+   * Automatically initialize components.
+   * @param context Root element to initialize. Defaults to `document.body`.
+   */
+  static AutoInit(context: HTMLElement = document.body) {
+    let root = context;
     let registry = {
-      Autocomplete: root.querySelectorAll('.autocomplete:not(.no-autoinit)'),
-      Carousel: root.querySelectorAll('.carousel:not(.no-autoinit)'),
-      Chips: root.querySelectorAll('.chips:not(.no-autoinit)'),
-      Collapsible: root.querySelectorAll('.collapsible:not(.no-autoinit)'),
-      Datepicker: root.querySelectorAll('.datepicker:not(.no-autoinit)'),
-      Dropdown: root.querySelectorAll('.dropdown-trigger:not(.no-autoinit)'),
-      Materialbox: root.querySelectorAll('.materialboxed:not(.no-autoinit)'),
-      Modal: root.querySelectorAll('.modal:not(.no-autoinit)'),
-      Parallax: root.querySelectorAll('.parallax:not(.no-autoinit)'),
-      Pushpin: root.querySelectorAll('.pushpin:not(.no-autoinit)'),
-      ScrollSpy: root.querySelectorAll('.scrollspy:not(.no-autoinit)'),
-      FormSelect: root.querySelectorAll('select:not(.no-autoinit)'),
-      Sidenav: root.querySelectorAll('.sidenav:not(.no-autoinit)'),
-      Tabs: root.querySelectorAll('.tabs:not(.no-autoinit)'),
-      TapTarget: root.querySelectorAll('.tap-target:not(.no-autoinit)'),
-      Timepicker: root.querySelectorAll('.timepicker:not(.no-autoinit)'),
-      Tooltip: root.querySelectorAll('.tooltipped:not(.no-autoinit)'),
-      FloatingActionButton: root.querySelectorAll('.fixed-action-btn:not(.no-autoinit)'),
+      Autocomplete: <NodeListOf<HTMLElement>>root.querySelectorAll('.autocomplete:not(.no-autoinit)'),
+      Carousel: <NodeListOf<HTMLElement>>root.querySelectorAll('.carousel:not(.no-autoinit)'),
+      Chips: <NodeListOf<HTMLElement>>root.querySelectorAll('.chips:not(.no-autoinit)'),
+      Collapsible: <NodeListOf<HTMLElement>>root.querySelectorAll('.collapsible:not(.no-autoinit)'),
+      Datepicker: <NodeListOf<HTMLElement>>root.querySelectorAll('.datepicker:not(.no-autoinit)'),
+      Dropdown: <NodeListOf<HTMLElement>>root.querySelectorAll('.dropdown-trigger:not(.no-autoinit)'),
+      Materialbox: <NodeListOf<HTMLElement>>root.querySelectorAll('.materialboxed:not(.no-autoinit)'),
+      Modal: <NodeListOf<HTMLElement>>root.querySelectorAll('.modal:not(.no-autoinit)'),
+      Parallax: <NodeListOf<HTMLElement>>root.querySelectorAll('.parallax:not(.no-autoinit)'),
+      Pushpin: <NodeListOf<HTMLElement>>root.querySelectorAll('.pushpin:not(.no-autoinit)'),
+      ScrollSpy: <NodeListOf<HTMLElement>>root.querySelectorAll('.scrollspy:not(.no-autoinit)'),
+      FormSelect: <NodeListOf<HTMLElement>>root.querySelectorAll('select:not(.no-autoinit)'),
+      Sidenav: <NodeListOf<HTMLElement>>root.querySelectorAll('.sidenav:not(.no-autoinit)'),
+      Tabs: <NodeListOf<HTMLElement>>root.querySelectorAll('.tabs:not(.no-autoinit)'),
+      TapTarget: <NodeListOf<HTMLElement>>root.querySelectorAll('.tap-target:not(.no-autoinit)'),
+      Timepicker: <NodeListOf<HTMLElement>>root.querySelectorAll('.timepicker:not(.no-autoinit)'),
+      Tooltip: <NodeListOf<HTMLElement>>root.querySelectorAll('.tooltipped:not(.no-autoinit)'),
+      FloatingActionButton: <NodeListOf<HTMLElement>>root.querySelectorAll('.fixed-action-btn:not(.no-autoinit)'),
     };
-    M.Autocomplete.init(registry.Autocomplete, null);
-    M.Carousel.init(registry.Carousel, null);
-    M.Chips.init(registry.Chips, null);
-    M.Collapsible.init(registry.Collapsible, null);
-    M.Datepicker.init(registry.Datepicker, null);
-    M.Dropdown.init(registry.Dropdown, null);
-    M.Materialbox.init(registry.Materialbox, null);
-    M.Modal.init(registry.Modal, null);
-    M.Parallax.init(registry.Parallax, null);
-    M.Pushpin.init(registry.Pushpin, null);
-    M.ScrollSpy.init(registry.ScrollSpy, null);
-    M.FormSelect.init(registry.FormSelect, null);
-    M.Sidenav.init(registry.Sidenav, null);
-    M.Tabs.init(registry.Tabs, null);
-    M.TapTarget.init(registry.TapTarget, null);
-    M.Timepicker.init(registry.Timepicker, null);
-    M.Tooltip.init(registry.Tooltip, null);
-    M.FloatingActionButton.init(registry.FloatingActionButton, null);
+    M.Autocomplete.init(registry.Autocomplete, {});
+    M.Carousel.init(registry.Carousel, {});
+    M.Chips.init(registry.Chips, {});
+    M.Collapsible.init(registry.Collapsible, {});
+    M.Datepicker.init(registry.Datepicker, {});
+    M.Dropdown.init(registry.Dropdown, {});
+    M.Materialbox.init(registry.Materialbox, {});
+    M.Modal.init(registry.Modal, {});
+    M.Parallax.init(registry.Parallax, {});
+    M.Pushpin.init(registry.Pushpin, {});
+    M.ScrollSpy.init(registry.ScrollSpy, {});
+    M.FormSelect.init(registry.FormSelect, {});
+    M.Sidenav.init(registry.Sidenav, {});
+    M.Tabs.init(registry.Tabs, {});
+    M.TapTarget.init(registry.TapTarget, {});
+    M.Timepicker.init(registry.Timepicker, {});
+    M.Tooltip.init(registry.Tooltip, {});
+    M.FloatingActionButton.init(registry.FloatingActionButton, {});
   }
 
   static objectSelectorString(obj: any): string {
@@ -324,7 +328,7 @@ export class M {
     return canAlign;
   }
 
-  static getOverflowParent(element) {
+  static getOverflowParent(element: HTMLElement) {
     if (element == null) {
       return null;
     }
@@ -334,7 +338,7 @@ export class M {
     return this.getOverflowParent(element.parentElement);
   }
 
-  static getIdFromTrigger(trigger: Element): string {
+  static getIdFromTrigger(trigger: HTMLElement): string {
     let id = trigger.getAttribute('data-target');
     if (!id) {
       id = trigger.getAttribute('href');
@@ -348,14 +352,14 @@ export class M {
   }
 
   static getDocumentScrollTop(): number {
-    return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
   };
 
   static getDocumentScrollLeft(): number {
-    return window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
+    return window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
   }
 
-  public static throttle(func, wait, options = null) {
+  public static throttle(func: Function, wait: number, options = null) {
     let context, args, result;
     let timeout = null;
     let previous = 0;

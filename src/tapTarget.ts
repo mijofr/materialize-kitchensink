@@ -1,43 +1,80 @@
-import { Component } from "./component";
 import { M } from "./global";
+import { Component, BaseOptions, InitElements, Openable } from "./component";
 
-let _defaults = {
-  onOpen: undefined,
-  onClose: undefined
+export interface TapTargetOptions extends BaseOptions {
+  /**
+   * Callback function called when Tap Target is opened.
+   * @default null
+   */
+  onOpen: (origin: HTMLElement) => void;
+  /**
+   * Callback function called when Tap Target is closed.
+   * @default null
+   */
+  onClose: (origin: HTMLElement) => void;
 };
 
-export class TapTarget extends Component {
-  el: HTMLElement
+let _defaults: TapTargetOptions = {
+  onOpen: null,
+  onClose: null
+};
+
+export class TapTarget extends Component<TapTargetOptions> implements Openable {
+  /**
+   * If the tap target is open.
+   */
   isOpen: boolean;
+
   private wrapper: HTMLElement;
   private _origin: HTMLElement;
   private originEl: HTMLElement;
   private waveEl: HTMLElement & Element & Node;
   private contentEl: HTMLElement;
 
-  constructor(el, options) {
-    super(TapTarget, el, options);
+  constructor(el: HTMLElement, options: Partial<TapTargetOptions>) {
+    super(el, options, TapTarget);
     (this.el as any).M_TapTarget = this;
-    this.options = {...TapTarget.defaults, ...options};
+
+    this.options = {
+      ...TapTarget.defaults,
+      ...options
+    };
+
     this.isOpen = false;
     // setup
-    this._origin = document.querySelector('#'+this.el.getAttribute('data-target'));
+    this._origin = document.querySelector(`#${el.dataset.target}`);
     this._setup();
     this._calculatePositioning();
     this._setupEventHandlers();
   }
 
-  static get defaults() {
+  static get defaults(): TapTargetOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of TapTarget.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options: Partial<TapTargetOptions>): TapTarget;
+  /**
+   * Initializes instances of TapTarget.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLElement>, options: Partial<TapTargetOptions>): TapTarget[];
+  /**
+   * Initializes instances of TapTarget.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<TapTargetOptions>): TapTarget | TapTarget[] {
+    return super.init(els, options, TapTarget);
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_TapTarget;
+  static getInstance(el: HTMLElement): TapTarget {
+    return (el as any).M_TapTarget;
   }
 
   destroy() {
@@ -72,8 +109,8 @@ export class TapTarget extends Component {
     this._calculatePositioning();
   }
 
-  _handleDocumentClick = (e) => {
-    if (!e.target.closest('.tap-target-wrapper')) {
+  _handleDocumentClick = (e: MouseEvent | TouchEvent) => {
+    if (!(e.target as HTMLElement).closest('.tap-target-wrapper')) {
       this.close();
       e.preventDefault();
       e.stopPropagation();
@@ -115,7 +152,7 @@ export class TapTarget extends Component {
     }
   }
 
-  private _offset(el) {
+  private _offset(el: HTMLElement) {
     const box = el.getBoundingClientRect();
     const docElem = document.documentElement;
     return {
@@ -204,7 +241,10 @@ export class TapTarget extends Component {
     this.waveEl.style.height = tapTargetWaveHeight+'px';
   }
 
-  open() {
+  /**
+   * Open Tap Target.
+   */
+  open = () => {
     if (this.isOpen) return;
     // onOpen callback
     if (typeof this.options.onOpen === 'function') {
@@ -214,9 +254,12 @@ export class TapTarget extends Component {
     this.wrapper.classList.add('open');
     document.body.addEventListener('click', this._handleDocumentClick, true);
     document.body.addEventListener('touchend', this._handleDocumentClick);
-  }
+  };
 
-  close() {
+  /**
+   * Close Tap Target.
+   */
+  close = () => {
     if (!this.isOpen) return;
     // onClose callback
     if (typeof this.options.onClose === 'function') {
@@ -226,5 +269,5 @@ export class TapTarget extends Component {
     this.wrapper.classList.remove('open');
     document.body.removeEventListener('click', this._handleDocumentClick, true);
     document.body.removeEventListener('touchend', this._handleDocumentClick);
-  }
+  };
 }
