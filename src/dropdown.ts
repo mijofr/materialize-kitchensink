@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements, Openable } from "./component";
 
 export interface DropdownOptions extends BaseOptions {
@@ -114,7 +114,7 @@ export class Dropdown extends Component<DropdownOptions> implements Openable {
     (this.el as any).M_Dropdown = this;
 
     Dropdown._dropdowns.push(this);
-    this.id = M.getIdFromTrigger(el);
+    this.id = Utils.getIdFromTrigger(el);
     this.dropdownEl = document.getElementById(this.id);
 
     this.options = {
@@ -264,7 +264,7 @@ export class Dropdown extends Component<DropdownOptions> implements Openable {
 
   _handleTriggerKeydown = (e: KeyboardEvent) => {
     // ARROW DOWN OR ENTER WHEN SELECT IS CLOSED - open Dropdown
-    const arrowDownOrEnter = M.keys.ARROW_DOWN.includes(e.key) || M.keys.ENTER.includes(e.key);
+    const arrowDownOrEnter = Utils.keys.ARROW_DOWN.includes(e.key) || Utils.keys.ENTER.includes(e.key);
     if (arrowDownOrEnter && !this.isOpen) {
       e.preventDefault();
       this.open();
@@ -287,15 +287,15 @@ export class Dropdown extends Component<DropdownOptions> implements Openable {
   }
 
   _handleDropdownKeydown = (e: KeyboardEvent) => {
-    const arrowUpOrDown = M.keys.ARROW_DOWN.includes(e.key) || M.keys.ARROW_UP.includes(e.key);
-    if (M.keys.TAB.includes(e.key)) {
+    const arrowUpOrDown = Utils.keys.ARROW_DOWN.includes(e.key) || Utils.keys.ARROW_UP.includes(e.key);
+    if (Utils.keys.TAB.includes(e.key)) {
       e.preventDefault();
       this.close();
     }
     // Navigate down dropdown list
     else if (arrowUpOrDown && this.isOpen) {
       e.preventDefault();
-      const direction = M.keys.ARROW_DOWN.includes(e.key) ? 1 : -1;
+      const direction = Utils.keys.ARROW_DOWN.includes(e.key) ? 1 : -1;
       let newFocusedIndex = this.focusedIndex;
       let hasFoundNewIndex = false;
       do {
@@ -318,7 +318,7 @@ export class Dropdown extends Component<DropdownOptions> implements Openable {
       }
     }
     // ENTER selects choice on focused item
-    else if (M.keys.ENTER.includes(e.key) && this.isOpen) {
+    else if (Utils.keys.ENTER.includes(e.key) && this.isOpen) {
       // Search for <a> and <button>
       const focusedElement = this.dropdownEl.children[this.focusedIndex];
       const activatableElement = <HTMLElement>focusedElement.querySelector('a, button');
@@ -333,7 +333,7 @@ export class Dropdown extends Component<DropdownOptions> implements Openable {
       }
     }
     // Close dropdown on ESC
-    else if (M.keys.ESC.includes(e.key) && this.isOpen) {
+    else if (Utils.keys.ESC.includes(e.key) && this.isOpen) {
       e.preventDefault();
       this.close();
     }
@@ -341,7 +341,7 @@ export class Dropdown extends Component<DropdownOptions> implements Openable {
     // CASE WHEN USER TYPE LTTERS
     const keyText = e.key.toLowerCase();
     const isLetter = /[a-zA-Z0-9-_]/.test(keyText);
-    const specialKeys = [...M.keys.ARROW_DOWN, ...M.keys.ARROW_UP, ...M.keys.ENTER, ...M.keys.ESC, ...M.keys.TAB];
+    const specialKeys = [...Utils.keys.ARROW_DOWN, ...Utils.keys.ARROW_UP, ...Utils.keys.ENTER, ...Utils.keys.ESC, ...Utils.keys.TAB];
     if (isLetter && !specialKeys.includes(e.key)) {
       this.filterQuery.push(keyText);
       const string = this.filterQuery.join('');
@@ -430,7 +430,7 @@ export class Dropdown extends Component<DropdownOptions> implements Openable {
       width: idealWidth
     };
 
-    const alignments = M.checkPossibleAlignments(
+    const alignments = Utils.checkPossibleAlignments(
       this.el,
       closestOverflowParent,
       dropdownBounds,

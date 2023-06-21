@@ -1,4 +1,4 @@
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements } from "./component";
 
 export interface CarouselOptions extends BaseOptions{
@@ -236,7 +236,7 @@ export class Carousel extends Component<CarouselOptions> {
     window.removeEventListener('resize', this._handleThrottledResize);
   }
 
-  _handleThrottledResize = (() => M.throttle(function(){ this._handleResize(); }, 200, null).bind(this))();
+  _handleThrottledResize: () => void = Utils.throttle(function(){ this._handleResize(); }, 200, null).bind(this);
 
   _handleCarouselTap = (e: MouseEvent | TouchEvent) => {
     // Fixes firefox draggable image bug
@@ -328,6 +328,7 @@ export class Carousel extends Component<CarouselOptions> {
     }
     else if (!this.options.fullWidth) {
       const clickedElem = (<HTMLElement>e.target).closest('.carousel-item');
+      if (!clickedElem) return;
       const clickedIndex = [...clickedElem.parentNode.children].indexOf(clickedElem);
       const diff = this._wrap(this.center) - clickedIndex;
       // Disable clicks if carousel was shifted by click
@@ -407,8 +408,8 @@ export class Carousel extends Component<CarouselOptions> {
 
   _xpos(e: MouseEvent | TouchEvent) {
     // touch event
-    if (e instanceof TouchEvent && e.targetTouches.length >= 1) {
-      return e.targetTouches[0].clientX;
+    if (e.type.startsWith("touch") && (e as TouchEvent).targetTouches.length >= 1) {
+      return (e as TouchEvent).targetTouches[0].clientX;
     }
     // mouse event
     return (e as MouseEvent).clientX;
@@ -416,8 +417,8 @@ export class Carousel extends Component<CarouselOptions> {
 
   _ypos(e: MouseEvent | TouchEvent) {
     // touch event
-    if (e instanceof TouchEvent && e.targetTouches.length >= 1) {
-      return e.targetTouches[0].clientY;
+    if (e.type.startsWith("touch") && (e as TouchEvent).targetTouches.length >= 1) {
+      return (e as TouchEvent).targetTouches[0].clientY;
     }
     // mouse event
     return (e as MouseEvent).clientY;

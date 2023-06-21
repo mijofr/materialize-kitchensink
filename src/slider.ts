@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements } from "./component";
 
 export interface SliderOptions extends BaseOptions {
@@ -99,7 +99,7 @@ export class Slider extends Component<SliderOptions> {
     if (this._slider.hasAttribute('id'))
       this._sliderId = this._slider.getAttribute('id');
     else {
-      this._sliderId = 'slider-' + M.guid();
+      this._sliderId = 'slider-' + Utils.guid();
       this._slider.setAttribute('id', this._sliderId);
     }
 

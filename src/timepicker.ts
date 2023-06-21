@@ -1,5 +1,5 @@
-import { M } from "./global";
 import { Modal } from "./modal";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements, I18nOptions } from "./component";
 
 export type Views = "hours" | "minutes";
@@ -186,7 +186,7 @@ export class Timepicker extends Component<TimepickerOptions> {
       ...options
     };
 
-    this.id = M.guid();
+    this.id = Utils.guid();
     this._insertHTMLIntoDOM();
     this._setupModal();
     this._setupVariables();
@@ -268,14 +268,14 @@ export class Timepicker extends Component<TimepickerOptions> {
   }
 
   _handleInputKeydown = (e: KeyboardEvent) => {
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this.open();
     }
   }
 
   _handleTimeInputEnterKey = (e: KeyboardEvent) => {
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this._inputFromTextField();
     }
@@ -358,7 +358,7 @@ export class Timepicker extends Component<TimepickerOptions> {
   }
 
   _setupModal() {
-    this.modal = M.Modal.init(this.modalEl, {
+    this.modal = Modal.init(this.modalEl, {
       onOpenStart: this.options.onOpenStart,
       onOpenEnd: this.options.onOpenEnd,
       onCloseStart: this.options.onCloseStart,

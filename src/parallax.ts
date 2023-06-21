@@ -1,4 +1,4 @@
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements } from "./component";
 
 export interface ParallaxOptions extends BaseOptions {
@@ -92,10 +92,10 @@ export class Parallax extends Component<ParallaxOptions> {
     this._img.addEventListener('load', this._handleImageLoad);
     if (Parallax._parallaxes.length === 0) {
       if (!Parallax._handleScrollThrottled){
-        Parallax._handleScrollThrottled = M.throttle(Parallax._handleScroll, 5);
+        Parallax._handleScrollThrottled = Utils.throttle(Parallax._handleScroll, 5);
       }
       if (!Parallax._handleWindowResizeThrottled){
-        Parallax._handleWindowResizeThrottled = M.throttle(Parallax._handleWindowResize, 5);
+        Parallax._handleWindowResizeThrottled = Utils.throttle(Parallax._handleWindowResize, 5);
       }
       window.addEventListener('scroll', Parallax._handleScrollThrottled);
       window.addEventListener('resize', Parallax._handleWindowResizeThrottled);
@@ -133,7 +133,7 @@ export class Parallax extends Component<ParallaxOptions> {
     const parallaxDist = imgHeight - containerHeight;
     const bottom = this._offset(this.el).top + containerHeight;
     const top = this._offset(this.el).top;
-    const scrollTop = M.getDocumentScrollTop();
+    const scrollTop = Utils.getDocumentScrollTop();
     const windowHeight = window.innerHeight;
     const windowBottom = scrollTop + windowHeight;
     const percentScrolled = (windowBottom - top) / (containerHeight + windowHeight);

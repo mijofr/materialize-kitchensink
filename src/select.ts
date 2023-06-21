@@ -1,4 +1,4 @@
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Dropdown, DropdownOptions } from "./dropdown";
 import { Component, BaseOptions, InitElements } from "./component";
 
@@ -196,7 +196,7 @@ export class FormSelect extends Component<FormSelectOptions> {
 
     // Create dropdown
     this.dropdownOptions = document.createElement('ul');
-    this.dropdownOptions.id = `select-options-${M.guid()}`;
+    this.dropdownOptions.id = `select-options-${Utils.guid()}`;
     this.dropdownOptions.classList.add('dropdown-content', 'select-dropdown');
     this.dropdownOptions.setAttribute('role', 'listbox');
     this.dropdownOptions.ariaMultiSelectable = this.isMultiple.toString();
@@ -212,7 +212,7 @@ export class FormSelect extends Component<FormSelectOptions> {
         }
         else if (realOption.tagName === 'OPTGROUP') {
           // Optgroup
-          const groupId = "opt-group-"+M.guid();
+          const groupId = "opt-group-"+Utils.guid();
           const groupParent = document.createElement('li');
           groupParent.classList.add('optgroup');
           groupParent.tabIndex = -1;
@@ -225,7 +225,7 @@ export class FormSelect extends Component<FormSelectOptions> {
           const selectOptions = <HTMLOptionElement[]>Array.from(realOption.children).filter(el => el.tagName === 'OPTION');
           selectOptions.forEach(realOption => {
             const virtualOption = this._createAndAppendOptionWithIcon(realOption, 'optgroup-option');
-            const childId = "opt-child-"+M.guid();
+            const childId = "opt-child-"+Utils.guid();
             virtualOption.id = childId;
             groupChildren.push(childId);
             this._addOptionToValues(realOption, virtualOption);
@@ -238,7 +238,7 @@ export class FormSelect extends Component<FormSelectOptions> {
 
     // Add input dropdown
     this.input = document.createElement('input');
-    this.input.id = "m_select-input-" + M.guid();
+    this.input.id = "m_select-input-" + Utils.guid();
     this.input.classList.add('select-dropdown', 'dropdown-trigger');
     this.input.type = 'text';
     this.input.readOnly = true;
@@ -251,7 +251,7 @@ export class FormSelect extends Component<FormSelectOptions> {
     if (this.labelEl) {
       this.input.after(this.labelEl);
       this.labelEl.setAttribute('for', this.input.id);
-      this.labelEl.id = "m_select-label-" + M.guid();
+      this.labelEl.id = "m_select-label-" + Utils.guid();
       this.dropdownOptions.setAttribute("aria-labelledby", this.labelEl.id);
     }
 
@@ -277,7 +277,7 @@ export class FormSelect extends Component<FormSelectOptions> {
     //   this.labelEl = this.el.parentElement.querySelector('label');
     // }
     // if (this.labelEl && this.labelEl.id == "") {
-    //   this.labelEl.id = "m_select-label-" + M.guid();
+    //   this.labelEl.id = "m_select-label-" + Utils.guid();
     // }
     // if (this.labelEl) {
     //   this.labelEl.setAttribute("for", this.input.id);
@@ -324,10 +324,10 @@ export class FormSelect extends Component<FormSelectOptions> {
         const selectedOption = this.dropdownOptions.querySelector('.selected');
         if (selectedOption) {
           // Focus selected option in dropdown
-          M.keyDown = true;
+          Utils.keyDown = true;
           this.dropdown.focusedIndex = [...selectedOption.parentNode.children].indexOf(selectedOption);
           this.dropdown._focusFocusedItem();
-          M.keyDown = false;
+          Utils.keyDown = false;
           // Handle scrolling to selected option
           if (this.dropdown.isScrollable) {
             let scrollOffset =
@@ -351,7 +351,7 @@ export class FormSelect extends Component<FormSelectOptions> {
       };
       // Prevent dropdown from closing too early
       dropdownOptions.closeOnClick = false;
-      this.dropdown = M.Dropdown.init(this.input, dropdownOptions);
+      this.dropdown = Dropdown.init(this.input, dropdownOptions);
     }
     // Add initial selections
     this._setSelectedStates();

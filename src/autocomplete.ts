@@ -1,4 +1,4 @@
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Dropdown, DropdownOptions } from "./dropdown";
 import { Component, BaseOptions, InitElements } from "./component";
 
@@ -214,7 +214,7 @@ export class Autocomplete extends Component<AutocompleteOptions> {
   _setupDropdown() {
     this.container = document.createElement('ul');
     this.container.style.maxHeight = this.options.maxDropDownHeight;
-    this.container.id = `autocomplete-options-${M.guid()}`;
+    this.container.id = `autocomplete-options-${Utils.guid()}`;
     this.container.classList.add('autocomplete-content', 'dropdown-content');
     this.el.setAttribute('data-target', this.container.id);
 
@@ -236,7 +236,7 @@ export class Autocomplete extends Component<AutocompleteOptions> {
       if (userOnItemClick && typeof userOnItemClick === 'function')
         userOnItemClick.call(this.dropdown, this.el);
     };
-    this.dropdown = M.Dropdown.init(this.el, dropdownOptions);
+    this.dropdown = Dropdown.init(this.el, dropdownOptions);
 
     // ! Workaround for Label: move label up again
     // TODO: Just use PopperJS in future!
@@ -271,10 +271,10 @@ export class Autocomplete extends Component<AutocompleteOptions> {
     this.count = 0;
     const actualValue = this.el.value.toLowerCase();
     // Don't capture enter or arrow key usage.
-    if (M.keys.ENTER.includes(e.key) || M.keys.ARROW_UP.includes(e.key) || M.keys.ARROW_DOWN.includes(e.key)) return;
+    if (Utils.keys.ENTER.includes(e.key) || Utils.keys.ARROW_UP.includes(e.key) || Utils.keys.ARROW_DOWN.includes(e.key)) return;
     // Check if the input isn't empty
     // Check if focus triggered by tab
-    if (this.oldVal !== actualValue && (M.tabPressed || e.type !== 'focus')) {
+    if (this.oldVal !== actualValue && (Utils.tabPressed || e.type !== 'focus')) {
       this.open();
     }
     // Value has changed!
@@ -295,7 +295,7 @@ export class Autocomplete extends Component<AutocompleteOptions> {
     // Arrow keys and enter key usage
     const numItems = this.container.querySelectorAll('li').length;
     // select element on Enter
-    if (M.keys.ENTER.includes(e.key) && this.activeIndex >= 0) {
+    if (Utils.keys.ENTER.includes(e.key) && this.activeIndex >= 0) {
       const liElement = this.container.querySelectorAll('li')[this.activeIndex];
       if (liElement) {
         this.selectOption(liElement.getAttribute('data-id'));
@@ -304,10 +304,10 @@ export class Autocomplete extends Component<AutocompleteOptions> {
       return;
     }
     // Capture up and down key
-    if (M.keys.ARROW_UP.includes(e.key) || M.keys.ARROW_DOWN.includes(e.key)) {
+    if (Utils.keys.ARROW_UP.includes(e.key) || Utils.keys.ARROW_DOWN.includes(e.key)) {
       e.preventDefault();
-      if (M.keys.ARROW_UP.includes(e.key) && this.activeIndex > 0) this.activeIndex--;
-      if (M.keys.ARROW_DOWN.includes(e.key) && this.activeIndex < numItems - 1) this.activeIndex++;
+      if (Utils.keys.ARROW_UP.includes(e.key) && this.activeIndex > 0) this.activeIndex--;
+      if (Utils.keys.ARROW_DOWN.includes(e.key) && this.activeIndex < numItems - 1) this.activeIndex++;
       this.$active?.classList.remove('active');
       if (this.activeIndex >= 0) {
         this.$active = this.container.querySelectorAll('li')[this.activeIndex];

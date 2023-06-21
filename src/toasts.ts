@@ -182,8 +182,8 @@ export class Toast {
   }
 
   static _xPos(e: TouchEvent | MouseEvent) {
-    if (e instanceof TouchEvent && e.targetTouches.length >= 1) {
-      return e.targetTouches[0].clientX;
+    if (e.type.startsWith("touch") && (e as TouchEvent).targetTouches.length >= 1) {
+      return (e as TouchEvent).targetTouches[0].clientX;
     }
     // mouse event
     return (e as MouseEvent).clientX;

@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements } from "./component";
 
 export interface ScrollSpyOptions extends BaseOptions {
@@ -117,7 +117,7 @@ export class ScrollSpy extends Component<ScrollSpyOptions> {
     }
   }
 
-  _handleThrottledResize = (() => M.throttle(function(){ this._handleWindowScroll(); }, 200).bind(this))(); 
+  _handleThrottledResize: () => void = Utils.throttle(function(){ this._handleWindowScroll(); }, 200).bind(this); 
 
   _handleTriggerClick = (e: MouseEvent) => {
     const trigger = e.target;
@@ -146,8 +146,8 @@ export class ScrollSpy extends Component<ScrollSpyOptions> {
     ScrollSpy._ticks++;
 
     // viewport rectangle
-    let top = M.getDocumentScrollTop(),
-      left = M.getDocumentScrollLeft(),
+    let top = Utils.getDocumentScrollTop(),
+      left = Utils.getDocumentScrollLeft(),
       right = left + window.innerWidth,
       bottom = top + window.innerHeight;
 

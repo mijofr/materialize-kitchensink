@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements, Openable } from "./component";
 
 export interface SidenavOptions extends BaseOptions {
@@ -200,7 +200,7 @@ export class Sidenav extends Component<SidenavOptions> implements Openable {
   _handleTriggerClick(e) {
     const trigger = e.target.closest('.sidenav-trigger');
     if (e.target && trigger) {
-      const sidenavId = M.getIdFromTrigger(trigger);
+      const sidenavId = Utils.getIdFromTrigger(trigger);
       const sidenavInstance = (document.getElementById(sidenavId) as any).M_Sidenav;
       if (sidenavInstance) {
         sidenavInstance.open(trigger);
@@ -218,7 +218,7 @@ export class Sidenav extends Component<SidenavOptions> implements Openable {
     this._time = Date.now();
     this._width = this.el.getBoundingClientRect().width;
     this._overlay.style.display = 'block';
-    this._initialScrollTop = this.isOpen ? this.el.scrollTop : M.getDocumentScrollTop();
+    this._initialScrollTop = this.isOpen ? this.el.scrollTop : Utils.getDocumentScrollTop();
     this._verticallyScrolling = false;
     anim.remove(this.el);
     anim.remove(this._overlay);
@@ -227,7 +227,7 @@ export class Sidenav extends Component<SidenavOptions> implements Openable {
   //Set variables needed at each drag move update tick
   _dragMoveUpdate(e) {
     const clientX = e.targetTouches[0].clientX;
-    const currentScrollTop = this.isOpen ? this.el.scrollTop : M.getDocumentScrollTop();
+    const currentScrollTop = this.isOpen ? this.el.scrollTop : Utils.getDocumentScrollTop();
     this.deltaX = Math.abs(this._xPos - clientX);
     this._xPos = clientX;
     this.velocityX = this.deltaX / (Date.now() - this._time);

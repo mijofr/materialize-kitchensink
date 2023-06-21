@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements } from "./component";
 
 export interface ModalOptions extends BaseOptions {
@@ -169,7 +169,7 @@ export class Modal extends Component<ModalOptions> {
   _handleTriggerClick = (e: MouseEvent) => {
     const trigger = (e.target as HTMLElement).closest('.modal-trigger');
     if (!trigger) return;
-    const modalId = M.getIdFromTrigger(trigger as HTMLElement);
+    const modalId = Utils.getIdFromTrigger(trigger as HTMLElement);
     const modalInstance = (document.getElementById(modalId) as any).M_Modal;
     if (modalInstance) modalInstance.open(trigger);
     e.preventDefault();
@@ -185,7 +185,7 @@ export class Modal extends Component<ModalOptions> {
   }
 
   _handleKeydown = (e: KeyboardEvent) => {
-    if (M.keys.ESC.includes(e.key) && this.options.dismissible) this.close();
+    if (Utils.keys.ESC.includes(e.key) && this.options.dismissible) this.close();
   }
 
   _handleFocus = (e: FocusEvent) => {

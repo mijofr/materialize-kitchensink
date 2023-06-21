@@ -1,4 +1,4 @@
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements } from "./component";
 
 export interface PushpinOptions extends BaseOptions {
@@ -110,7 +110,7 @@ export class Pushpin extends Component<PushpinOptions> {
   }
 
   _updatePosition() {
-    let scrolled = M.getDocumentScrollTop() + this.options.offset;
+    let scrolled = Utils.getDocumentScrollTop() + this.options.offset;
 
     if (
       this.options.top <= scrolled &&

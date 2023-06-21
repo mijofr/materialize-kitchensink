@@ -1,5 +1,5 @@
-import { M } from "./global";
 import { Modal } from "./modal";
+import { Utils } from "./utils";
 import { FormSelect } from "./select";
 import { BaseOptions, Component, InitElements, I18nOptions } from "./component";
 
@@ -276,7 +276,7 @@ export class Datepicker extends Component<DatepickerOptions> {
     if (this.options.minDate) this.options.minDate.setHours(0, 0, 0, 0);
     if (this.options.maxDate) this.options.maxDate.setHours(0, 0, 0, 0);
 
-    this.id = M.guid();
+    this.id = Utils.guid();
 
     this._setupVariables();
     this._insertHTMLIntoDOM();
@@ -930,7 +930,7 @@ export class Datepicker extends Component<DatepickerOptions> {
   }
 
   _handleInputKeydown = (e: KeyboardEvent) => {
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this.open();
     }

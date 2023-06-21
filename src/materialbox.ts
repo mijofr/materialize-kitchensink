@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { BaseOptions, Component, InitElements } from "./component";
 
 export interface MaterialboxOptions extends BaseOptions {
@@ -154,7 +154,7 @@ export class Materialbox extends Component<MaterialboxOptions> {
   }
 
   _handleWindowEscape = (e: KeyboardEvent) => {
-    if (M.keys.ESC.includes(e.key) && this.doneAnimating && this.overlayActive) this.close();
+    if (Utils.keys.ESC.includes(e.key) && this.doneAnimating && this.overlayActive) this.close();
   }
 
   _makeAncestorsOverflowVisible() {
@@ -188,12 +188,12 @@ export class Materialbox extends Component<MaterialboxOptions> {
       height: [this.originalHeight, this.newHeight],
       width: [this.originalWidth, this.newWidth],
       left:
-        M.getDocumentScrollLeft() +
+        Utils.getDocumentScrollLeft() +
         this.windowWidth / 2 -
         this._offset(this.placeholder).left -
         this.newWidth / 2,
       top:
-        M.getDocumentScrollTop() +
+        Utils.getDocumentScrollTop() +
         this.windowHeight / 2 -
         this._offset(this.placeholder).top -
         this.newHeight / 2,

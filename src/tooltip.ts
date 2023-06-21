@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Bounding } from "./bounding";
 import { Component, BaseOptions, InitElements } from "./component";
 
@@ -219,8 +219,8 @@ export class Tooltip extends Component<TooltipOptions> {
 
     (this.xMovement = 0), (this.yMovement = 0);
 
-    let targetTop = origin.getBoundingClientRect().top + M.getDocumentScrollTop();
-    let targetLeft = origin.getBoundingClientRect().left + M.getDocumentScrollLeft();
+    let targetTop = origin.getBoundingClientRect().top + Utils.getDocumentScrollTop();
+    let targetLeft = origin.getBoundingClientRect().left + Utils.getDocumentScrollLeft();
     if (this.options.position === 'top') {
       targetTop += -tooltipHeight - margin;
       targetLeft += originWidth / 2 - tooltipWidth / 2;
@@ -251,8 +251,8 @@ export class Tooltip extends Component<TooltipOptions> {
   }
 
   _repositionWithinScreen(x: number, y: number, width: number, height: number) {
-    const scrollLeft = M.getDocumentScrollLeft();
-    const scrollTop = M.getDocumentScrollTop();
+    const scrollLeft = Utils.getDocumentScrollLeft();
+    const scrollTop = Utils.getDocumentScrollTop();
     let newX = x - scrollLeft;
     let newY = y - scrollTop;
 
@@ -263,7 +263,7 @@ export class Tooltip extends Component<TooltipOptions> {
       height: height
     };
     const offset = this.options.margin + this.options.transitionMovement;
-    const edges = M.checkWithinContainer(document.body, bounding, offset);
+    const edges = Utils.checkWithinContainer(document.body, bounding, offset);
 
     if (edges.left) {
       newX = offset;
@@ -320,7 +320,7 @@ export class Tooltip extends Component<TooltipOptions> {
   }
 
   _handleFocus = () => {
-    if (M.tabPressed) {
+    if (Utils.tabPressed) {
       this.isFocused = true;
       this.open(false);
     }

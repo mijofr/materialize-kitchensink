@@ -1,4 +1,4 @@
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements, Openable } from "./component";
 
 export interface TapTargetOptions extends BaseOptions {
@@ -95,7 +95,7 @@ export class TapTarget extends Component<TapTargetOptions> implements Openable {
     window.removeEventListener('resize', this._handleThrottledResize);
   }
 
-  _handleThrottledResize = (() => M.throttle(function(){ this._handleResize(); }, 200).bind(this))();
+  _handleThrottledResize: () => void = Utils.throttle(function(){ this._handleResize(); }, 200).bind(this);
 
   _handleTargetClick = () => {
     this.open();
@@ -179,8 +179,8 @@ export class TapTarget extends Component<TapTargetOptions> implements Openable {
     // Calculating origin
     const originWidth = this._origin.offsetWidth;
     const originHeight = this._origin.offsetHeight;
-    const originTop = isFixed ? this._offset(this._origin).top - M.getDocumentScrollTop() : this._offset(this._origin).top;
-    const originLeft = isFixed ? this._offset(this._origin).left - M.getDocumentScrollLeft() : this._offset(this._origin).left;
+    const originTop = isFixed ? this._offset(this._origin).top - Utils.getDocumentScrollTop() : this._offset(this._origin).top;
+    const originLeft = isFixed ? this._offset(this._origin).left - Utils.getDocumentScrollLeft() : this._offset(this._origin).left;
 
     // Calculating screen
     const windowWidth = window.innerWidth;

@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Component, BaseOptions, InitElements } from "./component";
 
 export interface CollapsibleOptions extends BaseOptions {
@@ -138,7 +138,7 @@ export class Collapsible extends Component<CollapsibleOptions> {
   }
 
   _handleCollapsibleKeydown = (e: KeyboardEvent) => {
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       this._handleCollapsibleClick(e);
     }
   }

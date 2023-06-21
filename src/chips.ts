@@ -1,4 +1,4 @@
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Autocomplete, AutocompleteOptions } from "./autocomplete";
 import { Component, BaseOptions, InitElements } from "./component";
 
@@ -117,7 +117,7 @@ export class Chips extends Component<ChipsOptions> {
 
     // Set input id
     if (!this._input.getAttribute('id'))
-      this._input.setAttribute('id', M.guid());
+      this._input.setAttribute('id', Utils.guid());
 
     // Render initial chips
     if (this.options.data.length) {
@@ -221,7 +221,7 @@ export class Chips extends Component<ChipsOptions> {
 
     const currChips: Chips = (chips as any).M_Chips;
 
-    if (M.keys.BACKSPACE.includes(e.key) || M.keys.DELETE.includes(e.key)) {
+    if (Utils.keys.BACKSPACE.includes(e.key) || Utils.keys.DELETE.includes(e.key)) {
       e.preventDefault();
       let selectIndex = currChips.chipsData.length;
       if (currChips._selectedChip) {
@@ -236,14 +236,14 @@ export class Chips extends Component<ChipsOptions> {
       else
         currChips._input.focus();
     }
-    else if (M.keys.ARROW_LEFT.includes(e.key)) {
+    else if (Utils.keys.ARROW_LEFT.includes(e.key)) {
       if (currChips._selectedChip) {
         const selectIndex = gGetIndex(currChips._selectedChip) - 1;
         if (selectIndex < 0) return;
         currChips.selectChip(selectIndex);
       }
     }
-    else if (M.keys.ARROW_RIGHT.includes(e.key)) {
+    else if (Utils.keys.ARROW_RIGHT.includes(e.key)) {
       if (currChips._selectedChip) {
         const selectIndex = gGetIndex(currChips._selectedChip) + 1;
         if (selectIndex >= currChips.chipsData.length)
@@ -276,7 +276,7 @@ export class Chips extends Component<ChipsOptions> {
 
   _handleInputKeydown = (e: KeyboardEvent) => {
     Chips._keydown = true;
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       // Override enter if autocompleting.
       if (this.hasAutocomplete && this.autocomplete && this.autocomplete.isOpen) {
         return;
@@ -288,7 +288,7 @@ export class Chips extends Component<ChipsOptions> {
       this._input.value = '';
     }
     else if (      
-      (M.keys.BACKSPACE.includes(e.key) || M.keys.ARROW_LEFT.includes(e.key)) &&
+      (Utils.keys.BACKSPACE.includes(e.key) || Utils.keys.ARROW_LEFT.includes(e.key)) &&
       this._input.value === '' &&
       this.chipsData.length
     ) {
