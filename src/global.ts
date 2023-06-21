@@ -46,7 +46,7 @@ export class M {
   static Slider: typeof Slider = Slider;
   static Timepicker: typeof Timepicker = Timepicker;
   /** Creates a toast. */
-  static toast: (opt: ToastOptions) => Toast = (opt) => new Toast(opt) ;
+  static toast: (opt: Partial<ToastOptions>) => Toast = (opt) => new Toast(opt) ;
   static Tooltip: typeof Tooltip = Tooltip;
   static Sidenav: typeof Sidenav = Sidenav;
   static TapTarget: typeof TapTarget = TapTarget;
