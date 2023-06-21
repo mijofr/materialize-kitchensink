@@ -1,6 +1,6 @@
 import { Utils } from "./utils";
 import { Autocomplete, AutocompleteOptions } from "./autocomplete";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface ChipData {
   /**
@@ -140,19 +140,19 @@ export class Chips extends Component<ChipsOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<ChipsOptions>): Chips;
+  static init(el: HTMLElement, options?: Partial<ChipsOptions>): Chips;
   /**
    * Initializes instances of Chips.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<ChipsOptions>): Chips[];
+  static init(els: InitElements<MElement>, options?: Partial<ChipsOptions>): Chips[];
   /**
    * Initializes instances of Chips.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<ChipsOptions>): Chips | Chips[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<ChipsOptions> = {}): Chips | Chips[] {
     return super.init(els, options, Chips);
   }
 

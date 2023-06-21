@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface RangeOptions extends BaseOptions {};
 
@@ -37,19 +37,19 @@ export class Range extends Component<RangeOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLInputElement, options: Partial<RangeOptions>): Range;
+  static init(el: HTMLInputElement, options?: Partial<RangeOptions>): Range;
   /**
    * Initializes instances of Range.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLInputElement>, options: Partial<RangeOptions>): Range[];
+  static init(els: InitElements<HTMLInputElement | MElement>, options?: Partial<RangeOptions>): Range[];
   /**
    * Initializes instances of Range.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLInputElement | InitElements<HTMLInputElement>, options: Partial<RangeOptions>): Range | Range[] {
+  static init(els: HTMLInputElement | InitElements<HTMLInputElement | MElement>, options: Partial<RangeOptions> = {}): Range | Range[] {
     return super.init(els, options, Range);
   }
 

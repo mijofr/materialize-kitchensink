@@ -1,6 +1,6 @@
 import { Utils } from "./utils";
 import { Dropdown, DropdownOptions } from "./dropdown";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface FormSelectOptions extends BaseOptions {
   /**
@@ -73,19 +73,19 @@ export class FormSelect extends Component<FormSelectOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<FormSelectOptions>): FormSelect;
+  static init(el: HTMLSelectElement, options?: Partial<FormSelectOptions>): FormSelect;
   /**
    * Initializes instances of FormSelect.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<FormSelectOptions>): FormSelect[];
+  static init(els: InitElements<HTMLSelectElement | MElement>, options?: Partial<FormSelectOptions>): FormSelect[];
   /**
    * Initializes instances of FormSelect.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<FormSelectOptions>): FormSelect | FormSelect[] {
+  static init(els: HTMLSelectElement | InitElements<HTMLSelectElement | MElement>, options: Partial<FormSelectOptions> = {}): FormSelect | FormSelect[] {
     return super.init(els, options, FormSelect);
   }
 

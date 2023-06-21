@@ -1,7 +1,7 @@
 import anim from "animejs";
 
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements, Openable } from "./component";
+import { Component, BaseOptions, InitElements, MElement, Openable } from "./component";
 
 export interface DropdownOptions extends BaseOptions {
   /**
@@ -143,19 +143,19 @@ export class Dropdown extends Component<DropdownOptions> implements Openable {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<DropdownOptions>): Dropdown;
+  static init(el: HTMLElement, options?: Partial<DropdownOptions>): Dropdown;
   /**
    * Initializes instances of Dropdown.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<DropdownOptions>): Dropdown[];
+  static init(els: InitElements<MElement>, options?: Partial<DropdownOptions>): Dropdown[];
   /**
    * Initializes instances of Dropdown.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<DropdownOptions>): Dropdown | Dropdown[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<DropdownOptions> = {}): Dropdown | Dropdown[] {
     return super.init(els, options, Dropdown);
   }
 

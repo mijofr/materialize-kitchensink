@@ -1,7 +1,7 @@
 import anim from "animejs";
 
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface CollapsibleOptions extends BaseOptions {
   /**
@@ -85,19 +85,19 @@ export class Collapsible extends Component<CollapsibleOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<CollapsibleOptions>): Collapsible;
+  static init(el: HTMLElement, options?: Partial<CollapsibleOptions>): Collapsible;
   /**
    * Initializes instances of Collapsible.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<CollapsibleOptions>): Collapsible[];
+  static init(els: InitElements<MElement>, options?: Partial<CollapsibleOptions>): Collapsible[];
   /**
    * Initializes instances of Collapsible.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<CollapsibleOptions>): Collapsible | Collapsible[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<CollapsibleOptions> = {}): Collapsible | Collapsible[] {
     return super.init(els, options, Collapsible);
   }
 

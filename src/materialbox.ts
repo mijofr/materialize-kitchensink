@@ -1,7 +1,7 @@
 import anim from "animejs";
 
 import { Utils } from "./utils";
-import { BaseOptions, Component, InitElements } from "./component";
+import { BaseOptions, Component, InitElements, MElement } from "./component";
 
 export interface MaterialboxOptions extends BaseOptions {
   /**
@@ -100,19 +100,19 @@ export class Materialbox extends Component<MaterialboxOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<MaterialboxOptions>): Materialbox;
+  static init(el: HTMLElement, options?: Partial<MaterialboxOptions>): Materialbox;
   /**
    * Initializes instances of MaterialBox.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<MaterialboxOptions>): Materialbox[];
+  static init(els: InitElements<MElement>, options?: Partial<MaterialboxOptions>): Materialbox[];
   /**
    * Initializes instances of MaterialBox.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<MaterialboxOptions>): Materialbox | Materialbox[]{
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<MaterialboxOptions> = {}): Materialbox | Materialbox[]{
     return super.init(els, options, Materialbox);
   }
 

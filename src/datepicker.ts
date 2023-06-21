@@ -1,7 +1,7 @@
 import { Modal } from "./modal";
 import { Utils } from "./utils";
 import { FormSelect } from "./select";
-import { BaseOptions, Component, InitElements, I18nOptions } from "./component";
+import { BaseOptions, Component, InitElements, MElement, I18nOptions } from "./component";
 
 export interface DateI18nOptions extends I18nOptions {
   previousMonth: string;
@@ -236,7 +236,7 @@ let _defaults: DatepickerOptions = {
 };
 
 export class Datepicker extends Component<DatepickerOptions> {
-  el: HTMLInputElement
+  declare el: HTMLInputElement
   id: string;
   /** If the picker is open. */
   isOpen: boolean;
@@ -258,7 +258,7 @@ export class Datepicker extends Component<DatepickerOptions> {
   private _m: any;
   static _template: string;
 
-  constructor(el: HTMLElement, options: Partial<DatepickerOptions>) {
+  constructor(el: HTMLInputElement, options: Partial<DatepickerOptions>) {
     super(el, options, Datepicker);
     (this.el as any).M_Datepicker = this;
     
@@ -312,19 +312,19 @@ export class Datepicker extends Component<DatepickerOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<DatepickerOptions>): Datepicker;
+  static init(el: HTMLInputElement, options?: Partial<DatepickerOptions>): Datepicker;
   /**
    * Initializes instances of Datepicker.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<DatepickerOptions>): Datepicker[];
+  static init(els: InitElements<HTMLInputElement | MElement>, options?: Partial<DatepickerOptions>): Datepicker[];
   /**
    * Initializes instances of Datepicker.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<DatepickerOptions>): Datepicker | Datepicker[] {
+  static init(els: HTMLInputElement | InitElements<HTMLInputElement | MElement>, options: Partial<DatepickerOptions> = {}): Datepicker | Datepicker[] {
     return super.init(els, options, Datepicker);
   }
 
@@ -835,8 +835,8 @@ export class Datepicker extends Component<DatepickerOptions> {
     this.calendarEl.innerHTML = html;
 
     // Init Materialize Select
-    let yearSelect = this.calendarEl.querySelector('.orig-select-year') as HTMLElement;
-    let monthSelect = this.calendarEl.querySelector('.orig-select-month') as HTMLElement;
+    let yearSelect = this.calendarEl.querySelector('.orig-select-year') as HTMLSelectElement;
+    let monthSelect = this.calendarEl.querySelector('.orig-select-month') as HTMLSelectElement;
     FormSelect.init(yearSelect, {
       classes: 'select-year',
       dropdownOptions: { container: document.body, constrainWidth: false }

@@ -1,5 +1,5 @@
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface CarouselOptions extends BaseOptions{
   /**
@@ -172,19 +172,19 @@ export class Carousel extends Component<CarouselOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<CarouselOptions>): Carousel;
+  static init(el: HTMLElement, options?: Partial<CarouselOptions>): Carousel;
   /**
    * Initializes instances of Carousel.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<CarouselOptions>): Carousel[];
+  static init(els: InitElements<MElement>, options?: Partial<CarouselOptions>): Carousel[];
   /**
    * Initializes instances of Carousel.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<CarouselOptions>): Carousel | Carousel[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<CarouselOptions> = {}): Carousel | Carousel[] {
     return super.init(els, options, Carousel);
   }
 

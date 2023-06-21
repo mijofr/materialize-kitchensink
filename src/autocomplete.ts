@@ -1,6 +1,6 @@
 import { Utils } from "./utils";
 import { Dropdown, DropdownOptions } from "./dropdown";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface AutocompleteData {
   /** 
@@ -111,7 +111,7 @@ export class Autocomplete extends Component<AutocompleteOptions> {
   menuItems: AutocompleteData[];
 
 
-  constructor(el: HTMLElement, options: Partial<AutocompleteOptions>) {
+  constructor(el: HTMLInputElement, options: Partial<AutocompleteOptions>) {
     super(el, options, Autocomplete);
     (this.el as any).M_Autocomplete = this;
 
@@ -141,19 +141,19 @@ export class Autocomplete extends Component<AutocompleteOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<AutocompleteOptions>): Autocomplete;
+  static init(el: HTMLInputElement, options?: Partial<AutocompleteOptions>): Autocomplete;
   /**
    * Initializes instances of Autocomplete.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<AutocompleteOptions>): Autocomplete[];
+  static init(els: InitElements<HTMLInputElement | MElement>, options?: Partial<AutocompleteOptions>): Autocomplete[];
   /**
    * Initializes instances of Autocomplete.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<AutocompleteOptions>): Autocomplete | Autocomplete[] {
+  static init(els: HTMLInputElement | InitElements<HTMLInputElement | MElement>, options: Partial<AutocompleteOptions> = {}): Autocomplete | Autocomplete[] {
     return super.init(els, options, Autocomplete);
   }
 

@@ -1,6 +1,6 @@
 import { Modal } from "./modal";
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements, I18nOptions } from "./component";
+import { Component, BaseOptions, InitElements, MElement, I18nOptions } from "./component";
 
 export type Views = "hours" | "minutes";
 
@@ -130,7 +130,7 @@ type Point = {
 };
 
 export class Timepicker extends Component<TimepickerOptions> {
-  el: HTMLInputElement;
+  declare el: HTMLInputElement;
   id: string;
   modal: Modal;
   modalEl: HTMLElement;
@@ -177,7 +177,7 @@ export class Timepicker extends Component<TimepickerOptions> {
   canvas: any;
   vibrateTimer: any;
 
-  constructor(el: HTMLElement, options: Partial<TimepickerOptions>) {
+  constructor(el: HTMLInputElement, options: Partial<TimepickerOptions>) {
     super(el, options, Timepicker);
     (this.el as any).M_Timepicker = this;
 
@@ -204,37 +204,37 @@ export class Timepicker extends Component<TimepickerOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<TimepickerOptions>): Timepicker;
+  static init(el: HTMLInputElement, options?: Partial<TimepickerOptions>): Timepicker;
   /**
    * Initializes instances of Timepicker.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<TimepickerOptions>): Timepicker[];
+  static init(els: InitElements<HTMLInputElement | MElement>, options?: Partial<TimepickerOptions>): Timepicker[];
   /**
    * Initializes instances of Timepicker.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<TimepickerOptions>): Timepicker | Timepicker[] {
+  static init(els: HTMLInputElement | InitElements<HTMLInputElement | MElement>, options: Partial<TimepickerOptions> = {}): Timepicker | Timepicker[] {
     return super.init(els, options, Timepicker);
   }
 
-  static _addLeadingZero(num) {
+  static _addLeadingZero(num: number) {
     return (num < 10 ? '0' : '') + num;
   }
 
-  static _createSVGEl(name) {
+  static _createSVGEl(name: string) {
     let svgNS = 'http://www.w3.org/2000/svg';
     return document.createElementNS(svgNS, name);
   }
 
-  static _Pos(e): Point {
-    if (e.targetTouches && e.targetTouches.length >= 1) {
-      return { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+  static _Pos(e: TouchEvent | MouseEvent): Point {
+    if (e.type.startsWith("touch") && (e as TouchEvent).targetTouches.length >= 1) {
+      return { x: (e as TouchEvent).targetTouches[0].clientX, y: (e as TouchEvent).targetTouches[0].clientY };
     }
     // mouse event
-    return { x: e.clientX, y: e.clientY };
+    return { x: (e as MouseEvent).clientX, y: (e as MouseEvent).clientY };
   }
 
   static getInstance(el: HTMLElement): Timepicker {

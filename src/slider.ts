@@ -1,7 +1,7 @@
 import anim from "animejs";
 
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface SliderOptions extends BaseOptions {
   /**
@@ -179,19 +179,19 @@ export class Slider extends Component<SliderOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<SliderOptions>): Slider;
+  static init(el: HTMLElement, options?: Partial<SliderOptions>): Slider;
   /**
    * Initializes instances of Slider.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<SliderOptions>): Slider[];
+  static init(els: InitElements<MElement>, options?: Partial<SliderOptions>): Slider[];
   /**
    * Initializes instances of Slider.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<SliderOptions>): Slider | Slider[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<SliderOptions> = {}): Slider | Slider[] {
     return super.init(els, options, Slider);
   }
 

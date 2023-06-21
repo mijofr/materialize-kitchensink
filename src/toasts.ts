@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { BaseOptions, InitElements } from "./component";
+import { BaseOptions } from "./component";
 
 export interface ToastOptions extends BaseOptions {
   /**

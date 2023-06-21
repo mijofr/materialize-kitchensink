@@ -1,5 +1,5 @@
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface PushpinOptions extends BaseOptions {
   /**
@@ -62,19 +62,19 @@ export class Pushpin extends Component<PushpinOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<PushpinOptions>): Pushpin;
+  static init(el: HTMLElement, options?: Partial<PushpinOptions>): Pushpin;
   /**
    * Initializes instances of Pushpin.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<PushpinOptions>): Pushpin[];
+  static init(els: InitElements<MElement>, options?: Partial<PushpinOptions>): Pushpin[];
   /**
    * Initializes instances of Pushpin.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<PushpinOptions>): Pushpin | Pushpin[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<PushpinOptions> = {}): Pushpin | Pushpin[] {
     return super.init(els, options, Pushpin);
   }
 

@@ -1,5 +1,5 @@
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements, Openable } from "./component";
+import { Component, BaseOptions, InitElements, MElement, Openable } from "./component";
 
 export interface TapTargetOptions extends BaseOptions {
   /**
@@ -57,19 +57,19 @@ export class TapTarget extends Component<TapTargetOptions> implements Openable {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<TapTargetOptions>): TapTarget;
+  static init(el: HTMLElement, options?: Partial<TapTargetOptions>): TapTarget;
   /**
    * Initializes instances of TapTarget.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<TapTargetOptions>): TapTarget[];
+  static init(els: InitElements<MElement>, options?: Partial<TapTargetOptions>): TapTarget[];
   /**
    * Initializes instances of TapTarget.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<TapTargetOptions>): TapTarget | TapTarget[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<TapTargetOptions> = {}): TapTarget | TapTarget[] {
     return super.init(els, options, TapTarget);
   }
 

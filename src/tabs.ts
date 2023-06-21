@@ -1,7 +1,7 @@
 import anim from "animejs";
 
 import { Carousel } from "./carousel";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface TabsOptions extends BaseOptions {
   /**
@@ -77,19 +77,19 @@ export class Tabs extends Component<TabsOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<TabsOptions>): Tabs;
+  static init(el: HTMLElement, options?: Partial<TabsOptions>): Tabs;
   /**
    * Initializes instances of Tabs.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<TabsOptions>): Tabs[];
+  static init(els: InitElements<MElement>, options?: Partial<TabsOptions>): Tabs[];
   /**
    * Initializes instances of Tabs.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<TabsOptions>): Tabs | Tabs[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<TabsOptions> = {}): Tabs | Tabs[] {
     return super.init(els, options, Tabs);
   }
 

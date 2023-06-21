@@ -1,7 +1,7 @@
 import anim from "animejs";
 
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface ScrollSpyOptions extends BaseOptions {
   /**
@@ -70,19 +70,19 @@ export class ScrollSpy extends Component<ScrollSpyOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<ScrollSpyOptions>): ScrollSpy;
+  static init(el: HTMLElement, options?: Partial<ScrollSpyOptions>): ScrollSpy;
   /**
    * Initializes instances of ScrollSpy.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<ScrollSpyOptions>): ScrollSpy[];
+  static init(els: InitElements<MElement>, options?: Partial<ScrollSpyOptions>): ScrollSpy[];
   /**
    * Initializes instances of ScrollSpy.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<ScrollSpyOptions>): ScrollSpy | ScrollSpy[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<ScrollSpyOptions> = {}): ScrollSpy | ScrollSpy[] {
     return super.init(els, options, ScrollSpy);
   }
 

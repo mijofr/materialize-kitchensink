@@ -3,7 +3,8 @@
  */
 export interface BaseOptions {};
 
-export type InitElements<T extends HTMLElement> = NodeListOf<T> | HTMLCollectionOf<T>;
+export type MElement = HTMLElement | Element;
+export type InitElements<T extends MElement> = NodeListOf<T> | HTMLCollectionOf<T>;
 type ComponentConstructor<T extends Component<O>, O extends BaseOptions> = {
   new (el: HTMLElement, options: Partial<O>): T
 };
@@ -66,7 +67,7 @@ export class Component<O extends BaseOptions>{
    * @param classDef Class definition.
    */
   protected static init<
-    I extends HTMLElement, O extends BaseOptions, C extends Component<O>
+    I extends MElement, O extends BaseOptions, C extends Component<O>
   >(els: InitElements<I>, options: Partial<O>, classDef: ComponentType<C, O>): C[];
   /**
    * Initializes component instances.
@@ -75,7 +76,7 @@ export class Component<O extends BaseOptions>{
    * @param classDef Class definition.
    */
   protected static init<
-    I extends HTMLElement, O extends BaseOptions, C extends Component<O>
+    I extends MElement, O extends BaseOptions, C extends Component<O>
   >(els: I | InitElements<I>, options: Partial<O>, classDef: ComponentType<C, O>): C | C[];
   /**
    * Initializes component instances.
@@ -84,16 +85,16 @@ export class Component<O extends BaseOptions>{
    * @param classDef Class definition.
    */
   protected static init<
-    I extends HTMLElement, O extends BaseOptions, C extends Component<O>
+    I extends MElement, O extends BaseOptions, C extends Component<O>
   >(els: I | InitElements<I>, options: Partial<O>, classDef: ComponentType<C, O>): C | C[] {
     let instances = null;
-    if (els instanceof HTMLElement) {
-      instances = new classDef(els, options);
+    if (els instanceof Element) {
+      instances = new classDef(<HTMLElement>els, options);
     }
     else if (!!els && els.length) {
       instances = [];
       for (let i = 0; i < els.length; i++) {
-        instances.push(new classDef(els[i], options));
+        instances.push(new classDef(<HTMLElement>els[i], options));
       }
     }
     return instances;

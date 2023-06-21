@@ -1,6 +1,6 @@
 import anim from "animejs";
 
-import { Component, BaseOptions, InitElements, Openable } from "./component";
+import { Component, BaseOptions, InitElements, MElement, Openable } from "./component";
 
 export interface FloatingActionButtonOptions extends BaseOptions {
   /**
@@ -81,19 +81,19 @@ export class FloatingActionButton extends Component<FloatingActionButtonOptions>
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<FloatingActionButtonOptions>): FloatingActionButton
+  static init(el: HTMLElement, options?: Partial<FloatingActionButtonOptions>): FloatingActionButton
   /**
    * Initializes instances of FloatingActionButton.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<FloatingActionButtonOptions>): FloatingActionButton[];
+  static init(els: InitElements<MElement>, options?: Partial<FloatingActionButtonOptions>): FloatingActionButton[];
   /**
    * Initializes instances of FloatingActionButton.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<FloatingActionButtonOptions>): FloatingActionButton | FloatingActionButton[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<FloatingActionButtonOptions> = {}): FloatingActionButton | FloatingActionButton[] {
     return super.init(els, options, FloatingActionButton);
   }
 

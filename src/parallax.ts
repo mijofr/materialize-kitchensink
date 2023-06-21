@@ -1,5 +1,5 @@
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface ParallaxOptions extends BaseOptions {
   /**
@@ -46,19 +46,19 @@ export class Parallax extends Component<ParallaxOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<ParallaxOptions>): Parallax;
+  static init(el: HTMLElement, options?: Partial<ParallaxOptions>): Parallax;
   /**
    * Initializes instances of Parallax.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<ParallaxOptions>): Parallax[];
+  static init(els: InitElements<MElement>, options?: Partial<ParallaxOptions>): Parallax[];
   /**
    * Initializes instances of Parallax.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<ParallaxOptions>): Parallax | Parallax[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<ParallaxOptions> = {}): Parallax | Parallax[] {
     return super.init(els, options, Parallax);
   }
 

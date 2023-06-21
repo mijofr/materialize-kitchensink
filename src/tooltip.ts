@@ -2,7 +2,7 @@ import anim from "animejs";
 
 import { Utils } from "./utils";
 import { Bounding } from "./bounding";
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface TooltipOptions extends BaseOptions {
   /**
@@ -109,19 +109,19 @@ export class Tooltip extends Component<TooltipOptions> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<TooltipOptions>): Tooltip;
+  static init(el: HTMLElement, options?: Partial<TooltipOptions>): Tooltip;
   /**
    * Initializes instances of Tooltip.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<TooltipOptions>): Tooltip[];
+  static init(els: InitElements<MElement>, options?: Partial<TooltipOptions>): Tooltip[];
   /**
    * Initializes instances of Tooltip.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<TooltipOptions>): Tooltip | Tooltip[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<TooltipOptions> = {}): Tooltip | Tooltip[] {
     return super.init(els, options, Tooltip);
   }
 

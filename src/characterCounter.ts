@@ -1,4 +1,4 @@
-import { Component, BaseOptions, InitElements } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
 export interface CharacterCounterOptions extends BaseOptions {};
 
@@ -41,19 +41,19 @@ export class CharacterCounter extends Component<{}> {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: InputElement, options: Partial<CharacterCounterOptions>): CharacterCounter;
+  static init(el: InputElement, options?: Partial<CharacterCounterOptions>): CharacterCounter;
   /**
    * Initializes instances of CharacterCounter.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<InputElement>, options: Partial<CharacterCounterOptions>): CharacterCounter[];
+  static init(els: InitElements<InputElement | MElement>, options?: Partial<CharacterCounterOptions>): CharacterCounter[];
   /**
    * Initializes instances of CharacterCounter.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InputElement | InitElements<InputElement>, options: Partial<CharacterCounterOptions>): CharacterCounter | CharacterCounter[] {
+  static init(els: InputElement | InitElements<InputElement | MElement>, options: Partial<CharacterCounterOptions> = {}): CharacterCounter | CharacterCounter[] {
     return super.init(els, options, CharacterCounter);
   }
 

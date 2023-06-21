@@ -1,7 +1,7 @@
 import anim from "animejs";
 
 import { Utils } from "./utils";
-import { Component, BaseOptions, InitElements, Openable } from "./component";
+import { Component, BaseOptions, InitElements, MElement, Openable } from "./component";
 
 export interface SidenavOptions extends BaseOptions {
   /**
@@ -121,19 +121,19 @@ export class Sidenav extends Component<SidenavOptions> implements Openable {
    * @param el HTML element.
    * @param options Component options.
    */
-  static init(el: HTMLElement, options: Partial<SidenavOptions>): Sidenav;
+  static init(el: HTMLElement, options?: Partial<SidenavOptions>): Sidenav;
   /**
    * Initializes instances of Sidenav.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: InitElements<HTMLElement>, options: Partial<SidenavOptions>): Sidenav[];
+  static init(els: InitElements<MElement>, options?: Partial<SidenavOptions>): Sidenav[];
   /**
    * Initializes instances of Sidenav.
    * @param els HTML elements.
    * @param options Component options.
    */
-  static init(els: HTMLElement | InitElements<HTMLElement>, options: Partial<SidenavOptions>): Sidenav | Sidenav[] {
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<SidenavOptions> = {}): Sidenav | Sidenav[] {
     return super.init(els, options, Sidenav);
   }
 
