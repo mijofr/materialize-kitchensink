@@ -89,6 +89,7 @@ textarea.materialize-textarea {
       color: $input-focus-color;
     }
     &:focus:not([readonly]) + label,
+    &:not([placeholder=' ']) + label,
     &:not(:placeholder-shown) + label {
       //font-size: 12px; // md.sys.typescale.body-small.size
       // https://stackoverflow.com/questions/34717492/css-transition-font-size-avoid-jittering-wiggling
@@ -187,6 +188,7 @@ textarea.materialize-textarea {
         color: $input-focus-color;
       }
       &:focus:not([readonly]) + label,
+      &:not([placeholder=' ']) + label,
       &:not(:placeholder-shown) + label {
         top: -8px;
         left: 16px;
