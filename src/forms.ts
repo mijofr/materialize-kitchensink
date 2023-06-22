@@ -2,7 +2,12 @@ import { M } from "./global";
 
 export class Forms {
 
-  static textareaAutoResize(textarea: HTMLTextAreaElement) {
+  /**
+   * Resizes the given TextArea after updating the
+   *  value content dynamically.
+   * @param textarea TextArea to be resized
+   */
+  static textareaAutoResize(textarea: HTMLTextAreaElement){
     if (!textarea) {
       console.error('No textarea element found');
       return;

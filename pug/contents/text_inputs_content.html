@@ -308,10 +308,10 @@
     &lt;/form>
   &lt;/div>
         </code></pre>
-        <p>advanced note: When dynamically changing the value of a textarea with methods like jQuery's <code class="language-markup">.val()</code>, you must trigger an autoresize on it afterwords because .val() does not automatically trigger the events we've binded to the textarea. </p>
+        <p><strong><b>Advanced note:</b></strong> When dynamically changing the value of a textarea like setting <code class="language-markup">HTMLElement#value</code> attribute, you must trigger an autoresize on it afterwords because simply updating the element's value does not automatically trigger the events we've binded to the textarea.</p>
         <pre><code class="language-javascript">
-  $('#textarea1').val('New Text');
-  M.textareaAutoResize($('#textarea1'));
+  document.querySelector("#textarea1").value = 'New Text';
+  M.Forms.textareaAutoResize(document.querySelector('#textarea1'));
         </code></pre>
         
 

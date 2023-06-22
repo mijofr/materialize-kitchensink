@@ -50,6 +50,7 @@ export class M {
   static Collapsible: typeof Collapsible = Collapsible;
   static Datepicker: typeof Datepicker = Datepicker;
   static CharacterCounter: typeof CharacterCounter = CharacterCounter;
+  static Forms: typeof Forms = Forms;
   static FormSelect: typeof FormSelect = FormSelect;
   static Modal: typeof Modal = Modal;
   static Pushpin: typeof Pushpin = Pushpin;
