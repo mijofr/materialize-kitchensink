@@ -137,11 +137,14 @@ module.exports = function(grunt) {
       prod_min: Object.assign({}, webpackConfig, {
         mode: 'production',
         devtool: 'source-map',
+        optimization: {
+          minimize: true
+        },
         output: {
           filename: 'materialize.min.js',
           path: path.resolve(__dirname, 'dist/js'),
-          libraryTarget: 'umd',        
-          globalObject: 'this'        
+          libraryTarget: 'umd',
+          globalObject: 'this'
         }
       }),
     },       
