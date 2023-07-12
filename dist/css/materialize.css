@@ -1,5 +1,5 @@
 /*!
- * Materialize v2.0.1-alpha (https://materializecss.github.io/materialize)
+ * Materialize v2.0.2-alpha (https://materializecss.github.io/materialize)
  * Copyright 2014-2023 Materialize
  * MIT License (https://raw.githubusercontent.com/materializecss/materialize/master/LICENSE)
  */
@@ -2642,7 +2642,8 @@ video.responsive-video {
 }
 .breadcrumb i,
 .breadcrumb [class^=mdi-], .breadcrumb [class*=mdi-],
-.breadcrumb i.material-icons {
+.breadcrumb i.material-icons, .breadcrumb i.material-symbols-outlined,
+.breadcrumb i.material-symbols-rounded, .breadcrumb i.material-symbols-sharp {
   display: block;
   float: left;
   font-size: 24px;
@@ -2652,7 +2653,7 @@ video.responsive-video {
   color: var(--font-on-primary-color-medium);
   vertical-align: top;
   display: inline-block;
-  font-family: "Material Icons";
+  font-family: "Material Symbols Outlined", "Material Symbols Rounded", "Material Symbols Sharp", "Material Icons";
   font-weight: normal;
   font-style: normal;
   font-size: 25px;
@@ -3253,7 +3254,8 @@ table span.badge {
 }
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons {
+.material-icons, .material-symbols-outlined,
+.material-symbols-rounded, .material-symbols-sharp {
   text-rendering: optimizeLegibility;
   -webkit-font-feature-settings: "liga";
      -moz-font-feature-settings: "liga";
@@ -3608,7 +3610,8 @@ nav a {
 }
 nav i,
 nav [class^=mdi-], nav [class*=mdi-],
-nav i.material-icons {
+nav i.material-icons, nav i.material-symbols-outlined,
+nav i.material-symbols-rounded, nav i.material-symbols-sharp {
   display: block;
   font-size: 24px;
   height: 56px;
@@ -3671,7 +3674,8 @@ nav .brand-logo.right {
 }
 nav .brand-logo i,
 nav .brand-logo [class^=mdi-], nav .brand-logo [class*=mdi-],
-nav .brand-logo i.material-icons {
+nav .brand-logo i.material-icons, nav .brand-logo i.material-symbols-outlined,
+nav .brand-logo i.material-symbols-rounded, nav .brand-logo i.material-symbols-sharp {
   float: left;
   margin-right: 15px;
 }
@@ -3711,7 +3715,7 @@ nav ul:not(.dropdown-content) a.btn, nav ul:not(.dropdown-content) a.btn-small, 
   margin-right: 15px;
   display: inline-block;
 }
-nav ul:not(.dropdown-content) a.btn > .material-icons, nav ul:not(.dropdown-content) a.btn-small > .material-icons, nav ul:not(.dropdown-content) a.btn-large > .material-icons, nav ul:not(.dropdown-content) a.btn-flat > .material-icons, nav ul:not(.dropdown-content) a.btn-floating > .material-icons {
+nav ul:not(.dropdown-content) a.btn > .material-icons, nav ul:not(.dropdown-content) a.btn-small > .material-icons, nav ul:not(.dropdown-content) a.btn > .material-symbols-outlined, nav ul:not(.dropdown-content) a.btn-small > .material-symbols-outlined, nav ul:not(.dropdown-content) a.btn > .material-symbols-rounded, nav ul:not(.dropdown-content) a.btn-small > .material-symbols-rounded, nav ul:not(.dropdown-content) a.btn > .material-symbols-sharp, nav ul:not(.dropdown-content) a.btn-small > .material-symbols-sharp, nav ul:not(.dropdown-content) a.btn-large > .material-icons, nav ul:not(.dropdown-content) a.btn-large > .material-symbols-outlined, nav ul:not(.dropdown-content) a.btn-large > .material-symbols-rounded, nav ul:not(.dropdown-content) a.btn-large > .material-symbols-sharp, nav ul:not(.dropdown-content) a.btn-flat > .material-icons, nav ul:not(.dropdown-content) a.btn-flat > .material-symbols-outlined, nav ul:not(.dropdown-content) a.btn-flat > .material-symbols-rounded, nav ul:not(.dropdown-content) a.btn-flat > .material-symbols-sharp, nav ul:not(.dropdown-content) a.btn-floating > .material-icons, nav ul:not(.dropdown-content) a.btn-floating > .material-symbols-outlined, nav ul:not(.dropdown-content) a.btn-floating > .material-symbols-rounded, nav ul:not(.dropdown-content) a.btn-floating > .material-symbols-sharp {
   height: inherit;
   line-height: inherit;
 }
@@ -3777,7 +3781,6 @@ a {
 }
 
 html {
-  line-height: 1.5;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-weight: normal;
   color: var(--font-color-main);
@@ -4939,44 +4942,6 @@ body.keyboard-focused .dropdown-content li:focus {
   background-color: var(--surface-color);
 }
 
-.sidenav .collapsible,
-.sidenav.sidenav-fixed .collapsible {
-  border: none;
-  -webkit-box-shadow: none;
-          box-shadow: none;
-}
-.sidenav .collapsible li,
-.sidenav.sidenav-fixed .collapsible li {
-  padding: 0;
-}
-.sidenav > li:hover,
-.sidenav > li.active,
-.sidenav.sidenav-fixed > li:hover,
-.sidenav.sidenav-fixed > li.active {
-  background-color: transparent;
-}
-.sidenav .collapsible-header,
-.sidenav.sidenav-fixed .collapsible-header {
-  background-color: transparent;
-  border: none;
-  line-height: inherit;
-  height: inherit;
-  padding: 0 16px;
-}
-.sidenav .collapsible-header i,
-.sidenav.sidenav-fixed .collapsible-header i {
-  line-height: inherit;
-}
-.sidenav .collapsible-body,
-.sidenav.sidenav-fixed .collapsible-body {
-  border: 0;
-  background-color: var(--surface-color);
-}
-.sidenav .collapsible-body li a,
-.sidenav.sidenav-fixed .collapsible-body li a {
-  padding: 0 23.5px 0 31px;
-}
-
 .collapsible.popout {
   border: none;
   -webkit-box-shadow: none;
@@ -5222,7 +5187,7 @@ textarea.materialize-textarea {
 .input-field input:focus:not([readonly]) + label, .input-field textarea:focus:not([readonly]) + label {
   color: var(--primary-color);
 }
-.input-field input:focus:not([readonly]) + label, .input-field input:not(:placeholder-shown) + label, .input-field textarea:focus:not([readonly]) + label, .input-field textarea:not(:placeholder-shown) + label {
+.input-field input:focus:not([readonly]) + label, .input-field input:not([placeholder=" "]) + label, .input-field input:not(:placeholder-shown) + label, .input-field textarea:focus:not([readonly]) + label, .input-field textarea:not([placeholder=" "]) + label, .input-field textarea:not(:placeholder-shown) + label {
   -webkit-transform: scale(0.75);
           transform: scale(0.75);
   top: 8px;
@@ -5327,7 +5292,7 @@ textarea.materialize-textarea {
 .input-field.outlined input:focus:not([readonly]) + label, .input-field.outlined textarea:focus:not([readonly]) + label {
   color: var(--primary-color);
 }
-.input-field.outlined input:focus:not([readonly]) + label, .input-field.outlined input:not(:placeholder-shown) + label, .input-field.outlined textarea:focus:not([readonly]) + label, .input-field.outlined textarea:not(:placeholder-shown) + label {
+.input-field.outlined input:focus:not([readonly]) + label, .input-field.outlined input:not([placeholder=" "]) + label, .input-field.outlined input:not(:placeholder-shown) + label, .input-field.outlined textarea:focus:not([readonly]) + label, .input-field.outlined textarea:not([placeholder=" "]) + label, .input-field.outlined textarea:not(:placeholder-shown) + label {
   top: -8px;
   left: 16px;
   margin-left: -4px;
@@ -5409,15 +5374,6 @@ textarea.materialize-textarea {
     transform: none;
     left: 1rem;
   }
-  & ~ .mdi-navigation-close,
-  & ~ .material-icons {
-    position: absolute;
-    top: 0;
-    right: 1rem;
-    color: transparent;
-    cursor: pointer;
-    font-size: $input-icon-size;
-  }
 }
 */
 /* Textarea */
@@ -5427,9 +5383,10 @@ textarea {
   background-color: transparent;
 }
 textarea.materialize-textarea {
+  padding-top: 26px !important;
+  padding-bottom: 4px !important;
   line-height: normal;
   overflow-y: hidden; /* prevents scroll bar flash */
-  padding: 0.8rem 0 0.8rem 0; /* prevents text jump on Enter keypress */
   resize: none;
   min-height: 3rem;
   -webkit-box-sizing: border-box;
@@ -6265,6 +6222,7 @@ input[type=range]::-ms-thumb {
   border-left: 2px solid var(--primary-color);
 }
 
+/* This should be an UL-Element*/
 .sidenav {
   position: fixed;
   width: 300px;
@@ -6274,7 +6232,7 @@ input[type=range]::-ms-thumb {
   -webkit-transform: translateX(-100%);
           transform: translateX(-100%);
   height: 100vh;
-  padding-bottom: 60px;
+  padding: 0;
   background-color: var(--background-color-level-16dp-solid);
   z-index: 999;
   overflow-y: auto;
@@ -6283,6 +6241,11 @@ input[type=range]::-ms-thumb {
           backface-visibility: hidden;
   -webkit-transform: translateX(-105%);
           transform: translateX(-105%);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  /* Hover only on top row */
 }
 .sidenav.right-aligned {
   right: 0;
@@ -6295,23 +6258,50 @@ input[type=range]::-ms-thumb {
 .sidenav .collapsible {
   margin: 0;
 }
-.sidenav li {
-  float: none;
-  line-height: 48px;
-}
-.sidenav li:hover {
+.sidenav a:hover {
   background-color: var(--hover-color);
 }
-.sidenav li.active {
+.sidenav a:focus {
   background-color: var(--focus-color);
 }
+.sidenav li.active > a:not(.collapsible-header) {
+  color: var(--font-on-primary-color-main);
+  background-color: var(--primary-color);
+}
+.sidenav .collapsible-body > ul {
+  padding-left: 10px;
+}
+.sidenav li {
+  list-style: none;
+  display: grid;
+  -webkit-align-content: center;
+      -ms-flex-line-pack: center;
+          align-content: center;
+}
 .sidenav li > a {
-  display: block;
+  /* https://stackoverflow.com/questions/5848090/full-width-hover-background-for-nested-lists */
+  margin: 0 12px;
+  padding: 0 16px;
+  /*
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  */
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  height: 48px;
   font-size: 14px;
   font-weight: 500;
-  height: 48px;
-  line-height: 48px;
-  padding: 0 32px;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  overflow: hidden;
+  border-radius: 100px;
+  /* TODO: Use special class in future like "mw-icon" */
 }
 .sidenav li > a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-flat):not(.btn-large):not(.btn-floating) {
   color: var(--font-color-main);
@@ -6319,13 +6309,14 @@ input[type=range]::-ms-thumb {
 .sidenav li > a.btn, .sidenav li > a.btn-small, .sidenav li > a.btn-large, .sidenav li > a.btn-flat, .sidenav li > a.btn-floating {
   margin: 10px 15px;
 }
-.sidenav li > a > i, .sidenav li > a > [class^=mdi-], .sidenav li > a li > a > [class*=mdi-], .sidenav li > a > i.material-icons {
-  float: left;
-  height: 48px;
-  line-height: 48px;
-  margin: 0 32px 0 0;
-  width: 24px;
+.sidenav li > a > .material-icons, .sidenav li > a > .material-symbols-outlined, .sidenav li > a > .material-symbols-rounded, .sidenav li > a > .material-symbols-sharp {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: middle;
   color: var(--font-color-medium);
+  margin-right: 12px;
 }
 .sidenav .divider {
   margin: 8px 0 0 0;
@@ -6337,9 +6328,6 @@ input[type=range]::-ms-thumb {
   font-size: 14px;
   font-weight: 500;
   line-height: 48px;
-}
-.sidenav .subheader:hover {
-  background-color: transparent;
 }
 .sidenav .user-view {
   position: relative;
@@ -6421,15 +6409,15 @@ input[type=range]::-ms-thumb {
     padding: 16px 16px 0;
   }
 }
+/*
 .sidenav .collapsible-body > ul:not(.collapsible) > li.active,
 .sidenav.sidenav-fixed .collapsible-body > ul:not(.collapsible) > li.active {
-  background-color: var(--primary-color);
+  background-color: $primary-color;
+  a:not(.btn) {
+    color: $font-on-primary-color-main;
+  }
 }
-.sidenav .collapsible-body > ul:not(.collapsible) > li.active a:not(.btn):not(.btn-large):not(.btn-small),
-.sidenav.sidenav-fixed .collapsible-body > ul:not(.collapsible) > li.active a:not(.btn):not(.btn-large):not(.btn-small) {
-  color: var(--font-on-primary-color-main);
-}
-
+*/
 .sidenav .collapsible-body {
   padding: 0;
 }
@@ -6444,6 +6432,22 @@ input[type=range]::-ms-thumb {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 997;
   display: none;
+}
+
+.sidenav .collapsible,
+.sidenav.sidenav-fixed .collapsible {
+  border: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.sidenav .collapsible-header,
+.sidenav.sidenav-fixed .collapsible-header {
+  border: none;
+}
+.sidenav .collapsible-body,
+.sidenav.sidenav-fixed .collapsible-body {
+  border: none;
+  background-color: var(--surface-color);
 }
 
 /*
@@ -7726,7 +7730,7 @@ input[type=text].text-primary {
     margin-top: 1.2rem;
   }
 }
-:root {
+:root, :host {
   --surface-color: #f3f6fc;
   --background-color: #ffffff;
   --font-color-main: rgba(0, 0, 0, 0.87);
@@ -7769,7 +7773,7 @@ input[type=text].text-primary {
   --md_sys_color_on-surface: 28, 27, 31;
 }
 
-:root[theme=dark] {
+:root[theme=dark], :host[theme=dark] {
   --background-color: #121212;
   --surface-color: #242424;
   --font-color-main: rgba(255, 255, 255, 0.87);
