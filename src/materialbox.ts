@@ -1,8 +1,42 @@
-import { Component } from "./component";
 import anim from "animejs";
-import { M } from "./global";
 
-const _defaults = {
+import { Utils } from "./utils";
+import { BaseOptions, Component, InitElements, MElement } from "./component";
+
+export interface MaterialboxOptions extends BaseOptions {
+  /**
+   * Transition in duration in milliseconds.
+   * @default 275
+   */
+  inDuration: number;
+  /**
+   * Transition out duration in milliseconds.
+   * @default 200
+   */
+  outDuration: number;
+  /**
+   * Callback function called before materialbox is opened.
+   * @default null
+   */
+  onOpenStart: (el: Element) => void;
+  /**
+   * Callback function called after materialbox is opened.
+   * @default null
+   */
+  onOpenEnd: (el: Element) => void;
+  /**
+   * Callback function called before materialbox is closed.
+   * @default null
+   */
+  onCloseStart: (el: Element) => void;
+  /**
+   * Callback function called after materialbox is closed.
+   * @default null
+   */
+  onCloseEnd: (el: Element) => void;
+}
+
+const _defaults: MaterialboxOptions = {
   inDuration: 275,
   outDuration: 200,
   onOpenStart: null,
@@ -11,12 +45,16 @@ const _defaults = {
   onCloseEnd: null
 };
 
-export class Materialbox extends Component {
-  el: HTMLElement;
+export class Materialbox extends Component<MaterialboxOptions> {
+  /** If the materialbox overlay is showing. */
   overlayActive: boolean;
+  /** If the materialbox is no longer being animated. */
   doneAnimating: boolean;
+  /** Caption, if specified. */
   caption: string;
+  /** Original width of image. */
   originalWidth: number;
+  /** Original height of image. */
   originalHeight: number;
   private originInlineStyles: string;
   private placeholder: HTMLElement;
@@ -30,10 +68,15 @@ export class Materialbox extends Component {
   private _overlay: HTMLElement;
   private _photoCaption: HTMLElement;
 
-  constructor(el, options) {
-    super(Materialbox, el, options);
+  constructor(el: HTMLElement, options: Partial<MaterialboxOptions>) {
+    super(el, options, Materialbox);
     (this.el as any).M_Materialbox = this;
-    this.options = {...Materialbox.defaults, ...options};
+
+    this.options = {
+      ...Materialbox.defaults,
+      ...options
+    };
+    
     this.overlayActive = false;
     this.doneAnimating = true;
     this.placeholder = document.createElement('div');
@@ -48,17 +91,33 @@ export class Materialbox extends Component {
     this._setupEventHandlers();
   }
 
-  static get defaults() {
+  static get defaults(): MaterialboxOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of MaterialBox.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options?: Partial<MaterialboxOptions>): Materialbox;
+  /**
+   * Initializes instances of MaterialBox.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<MElement>, options?: Partial<MaterialboxOptions>): Materialbox[];
+  /**
+   * Initializes instances of MaterialBox.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<MaterialboxOptions> = {}): Materialbox | Materialbox[]{
+    return super.init(els, options, Materialbox);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Materialbox;
+  static getInstance(el: HTMLElement): Materialbox {
+    return (el as any).M_Materialbox;
   }
 
   destroy() {
@@ -95,7 +154,7 @@ export class Materialbox extends Component {
   }
 
   _handleWindowEscape = (e: KeyboardEvent) => {
-    if (M.keys.ESC.includes(e.key) && this.doneAnimating && this.overlayActive) this.close();
+    if (Utils.keys.ESC.includes(e.key) && this.doneAnimating && this.overlayActive) this.close();
   }
 
   _makeAncestorsOverflowVisible() {
@@ -111,7 +170,7 @@ export class Materialbox extends Component {
     }
   }
 
-  private _offset(el) {
+  private _offset(el: HTMLElement) {
     const box = el.getBoundingClientRect();
     const docElem = document.documentElement;
     return {
@@ -129,12 +188,12 @@ export class Materialbox extends Component {
       height: [this.originalHeight, this.newHeight],
       width: [this.originalWidth, this.newWidth],
       left:
-        M.getDocumentScrollLeft() +
+        Utils.getDocumentScrollLeft() +
         this.windowWidth / 2 -
         this._offset(this.placeholder).left -
         this.newWidth / 2,
       top:
-        M.getDocumentScrollTop() +
+        Utils.getDocumentScrollTop() +
         this.windowHeight / 2 -
         this._offset(this.placeholder).top -
         this.newHeight / 2,
@@ -199,7 +258,10 @@ export class Materialbox extends Component {
     this.caption = this.el.getAttribute('data-caption') || '';
   }
 
-  open() {
+  /**
+   * Open materialbox.
+   */
+  open = () => {
     this._updateVars();
     this.originalWidth = this.el.getBoundingClientRect().width;
     this.originalHeight = this.el.getBoundingClientRect().height;
@@ -298,7 +360,10 @@ export class Materialbox extends Component {
     window.addEventListener('keyup', this._handleWindowEscape);
   }
 
-  close() {
+  /**
+   * Close materialbox.
+   */
+  close = () => {
     this._updateVars();
     this.doneAnimating = false;
     // onCloseStart callback

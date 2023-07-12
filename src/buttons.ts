@@ -1,31 +1,57 @@
-import { Component } from "./component";
 import anim from "animejs";
 
-let _defaults = {
+import { Component, BaseOptions, InitElements, MElement, Openable } from "./component";
+
+export interface FloatingActionButtonOptions extends BaseOptions {
+  /**
+   * Direction FAB menu opens.
+   * @default "top"
+   */
+  direction: "top" | "right" | "bottom" | "left";
+  /**
+   * true: FAB menu appears on hover, false: FAB menu appears on click.
+   * @default true
+   */
+  hoverEnabled: boolean;
+  /**
+   * Enable transit the FAB into a toolbar on click.
+   * @default false
+   */
+  toolbarEnabled: boolean;
+};
+
+let _defaults: FloatingActionButtonOptions = {
   direction: 'top',
   hoverEnabled: true,
   toolbarEnabled: false
 };
 
-export class FloatingActionButton extends Component {
-  el: HTMLElement;
+export class FloatingActionButton extends Component<FloatingActionButtonOptions> implements Openable {
+  /**
+   * Describes open/close state of FAB.
+   */
   isOpen: boolean;
+
   private _anchor: HTMLAnchorElement;
   private _menu: HTMLElement|null;
   private _floatingBtns: HTMLElement[];
   private _floatingBtnsReverse: HTMLElement[];
+
   offsetY: number;
   offsetX: number;
   btnBottom: number;
   btnLeft: number;
   btnWidth: number;
 
-  constructor(el, options) {
-    super(FloatingActionButton, el, options);
-
+  constructor(el: HTMLElement, options: Partial<FloatingActionButtonOptions>) {
+    super(el, options, FloatingActionButton);
     (this.el as any).M_FloatingActionButton = this;
 
-    this.options = {...FloatingActionButton.defaults, ...options};
+    this.options = {
+      ...FloatingActionButton.defaults,
+      ...options
+    };
+
     this.isOpen = false;
     this._anchor = this.el.querySelector('a');
     this._menu = this.el.querySelector('ul');
@@ -50,13 +76,29 @@ export class FloatingActionButton extends Component {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of FloatingActionButton.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options?: Partial<FloatingActionButtonOptions>): FloatingActionButton
+  /**
+   * Initializes instances of FloatingActionButton.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<MElement>, options?: Partial<FloatingActionButtonOptions>): FloatingActionButton[];
+  /**
+   * Initializes instances of FloatingActionButton.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<FloatingActionButtonOptions> = {}): FloatingActionButton | FloatingActionButton[] {
+    return super.init(els, options, FloatingActionButton);
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_FloatingActionButton;
+  static getInstance(el: HTMLElement): FloatingActionButton {
+    return (el as any).M_FloatingActionButton;
   }
 
   destroy() {
@@ -90,16 +132,15 @@ export class FloatingActionButton extends Component {
     }
   }
 
-  _handleDocumentClick = (e) => {
-    const elem = <HTMLElement>e.target;
+  _handleDocumentClick = (e: MouseEvent) => {
+    const elem = e.target;
     if (elem !== this._menu) this.close;
-    /*
-    if (!elem.closest(this.$menu)) {
-      this.close();
-    }*/
   }
 
-  open = () => {
+  /**
+   * Open FAB.
+   */
+  open = (): void => {
     if (this.isOpen) return;
     if (this.options.toolbarEnabled)
       this._animateInToolbar();
@@ -108,12 +149,14 @@ export class FloatingActionButton extends Component {
     this.isOpen = true;
   }
 
-  close = () => {
+  /**
+   * Close FAB.
+   */
+  close = (): void => {
     if (!this.isOpen) return;
     if (this.options.toolbarEnabled) {
       window.removeEventListener('scroll', this.close, true);
       document.body.removeEventListener('click', this._handleDocumentClick, true);
-      this._animateOutToolbar();
     }
     else {
       this._animateOutFAB();
@@ -189,7 +232,7 @@ export class FloatingActionButton extends Component {
     this._anchor.style.transform = `translateY(${this.offsetY}px`;
     this._anchor.style.transition = 'none';
 
-    (<HTMLElement>backdrop).style.backgroundColor = fabColor;
+    backdrop.style.backgroundColor = fabColor;
 
     setTimeout(() => {
       this.el.style.transform = '';
@@ -213,72 +256,5 @@ export class FloatingActionButton extends Component {
         document.body.addEventListener('click', this._handleDocumentClick, true);
       }, 100);
     }, 0);
-  }
-
-
-
-
-  _animateOutToolbar() {
-    return;
-    /*
-    let windowWidth = window.innerWidth;
-    let windowHeight = window.innerHeight;
-    let backdrop = this.$el.find('.fab-backdrop');
-    let fabColor = this.$anchor.css('background-color');
-
-    this.offsetX = this.btnLeft - windowWidth / 2 + this.btnWidth / 2;
-    this.offsetY = windowHeight - this.btnBottom;
-
-    // Hide backdrop
-    this.$el.removeClass('active');
-    this.$el.css({
-      'background-color': 'transparent',
-      transition: 'none'
-    });
-    // this.$anchor.css({
-    //   transition: 'none'
-    // });
-    backdrop.css({
-      transform: 'scale(0)',
-      'background-color': fabColor
-    });
-
-    // this.$menu
-    //   .children('li')
-    //   .children('a')
-    //   .css({
-    //     opacity: ''
-    //   });
-
-    setTimeout(() => {
-      backdrop.remove();
-
-      // Set initial state.
-      this.$el.css({
-        'text-align': '',
-        width: '',
-        bottom: '',
-        left: '',
-        overflow: '',
-        'background-color': '',
-        transform: 'translate3d(' + -this.offsetX + 'px,0,0)'
-      });
-      // this.$anchor.css({
-      //   overflow: '',
-      //   transform: 'translate3d(0,' + this.offsetY + 'px,0)'
-      // });
-
-      setTimeout(() => {
-        this.$el.css({
-          transform: 'translate3d(0,0,0)',
-          transition: 'transform .2s'
-        });
-        // this.$anchor.css({
-        //   transform: 'translate3d(0,0,0)',
-        //   transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
-        // });
-      }, 20);
-    }, 200);
-    */
   }
 }

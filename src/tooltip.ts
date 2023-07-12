@@ -1,25 +1,82 @@
 import anim from "animejs";
 
-import { M } from "./global";
+import { Utils } from "./utils";
 import { Bounding } from "./bounding";
-import { Component } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
-const _defaults = {
+export interface TooltipOptions extends BaseOptions {
+  /**
+   * Delay time before tooltip disappears.
+   * @default 200
+   */
+  exitDelay: number;
+  /**
+   * Delay time before tooltip appears.
+   * @default 0
+   */
+  enterDelay: number;
+  /**
+   * Text string for the tooltip.
+   * @default ""
+   */
+  text: string;
+  /**
+   * Set distance tooltip appears away from its activator
+   * excluding transitionMovement.
+   * @default 5
+   */
+  margin: number;
+  /**
+   * Enter transition duration.
+   * @default 300
+   */
+  inDuration: number;
+  /**
+   * Opacity of the tooltip.
+   * @default 1
+   */
+  opacity: number;
+  /**
+   * Exit transition duration.
+   * @default 250
+   */
+  outDuration: number;
+  /**
+   * Set the direction of the tooltip.
+   * @default 'bottom'
+   */
+  position: 'top' | 'right' | 'bottom' | 'left';
+  /**
+   * Amount in px that the tooltip moves during its transition.
+   * @default 10
+   */
+  transitionMovement: number;
+}
+
+const _defaults: TooltipOptions = {
   exitDelay: 200,
   enterDelay: 0,
-  //html: null,
   text: '',
-  //unsafeHTML: null,
   margin: 5,
   inDuration: 250,
   outDuration: 200,
   position: 'bottom',
-  transitionMovement: 10
+  transitionMovement: 10,
+  opacity: 1
 };
 
-export class Tooltip extends Component {
+export class Tooltip extends Component<TooltipOptions> {
+  /**
+   * If tooltip is open.
+   */
   isOpen: boolean;
+  /**
+   * If tooltip is hovered.
+   */
   isHovered: boolean;
+  /**
+   * If tooltip is focused.
+   */
   isFocused: boolean;
   tooltipEl: HTMLElement;
   private _exitDelayTimeout: string | number | NodeJS.Timeout;
@@ -27,10 +84,15 @@ export class Tooltip extends Component {
   xMovement: number;
   yMovement: number;
 
-  constructor(el, options) {
-    super(Tooltip, el, options);
+  constructor(el: HTMLElement, options: Partial<TooltipOptions>) {
+    super(el, options, Tooltip);
     (this.el as any).M_Tooltip = this;
-    this.options = {...Tooltip.defaults, ...options};
+
+    this.options = {
+      ...Tooltip.defaults,
+      ...options
+    };
+    
     this.isOpen = false;
     this.isHovered = false;
     this.isFocused = false;
@@ -38,17 +100,33 @@ export class Tooltip extends Component {
     this._setupEventHandlers();
   }
 
-  static get defaults() {
+  static get defaults(): TooltipOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Tooltip.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options?: Partial<TooltipOptions>): Tooltip;
+  /**
+   * Initializes instances of Tooltip.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<MElement>, options?: Partial<TooltipOptions>): Tooltip[];
+  /**
+   * Initializes instances of Tooltip.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<TooltipOptions> = {}): Tooltip | Tooltip[] {
+    return super.init(els, options, Tooltip);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Tooltip;
+  static getInstance(el: HTMLElement): Tooltip {
+    return (el as any).M_Tooltip;
   }
 
   destroy() {
@@ -90,7 +168,10 @@ export class Tooltip extends Component {
     this.el.removeEventListener('blur', this._handleBlur, true);
   }
 
-  open(isManual) {
+  /**
+   * Show tooltip.
+   */
+  open = (isManual: boolean) => {
     if (this.isOpen) return;
     isManual = isManual === undefined ? true : undefined; // Default value true
     this.isOpen = true;
@@ -99,8 +180,11 @@ export class Tooltip extends Component {
     this._updateTooltipContent();
     this._setEnterDelayTimeout(isManual);
   }
-
-  close() {
+  
+  /**
+   * Hide tooltip.
+   */
+  close = () => {
     if (!this.isOpen) return;
     this.isHovered = false;
     this.isFocused = false;
@@ -135,8 +219,8 @@ export class Tooltip extends Component {
 
     (this.xMovement = 0), (this.yMovement = 0);
 
-    let targetTop = origin.getBoundingClientRect().top + M.getDocumentScrollTop();
-    let targetLeft = origin.getBoundingClientRect().left + M.getDocumentScrollLeft();
+    let targetTop = origin.getBoundingClientRect().top + Utils.getDocumentScrollTop();
+    let targetLeft = origin.getBoundingClientRect().left + Utils.getDocumentScrollLeft();
     if (this.options.position === 'top') {
       targetTop += -tooltipHeight - margin;
       targetLeft += originWidth / 2 - tooltipWidth / 2;
@@ -166,9 +250,9 @@ export class Tooltip extends Component {
     tooltip.style.left = newCoordinates.x+'px';
   }
 
-  _repositionWithinScreen(x, y, width, height) {
-    const scrollLeft = M.getDocumentScrollLeft();
-    const scrollTop = M.getDocumentScrollTop();
+  _repositionWithinScreen(x: number, y: number, width: number, height: number) {
+    const scrollLeft = Utils.getDocumentScrollLeft();
+    const scrollTop = Utils.getDocumentScrollTop();
     let newX = x - scrollLeft;
     let newY = y - scrollTop;
 
@@ -179,7 +263,7 @@ export class Tooltip extends Component {
       height: height
     };
     const offset = this.options.margin + this.options.transitionMovement;
-    const edges = M.checkWithinContainer(document.body, bounding, offset);
+    const edges = Utils.checkWithinContainer(document.body, bounding, offset);
 
     if (edges.left) {
       newX = offset;
@@ -236,7 +320,7 @@ export class Tooltip extends Component {
   }
 
   _handleFocus = () => {
-    if (M.tabPressed) {
+    if (Utils.tabPressed) {
       this.isFocused = true;
       this.open(false);
     }

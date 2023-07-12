@@ -1,9 +1,155 @@
-import { Component } from "./component";
-import { M } from "./global";
 import { Modal } from "./modal";
+import { Utils } from "./utils";
 import { FormSelect } from "./select";
+import { BaseOptions, Component, InitElements, MElement, I18nOptions } from "./component";
 
-let _defaults = {
+export interface DateI18nOptions extends I18nOptions {
+  previousMonth: string;
+  nextMonth: string;
+  months: string[];
+  monthsShort: string[];
+  weekdays: string[];
+  weekdaysShort: string[];
+  weekdaysAbbrev: string[];
+};
+
+export interface DatepickerOptions extends BaseOptions {
+  /**
+   * Automatically close picker when date is selected.
+   * @default false
+   */
+  autoClose: boolean;
+  /**
+   * The date output format for the input field value
+   * or a function taking the date and outputting the
+   * formatted date string.
+   * @default 'mmm dd, yyyy'
+   */
+  format: string | ((d: Date) => string);
+  /**
+   * Used to create date object from current input string.
+   * @default null
+   */
+  parse: ((value: string, format: string) => Date) | null;
+  /**
+   * The initial date to view when first opened.
+   * @default null
+   */
+  defaultDate: Date | null;
+  /**
+   * Make the `defaultDate` the initial selected value.
+   * @default false
+   */
+  setDefaultDate: boolean;
+  /**
+   * Prevent selection of any date on the weekend.
+   * @default false
+   */
+  disableWeekends: boolean;
+  /**
+   * Custom function to disable certain days.
+   * @default null
+   */
+  disableDayFn: ((day: Date) => boolean) | null;
+  /**
+   * First day of week (0: Sunday, 1: Monday etc).
+   * @default 0
+   */
+  firstDay: number;
+  /**
+   * The earliest date that can be selected.
+   * @default null
+   */
+  minDate: Date | null;
+  /**
+   * The latest date that can be selected.
+   * @default null
+   */
+  maxDate: Date | null;
+  /**
+   * Number of years either side, or array of upper/lower range.
+   * @default 10
+   */
+  yearRange: number | number[];
+  /**
+   * Sort year range in reverse order.
+   * @default false
+   */
+  yearRangeReverse: boolean;
+  /**
+   * Changes Datepicker to RTL.
+   * @default false
+   */
+  isRTL: boolean;
+  /**
+   * Show month after year in Datepicker title.
+   * @default false
+   */
+  showMonthAfterYear: boolean;
+  /**
+   * Render days of the calendar grid that fall in the next
+   * or previous month.
+   * @default false
+   */
+  showDaysInNextAndPreviousMonths: boolean;
+  /**
+   * Specify a DOM element OR selector for a DOM element to render
+   * the calendar in, by default it will be placed before the input.
+   * @default null
+   */
+  container: HTMLElement | string | null;
+  /**
+   * Show the clear button in the datepicker.
+   * @default false
+   */
+  showClearBtn: boolean;
+  /**
+   * Internationalization options.
+   */
+  i18n: Partial<DateI18nOptions>;
+  /**
+   * An array of string returned by `Date.toDateString()`,
+   * indicating there are events in the specified days.
+   * @default []
+   */
+  events: string[];
+  /**
+   * Callback function when date is selected,
+   * first parameter is the newly selected date.
+   * @default null
+   */
+  onSelect: ((selectedDate: Date) => void) | null;
+  /**
+   * Callback function when Datepicker is opened.
+   * @default null
+   */
+  onOpen: (() => void) | null;
+  /**
+   * Callback function when Datepicker is closed.
+   * @default null
+   */
+  onClose: (() => void) | null;
+  /**
+   * Callback function when Datepicker HTML is refreshed.
+   * @default null
+   */
+  onDraw: (() => void) | null;
+  
+  /** Field used for internal calculations DO NOT CHANGE IT */
+  minYear?: any;
+  /** Field used for internal calculations DO NOT CHANGE IT */
+  maxYear?: any;
+  /** Field used for internal calculations DO NOT CHANGE IT */
+  minMonth?: any;
+  /** Field used for internal calculations DO NOT CHANGE IT */
+  maxMonth?: any;
+  /** Field used for internal calculations DO NOT CHANGE IT */
+  startRange?: any;
+  /** Field used for internal calculations DO NOT CHANGE IT */
+  endRange?: any;
+}
+
+let _defaults: DatepickerOptions = {
   // Close when date is selected
   autoClose: false,
   // the default output format for the input field value
@@ -32,6 +178,7 @@ let _defaults = {
   startRange: null,
   endRange: null,
   isRTL: false,
+  yearRangeReverse: false,
   // Render the month after year in the calendar title
   showMonthAfterYear: false,
   // Render days of the calendar grid that fall in the next or previous month
@@ -88,29 +235,37 @@ let _defaults = {
   onDraw: null
 };
 
-export class Datepicker extends Component {
-  el: HTMLInputElement
+export class Datepicker extends Component<DatepickerOptions> {
+  declare el: HTMLInputElement
   id: string;
+  /** If the picker is open. */
   isOpen: boolean;
   modal: Modal;
   calendarEl: HTMLElement;
+  /** CLEAR button instance. */
   clearBtn: HTMLElement;
+  /** DONE button instance */
   doneBtn: HTMLElement;
   cancelBtn: HTMLElement;
   modalEl: HTMLElement;
   yearTextEl: HTMLElement;
   dateTextEl: HTMLElement;
-  date: any;
+  /** The selected Date. */
+  date: Date;
   formats: any;
   calendars: any;
   private _y: any;
   private _m: any;
   static _template: string;
 
-  constructor(el, options) {
-    super(Datepicker, el, options);
+  constructor(el: HTMLInputElement, options: Partial<DatepickerOptions>) {
+    super(el, options, Datepicker);
     (this.el as any).M_Datepicker = this;
-    this.options = {...Datepicker.defaults, ...options};
+    
+    this.options = {
+      ...Datepicker.defaults,
+      ...options
+    };
 
     // make sure i18n defaults are not lost when only few i18n option properties are passed
     if (!!options && options.hasOwnProperty('i18n') && typeof options.i18n === 'object') {
@@ -121,7 +276,7 @@ export class Datepicker extends Component {
     if (this.options.minDate) this.options.minDate.setHours(0, 0, 0, 0);
     if (this.options.maxDate) this.options.maxDate.setHours(0, 0, 0, 0);
 
-    this.id = M.guid();
+    this.id = Utils.guid();
 
     this._setupVariables();
     this._insertHTMLIntoDOM();
@@ -152,8 +307,25 @@ export class Datepicker extends Component {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Datepicker.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLInputElement, options?: Partial<DatepickerOptions>): Datepicker;
+  /**
+   * Initializes instances of Datepicker.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLInputElement | MElement>, options?: Partial<DatepickerOptions>): Datepicker[];
+  /**
+   * Initializes instances of Datepicker.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLInputElement | InitElements<HTMLInputElement | MElement>, options: Partial<DatepickerOptions> = {}): Datepicker | Datepicker[] {
+    return super.init(els, options, Datepicker);
   }
 
   static _isDate(obj) {
@@ -185,9 +357,8 @@ export class Datepicker extends Component {
     return a.getTime() === b.getTime();
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Datepicker;
+  static getInstance(el: HTMLElement): Datepicker {
+    return (el as any).M_Datepicker;
   }
 
   destroy() {
@@ -201,11 +372,11 @@ export class Datepicker extends Component {
   destroySelects() {
     let oldYearSelect = this.calendarEl.querySelector('.orig-select-year');
     if (oldYearSelect) {
-      FormSelect.getInstance(oldYearSelect).destroy();
+      FormSelect.getInstance(oldYearSelect as HTMLElement).destroy();
     }
     let oldMonthSelect = this.calendarEl.querySelector('.orig-select-month');
     if (oldMonthSelect) {
-      FormSelect.getInstance(oldMonthSelect).destroy();
+      FormSelect.getInstance(oldMonthSelect as HTMLElement).destroy();
     }
   }
 
@@ -220,7 +391,7 @@ export class Datepicker extends Component {
     if (this.options.container) {
       const optEl = this.options.container;
       this.options.container =
-        optEl instanceof HTMLElement ? optEl : document.querySelector(optEl);
+        optEl instanceof HTMLElement ? optEl : document.querySelector(optEl) as HTMLElement;
       this.options.container.append(this.modalEl);
     }
     else {
@@ -238,6 +409,9 @@ export class Datepicker extends Component {
     });
   }
 
+  /**
+   * Gets a string representation of the selected date.
+   */
   toString(format: string | ((d: Date) => string) = null): string {
     format = format || this.options.format;
     if (typeof format === 'function') return format(this.date);
@@ -250,7 +424,12 @@ export class Datepicker extends Component {
     return formattedDate;
   }
 
-  setDate(date, preventOnSelect: boolean = false) {
+  /**
+   * Set a date on the datepicker.
+   * @param date Date to set on the datepicker.
+   * @param preventOnSelect Undocumented as of 5 March 2018.
+   */
+  setDate(date: Date | string = null, preventOnSelect: boolean = false) {
     if (!date) {
       this.date = null;
       this._renderDateDisplay();
@@ -279,6 +458,9 @@ export class Datepicker extends Component {
     }
   }
 
+  /**
+   * Sets current date as the input value.
+   */
   setInputValue() {
     this.el.value = this.toString();
     this.el.dispatchEvent(new CustomEvent('change', {detail: {firedBy: this}}));
@@ -290,11 +472,15 @@ export class Datepicker extends Component {
     let day = i18n.weekdaysShort[displayDate.getDay()];
     let month = i18n.monthsShort[displayDate.getMonth()];
     let date = displayDate.getDate();
-    this.yearTextEl.innerHTML = displayDate.getFullYear();
+    this.yearTextEl.innerHTML = displayDate.getFullYear().toString();
     this.dateTextEl.innerHTML = `${day}, ${month} ${date}`;
   }
 
-  gotoDate(date) {
+  /**
+   * Change date view to a specific date on the datepicker.
+   * @param date Date to show on the datepicker.
+   */
+  gotoDate(date: Date) {
     let newCalendar = true;
     if (!Datepicker._isDate(date)) {
       return;
@@ -649,8 +835,8 @@ export class Datepicker extends Component {
     this.calendarEl.innerHTML = html;
 
     // Init Materialize Select
-    let yearSelect = this.calendarEl.querySelector('.orig-select-year');
-    let monthSelect = this.calendarEl.querySelector('.orig-select-month');
+    let yearSelect = this.calendarEl.querySelector('.orig-select-year') as HTMLSelectElement;
+    let monthSelect = this.calendarEl.querySelector('.orig-select-month') as HTMLSelectElement;
     FormSelect.init(yearSelect, {
       classes: 'select-year',
       dropdownOptions: { container: document.body, constrainWidth: false }
@@ -665,7 +851,7 @@ export class Datepicker extends Component {
     monthSelect.addEventListener('change', () => this._handleMonthChange);
 
     if (typeof this.options.onDraw === 'function') {
-      this.options.onDraw(this);
+      this.options.onDraw.call(this);
     }
   }
 
@@ -744,7 +930,7 @@ export class Datepicker extends Component {
   }
 
   _handleInputKeydown = (e: KeyboardEvent) => {
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this.open();
     }
@@ -814,7 +1000,10 @@ export class Datepicker extends Component {
     // Prevent change event from being fired when triggered by the plugin
     if (e['detail']?.firedBy === this) return;
     if (this.options.parse) {
-      date = this.options.parse(this.el.value, this.options.format);
+      date = this.options.parse(this.el.value,
+        typeof this.options.format === "function"
+          ? this.options.format(new Date(this.el.value))
+          : this.options.format);
     }
     else {
       date = new Date(Date.parse(this.el.value));
@@ -836,7 +1025,10 @@ export class Datepicker extends Component {
     this.close();
   }
 
-  open() {
+  /**
+   * Open datepicker.
+   */
+  open = () => {
     if (this.isOpen) return;
     this.isOpen = true;
     if (typeof this.options.onOpen === 'function') {
@@ -847,6 +1039,9 @@ export class Datepicker extends Component {
     return this;
   }
 
+  /**
+   * Close datepicker.
+   */
   close = () => {
     if (!this.isOpen) return;
     this.isOpen = false;

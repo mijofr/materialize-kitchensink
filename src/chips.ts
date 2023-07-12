@@ -1,8 +1,76 @@
-import { Component } from "./component";
-import { M } from "./global";
-import { Autocomplete } from "./autocomplete";
+import { Utils } from "./utils";
+import { Autocomplete, AutocompleteOptions } from "./autocomplete";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
-let _defaults = {
+export interface ChipData {
+  /**
+   * Unique identifier.
+   */
+  id: number|string;
+  /**
+   * Chip text. If not specified, "id" will be used.
+   */
+  text?: string;
+  /**
+   * Chip image (URL).
+   */
+  image?: string;
+}
+
+export interface ChipsOptions extends BaseOptions{
+  /**
+   * Set the chip data.
+   * @default []
+   */
+  data: ChipData[];
+  /**
+   * Set first placeholder when there are no tags.
+   * @default ""
+   */
+  placeholder: string;
+  /**
+   * Set second placeholder when adding additional tags.
+   * @default ""
+   */
+  secondaryPlaceholder: string;
+  /**
+   * Set autocomplete options.
+   * @default {}
+   */
+  autocompleteOptions: Partial<AutocompleteOptions>;
+  /**
+   * Toggles abililty to add custom value not in autocomplete list.
+   * @default false
+   */
+  autocompleteOnly: boolean;
+  /**
+   * Set chips limit.
+   * @default Infinity
+   */
+  limit: number;
+  /**
+   * Specifies class to be used in "close" button (useful when working with Material Symbols icon set).
+   * @default 'material-icons'
+   */
+  closeIconClass: string;
+  /**
+   * Callback for chip add.
+   * @default null
+   */
+  onChipAdd: (element: HTMLElement, chip: HTMLElement) => void;
+  /**
+   * Callback for chip select.
+   * @default null
+   */
+  onChipSelect: (element: HTMLElement, chip: HTMLElement) => void;
+  /**
+   * Callback for chip delete.
+   * @default null
+   */
+  onChipDelete: (element: HTMLElement, chip: HTMLElement) => void;
+}
+
+let _defaults: ChipsOptions = {
   data: [],
   placeholder: '',
   secondaryPlaceholder: '',
@@ -15,20 +83,16 @@ let _defaults = {
   onChipDelete: null
 };
 
-interface DataBit {
-  id: string, // required
-  text?: string,
-  image?: string,
-  description?: string,
-}
-
 function gGetIndex(el: HTMLElement): number {
   return [...el.parentNode.children].indexOf(el);
 }
 
-export class Chips extends Component {
-  chipsData: DataBit[];
+export class Chips extends Component<ChipsOptions> {
+  /** Array of the current chips data. */
+  chipsData: ChipData[];
+  /** If the chips has autocomplete enabled. */
   hasAutocomplete: boolean;
+  /** Autocomplete instance, if any. */
   autocomplete: Autocomplete;
   _input: HTMLInputElement;
   _label: any;
@@ -36,10 +100,14 @@ export class Chips extends Component {
   static _keydown: boolean;
   private _selectedChip: any;
 
-  constructor(el, options) {
-    super(Chips, el, options);
+  constructor(el: HTMLElement, options: Partial<ChipsOptions>) {
+    super(el, options, Chips);
     (this.el as any).M_Chips = this;
-    this.options = {...Chips.defaults, ...options};
+
+    this.options = {
+      ...Chips.defaults,
+      ...options
+    };
 
     this.el.classList.add('chips', 'input-field');
     this.chipsData = [];
@@ -49,7 +117,7 @@ export class Chips extends Component {
 
     // Set input id
     if (!this._input.getAttribute('id'))
-      this._input.setAttribute('id', M.guid());
+      this._input.setAttribute('id', Utils.guid());
 
     // Render initial chips
     if (this.options.data.length) {
@@ -67,13 +135,29 @@ export class Chips extends Component {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Chips.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options?: Partial<ChipsOptions>): Chips;
+  /**
+   * Initializes instances of Chips.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<MElement>, options?: Partial<ChipsOptions>): Chips[];
+  /**
+   * Initializes instances of Chips.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<ChipsOptions> = {}): Chips | Chips[] {
+    return super.init(els, options, Chips);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Chips;
+  static getInstance(el: HTMLElement): Chips {
+    return (el as any).M_Chips;
   }
 
   getData() {
@@ -107,7 +191,7 @@ export class Chips extends Component {
     this._input.removeEventListener('keydown', this._handleInputKeydown);
   }
 
-  _handleChipClick = (e: Event) => {
+  _handleChipClick = (e: MouseEvent) => {
     const _chip = (<HTMLElement>e.target).closest('.chip');
     const clickedClose = (<HTMLElement>e.target).classList.contains('close');
     if (_chip) {
@@ -137,7 +221,7 @@ export class Chips extends Component {
 
     const currChips: Chips = (chips as any).M_Chips;
 
-    if (M.keys.BACKSPACE.includes(e.key) || M.keys.DELETE.includes(e.key)) {
+    if (Utils.keys.BACKSPACE.includes(e.key) || Utils.keys.DELETE.includes(e.key)) {
       e.preventDefault();
       let selectIndex = currChips.chipsData.length;
       if (currChips._selectedChip) {
@@ -152,14 +236,14 @@ export class Chips extends Component {
       else
         currChips._input.focus();
     }
-    else if (M.keys.ARROW_LEFT.includes(e.key)) {
+    else if (Utils.keys.ARROW_LEFT.includes(e.key)) {
       if (currChips._selectedChip) {
         const selectIndex = gGetIndex(currChips._selectedChip) - 1;
         if (selectIndex < 0) return;
         currChips.selectChip(selectIndex);
       }
     }
-    else if (M.keys.ARROW_RIGHT.includes(e.key)) {
+    else if (Utils.keys.ARROW_RIGHT.includes(e.key)) {
       if (currChips._selectedChip) {
         const selectIndex = gGetIndex(currChips._selectedChip) + 1;
         if (selectIndex >= currChips.chipsData.length)
@@ -192,7 +276,7 @@ export class Chips extends Component {
 
   _handleInputKeydown = (e: KeyboardEvent) => {
     Chips._keydown = true;
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       // Override enter if autocompleting.
       if (this.hasAutocomplete && this.autocomplete && this.autocomplete.isOpen) {
         return;
@@ -204,7 +288,7 @@ export class Chips extends Component {
       this._input.value = '';
     }
     else if (      
-      (M.keys.BACKSPACE.includes(e.key) || M.keys.ARROW_LEFT.includes(e.key)) &&
+      (Utils.keys.BACKSPACE.includes(e.key) || Utils.keys.ARROW_LEFT.includes(e.key)) &&
       this._input.value === '' &&
       this.chipsData.length
     ) {
@@ -213,11 +297,11 @@ export class Chips extends Component {
     }
   }
 
-  _renderChip(chip: DataBit): HTMLDivElement {
+  _renderChip(chip: ChipData): HTMLDivElement {
     if (!chip.id) return;
     const renderedChip = document.createElement('div');
     renderedChip.classList.add('chip');
-    renderedChip.innerText = chip.text || chip.id;
+    renderedChip.innerText = chip.text || <string>chip.id;
     renderedChip.setAttribute('tabindex', "0");
     const closeIcon = document.createElement('i');
     closeIcon.classList.add(this.options.closeIconClass, 'close');
@@ -245,7 +329,11 @@ export class Chips extends Component {
 
   _setupAutocomplete() {
     this.options.autocompleteOptions.onAutocomplete = (items) => {
-      if (items.length > 0) this.addChip(items[0]);
+      if (items.length > 0) this.addChip({
+        id: items[0].id,
+        text: items[0].text,
+        image: items[0].image
+      });
       this._input.value = '';
       this._input.focus();
     };
@@ -278,13 +366,17 @@ export class Chips extends Component {
     }
   }
 
-  _isValidAndNotExist(chip: DataBit) {
+  _isValidAndNotExist(chip: ChipData) {
     const isValid = !!chip.id;
     const doesNotExist = !this.chipsData.some(item => item.id == chip.id);
     return isValid && doesNotExist;
   }
 
-  addChip(chip: DataBit) {
+  /**
+   * Add chip to input.
+   * @param chip Chip data object
+   */
+  addChip(chip: ChipData) {
     if (!this._isValidAndNotExist(chip) || this.chipsData.length >= this.options.limit) return;
     const renderedChip = this._renderChip(chip);
     this._chips.push(renderedChip);
@@ -298,6 +390,10 @@ export class Chips extends Component {
     }
   }
 
+  /**
+   * Delete nth chip.
+   * @param chipIndex  Index of chip
+   */
   deleteChip(chipIndex: number) {
     const chip = this._chips[chipIndex];
     this._chips[chipIndex].remove();
@@ -310,6 +406,10 @@ export class Chips extends Component {
     }
   }
 
+  /**
+   * Select nth chip.
+   * @param chipIndex Index of chip
+   */
   selectChip(chipIndex: number) {
     const chip = this._chips[chipIndex];
     this._selectedChip = chip;

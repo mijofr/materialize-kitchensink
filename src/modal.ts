@@ -1,6 +1,65 @@
-import { Component } from "./component";
 import anim from "animejs";
-import { M } from "./global";
+
+import { Utils } from "./utils";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
+
+export interface ModalOptions extends BaseOptions {
+  /**
+   * Opacity of the modal overlay.
+   * @default 0.5
+   */
+  opacity: number;
+  /**
+   * Transition in duration in milliseconds.
+   * @default 250
+   */
+  inDuration: number;
+  /**
+   * Transition out duration in milliseconds.
+   * @default 250
+   */
+  outDuration: number;
+  /**
+   * Prevent page from scrolling while modal is open.
+   * @default true
+   */
+  preventScrolling: boolean;
+  /**
+   * Callback function called before modal is opened.
+   * @default null
+   */
+  onOpenStart: (this: Modal, el: HTMLElement) => void;
+  /**
+   * Callback function called after modal is opened.
+   * @default null
+   */
+  onOpenEnd: (this: Modal, el: HTMLElement) => void;
+  /**
+   * Callback function called before modal is closed.
+   * @default null
+   */
+  onCloseStart: (el: HTMLElement) => void;
+  /**
+   * Callback function called after modal is closed.
+   * @default null
+   */
+  onCloseEnd: (el: HTMLElement) => void;
+  /**
+   * Allow modal to be dismissed by keyboard or overlay click.
+   * @default true
+   */
+  dismissible: boolean;
+  /**
+   * Starting top offset.
+   * @default '4%'
+   */
+  startingTop: string;
+  /**
+   * Ending top offset.
+   * @default '10%'
+   */
+  endingTop: string;
+}
 
 const _defaults = {
   opacity: 0.5,
@@ -16,20 +75,33 @@ const _defaults = {
   endingTop: '10%'
 };
 
-export class Modal extends Component {
-  el: HTMLElement;
+export class Modal extends Component<ModalOptions> {
+
   static _modalsOpen: number;
   static _count: number;
-  isOpen: boolean;
+  
+  /**
+   * ID of the modal element.
+   */
   id: string;
+  /**
+   * If the modal is open.
+   */
+  isOpen: boolean;
+  
   private _openingTrigger: any;
   private _overlay: HTMLElement;
   private _nthModalOpened: number;
 
-  constructor(el, options) {
-    super(Modal, el, options);
+  constructor(el: HTMLElement, options: Partial<ModalOptions>) {
+    super(el, options, Modal);
     (this.el as any).M_Modal = this;
-    this.options = {...Modal.defaults, ...options};
+
+    this.options = {
+      ...Modal.defaults,
+      ...options
+    };
+    
     this.isOpen = false;
     this.id = this.el.id;
     this._openingTrigger = undefined;
@@ -45,13 +117,29 @@ export class Modal extends Component {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Modal.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options?: Partial<ModalOptions>): Modal;
+  /**
+   * Initializes instances of Modal.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<MElement>, options?: Partial<ModalOptions>): Modal[];
+  /**
+   * Initializes instances of Modal.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<ModalOptions> = {}): Modal | Modal[] {
+    return super.init(els, options, Modal);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Modal;
+  static getInstance(el: HTMLElement): Modal {
+    return (el as any).M_Modal;
   }
 
   destroy() {
@@ -78,10 +166,10 @@ export class Modal extends Component {
     this.el.removeEventListener('click', this._handleModalCloseClick);
   }
 
-  _handleTriggerClick = (e) => {
-    const trigger = e.target.closest('.modal-trigger');
+  _handleTriggerClick = (e: MouseEvent) => {
+    const trigger = (e.target as HTMLElement).closest('.modal-trigger');
     if (!trigger) return;
-    const modalId = M.getIdFromTrigger(trigger);
+    const modalId = Utils.getIdFromTrigger(trigger as HTMLElement);
     const modalInstance = (document.getElementById(modalId) as any).M_Modal;
     if (modalInstance) modalInstance.open(trigger);
     e.preventDefault();
@@ -91,18 +179,18 @@ export class Modal extends Component {
     if (this.options.dismissible) this.close();
   }
 
-  _handleModalCloseClick = (e) => {
-    const closeTrigger = e.target.closest('.modal-close');
+  _handleModalCloseClick = (e: MouseEvent) => {
+    const closeTrigger = (e.target as HTMLElement).closest('.modal-close');
     if (closeTrigger) this.close();
   }
 
   _handleKeydown = (e: KeyboardEvent) => {
-    if (M.keys.ESC.includes(e.key) && this.options.dismissible) this.close();
+    if (Utils.keys.ESC.includes(e.key) && this.options.dismissible) this.close();
   }
 
-  _handleFocus = (e) => {
+  _handleFocus = (e: FocusEvent) => {
     // Only trap focus if this modal is the last model opened (prevents loops in nested modals).
-    if (!this.el.contains(e.target) && this._nthModalOpened === Modal._modalsOpen) {
+    if (!this.el.contains(e.target as HTMLElement) && this._nthModalOpened === Modal._modalsOpen) {
       this.el.focus();
     }
   }
@@ -185,7 +273,10 @@ export class Modal extends Component {
     anim(exitAnimOptions);
   }
 
-  open(trigger: HTMLElement|undefined): Modal {
+  /**
+   * Open modal.
+   */
+  open = (trigger?: HTMLElement): Modal => {
     if (this.isOpen) return;
     this.isOpen = true;
     Modal._modalsOpen++;
@@ -216,7 +307,10 @@ export class Modal extends Component {
     return this;
   }
 
-  close() {
+  /**
+   * Close modal.
+   */
+  close = () => {
     if (!this.isOpen) return;
     this.isOpen = false;
     Modal._modalsOpen--;

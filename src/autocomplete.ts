@@ -1,8 +1,74 @@
-import { Component } from "./component";
-import { M } from "./global";
-import { Dropdown } from "./dropdown";
+import { Utils } from "./utils";
+import { Dropdown, DropdownOptions } from "./dropdown";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
-let _defaults = {
+export interface AutocompleteData {
+  /** 
+   * A primitive value that can be converted to string.
+   * If "text" is not provided, it will also be used as "option text" as well
+   */
+  id: string | number;
+  /**
+   * This optional attribute is used as "display value" for the current entry.
+   * When provided, it will also be taken into consideration by the standard search function.
+   */
+  text?: string;
+  /**
+   * This optional attribute is used to provide a valid image URL to the current option.
+   */
+  image?: string;
+  /**
+   * Optional attributes which describes the option.
+   */
+  description?: string;
+}
+
+export interface AutocompleteOptions extends BaseOptions {
+  /**
+   * Data object defining autocomplete options with
+   * optional icon strings.
+   */
+  data: AutocompleteData[];
+  /**
+   * Flag which can be set if multiple values can be selected. The Result will be an Array.
+   * @default false
+   */
+  isMultiSelect: boolean;
+  /**
+   * Callback for when autocompleted.
+   */
+  onAutocomplete: (entries: AutocompleteData[]) => void;
+  /**
+   * Minimum number of characters before autocomplete starts.
+   * @default 1
+   */
+  minLength: number;
+  /**
+   * The height of the Menu which can be set via css-property.
+   * @default '300px'
+   */
+  maxDropDownHeight: string;
+  /**
+   * Function is called when the input text is altered and data can also be loaded asynchronously.
+   * If the results are collected the items in the list can be updated via the function setMenuItems(collectedItems).
+   * @param text Searched text.
+   * @param autocomplete Current autocomplete instance.
+   */
+  onSearch: (text: string, autocomplete: Autocomplete) => void;
+  /**
+   * If true will render the key from each item directly as HTML.
+   * User input MUST be properly sanitized first.
+   * @default false
+   */
+  allowUnsafeHTML: boolean;
+  /**
+   * Pass options object to select dropdown initialization.
+   * @default {}
+   */
+  dropdownOptions: Partial<DropdownOptions>;
+};
+
+let _defaults: AutocompleteOptions = {
   data: [], // Autocomplete data set
   onAutocomplete: null, // Callback for when autocompleted
   dropdownOptions: {
@@ -13,7 +79,7 @@ let _defaults = {
   },
   minLength: 1, // Min characters before autocomplete starts
   isMultiSelect: false,
-  onSearch: (text: string, autocomplete) => {
+  onSearch: (text: string, autocomplete: Autocomplete) => {
     const normSearch = text.toLocaleLowerCase();
     autocomplete.setMenuItems(
       autocomplete.options.data.filter((option) => 
@@ -27,29 +93,38 @@ let _defaults = {
 };
 
 
-export class Autocomplete extends Component {
-  el: HTMLInputElement;
+export class Autocomplete extends Component<AutocompleteOptions> {
+  declare el: HTMLInputElement;
+  /** If the autocomplete is open. */
   isOpen: boolean;
+  /** Number of matching autocomplete options. */
   count: number;
+  /** Index of the current selected option. */
   activeIndex: number;
-  private oldVal: any;
+  private oldVal: string;
   private $active: HTMLElement|null;
   private _mousedown: boolean;
   container: HTMLElement;
+  /** Instance of the dropdown plugin for this autocomplete. */
   dropdown: Dropdown;
   static _keydown: boolean;
-  selectedValues: any[];
-  menuItems: any[];
+  selectedValues: AutocompleteData[];
+  menuItems: AutocompleteData[];
 
 
-  constructor(el, options) {
-    super(Autocomplete, el, options);
+  constructor(el: HTMLInputElement, options: Partial<AutocompleteOptions>) {
+    super(el, options, Autocomplete);
     (this.el as any).M_Autocomplete = this;
-    this.options = {...Autocomplete.defaults, ...options};
+
+    this.options = {
+      ...Autocomplete.defaults,
+      ...options
+    };
+    
     this.isOpen = false;
     this.count = 0;
     this.activeIndex = -1;
-    this.oldVal;
+    this.oldVal = "";
     this.selectedValues = [];
     this.menuItems = [];
     this.$active = null;
@@ -57,15 +132,34 @@ export class Autocomplete extends Component {
     this._setupDropdown();
     this._setupEventHandlers();
   }
-  static get defaults() {
+
+  static get defaults(): AutocompleteOptions {
     return _defaults;
   }
-  static init(els, options) {
-    return super.init(this, els, options);
+
+  /**
+   * Initializes instance of Autocomplete.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLInputElement, options?: Partial<AutocompleteOptions>): Autocomplete;
+  /**
+   * Initializes instances of Autocomplete.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLInputElement | MElement>, options?: Partial<AutocompleteOptions>): Autocomplete[];
+  /**
+   * Initializes instances of Autocomplete.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLInputElement | InitElements<HTMLInputElement | MElement>, options: Partial<AutocompleteOptions> = {}): Autocomplete | Autocomplete[] {
+    return super.init(els, options, Autocomplete);
   }
-  static getInstance(el) {
-    let domElem = el.jquery ? el[0] : el;
-    return domElem.M_Autocomplete;
+
+  static getInstance(el: HTMLElement): Autocomplete {
+    return (el as any).M_Autocomplete;
   }
 
   destroy() {
@@ -121,7 +215,7 @@ export class Autocomplete extends Component {
   _setupDropdown() {
     this.container = document.createElement('ul');
     this.container.style.maxHeight = this.options.maxDropDownHeight;
-    this.container.id = `autocomplete-options-${M.guid()}`;
+    this.container.id = `autocomplete-options-${Utils.guid()}`;
     this.container.classList.add('autocomplete-content', 'dropdown-content');
     this.el.setAttribute('data-target', this.container.id);
 
@@ -143,7 +237,7 @@ export class Autocomplete extends Component {
       if (userOnItemClick && typeof userOnItemClick === 'function')
         userOnItemClick.call(this.dropdown, this.el);
     };
-    this.dropdown = M.Dropdown.init(this.el, dropdownOptions);
+    this.dropdown = Dropdown.init(this.el, dropdownOptions);
 
     // ! Workaround for Label: move label up again
     // TODO: Just use PopperJS in future!
@@ -178,10 +272,10 @@ export class Autocomplete extends Component {
     this.count = 0;
     const actualValue = this.el.value.toLocaleLowerCase();
     // Don't capture enter or arrow key usage.
-    if (M.keys.ENTER.includes(e.key) || M.keys.ARROW_UP.includes(e.key) || M.keys.ARROW_DOWN.includes(e.key)) return;
+    if (Utils.keys.ENTER.includes(e.key) || Utils.keys.ARROW_UP.includes(e.key) || Utils.keys.ARROW_DOWN.includes(e.key)) return;
     // Check if the input isn't empty
     // Check if focus triggered by tab
-    if (this.oldVal !== actualValue && (M.tabPressed || e.type !== 'focus')) {
+    if (this.oldVal !== actualValue && (Utils.tabPressed || e.type !== 'focus')) {
       this.open();
     }
     // Value has changed!
@@ -202,7 +296,7 @@ export class Autocomplete extends Component {
     // Arrow keys and enter key usage
     const numItems = this.container.querySelectorAll('li').length;
     // select element on Enter
-    if (M.keys.ENTER.includes(e.key) && this.activeIndex >= 0) {
+    if (Utils.keys.ENTER.includes(e.key) && this.activeIndex >= 0) {
       const liElement = this.container.querySelectorAll('li')[this.activeIndex];
       if (liElement) {
         this.selectOption(liElement.getAttribute('data-id'));
@@ -211,10 +305,10 @@ export class Autocomplete extends Component {
       return;
     }
     // Capture up and down key
-    if (M.keys.ARROW_UP.includes(e.key) || M.keys.ARROW_DOWN.includes(e.key)) {
+    if (Utils.keys.ARROW_UP.includes(e.key) || Utils.keys.ARROW_DOWN.includes(e.key)) {
       e.preventDefault();
-      if (M.keys.ARROW_UP.includes(e.key) && this.activeIndex > 0) this.activeIndex--;
-      if (M.keys.ARROW_DOWN.includes(e.key) && this.activeIndex < numItems - 1) this.activeIndex++;
+      if (Utils.keys.ARROW_UP.includes(e.key) && this.activeIndex > 0) this.activeIndex--;
+      if (Utils.keys.ARROW_DOWN.includes(e.key) && this.activeIndex < numItems - 1) this.activeIndex++;
       this.$active?.classList.remove('active');
       if (this.activeIndex >= 0) {
         this.$active = this.container.querySelectorAll('li')[this.activeIndex];
@@ -254,7 +348,7 @@ export class Autocomplete extends Component {
     this._mousedown = false;
   }
 
-  _highlightPartialText(input, label) {
+  _highlightPartialText(input: string, label: string) {
     const start = label.toLocaleLowerCase().indexOf('' + input.toLocaleLowerCase() + '');
     const end = start + input.length - 1;
     //custom filters may return results where the string does not match any part
@@ -264,9 +358,9 @@ export class Autocomplete extends Component {
     return [label.slice(0, start), label.slice(start, end + 1), label.slice(end + 1)];
   }
 
-  _createDropdownItem(entry) {
+  _createDropdownItem(entry: AutocompleteData) {
     const item = document.createElement('li');
-    item.setAttribute('data-id', entry.id);
+    item.setAttribute('data-id', <string>entry.id);
     item.setAttribute(
       'style',
       'display:grid; grid-auto-flow: column; user-select: none; align-items: center;'
@@ -367,7 +461,7 @@ export class Autocomplete extends Component {
   _refreshInputText() {
     if (this.selectedValues.length === 1) {
       const entry = this.selectedValues[0];
-      this.el.value = entry.text || entry.id; // Write Text to Input
+      this.el.value = entry.text || <string>entry.id; // Write Text to Input
     }
   }
 
@@ -378,7 +472,10 @@ export class Autocomplete extends Component {
       this.options.onAutocomplete.call(this, this.selectedValues);
   }
 
-  open() {
+  /**
+   * Show autocomplete.
+   */
+  open = () => {
     const inputText = this.el.value.toLocaleLowerCase();
     this._resetAutocomplete();
     if (inputText.length >= this.options.minLength) {
@@ -394,17 +491,28 @@ export class Autocomplete extends Component {
     else this.dropdown.recalculateDimensions(); // Recalculate dropdown when its already open
   }
 
-  close() {
+  /**
+   * Hide autocomplete.
+   */
+  close = () => {
     this.dropdown.close();
   }
 
-  setMenuItems(menuItems) {
+  /**
+   * Updates the visible or selectable items shown in the menu.
+   * @param menuItems Items to be available.
+   */
+  setMenuItems(menuItems: AutocompleteData[]) {
     this.menuItems = menuItems;
     this.open();
     this._updateSelectedInfo();
   }
 
-  setValues(entries) {
+  /**
+   * Sets selected values.
+   * @param entries
+   */
+  setValues(entries: AutocompleteData[]) {
     this.selectedValues = entries;
     this._updateSelectedInfo();
     if (!this.options.isMultiSelect) {
@@ -413,7 +521,11 @@ export class Autocomplete extends Component {
     this._triggerChanged();
   }
 
-  selectOption(id) {
+  /**
+   * Select a specific autocomplete option via id-property.
+   * @param id The id of a data-entry.
+   */
+  selectOption(id: number | string) {
     const entry = this.menuItems.find((item) => item.id == id);
     if (!entry) return;
     // Toggle Checkbox

@@ -1,8 +1,103 @@
-import { Component } from "./component";
-import { M } from "./global";
 import { Modal } from "./modal";
+import { Utils } from "./utils";
+import { Component, BaseOptions, InitElements, MElement, I18nOptions } from "./component";
 
-let _defaults = {
+export type Views = "hours" | "minutes";
+
+export interface TimepickerOptions extends BaseOptions {
+  /**
+   * Dial radius.
+   * @default 135
+   */
+  dialRadius: number;
+  /**
+   * Outer radius.
+   * @default 105
+   */
+  outerRadius: number;
+  /**
+   * Inner radius.
+   * @default 70
+   */
+  innerRadius: number;
+  /**
+   * Tick radius.
+   * @default 20
+   */
+  tickRadius: number;
+  /**
+   * Duration of the transition from/to the hours/minutes view.
+   * @default 350
+   */
+  duration: number;
+  /**
+   * Specify a DOM element OR selector for a DOM element to render
+   * the time picker in, by default it will be placed before the input.
+   * @default null
+   */
+  container: HTMLElement | string | null;
+  /**
+   * Show the clear button in the Timepicker.
+   * @default false
+   */
+  showClearBtn: boolean;
+  /**
+   * Default time to set on the timepicker 'now' or '13:14'.
+   * @default 'now';
+   */
+  defaultTime: string;
+  /**
+   * Millisecond offset from the defaultTime.
+   * @default 0
+   */
+  fromNow: number;
+  /**
+   * Internationalization options.
+   */
+  i18n: Partial<I18nOptions>;
+  /**
+   * Automatically close picker when minute is selected.
+   * @default false;
+   */
+  autoClose: boolean;
+  /**
+   * Use 12 hour AM/PM clock instead of 24 hour clock.
+   * @default true
+   */
+  twelveHour: boolean;
+  /**
+   * Vibrate device when dragging clock hand.
+   * @default true
+   */
+  vibrate: boolean;
+  /**
+   * Callback function called before modal is opened.
+   * @default null
+   */
+  onOpenStart: (el: HTMLElement) => void;
+  /**
+   * Callback function called after modal is opened.
+   * @default null
+   */
+  onOpenEnd: (el: HTMLElement) => void;
+  /**
+   * Callback function called before modal is closed.
+   * @default null
+   */
+  onCloseStart: (el: HTMLElement) => void;
+  /**
+   * Callback function called after modal is closed.
+   * @default null
+   */
+  onCloseEnd: (el: HTMLElement) => void;
+  /**
+   * Callback function when a time is selected.
+   * @default null
+   */
+  onSelect: (hour: number, minute: number) => void;
+}
+
+let _defaults: TimepickerOptions = {
   dialRadius: 135,
   outerRadius: 105,
   innerRadius: 70,
@@ -34,8 +129,8 @@ type Point = {
   y: number
 };
 
-export class Timepicker extends Component {
-  el: HTMLInputElement;
+export class Timepicker extends Component<TimepickerOptions> {
+  declare el: HTMLInputElement;
   id: string;
   modal: Modal;
   modalEl: HTMLElement;
@@ -48,16 +143,27 @@ export class Timepicker extends Component {
   moved: boolean;
   dx: number;
   dy: number;
-  currentView: string;
+  /**
+   * Current view on the timepicker.
+   * @default 'hours'
+   */
+  currentView: Views;
   hand: any;
   minutesView: HTMLElement;
   hours: any;
   minutes: any;
+  /** The selected time. */
   time: string;
-  amOrPm: any;
+  /**
+   * If the time is AM or PM on twelve-hour clock.
+   * @default 'PM'
+   */
+  amOrPm: "AM" | "PM";
   static _template: any;
+  /** If the picker is open. */
   isOpen: boolean;
-  vibrate: string;
+  /** Vibrate device when dragging clock hand. */
+  vibrate: "vibrate" | "webkitVibrate" | null;
   _canvas: HTMLElement;
   hoursView: any;
   spanAmPm: HTMLSpanElement;
@@ -71,11 +177,16 @@ export class Timepicker extends Component {
   canvas: any;
   vibrateTimer: any;
 
-  constructor(el, options) {
-    super(Timepicker, el, options);
+  constructor(el: HTMLInputElement, options: Partial<TimepickerOptions>) {
+    super(el, options, Timepicker);
     (this.el as any).M_Timepicker = this;
-    this.options = {...Timepicker.defaults, ...options};
-    this.id = M.guid();
+
+    this.options = {
+      ...Timepicker.defaults,
+      ...options
+    };
+
+    this.id = Utils.guid();
     this._insertHTMLIntoDOM();
     this._setupModal();
     this._setupVariables();
@@ -84,34 +195,50 @@ export class Timepicker extends Component {
     this._pickerSetup();
   }
 
-  static get defaults() {
+  static get defaults(): TimepickerOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Timepicker.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLInputElement, options?: Partial<TimepickerOptions>): Timepicker;
+  /**
+   * Initializes instances of Timepicker.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<HTMLInputElement | MElement>, options?: Partial<TimepickerOptions>): Timepicker[];
+  /**
+   * Initializes instances of Timepicker.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLInputElement | InitElements<HTMLInputElement | MElement>, options: Partial<TimepickerOptions> = {}): Timepicker | Timepicker[] {
+    return super.init(els, options, Timepicker);
   }
 
-  static _addLeadingZero(num) {
+  static _addLeadingZero(num: number) {
     return (num < 10 ? '0' : '') + num;
   }
 
-  static _createSVGEl(name) {
+  static _createSVGEl(name: string) {
     let svgNS = 'http://www.w3.org/2000/svg';
     return document.createElementNS(svgNS, name);
   }
 
-  static _Pos(e): Point {
-    if (e.targetTouches && e.targetTouches.length >= 1) {
-      return { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY };
+  static _Pos(e: TouchEvent | MouseEvent): Point {
+    if (e.type.startsWith("touch") && (e as TouchEvent).targetTouches.length >= 1) {
+      return { x: (e as TouchEvent).targetTouches[0].clientX, y: (e as TouchEvent).targetTouches[0].clientY };
     }
     // mouse event
-    return { x: e.clientX, y: e.clientY };
+    return { x: (e as MouseEvent).clientX, y: (e as MouseEvent).clientY };
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Timepicker;
+  static getInstance(el: HTMLElement): Timepicker {
+    return (el as any).M_Timepicker;
   }
 
   destroy() {
@@ -141,14 +268,14 @@ export class Timepicker extends Component {
   }
 
   _handleInputKeydown = (e: KeyboardEvent) => {
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this.open();
     }
   }
 
   _handleTimeInputEnterKey = (e: KeyboardEvent) => {
-    if (M.keys.ENTER.includes(e.key)) {
+    if (Utils.keys.ENTER.includes(e.key)) {
       e.preventDefault();
       this._inputFromTextField();
     }
@@ -231,7 +358,7 @@ export class Timepicker extends Component {
   }
 
   _setupModal() {
-    this.modal = M.Modal.init(this.modalEl, {
+    this.modal = Modal.init(this.modalEl, {
       onOpenStart: this.options.onOpenStart,
       onOpenEnd: this.options.onOpenEnd,
       onCloseStart: this.options.onCloseStart,
@@ -335,7 +462,7 @@ export class Timepicker extends Component {
     hand.setAttribute('y1', '0');
     let bg = Timepicker._createSVGEl('circle');
     bg.setAttribute('class', 'timepicker-canvas-bg');
-    bg.setAttribute('r', tickRadius);
+    bg.setAttribute('r', tickRadius.toString());
     g.appendChild(hand);
     g.appendChild(bg);
     g.appendChild(bearing);
@@ -445,7 +572,11 @@ export class Timepicker extends Component {
     this._updateAmPmView();
   }
 
-  showView = (view, delay: number = null) => {
+  /**
+   * Show hours or minutes view on timepicker.
+   * @param view The name of the view you want to switch to, 'hours' or 'minutes'.
+   */
+  showView = (view: Views, delay: number = null) => {
     if (view === 'minutes' && getComputedStyle(this.hoursView).visibility === 'visible') {
       // raiseCallback(this.options.beforeHourSelect);
     }
@@ -628,7 +759,10 @@ export class Timepicker extends Component {
     this.bg.setAttribute('cy', cy2.toString());
   }
 
-  open() {
+  /**
+   * Open timepicker.
+   */
+  open = () => {
     if (this.isOpen) return;
     this.isOpen = true;
     this._updateTimeFromInput();
@@ -636,6 +770,9 @@ export class Timepicker extends Component {
     this.modal.open(undefined);
   }
 
+  /**
+   * Close timepicker.
+   */
   close = () => {
     if (!this.isOpen) return;
     this.isOpen = false;

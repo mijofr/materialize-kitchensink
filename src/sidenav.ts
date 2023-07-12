@@ -1,8 +1,58 @@
-import { Component } from "./component";
-import { M } from "./global";
 import anim from "animejs";
 
-const _defaults = {
+import { Utils } from "./utils";
+import { Component, BaseOptions, InitElements, MElement, Openable } from "./component";
+
+export interface SidenavOptions extends BaseOptions {
+  /**
+   * Side of screen on which Sidenav appears.
+   * @default 'left'
+   */
+  edge: 'left' | 'right';
+  /**
+   * Allow swipe gestures to open/close Sidenav.
+   * @default true
+   */
+  draggable: boolean;
+  /**
+   * Width of the area where you can start dragging.
+   * @default '10px'
+   */
+  dragTargetWidth: string;
+  /**
+   * Length in ms of enter transition.
+   * @default 250
+   */
+  inDuration: number;
+  /**
+   * Length in ms of exit transition.
+   * @default 200
+   */
+  outDuration: number;
+  /**
+   * Prevent page from scrolling while sidenav is open.
+   * @default true
+   */
+  preventScrolling: boolean;
+  /**
+   * Function called when sidenav starts entering.
+   */
+  onOpenStart: (elem: HTMLElement) => void;
+  /**
+   * Function called when sidenav finishes entering.
+   */
+  onOpenEnd: (elem: HTMLElement) => void;
+  /**
+   * Function called when sidenav starts exiting.
+   */
+  onCloseStart: (elem: HTMLElement) => void;
+  /**
+   * Function called when sidenav finishes exiting.
+   */
+  onCloseEnd: (elem: HTMLElement) => void;
+}
+
+const _defaults: SidenavOptions = {
   edge: 'left',
   draggable: true,
   dragTargetWidth: '10px',
@@ -15,14 +65,17 @@ const _defaults = {
   preventScrolling: true
 };
 
-export class Sidenav extends Component {
-  id: any;
+export class Sidenav extends Component<SidenavOptions> implements Openable {
+  id: string;
+  /** Describes open/close state of Sidenav. */
   isOpen: boolean;
+  /** Describes if sidenav is fixed. */
   isFixed: boolean;
+  /** Describes if Sidenav is being dragged. */
   isDragged: boolean;
   lastWindowWidth: number;
   lastWindowHeight: number;
-  static _sidenavs: any;
+  static _sidenavs: Sidenav[];
   private _overlay: HTMLElement;
   dragTarget: Element;
   private _startingXpos: number;
@@ -35,11 +88,16 @@ export class Sidenav extends Component {
   private velocityX: number;
   private percentOpen: number;
 
-  constructor(el, options) {
-    super(Sidenav, el, options);
+  constructor(el: HTMLElement, options: Partial<SidenavOptions>) {
+    super(el, options, Sidenav);
     (this.el as any).M_Sidenav = this;
+
+    this.options = {
+      ...Sidenav.defaults,
+      ...options
+    };
+
     this.id = this.el.id;
-    this.options = {...Sidenav.defaults, ...options};
     this.isOpen = false;
     this.isFixed = this.el.classList.contains('sidenav-fixed');
     this.isDragged = false;
@@ -54,17 +112,33 @@ export class Sidenav extends Component {
     Sidenav._sidenavs.push(this);
   }
 
-  static get defaults() {
+  static get defaults(): SidenavOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Sidenav.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options?: Partial<SidenavOptions>): Sidenav;
+  /**
+   * Initializes instances of Sidenav.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<MElement>, options?: Partial<SidenavOptions>): Sidenav[];
+  /**
+   * Initializes instances of Sidenav.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<SidenavOptions> = {}): Sidenav | Sidenav[] {
+    return super.init(els, options, Sidenav);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Sidenav;
+  static getInstance(el: HTMLElement): Sidenav {
+    return (el as any).M_Sidenav;
   }
 
   destroy() {
@@ -126,7 +200,7 @@ export class Sidenav extends Component {
   _handleTriggerClick(e) {
     const trigger = e.target.closest('.sidenav-trigger');
     if (e.target && trigger) {
-      const sidenavId = M.getIdFromTrigger(trigger);
+      const sidenavId = Utils.getIdFromTrigger(trigger);
       const sidenavInstance = (document.getElementById(sidenavId) as any).M_Sidenav;
       if (sidenavInstance) {
         sidenavInstance.open(trigger);
@@ -144,7 +218,7 @@ export class Sidenav extends Component {
     this._time = Date.now();
     this._width = this.el.getBoundingClientRect().width;
     this._overlay.style.display = 'block';
-    this._initialScrollTop = this.isOpen ? this.el.scrollTop : M.getDocumentScrollTop();
+    this._initialScrollTop = this.isOpen ? this.el.scrollTop : Utils.getDocumentScrollTop();
     this._verticallyScrolling = false;
     anim.remove(this.el);
     anim.remove(this._overlay);
@@ -153,7 +227,7 @@ export class Sidenav extends Component {
   //Set variables needed at each drag move update tick
   _dragMoveUpdate(e) {
     const clientX = e.targetTouches[0].clientX;
-    const currentScrollTop = this.isOpen ? this.el.scrollTop : M.getDocumentScrollTop();
+    const currentScrollTop = this.isOpen ? this.el.scrollTop : Utils.getDocumentScrollTop();
     this.deltaX = Math.abs(this._xPos - clientX);
     this._xPos = clientX;
     this.velocityX = this.deltaX / (Date.now() - this._time);
@@ -315,7 +389,10 @@ export class Sidenav extends Component {
     document.body.style.overflow = '';
   }
 
-  open() {
+  /**
+   * Opens Sidenav.
+   */
+  open = () => {
     if (this.isOpen === true) return;
     this.isOpen = true;
     // Run onOpenStart callback
@@ -346,6 +423,9 @@ export class Sidenav extends Component {
     }
   }
 
+  /**
+   * Closes Sidenav.
+   */
   close = () => {
     if (this.isOpen === false) return;
     this.isOpen = false;
