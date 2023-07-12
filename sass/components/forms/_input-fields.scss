@@ -284,9 +284,10 @@ textarea {
   background-color: transparent;
 
   &.materialize-textarea {
+    padding-top: 26px !important;
+    padding-bottom: 4px !important;
     line-height: normal;
     overflow-y: hidden; /* prevents scroll bar flash */
-    padding: .8rem 0 .8rem 0; /* prevents text jump on Enter keypress */
     resize: none;
     min-height: $input-height;
     box-sizing: border-box;
