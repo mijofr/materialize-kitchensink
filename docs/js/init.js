@@ -226,7 +226,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   M.FormSelect.init(document.querySelectorAll('select:not(.disabled)'), {});
 
-  M.CharacterCounter.init(document.querySelectorAll('input[data-length], textarea[data-length]'), {});
+  M.CharacterCounter.init(document.querySelectorAll('input[maxlength], textarea[maxlength]'), {});
 
   const autocompleteDemoData = [
     {id: 12, text: "Apple"},

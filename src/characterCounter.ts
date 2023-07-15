@@ -1,34 +1,64 @@
-import { Component } from "./component";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
 
-let _defaults = {};
+export interface CharacterCounterOptions extends BaseOptions {};
 
-export class CharacterCounter extends Component {
-  isInvalid: boolean;
-  isValidLength: boolean;
-  private _handleUpdateCounterBound: any;
+const _defaults = Object.freeze({});
+
+type InputElement = HTMLInputElement | HTMLTextAreaElement;
+
+export class CharacterCounter extends Component<{}> {
+  
+  declare el: InputElement;
+  /** Stores the reference to the counter HTML element. */
   counterEl: HTMLSpanElement;
+  /** Specifies whether the input is valid or not. */
+  isInvalid: boolean;
+  /** Specifies whether the input text has valid length or not. */
+  isValidLength: boolean;
 
-  constructor(el: Element, options: Object) {
-    super(CharacterCounter, el, options);
+  constructor(el: HTMLInputElement | HTMLTextAreaElement, options: Partial<CharacterCounterOptions>) {
+    super(el, {}, CharacterCounter);
     (this.el as any).M_CharacterCounter = this;
-    this.options = {...CharacterCounter.defaults, ...options};
+
+    this.options = {
+      ...CharacterCounter.defaults,
+      ...options
+    };
+
     this.isInvalid = false;
     this.isValidLength = false;
+    
     this._setupCounter();
     this._setupEventHandlers();
   }
 
-  static get defaults() {
+  static get defaults(): CharacterCounterOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of CharacterCounter.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: InputElement, options?: Partial<CharacterCounterOptions>): CharacterCounter;
+  /**
+   * Initializes instances of CharacterCounter.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<InputElement | MElement>, options?: Partial<CharacterCounterOptions>): CharacterCounter[];
+  /**
+   * Initializes instances of CharacterCounter.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InputElement | InitElements<InputElement | MElement>, options: Partial<CharacterCounterOptions> = {}): CharacterCounter | CharacterCounter[] {
+    return super.init(els, options, CharacterCounter);
   }
 
-  static getInstance(el) {
-    let domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_CharacterCounter;
+  static getInstance(el: InputElement): CharacterCounter {
+    return (el as any).M_CharacterCounter;
   }
 
   destroy() {
@@ -38,14 +68,13 @@ export class CharacterCounter extends Component {
   }
 
   _setupEventHandlers() {
-    this._handleUpdateCounterBound = this.updateCounter.bind(this);
-    this.el.addEventListener('focus', this._handleUpdateCounterBound, true);
-    this.el.addEventListener('input', this._handleUpdateCounterBound, true);
+    this.el.addEventListener('focus', this.updateCounter, true);
+    this.el.addEventListener('input', this.updateCounter, true);
   }
 
   _removeEventHandlers() {
-    this.el.removeEventListener('focus', this._handleUpdateCounterBound, true);
-    this.el.removeEventListener('input', this._handleUpdateCounterBound, true);
+    this.el.removeEventListener('focus', this.updateCounter, true);
+    this.el.removeEventListener('input', this.updateCounter, true);
   }
 
   _setupCounter() {
@@ -61,8 +90,8 @@ export class CharacterCounter extends Component {
     this.counterEl.remove();
   }
 
-  updateCounter() {
-    let maxLength = parseInt(this.el.getAttribute('data-length')),
+  updateCounter = () => {
+    let maxLength = parseInt(this.el.getAttribute('maxlength')),
       actualLength = (this.el as HTMLInputElement).value.length;
 
     this.isValidLength = actualLength <= maxLength;

@@ -82,17 +82,18 @@ describe("Chips", function () {
 
     it("should have working callbacks", function(done) {
       chips = document.querySelector('.chips');
-      let chipAdd = false;
-      let chipAdded = null;
+      let chipWasAdded = false;
+      let chipAddedElem = null;
       let chipSelect = false;
       let chipSelected = null;
       let chipDelete = false;
       let chipDeleted = null;
+
       M.Chips.init(chips, {
         data: [{id: 'One'}, {id: 'Two'}, {id: 'Three'}],
         onChipAdd: function(chipsEl, chipEl) {
-          chipAdded = chipEl;
-          chipAdd = true;
+          chipAddedElem = chipEl;
+          chipWasAdded = true;
         },
         onChipSelect: function(chipsEl, chipEl) {
           chipSelected = chipEl;
@@ -103,16 +104,17 @@ describe("Chips", function () {
           chipDelete = true;
         }
       });
+
       input = chips.querySelector('input');
       input.value = 'Four';
-      expect(chipAdd).toEqual(false, 'callback not yet fired');
+      expect(chipWasAdded).toEqual(false, 'callback not yet fired');
       expect(chipSelect).toEqual(false, 'callback not yet fired');
       expect(chipDelete).toEqual(false, 'callback not yet fired');
       keydown(input, 13);
       
       setTimeout(function() {
-        expect(chipAdd).toEqual(true, 'add callback fired');
-        expect(chipAdded.childNodes[0].nodeValue).toEqual('Four', 'add callback provides correct chip element');
+        expect(chipWasAdded).toEqual(true, 'add callback fired');
+        expect(chipAddedElem.childNodes[0].nodeValue).toEqual('Four', 'add callback provides correct chip element');
 
         click(chips.querySelectorAll('.chip')[1]);
 

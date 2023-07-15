@@ -1,25 +1,68 @@
-import { Component } from "./component";
 import anim from "animejs";
 
-const _defaults = {
+import { Utils } from "./utils";
+import { Component, BaseOptions, InitElements, MElement } from "./component";
+
+export interface CollapsibleOptions extends BaseOptions {
+  /**
+   * If accordion versus collapsible.
+   * @default true
+   */
+  accordion: boolean;
+  /**
+   * Transition in duration in milliseconds.
+   * @default 300
+   */
+  inDuration: number;
+  /**
+   * Transition out duration in milliseconds.
+   * @default 300
+   */
+  outDuration: number;
+  /**
+   * Callback function called before collapsible is opened.
+   * @default null
+   */
+  onOpenStart: (el: Element) => void;
+  /**
+   * Callback function called after collapsible is opened.
+   * @default null
+   */
+  onOpenEnd: (el: Element) => void;
+  /**
+   * Callback function called before collapsible is closed.
+   * @default null
+   */
+  onCloseStart: (el: Element) => void;
+  /**
+   * Callback function called after collapsible is closed.
+   * @default null
+   */
+  onCloseEnd: (el: Element) => void;
+}
+
+const _defaults: CollapsibleOptions = {
   accordion: true,
-  onOpenStart: undefined,
-  onOpenEnd: undefined,
-  onCloseStart: undefined,
-  onCloseEnd: undefined,
+  onOpenStart: null,
+  onOpenEnd: null,
+  onCloseStart: null,  
+  onCloseEnd: null,
   inDuration: 300,
   outDuration: 300
 };
 
-export class Collapsible extends Component {
+export class Collapsible extends Component<CollapsibleOptions> {
   private _headers: HTMLElement[];
-  private _handleCollapsibleClickBound: any;
-  private _handleCollapsibleKeydownBound: any;
 
-  constructor(el, options) {
-    super(Collapsible, el, options);
+  constructor(el: HTMLElement, options: Partial<CollapsibleOptions>) {
+    super(el, options, Collapsible);
     (this.el as any).M_Collapsible = this;
-    this.options = {...Collapsible.defaults, ...options};
+
+    this.options = {
+      ...Collapsible.defaults,
+      ...options
+    };
+
     // Setup tab indices
     this._headers = Array.from(this.el.querySelectorAll('li > .collapsible-header'));
     this._headers.forEach(el => el.tabIndex = 0);
@@ -29,21 +72,37 @@ export class Collapsible extends Component {
     if (this.options.accordion)
       if (activeBodies.length > 0)
         activeBodies[0].style.display = 'block'; // Accordion
-    else 
+    else
       activeBodies.forEach(el => el.style.display = 'block'); // Expandables
   }
 
-  static get defaults() {
+  static get defaults(): CollapsibleOptions {
     return _defaults;
   }
 
-  static init(els, options) {
-    return super.init(this, els, options);
+  /**
+   * Initializes instance of Collapsible.
+   * @param el HTML element.
+   * @param options Component options.
+   */
+  static init(el: HTMLElement, options?: Partial<CollapsibleOptions>): Collapsible;
+  /**
+   * Initializes instances of Collapsible.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: InitElements<MElement>, options?: Partial<CollapsibleOptions>): Collapsible[];
+  /**
+   * Initializes instances of Collapsible.
+   * @param els HTML elements.
+   * @param options Component options.
+   */
+  static init(els: HTMLElement | InitElements<MElement>, options: Partial<CollapsibleOptions> = {}): Collapsible | Collapsible[] {
+    return super.init(els, options, Collapsible);
   }
 
-  static getInstance(el) {
-    const domElem = !!el.jquery ? el[0] : el;
-    return domElem.M_Collapsible;
+  static getInstance(el: HTMLElement): Collapsible {
+    return (el as any).M_Collapsible;
   }
 
   destroy() {
@@ -52,19 +111,17 @@ export class Collapsible extends Component {
   }
 
   _setupEventHandlers() {
-    this._handleCollapsibleClickBound = this._handleCollapsibleClick.bind(this);
-    this._handleCollapsibleKeydownBound = this._handleCollapsibleKeydown.bind(this);
-    this.el.addEventListener('click', this._handleCollapsibleClickBound);
-    this._headers.forEach(header => header.addEventListener('keydown', this._handleCollapsibleKeydownBound));
+    this.el.addEventListener('click', this._handleCollapsibleClick);
+    this._headers.forEach(header => header.addEventListener('keydown', this._handleCollapsibleKeydown));
   }
 
   _removeEventHandlers() {
-    this.el.removeEventListener('click', this._handleCollapsibleClickBound);
-    this._headers.forEach(header => header.removeEventListener('keydown', this._handleCollapsibleKeydownBound));
+    this.el.removeEventListener('click', this._handleCollapsibleClick);
+    this._headers.forEach(header => header.removeEventListener('keydown', this._handleCollapsibleKeydown));
   }
 
-  _handleCollapsibleClick(e) {
-    const header = e.target.closest('.collapsible-header');
+  _handleCollapsibleClick = (e: MouseEvent | KeyboardEvent) => {
+    const header = (e.target as HTMLElement).closest('.collapsible-header');
     if (e.target && header) {
       const collapsible = header.closest('.collapsible');
       if (collapsible !== this.el) return;
@@ -80,9 +137,9 @@ export class Collapsible extends Component {
     }
   }
 
-  _handleCollapsibleKeydown(e) {
-    if (e.keyCode === 13) {
-      this._handleCollapsibleClickBound(e);
+  _handleCollapsibleKeydown = (e: KeyboardEvent) => {
+    if (Utils.keys.ENTER.includes(e.key)) {
+      this._handleCollapsibleClick(e);
     }
   }
 
@@ -147,7 +204,11 @@ export class Collapsible extends Component {
     });
   }
 
-  open(index: number) {
+  /**
+   * Open collapsible section.
+   * @param n Nth section to open.
+   */
+  open = (index: number) => {
     const listItems = Array.from(this.el.children).filter(c => c.tagName === 'LI');
     const li = listItems[index];
     if (li && !li.classList.contains('active')) {
@@ -169,7 +230,11 @@ export class Collapsible extends Component {
     }
   }
 
-  close(index: number) {
+  /**
+   * Close collapsible section.
+   * @param n Nth section to close.
+   */
+  close = (index: number) => {
     const li = Array.from(this.el.children).filter(c => c.tagName === 'LI')[index];
     if (li && li.classList.contains('active')) {
       // onCloseStart callback

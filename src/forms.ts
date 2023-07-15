@@ -1,8 +1,13 @@
-import { M } from "./global";
+import { Utils } from "./utils";
 
 export class Forms {
 
-  static textareaAutoResize(textarea: HTMLTextAreaElement) {
+  /**
+   * Resizes the given TextArea after updating the
+   *  value content dynamically.
+   * @param textarea TextArea to be resized
+   */
+  static textareaAutoResize(textarea: HTMLTextAreaElement){
     if (!textarea) {
       console.error('No textarea element found');
       return;
@@ -27,13 +32,13 @@ export class Forms {
 
     if (fontSize) hiddenDiv.style.fontSize = fontSize; //('font-size', fontSize);
     if (fontFamily) hiddenDiv.style.fontFamily = fontFamily; //css('font-family', fontFamily);
-    if (lineHeight) hiddenDiv.style.lineHeight = lineHeight; //css('line-height', lineHeight);    
-    if (paddingTop) hiddenDiv.style.paddingTop = paddingTop; //ss('padding-top', paddingTop);    
-    if (paddingRight) hiddenDiv.style.paddingRight = paddingRight; //css('padding-right', paddingRight);    
-    if (paddingBottom) hiddenDiv.style.paddingBottom = paddingBottom; //css('padding-bottom', paddingBottom);    
-    if (paddingLeft) hiddenDiv.style.paddingLeft = paddingLeft; //css('padding-left', paddingLeft);    
+    if (lineHeight) hiddenDiv.style.lineHeight = lineHeight; //css('line-height', lineHeight);
+    if (paddingTop) hiddenDiv.style.paddingTop = paddingTop; //ss('padding-top', paddingTop);
+    if (paddingRight) hiddenDiv.style.paddingRight = paddingRight; //css('padding-right', paddingRight);
+    if (paddingBottom) hiddenDiv.style.paddingBottom = paddingBottom; //css('padding-bottom', paddingBottom);
+    if (paddingLeft) hiddenDiv.style.paddingLeft = paddingLeft; //css('padding-left', paddingLeft);
 
-    // Set original-height, if none    
+    // Set original-height, if none
     if (!textarea.hasAttribute('original-height'))
       textarea.setAttribute('original-height', textarea.getBoundingClientRect().height.toString());
 
@@ -76,12 +81,12 @@ export class Forms {
   static Init(){
     document.addEventListener("DOMContentLoaded", () => {
 
-      document.addEventListener('keyup', e => {
+      document.addEventListener('keyup', (e: KeyboardEvent) => {
         const target = <HTMLInputElement>e.target;
         // Radio and Checkbox focus class
         if (target instanceof HTMLInputElement && ['radio','checkbox'].includes(target.type)) {
           // TAB, check if tabbing to radio or checkbox.
-          if (e.which === M.keys.TAB) {
+          if (Utils.keys.TAB.includes(e.key)) {
             target.classList.add('tabbed');
             target.addEventListener('blur', e => target.classList.remove('tabbed'), {once: true});
           }
@@ -97,7 +102,7 @@ export class Forms {
         textArea.addEventListener('keyup', e => Forms.textareaAutoResize(textArea));
         textArea.addEventListener('keydown', e => Forms.textareaAutoResize(textArea));
       });
-  
+
       // File Input Path
       document.querySelectorAll('.file-field input[type="file"]').forEach((fileInput: HTMLInputElement) => {
         fileInput.addEventListener('change', e => {
@@ -112,9 +117,7 @@ export class Forms {
           pathInput.dispatchEvent(new Event('change'));
         });
       });
-  
+
     });
   }
 }
-
-  

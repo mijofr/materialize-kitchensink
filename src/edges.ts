@@ -1,6 +1,6 @@
 export class Edges {
-  public top: Boolean; // If the top edge was exceeded
-  public right: Boolean; // If the right edge was exceeded
-  public bottom: Boolean; // If the bottom edge was exceeded
-  public left: Boolean; // If the left edge was exceeded
+  public top: boolean; // If the top edge was exceeded
+  public right: boolean; // If the right edge was exceeded
+  public bottom: boolean; // If the bottom edge was exceeded
+  public left: boolean; // If the left edge was exceeded
 }

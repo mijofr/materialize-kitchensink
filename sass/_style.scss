@@ -19,7 +19,6 @@ p.box {
 
 p {
   padding: 0;
-
 }
 
 h5 > span {
@@ -72,95 +71,20 @@ footer.example {
     display: block;
     margin: 0 0 15px 0;
   }
-
 }
 
 /********************
   Index Page Styles
 ********************/
 
-ul.sidenav {
-  padding-left: 0;
-  list-style-type: none;
-  ul {
-    padding-left: 0;
-  }
-  li {
-    list-style-type: none;
-    padding-left: 0;
-    a {
-      padding-left: 1rem;
-    }
-  }
-}
-
-// custom styled sidebar
-ul.sidenav.sidenav-fixed li.logo {
-  text-align: center;
-  margin-top: 16px;
-  margin-bottom: 60px;
-
-  &:hover,
-  #logo-container:hover {
-    background-color: transparent;
-  }
-}
-
-ul.sidenav.sidenav-fixed {
-  overflow: hidden;
-  box-shadow: none;
-  border-right: 1px solid $border-color;
-  /*
-  > li:last-child {
-    margin-bottom: 160px;
-  }
-  */
-
-  li {
-    line-height: 44px;
-
-    &.active {
-      background-color: $button-flat-focus-background-color;
-    }
-
-    a {
-      font-size: 13px;
-      line-height: 44px;
-      height: 44px;
-      padding: 0 30px;
-
-      .new.badge {
-        margin-top: calc(22px - 11px);
-      }
-    }
-  }
-
-  ul.collapsible-accordion {
-    background-color: $surface-color;
-
-    a.collapsible-header {
-      padding: 0 30px;
-    }
-
-    .collapsible-body li a {
-      font-weight: 400;
-      padding: 0 37.5px 0 45px;
-    }
-  }
-
-  // Only show scrollbar on hover
-  &:hover {
-    overflow-y: auto;
-  }
-}
-
-.bold > a {
-  font-weight: bold;
-}
-
 #logo-container {
-  height: 50px;
-  margin-bottom: 16px;
+  margin: 0;
+  padding: 1rem;
+  border-radius: unset;
+  height: 75px;
+}
+#logo-container:hover {
+  background-color: unset;
 }
 
 .current-version-number {
@@ -226,7 +150,6 @@ a.sidenav-trigger.top-nav {
   a.sidenav-trigger.top-nav {
     left: 0;
   }
-
   ul.sidenav.sidenav-fixed {
     border: 0;
   }
@@ -235,7 +158,6 @@ a.sidenav-trigger.top-nav {
 @media #{$medium-and-down} {
   nav .nav-wrapper {
     text-align: center;
-
     a.page-title {
       font-size: 36px;
     }
@@ -252,11 +174,11 @@ a.sidenav-trigger.top-nav {
   }
 }
 
-
 #front-page-logo {
   display: inline-block;
   height: 100%;
   pointer-events: none;
+  margin: 1rem 0;
 }
 
 #responsive-img {
@@ -267,17 +189,14 @@ a.sidenav-trigger.top-nav {
 
 #index-banner {
   border-bottom: 1px solid $border-color;
-
   .container {
     position: relative;
   }
-
   h4 {
     margin-bottom: 40px;
     line-height: 44px;
     color: $font-color-main;
   }
-
   h1 {
     margin-top: 16px;
   }
@@ -288,7 +207,6 @@ a.sidenav-trigger.top-nav {
     h1 {
       margin-top: 60px;
     }
-
     h4 {
       margin-bottom: 15px;
     }
@@ -323,26 +241,8 @@ a.sidenav-trigger.top-nav {
   }
 }
 
-/*
-#download-button,
-#upgrade-button {
-  &:hover {
-    background-color: $primary-color-when-hovered-solid;
-  }
-  background-color: $primary-color;
-  width: 260px;
-  height: 70px;
-  margin: 4px;
-  padding: 0;
-  line-height: 70px;
-  font-size: 18px;
-  font-weight: 400;
-}
-*/
-
 .promo {
   width: 100%;
-
   i {
     margin: 30px 0;
     //color: $primary-color;
@@ -530,24 +430,21 @@ $height: auto;
 }
 
 // Icons
-.material-icons.icon-demo {
+.material-icons.icon-demo, .material-symbols-outlined.icon-demo,
+.material-symbols-rounded.icon-demo, .material-symbols-sharp.icon-demo {
   line-height: 50px;
 }
-
 .icon-container i {
   font-size: 3em;
   margin-bottom: 10px;
 }
-
 .icon-container .icon-preview {
   height: 120px;
   text-align: center;
 }
-
 .icon-container span {
   display: block;
 }
-
 .icon-holder {
   display: block;
   text-align: center;
@@ -580,7 +477,6 @@ $height: auto;
   width: 100px;
   height: 100px;
   margin: 20px auto;
-
   @media only screen and (max-width: $small-screen) {
     width: 150px;
     height: 150px;
@@ -589,7 +485,6 @@ $height: auto;
 
 // parallax demo
 .parallax-container {
-
   .text-center {
     position: absolute;
     top: 50%;
@@ -597,14 +492,12 @@ $height: auto;
     right: 0;
     margin-top: -27px;
   }
-
 }
 
 // Table of contents
 ul.table-of-contents {
   padding-left: 0;
   list-style-type: none;
-
   margin-top: 0;
   padding-top: 48px;
   font-size: 1rem;
@@ -690,11 +583,13 @@ code[class*="language-"] {
   cursor: pointer;
 }
 
+/**********************************/
+
+
 .toc-wrapper {
   &.pin-bottom {
     margin-top: 84px;
   }
-
   position: relative;
   margin-top: 42px;
 }
@@ -713,7 +608,6 @@ body.parallax-demo footer {
   background-color: transparent;
   border-top: 1px solid $border-color;
   color: inherit;
-
   .footer-copyright,
   .footer-copyright a {
     color: $font-color-medium;
@@ -724,7 +618,6 @@ body.parallax-demo footer {
 //About page styling
 .image-container {
   width: 100%;
-
   img {
     max-width: 100%;
   }
@@ -815,47 +708,11 @@ body.parallax-demo footer {
   max-height: 0;
 }
 
-
-// Version dropdown
-#nav-mobile li.version {
-  position: absolute;
-  top: 65px;
-  left: 0;
-  right: 0;
-  font-family: "Inconsolata";
-  text-align: center;
-
-  .dropdown-trigger {
-    font-family: "Inconsolata";
-    margin: 0 auto;
-    display: inline-block;
-    padding: 0 10px;
-    border-bottom: 1px solid $divider-color;
-
-    .caret {
-      position: relative;
-      top: 10px;
-      fill: $button-flat-color;
-    }
-  }
-}
-
-#version-dropdown {
-  text-align: left;
-  li > a {
-    padding: 0 10px;
-  }
-  a {
-    height: 50px;
-    line-height: 50px;
-  }
-}
-
+// For GitHub and OpenCollective
 .ext-link > img {
   vertical-align: middle;
   height: 24px;
 }
-
 
 // Search
 #nav-mobile li.search {
@@ -886,7 +743,8 @@ body.parallax-demo footer {
       height: 32px;
     }
 
-    i.material-icons {
+    i.material-icons, i.material-symbols-outlined,
+    i.material-symbols-rounded, i.material-symbols-sharp {
       position: absolute;
       top: 4px;
       right: 34px;
@@ -929,7 +787,6 @@ body.parallax-demo footer {
     display: block;
   }
 }
-
 
 #nav-mobile {
   li .new.badge {

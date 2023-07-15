@@ -89,6 +89,7 @@ textarea.materialize-textarea {
       color: $input-focus-color;
     }
     &:focus:not([readonly]) + label,
+    &:not([placeholder=' ']) + label,
     &:not(:placeholder-shown) + label {
       //font-size: 12px; // md.sys.typescale.body-small.size
       // https://stackoverflow.com/questions/34717492/css-transition-font-size-avoid-jittering-wiggling
@@ -187,6 +188,7 @@ textarea.materialize-textarea {
         color: $input-focus-color;
       }
       &:focus:not([readonly]) + label,
+      &:not([placeholder=' ']) + label,
       &:not(:placeholder-shown) + label {
         top: -8px;
         left: 16px;
@@ -271,15 +273,6 @@ textarea.materialize-textarea {
     transform: none;
     left: 1rem;
   }
-  & ~ .mdi-navigation-close,
-  & ~ .material-icons {
-    position: absolute;
-    top: 0;
-    right: 1rem;
-    color: transparent;
-    cursor: pointer;
-    font-size: $input-icon-size;
-  }
 }
 */
 
@@ -291,9 +284,10 @@ textarea {
   background-color: transparent;
 
   &.materialize-textarea {
+    padding-top: 26px !important;
+    padding-bottom: 4px !important;
     line-height: normal;
     overflow-y: hidden; /* prevents scroll bar flash */
-    padding: .8rem 0 .8rem 0; /* prevents text jump on Enter keypress */
     resize: none;
     min-height: $input-height;
     box-sizing: border-box;

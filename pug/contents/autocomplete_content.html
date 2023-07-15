@@ -51,9 +51,38 @@
 
       <div id="initialization" class="scrollspy section">
         <h3 class="header">Initialization</h3>
-        <p>The data is a json object where the key is the matching string and the value is an optional image url.</p>
-        <p>The key must be a text string. If you trust your data, or have properly sanitized your user input, you may
-          use HTML by setting the option <code class="language-javascript">allowUnsafeHTML: true</code>.</p>
+        <p>The data is an array of option objects, which supports three different attributes:</p>
+        <p>
+          <ul class="collection">
+            <li class="collection-item">
+              <p style="margin: 0;">
+                <b>id</b>: This is the only mandatory attribute: it must be a primitive value that can be
+                  converted to string. If "text" is not provided, it will also be used as "option text" as well;
+              </p>
+            </li>
+            <li class="collection-item">
+              <p style="margin: 0;">
+                <b>text</b>: This optional attribute is used as "display value" for the current entry.
+                  When provided, it will also be taken into consideration by the standard search function.
+              </p>
+              <P style="margin: 0;">
+                If you trust your data or have properly sanitized your user input, you may use
+                  use HTML by setting the option <code class="language-javascript">allowUnsafeHTML: true</code>;
+              </P>
+            </li>
+            <li class="collection-item">
+              <p style="margin: 0;">
+                <b>image</b>: This optional attribute is used to provide a valid image URL to the current option.
+                  This attribute is ignored by the standard search function.
+              </p>
+            </li>
+          </ul>
+        </p>
+        <p>
+          You may also provide additional attributes to an option object but they will not be taken into
+          consideration by the standard search function. If you want to use them for option filtering, you
+          must specify a custom function in "<b>onSearch</b>" option.
+        </p>
           <pre style="padding-top: 0px;">
             <span class="copyMessage">Copied!</span>
             <i class="material-icons copyButton">content_copy</i>
@@ -99,7 +128,8 @@
         {id: 13, text: "Microsoft"},
         {id: 42, text: "Google", image: 'http://placehold.it/250x250'}
       ],
-      onSearch: function(text, autocomplete) {
+      // This search function considers every object entry as "search values".
+      onSearch: (text, autocomplete) => {
         const filteredData = autocomplete.options.data.filter(item => {
           return Object.keys(item)
             .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
@@ -188,13 +218,14 @@
             <span class="copyMessage">Copied!</span>
             <i class="material-icons copyButton">content_copy</i>
             <code class="language-javascript copiedText">
-onSearch: function(text, autocomplete) {
-  const filteredData = autocomplete.options.data.filter(item => {
-    return Object.keys(item)
-      .map(key => item[key].toString().toLowerCase().indexOf(text.toLowerCase()) >= 0)
-      .some(isMatch => isMatch);
-  });
-  autocomplete.setMenuItems(filteredData);
+onSearch: (text, autocomplete) => {
+  const normSearch = text.toLocaleLowerCase();
+  autocomplete.setMenuItems(
+    autocomplete.options.data.filter((option) => 
+      option.id.toString().toLocaleLowerCase().includes(normSearch)
+        || option.text?.toLocaleLowerCase().includes(normSearch)
+    )
+  );
 }
 </code>
           </pre>
