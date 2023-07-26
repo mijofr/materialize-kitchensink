@@ -1,5 +1,5 @@
 - var no_nav = true
-- var page = "Kitchen Sink"
+- var page = "Kitchen Sink - Components"
 
 doctype html
 html(lang="en")
@@ -11,12 +11,19 @@ html(lang="en")
     include includes/_navbar.pug
     main
       section
-        h2 BUTTONS
+        div.collection
+          a.collection-item(href='#SEC-BUTTONS') BUTTONS
+          a.collection-item(href='#SEC-COLLECTIONS') COLLECTIONS
+          a.collection-item(href='#SEC-PAGINATION') PAGINATION
+
+      section
+        h2#SEC-BUTTONS BUTTONS
         include contents/buttons_content.html
       section
-        h2 collections
+        h2#SEC-COLLECTIONS COLLECTIONS
         include contents/collections_content.html
       section
+        h2#SEC-PAGINATION PAGINATION
         include contents/pagination_content.html
     include includes/_footer.pug
     include includes/_scripts.pug
