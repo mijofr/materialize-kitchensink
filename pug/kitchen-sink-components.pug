@@ -10,20 +10,20 @@ html(lang="en")
   body
     include includes/_navbar.pug
     main
-      section
-        div.collection
+      section.index-links
+        div.container: div.collection
           a.collection-item(href='#SEC-BUTTONS') BUTTONS
           a.collection-item(href='#SEC-COLLECTIONS') COLLECTIONS
           a.collection-item(href='#SEC-PAGINATION') PAGINATION
 
       section
-        h2#SEC-BUTTONS BUTTONS
+        div.container: h2#SEC-BUTTONS BUTTONS
         include contents/buttons_content.html
       section
-        h2#SEC-COLLECTIONS COLLECTIONS
+        div.container: h2#SEC-COLLECTIONS COLLECTIONS
         include contents/collections_content.html
       section
-        h2#SEC-PAGINATION PAGINATION
+        div.container: h2#SEC-PAGINATION PAGINATION
         include contents/pagination_content.html
     include includes/_footer.pug
     include includes/_scripts.pug
