@@ -20,9 +20,7 @@
     "test": "grunt test",
     "release": "grunt release",
     "watch": "webpack --watch",
-    "precommit": "lint-staged",
     "docs": "grunt docs",
-    "commit": "npx cz",
     "postinstall": "husky install",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
@@ -80,11 +78,6 @@
     "Gruntfile.js",
     "LICENSE"
   ],
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
   "dependencies": {
     "animejs": "^3.2.1"
   }
